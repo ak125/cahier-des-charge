@@ -1,0 +1,21 @@
+{
+  "name": "PHP Analyzer",
+  "nodes": [
+    {
+      "parameters": {
+        "filePath": "={{ $json.filePath }}"
+      },
+      "name": "PHP Analyzer",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        880,
+        300
+      ]
+    }
+  ],
+  "connections": {},
+  "active": false,
+  "settings": {},
+  "id": "1"
+}

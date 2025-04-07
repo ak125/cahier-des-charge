@@ -1,0 +1,111 @@
+version: '3.8'
+
+services:
+  # Base de données PostgreSQL
+  postgres:
+    image: postgres:14-alpine
+    container_name: migration-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: migration
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-migration_password}
+      POSTGRES_DB: migration_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "migration"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # Redis pour le cache et les sessions
+  redis:
+    image: redis:alpine
+    container_name: migration-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # n8n pour l'orchestration des workflows
+  n8n:
+    image: n8nio/n8n:latest
+    container_name: migration-n8n
+    restart: unless-stopped
+    environment:
+      - N8N_PORT=5678
+      - N8N_PROTOCOL=http
+      - N8N_HOST=${N8N_HOST:-localhost}
+      - NODE_ENV=production
+      - N8N_ENCRYPTION_KEY=${N8N_ENCRYPTION_KEY:-a_random_encryption_key}
+      - DB_TYPE=postgresdb
+      - DB_POSTGRESDB_HOST=postgres
+      - DB_POSTGRESDB_PORT=5432
+      - DB_POSTGRESDB_DATABASE=n8n_db
+      - DB_POSTGRESDB_USER=migration
+      - DB_POSTGRESDB_PASSWORD=${POSTGRES_PASSWORD:-migration_password}
+      - EXECUTIONS_PROCESS=main
+      - WEBHOOK_URL=http://${N8N_HOST:-localhost}:5678/
+      - GITHUB_TOKEN=${GITHUB_TOKEN:-}
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+    ports:
+      - "5678:5678"
+    volumes:
+      - n8n_data:/home/node/.n8n
+      - ./workflows:/home/node/.n8n/workflows
+      - ./tools/agents:/home/node/agents
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  # CodeServer pour l'édition de code et l'exécution des agents
+  code-server:
+    image: codercom/code-server:latest
+    container_name: migration-code-server
+    restart: unless-stopped
+    environment:
+      - PASSWORD=${CODE_SERVER_PASSWORD:-code_password}
+      - DOCKER_USER=coder
+    ports:
+      - "8080:8080"
+    volumes:
+      - code_server_data:/home/coder/.local/share/code-server
+      - ./:/home/coder/project
+    command: --auth password --host 0.0.0.0 /home/coder/project
+
+  # Service pour l'interface utilisateur du pipeline de migration
+  migration-ui:
+    image: node:20-alpine
+    container_name: migration-ui
+    restart: unless-stopped
+    working_dir: /app
+    volumes:
+      - ./dashboard:/app
+    ports:
+      - "3000:3000"
+    command: sh -c "npm install && npm run dev"
+    environment:
+      - N8N_API_URL=http://n8n:5678/api/
+      - POSTGRES_CONNECTION=postgresql://migration:${POSTGRES_PASSWORD:-migration_password}@postgres:5432/migration_db
+      - REDIS_URL=redis://redis:6379
+    depends_on:
+      - n8n
+      - postgres
+      - redis
+
+volumes:
+  postgres_data:
+  redis_data:
+  n8n_data:
+  code_server_data:
