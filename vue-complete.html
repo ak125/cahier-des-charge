@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cahier des Charges – Vue complète</title>
+  <style>
+    :root {
+      --primary: #3498db;
+      --dark-bg: #1a1a1a;
+      --light-bg: #fdfdfd;
+      --card-bg: #fff;
+      --dark-card-bg: #2c2c2c;
+    }
+    body {
+      font-family: "Segoe UI", Roboto, sans-serif;
+      margin: 0 auto;
+      padding: 2rem;
+      max-width: 1000px;
+      background: var(--light-bg);
+      color: #1a1a1a;
+      line-height: 1.6;
+      transition: background 0.3s, color 0.3s;
+    }
+    h1, h2 {
+      color: #2c3e50;
+    }
+    h1 {
+      text-align: center;
+      font-size: 2.5rem;
+      margin-bottom: 2rem;
+    }
+    h2 {
+      border-bottom: 2px solid #ccc;
+      padding-bottom: 0.3rem;
+      margin-top: 2rem;
+    }
+    .toc {
+      background: #f9f9f9;
+      padding: 1rem;
+      border-radius: 8px;
+      margin-bottom: 2rem;
+    }
+    .toc ul {
+      list-style-type: none;
+      padding-left: 0;
+    }
+    .toc a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+    .toc a:hover {
+      text-decoration: underline;
+    }
+    .file-section {
+      margin-bottom: 3rem;
+      background: var(--card-bg);
+      padding: 1rem 1.5rem;
+      border-radius: 8px;
+      box-shadow: 0 0 8px rgba(0,0,0,0.05);
+    }
+    .filename {
+      font-size: 0.9rem;
+      color: #999;
+      margin-bottom: 1rem;
+    }
+    pre {
+      background: #f4f4f4;
+      padding: 1rem;
+      border-left: 4px solid var(--primary);
+      overflow-x: auto;
+      white-space: pre-wrap;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1rem 0;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 0.5rem;
+      text-align: left;
+    }
+    ul {
+      padding-left: 1.2rem;
+    }
+    #back-to-top, #dark-mode-toggle {
+      position: fixed;
+      bottom: 20px;
+      width: 50px;
+      height: 50px;
+      border: none;
+      border-radius: 50%;
+      color: white;
+      font-size: 1.5rem;
+      cursor: pointer;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.3s;
+    }
+    #back-to-top {
+      right: 20px;
+      background: var(--primary);
+    }
+    #dark-mode-toggle {
+      left: 20px;
+      background: #555;
+    }
+    .dark-mode {
+      background: var(--dark-bg);
+      color: #fdfdfd;
+    }
+    .dark-mode h1, .dark-mode h2 {
+      color: #ecf0f1;
+    }
+    .dark-mode .file-section {
+      background: var(--dark-card-bg);
+      color: #fdfdfd;
+    }
+    .dark-mode .toc {
+      background: #333;
+    }
+    .dark-mode pre {
+      background: #333;
+    }
+    .dark-mode .filename {
+      color: #aaa;
+    }
+    .dark-mode th, .dark-mode td {
+      border-color: #555;
+    }
+    .search-container {
+      margin-bottom: 2rem;
+      display: flex;
+    }
+    #search-input {
+      flex: 1;
+      padding: 0.5rem;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 4px 0 0 4px;
+    }
+    #search-button {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 0 4px 4px 0;
+      cursor: pointer;
+    }
+    .highlight {
+      background-color: yellow;
+      color: black;
+    }
+    .loading {
+      display: none;
+      justify-content: center;
+      margin: 2rem 0;
+    }
+    .loading-spinner {
+      border: 4px solid rgba(0, 0, 0, 0.1);
+      border-left-color: var(--primary);
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    .dark-mode .loading-spinner {
+      border-color: rgba(255, 255, 255, 0.1);
+      border-left-color: var(--primary);
+    }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body>
+  <h1>📘 Cahier des Charges – Vue complète</h1>
+
+  <div class="search-container">
+    <input type="text" id="search-input" placeholder="Rechercher dans le cahier des charges...">
+    <button id="search-button">🔍</button>
+  </div>
+
+  <div class="loading">
+    <div class="loading-spinner"></div>
+  </div>
+
+  <div class="toc">
+    <h2>Table des matières</h2>
+    <ul id="toc-list">
+      <!-- Sera rempli dynamiquement -->
+    </ul>
+  </div>
+
+  <div id="content-container">
+    <!-- Les sections seront chargées ici dynamiquement -->
+  </div>
+
+  <button id="back-to-top" title="Retour en haut">↑</button>
+  <button id="dark-mode-toggle" title="Mode Sombre">🌙</button>
+
+  <script>
+    const documents = [
+      { 
+        id: "01-introduction", 
+        title: "Introduction", 
+        path: "cahier-des-charges/01-introduction.md",
+        content: `# Introduction au projet de migration IA
+
+Ce cahier des charges détaille le processus de migration automatisée du code legacy PHP vers une architecture moderne TypeScript en utilisant l'intelligence artificielle.
+
+## Objectifs
+- Automatiser la migration de code PHP vers TypeScript
+- Garantir la qualité et la conformité du code généré
+- Réduire le temps et les coûts de migration
+- Maintenir la cohérence fonctionnelle de l'application
+
+## Approche
+La migration est pilotée par des agents IA spécialisés qui analysent, transforment et valident le code source avec une supervision humaine minimale.`
+      },
+      { 
+        id: "20-mismatch-tracker", 
+        title: "Mismatch Tracker", 
+        path: "cahier-des-charges/20-mismatch-tracker.md",
+        content: `# Mismatch Tracker
+
+## Objectif
+Le Mismatch Tracker est un outil automatisé qui détecte les incohérences entre la documentation et le code source. Il permet d'identifier rapidement les désynchronisations qui peuvent survenir lors du processus de migration.
+
+## Fonctionnalités principales
+- Analyse statique du code source
+- Comparaison avec la documentation technique
+- Génération de rapports d'incohérences
+- Suggestions de correction automatiques
+
+## Architecture
+Le système fonctionne en analysant les signatures de fonctions, les structures de données et les commentaires pour identifier les divergences.`
+      },
+      { 
+        id: "43-socle-ia-analyse-migration", 
+        title: "Socle IA d'analyse et migration", 
+        path: "cahier-des-charges/43-socle-ia-analyse-migration.md",
+        content: `# 🧠 Socle IA d'analyse et de migration
+
+## 🎯 Objectif
+Mettre en place un socle d'intelligence artificielle robuste, évolutif et sécurisé qui servira de fondation à l'ensemble des processus d'analyse et de migration automatisée du code legacy vers l'architecture cible.
+
+## 🏗️ Architecture du socle IA
+Le socle comprend plusieurs composants clés:
+- Knowledge Base (Base de connaissances)
+- Agents IA spécialisés (Analyste, Transformateur, Validateur, Documentateur)
+- Translation Repository (Dépôt de traduction)
+- Pipelines d'ingestion et de déploiement
+
+## 🛠️ Préparation du socle IA
+L'infrastructure technique nécessaire inclut:
+- Environnement d'exécution GPU-accelerated
+- Stockage vectoriel pour la base de connaissances
+- Configuration des modèles IA (GPT-4, Code Llama, etc.)
+- Préprocesseurs et analyseurs de code source`
+      },
+      { 
+        id: "45-profil-monorepo-reference", 
+        title: "Profil monorepo de référence", 
+        path: "cahier-des-charges/45-profil-monorepo-reference.md",
+        content: `# 🏗️ Finaliser le profil du monorepo (profil de référence)
+
+🎯 Objectif : Créer un profil d'analyse du monorepo **avant migration**, utilisé comme référence dans tous les agents IA (générateurs, validateurs, synchronisateurs, etc.)
+
+## 🗂️ Fichiers de profil à générer et valider
+- code_style_profile.json - Conventions de code
+- monorepo_dependencies.json - Packages utilisés
+- nestjs_module_patterns.json - Structure des modules NestJS
+- remix_component_patterns.json - Composants Remix
+- tailwind_tokens.json - Classes Tailwind personnalisées
+
+## 📌 Rôle dans la cohérence des agents IA
+Ces fichiers garantissent que le code généré est consistent avec l'existant et respecte les conventions établies du projet.
+
+## ✅ Checklist de validation
+Liste des vérifications à effectuer pour s'assurer que le profil est correct et complet.
+
+## 🔧 Génération automatique avec monorepo-analyzer.ts
+Script automatisé pour analyser le monorepo et extraire les informations nécessaires.`
+      }
+    ];
+
+    const tocList = document.getElementById('toc-list');
+    documents.forEach(doc => {
+      const li = document.createElement('li');
+      const a = document.createElement('a');
+      a.href = `#${doc.id}`;
+      a.textContent = doc.title;
+      a.onclick = () => loadDocument(doc);
+      li.appendChild(a);
+      tocList.appendChild(li);
+    });
+
+    const contentContainer = document.getElementById('content-container');
+    const loadingIndicator = document.querySelector('.loading');
+
+    function loadDocument(doc) {
+      try {
+        if (document.getElementById(doc.id)) {
+          return;
+        }
+
+        loadingIndicator.style.display = 'flex';
+        
+        const section = document.createElement('div');
+        section.className = 'file-section';
+        section.id = doc.id;
+        
+        const heading = document.createElement('h2');
+        heading.textContent = doc.title;
+        section.appendChild(heading);
+        
+        const filename = document.createElement('div');
+        filename.className = 'filename';
+        filename.textContent = doc.path;
+        section.appendChild(filename);
+        
+        const content = document.createElement('div');
+        content.className = 'markdown-content';
+        content.innerHTML = marked.parse(doc.content || 'Contenu non disponible');
+        section.appendChild(content);
+        
+        contentContainer.appendChild(section);
+        
+        loadingIndicator.style.display = 'none';
+      } catch (error) {
+        console.error('Erreur lors du chargement du document:', error);
+        loadingIndicator.style.display = 'none';
+      }
+    }
+
+    const searchInput = document.getElementById('search-input');
+    const searchButton = document.getElementById('search-button');
+
+    function performSearch() {
+      const query = searchInput.value.toLowerCase();
+      if (!query) return;
+      
+      const results = documents.filter(doc => 
+        doc.title.toLowerCase().includes(query) || 
+        doc.id.toLowerCase().includes(query) ||
+        (doc.content && doc.content.toLowerCase().includes(query))
+      );
+      
+      contentContainer.innerHTML = '';
+      if (results.length === 0) {
+        const noResults = document.createElement('p');
+        noResults.textContent = `Aucun résultat trouvé pour "${query}"`;
+        contentContainer.appendChild(noResults);
+      } else {
+        results.forEach(doc => loadDocument(doc));
+      }
+    }
+
+    searchButton.addEventListener('click', performSearch);
+    searchInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        performSearch();
+      }
+    });
+
+    const topBtn = document.getElementById('back-to-top');
+    window.onscroll = () => {
+      topBtn.style.display = window.scrollY > 300 ? 'flex' : 'none';
+    };
+    topBtn.onclick = () => window.scrollTo({ top: 0, behavior: 'smooth' });
+    topBtn.style.display = 'none';
+
+    const toggle = document.getElementById('dark-mode-toggle');
+    toggle.onclick = () => {
+      document.body.classList.toggle('dark-mode');
+      if (document.body.classList.contains('dark-mode')) {
+        toggle.innerHTML = '☀️';
+        toggle.title = 'Mode Clair';
+      } else {
+        toggle.innerHTML = '🌙';
+        toggle.title = 'Mode Sombre';
+      }
+    };
+
+    window.onload = () => {
+      documents.slice(0, 3).forEach(doc => loadDocument(doc));
+    };
+  </script>
+</body>
+</html>
