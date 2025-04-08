@@ -5,6 +5,29 @@ Tous les changements notables apportés au cahier des charges sont documentés d
 Le format est basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/),
 et ce projet adhère au [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.12.0] - 2024-04-30
+
+### Ajouté
+- Document de conclusion stratégique et recommandations finales
+- Analyse détaillée de chaque phase du projet de migration
+- Recommandations avancées pour l'automatisation et la gestion du monorepo
+- Liste des fichiers stratégiques à maintenir
+- Bénéfices attendus de la migration et dernières astuces
+
+## [1.11.0] - 2024-04-10
+
+### Ajouté
+- Documentation sur l'analyse structurelle automatique du monorepo existant
+- Description des agents d'analyse et des profils générés
+- Procédure de validation des résultats d'analyse
+
+## [1.10.0] - 2024-04-08
+
+### Ajouté
+- Feuille de route complète pour la migration PHP vers NestJS + Remix
+- Plan détaillé des phases, calendrier et ressources nécessaires
+- Stratégies de versionnement et métriques de succès
+
 ## [1.9.0] - 2024-01-15
 
 ### Ajouté
