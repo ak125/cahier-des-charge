@@ -1,0 +1,261 @@
+{
+  "name": "Update Audit and Backlog",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "minutesFixed": 0,
+              "hoursInterval": 4
+            }
+          ]
+        }
+      },
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1,
+      "position": [
+        250,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "path": "schema-changed",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "name": "Webhook: Schema Changed",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        250,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "diffPath",
+              "value": "={{ $json.diffPath || '/workspaces/cahier-des-charge/schema_migration_diff.json' }}"
+            },
+            {
+              "name": "auditDir",
+              "value": "={{ $json.auditDir || '/workspaces/cahier-des-charge/audits' }}"
+            },
+            {
+              "name": "backlogDir",
+              "value": "={{ $json.backlogDir || '/workspaces/cahier-des-charge/backlogs' }}"
+            },
+            {
+              "name": "outputPath",
+              "value": "={{ $json.outputPath || '/workspaces/cahier-des-charge/migration_warnings.json' }}"
+            },
+            {
+              "name": "createCommit",
+              "value": "={{ $json.createCommit || 'true' }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "Set Migration Parameters",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        500,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "command": "node /workspaces/cahier-des-charge/scripts/sync-migration-status.ts --diff={{ $json.diffPath }} --audit-dir={{ $json.auditDir }} --backlog-dir={{ $json.backlogDir }} --output={{ $json.outputPath }} {{ $json.createCommit === 'true' ? '--commit' : '' }}"
+      },
+      "name": "Run Sync Migration Status",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        750,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.exitCode }}",
+              "operation": "equal",
+              "value2": "0"
+            }
+          ]
+        }
+      },
+      "name": "Success Check",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        1000,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "filePath": "={{ $json.outputPath }}",
+        "options": {}
+      },
+      "name": "Read Warnings File",
+      "type": "n8n-nodes-base.readBinaryFile",
+      "typeVersion": 1,
+      "position": [
+        1250,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "url": "=https://api.github.com/repos/{{ $env.GITHUB_OWNER }}/{{ $env.GITHUB_REPO }}/issues",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "httpHeaderAuth": {
+          "name": "Authorization",
+          "value": "token {{ $env.GITHUB_TOKEN }}"
+        },
+        "sendQuery": false,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"title\": \"[Automated] Schema Migration Warnings\",\n  \"body\": \"## Schema Migration Warnings\\n\\nWarnings were detected during schema migration. Please review and fix them:\\n\\n{{ JSON.parse($binary.data.toString()).filter(w => w.severity === 'high').map(w => '- ' + w.type + ': ' + (w.column || w.table) + ' in ' + w.file).join('\\n') }}\\n\\nSee full details in the migration_warnings.json file.\",\n  \"labels\": [\"migration\", \"schema-change\", \"needs-review\"]\n}",
+        "options": {}
+      },
+      "name": "Create GitHub Issue",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [
+        1500,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "channel": "migration-alerts",
+        "text": "=⚠️ **Schema Migration Warnings Detected**\\n\\n{{ JSON.parse($binary.data.toString()).filter(w => w.severity === 'high').length }} high severity warnings require attention.\\n\\nSee migration_warnings.json for details.",
+        "attachments": []
+      },
+      "name": "Send Slack Notification",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 1,
+      "position": [
+        1500,
+        500
+      ],
+      "credentials": {
+        "slackApi": {
+          "id": "1",
+          "name": "Slack account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "subject": "❌ Migration Status Sync Failed",
+        "message": "=The migration status synchronization failed with the following error:\\n\\n{{ $json.stderr }}\\n\\nPlease check the system logs for more details."
+      },
+      "name": "Send Error Email",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2,
+      "position": [
+        1250,
+        500
+      ],
+      "credentials": {
+        "smtp": {
+          "id": "1",
+          "name": "SMTP account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Set Migration Parameters",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook: Schema Changed": {
+      "main": [
+        [
+          {
+            "node": "Set Migration Parameters",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Migration Parameters": {
+      "main": [
+        [
+          {
+            "node": "Run Sync Migration Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Run Sync Migration Status": {
+      "main": [
+        [
+          {
+            "node": "Success Check",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Success Check": {
+      "main": [
+        [
+          {
+            "node": "Read Warnings File",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send Error Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Warnings File": {
+      "main": [
+        [
+          {
+            "node": "Create GitHub Issue",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Send Slack Notification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}

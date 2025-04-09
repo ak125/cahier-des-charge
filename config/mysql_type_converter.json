@@ -1,0 +1,74 @@
+{
+  "typeMapping": {
+    "INT": "Int",
+    "BIGINT": "BigInt",
+    "SMALLINT": "Int",
+    "TINYINT(1)": "Boolean",
+    "TINYINT": "Int",
+    "DECIMAL": "Decimal",
+    "FLOAT": "Float",
+    "DOUBLE": "Float",
+    "VARCHAR": "String",
+    "CHAR": "String",
+    "TEXT": "String",
+    "MEDIUMTEXT": "String",
+    "LONGTEXT": "String",
+    "JSON": "Json",
+    "DATETIME": "DateTime",
+    "TIMESTAMP": "DateTime",
+    "DATE": "DateTime",
+    "TIME": "String",
+    "ENUM": "String",
+    "SET": "String",
+    "BLOB": "Bytes",
+    "MEDIUMBLOB": "Bytes",
+    "LONGBLOB": "Bytes"
+  },
+  "defaultAttributes": {
+    "primaryKey": "@id",
+    "autoIncrement": "@default(autoincrement())",
+    "now": "@default(now())",
+    "uuid": "@default(uuid())"
+  },
+  "namingConvention": {
+    "table": {
+      "AUTO_(.*)": "$1",
+      "([a-z]+)_([a-z]+)": "$1$2",
+      "default": "PascalCase"
+    },
+    "column": {
+      "id_(.*)": "$1Id",
+      "(.*)_id": "$1Id",
+      "default": "camelCase"
+    }
+  },
+  "tableClassification": {
+    "ecommerce": [
+      "product", "order", "cart", "item", "basket", "customer", 
+      "shipping", "payment", "invoice", "catalog"
+    ],
+    "users": [
+      "user", "member", "account", "auth", "permission", 
+      "role", "profile", "access"
+    ],
+    "seo": [
+      "seo", "meta", "redirect", "slug", "url", "sitemap", 
+      "tag", "keyword"
+    ],
+    "stats": [
+      "stat", "analytics", "log", "counter", "tracking", 
+      "visit", "view"
+    ],
+    "config": [
+      "config", "setting", "parameter", "variable", "option"
+    ]
+  },
+  "optimizations": {
+    "dateTimeToTimestamp": true,
+    "enumToString": true,
+    "textToVarchar": true,
+    "addIndexesToForeignKeys": true,
+    "removeUnnecessaryIndexes": false,
+    "convertCharsetToUtf8": true
+  }
+}

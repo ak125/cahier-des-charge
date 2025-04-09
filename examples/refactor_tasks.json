@@ -1,0 +1,168 @@
+{
+  "tasks": [
+    {
+      "file": "src/_seo/pieces.gamme.php",
+      "line": 234,
+      "detected_query": "SELECT slug, gamme FROM PIECES_GAMME WHERE marque_id = ?",
+      "mapping": [
+        {
+          "sql_column": "gamme",
+          "prisma_model": "Gamme",
+          "field": "libelle",
+          "change": "rename",
+          "reason": "standardisation",
+          "confidence": 0.98
+        },
+        {
+          "sql_column": "slug",
+          "prisma_model": "Gamme",
+          "field": "slug",
+          "change": "keep",
+          "reason": "match exact",
+          "confidence": 1.0
+        }
+      ],
+      "context": "Affichage Gamme",
+      "refactor_suggestion": "Modifier accès direct à 'gamme' en 'libelle' dans le bloc Affichage Gamme"
+    },
+    {
+      "file": "src/panier/addtocart.php",
+      "line": 78,
+      "detected_query": "SELECT p.prix, p.stock, p.id_taxe FROM produits p WHERE p.id = ?",
+      "mapping": [
+        {
+          "sql_column": "prix",
+          "prisma_model": "Product",
+          "field": "price",
+          "change": "rename",
+          "reason": "conversion anglais",
+          "confidence": 0.9
+        },
+        {
+          "sql_column": "stock",
+          "prisma_model": "Product",
+          "field": "stock",
+          "change": "keep",
+          "reason": "match exact",
+          "confidence": 1.0
+        },
+        {
+          "sql_column": "id_taxe",
+          "prisma_model": "Product",
+          "field": "taxId",
+          "change": "rename",
+          "reason": "convention camelCase",
+          "confidence": 0.95
+        }
+      ],
+      "context": "Calcul Prix Total",
+      "refactor_suggestion": "Modifier accès direct à 'prix' en 'price', 'id_taxe' en 'taxId' dans le bloc Calcul Prix Total"
+    },
+    {
+      "file": "src/auth/user.php",
+      "line": 122,
+      "detected_query": "SELECT u.id, u.nom, u.prenom, u.email, u.password, a.rue, a.ville, a.code_postal FROM users u LEFT JOIN adresses a ON u.id = a.user_id WHERE u.email = ?",
+      "mapping": [
+        {
+          "sql_column": "nom",
+          "prisma_model": "User",
+          "field": "lastName",
+          "change": "rename",
+          "reason": "convention anglais",
+          "confidence": 0.85
+        },
+        {
+          "sql_column": "prenom",
+          "prisma_model": "User",
+          "field": "firstName",
+          "change": "rename",
+          "reason": "convention anglais",
+          "confidence": 0.85
+        },
+        {
+          "sql_column": "email",
+          "prisma_model": "User",
+          "field": "email",
+          "change": "keep",
+          "reason": "match exact",
+          "confidence": 1.0
+        },
+        {
+          "sql_column": "password",
+          "prisma_model": "User",
+          "field": "password",
+          "change": "keep",
+          "reason": "match exact",
+          "confidence": 1.0
+        },
+        {
+          "sql_column": "rue",
+          "prisma_model": "Address",
+          "field": "street",
+          "change": "rename",
+          "reason": "convention anglais",
+          "confidence": 0.88
+        },
+        {
+          "sql_column": "ville",
+          "prisma_model": "Address",
+          "field": "city",
+          "change": "rename",
+          "reason": "convention anglais",
+          "confidence": 0.9
+        },
+        {
+          "sql_column": "code_postal",
+          "prisma_model": "Address",
+          "field": "zipCode",
+          "change": "rename",
+          "reason": "convention camelCase",
+          "confidence": 0.92
+        }
+      ],
+      "context": "Authentification Utilisateur",
+      "refactor_suggestion": "Modifier accès direct à 'nom' en 'lastName', 'prenom' en 'firstName', 'rue' en 'street', 'ville' en 'city', 'code_postal' en 'zipCode' dans le bloc Authentification Utilisateur"
+    },
+    {
+      "file": "src/catalogue/produits.php",
+      "line": 56,
+      "detected_query": "SELECT id, nom, description, prix, date_creation FROM produits WHERE categorie_id = ? ORDER BY date_creation DESC LIMIT ?, ?",
+      "mapping": [
+        {
+          "sql_column": "nom",
+          "prisma_model": "Product",
+          "field": "name",
+          "change": "rename",
+          "reason": "convention anglais",
+          "confidence": 0.9
+        },
+        {
+          "sql_column": "prix",
+          "prisma_model": "Product",
+          "field": "price",
+          "change": "rename",
+          "reason": "convention anglais",
+          "confidence": 0.9
+        },
+        {
+          "sql_column": "date_creation",
+          "prisma_model": "Product",
+          "field": "createdAt",
+          "change": "rename",
+          "reason": "convention Prisma",
+          "confidence": 0.87
+        },
+        {
+          "sql_column": "categorie_id",
+          "prisma_model": "Product",
+          "field": "categoryId",
+          "change": "rename",
+          "reason": "convention camelCase",
+          "confidence": 0.93
+        }
+      ],
+      "context": "Listage Produits",
+      "refactor_suggestion": "Modifier accès direct à 'nom' en 'name', 'prix' en 'price', 'date_creation' en 'createdAt', 'categorie_id' en 'categoryId' dans le bloc Listage Produits"
+    }
+  ]
+}

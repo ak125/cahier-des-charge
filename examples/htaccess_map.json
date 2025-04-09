@@ -1,0 +1,226 @@
+{
+  "sources": [
+    "/workspaces/cahier-des-charge/examples/example.htaccess"
+  ],
+  "rules": [
+    {
+      "type": "Redirect",
+      "raw": "Redirect 301 /ancien-page.html /nouvelle-page",
+      "line": 16,
+      "status": 301,
+      "from": "/ancien-page.html",
+      "to": "/nouvelle-page",
+      "category": "core",
+      "seoImpact": "medium"
+    },
+    {
+      "type": "Redirect",
+      "raw": "Redirect 301 /promo.php /promotions",
+      "line": 17,
+      "status": 301,
+      "from": "/promo.php",
+      "to": "/promotions",
+      "category": "core",
+      "seoImpact": "medium"
+    },
+    {
+      "type": "Redirect",
+      "raw": "Redirect 301 /blog.php /blog",
+      "line": 18,
+      "status": 301,
+      "from": "/blog.php",
+      "to": "/blog",
+      "category": "blog",
+      "seoImpact": "high"
+    },
+    {
+      "type": "RewriteRule",
+      "raw": "RewriteRule ^article-([0-9]+)\\.html$ /blog/$1 [R=301,L]",
+      "line": 21,
+      "pattern": "^article-([0-9]+)\\.html$",
+      "target": "/blog/$1",
+      "flags": [
+        "R=301",
+        "L"
+      ],
+      "conditions": [],
+      "category": "blog",
+      "seoImpact": "high"
+    },
+    {
+      "type": "RewriteRule",
+      "raw": "RewriteRule ^corepanel/blog-([0-9]+)\\.html$ /blog/$1 [R=301,L]",
+      "line": 22,
+      "pattern": "^corepanel/blog-([0-9]+)\\.html$",
+      "target": "/blog/$1",
+      "flags": [
+        "R=301",
+        "L"
+      ],
+      "conditions": [],
+      "category": "blog",
+      "seoImpact": "high"
+    },
+    {
+      "type": "RewriteRule",
+      "raw": "RewriteRule ^categorie/([a-z0-9-]+)$ /categories/$1 [R=301,L]",
+      "line": 23,
+      "pattern": "^categorie/([a-z0-9-]+)$",
+      "target": "/categories/$1",
+      "flags": [
+        "R=301",
+        "L"
+      ],
+      "conditions": [],
+      "category": "product",
+      "seoImpact": "medium"
+    },
+    {
+      "type": "RewriteRule",
+      "raw": "RewriteRule ^produit/([a-z0-9-]+)$ /produits.php?slug=$1 [L,QSA]",
+      "line": 26,
+      "pattern": "^produit/([a-z0-9-]+)$",
+      "target": "/produits.php?slug=$1",
+      "flags": [
+        "L",
+        "QSA"
+      ],
+      "conditions": [],
+      "category": "product",
+      "seoImpact": "high"
+    },
+    {
+      "type": "RewriteRule",
+      "raw": "RewriteRule ^pieces/([a-z0-9-]+)/([a-z0-9-]+)$ /core/_seo/pieces.gamme.php?marque=$1&type=$2 [L,QSA]",
+      "line": 29,
+      "pattern": "^pieces/([a-z0-9-]+)/([a-z0-9-]+)$",
+      "target": "/core/_seo/pieces.gamme.php?marque=$1&type=$2",
+      "flags": [
+        "L",
+        "QSA"
+      ],
+      "conditions": [],
+      "category": "product",
+      "seoImpact": "high"
+    },
+    {
+      "type": "RewriteRule",
+      "raw": "RewriteRule ^pieces/([a-z0-9-]+)$ /core/_seo/marque.php?slug=$1 [L,QSA]",
+      "line": 30,
+      "pattern": "^pieces/([a-z0-9-]+)$",
+      "target": "/core/_seo/marque.php?slug=$1",
+      "flags": [
+        "L",
+        "QSA"
+      ],
+      "conditions": [],
+      "category": "product",
+      "seoImpact": "high"
+    },
+    {
+      "type": "ErrorDocument",
+      "raw": "ErrorDocument 404 /404.html",
+      "line": 33,
+      "code": 404,
+      "document": "/404.html",
+      "category": "error_handling"
+    },
+    {
+      "type": "ErrorDocument",
+      "raw": "ErrorDocument 500 /erreur-serveur.html",
+      "line": 34,
+      "code": 500,
+      "document": "/erreur-serveur.html",
+      "category": "error_handling"
+    },
+    {
+      "type": "Auth",
+      "raw": "  AuthType Basic",
+      "line": 38,
+      "directive": "AuthType",
+      "value": "Basic",
+      "category": "authentication"
+    },
+    {
+      "type": "Auth",
+      "raw": "  AuthName \"Zone d'administration\"",
+      "line": 39,
+      "directive": "AuthName",
+      "value": "\"Zone d'administration\"",
+      "category": "authentication"
+    },
+    {
+      "type": "Auth",
+      "raw": "  AuthUserFile /path/to/.htpasswd",
+      "line": 40,
+      "directive": "AuthUserFile",
+      "value": "/path/to/.htpasswd",
+      "category": "authentication"
+    },
+    {
+      "type": "Auth",
+      "raw": "  Require valid-user",
+      "line": 41,
+      "directive": "Require",
+      "value": "valid-user",
+      "category": "authentication"
+    },
+    {
+      "type": "RewriteRule",
+      "raw": "RewriteRule ^(.*)$ /panier.php?action=afficher [L,QSA]",
+      "line": 47,
+      "pattern": "^(.*)$",
+      "target": "/panier.php?action=afficher",
+      "flags": [
+        "L",
+        "QSA"
+      ],
+      "conditions": [
+        {
+          "type": "RewriteCond",
+          "raw": "RewriteCond %{REQUEST_URI} ^/panier$",
+          "line": 45,
+          "test": "%{REQUEST_URI}",
+          "pattern": "^/panier$",
+          "flags": []
+        },
+        {
+          "type": "RewriteCond",
+          "raw": "RewriteCond %{QUERY_STRING} !^action=",
+          "line": 46,
+          "test": "%{QUERY_STRING}",
+          "pattern": "!^action=",
+          "flags": []
+        }
+      ],
+      "category": "cart",
+      "seoImpact": "medium"
+    },
+    {
+      "type": "RewriteRule",
+      "raw": "RewriteRule ^api/commandes$ /api/legacy/commandes.php [L]",
+      "line": 50,
+      "pattern": "^api/commandes$",
+      "target": "/api/legacy/commandes.php",
+      "flags": [
+        "L"
+      ],
+      "conditions": [],
+      "category": "order",
+      "seoImpact": "none"
+    },
+    {
+      "type": "RewriteRule",
+      "raw": "RewriteRule ^api/utilisateurs$ /api/legacy/users.php [L]",
+      "line": 51,
+      "pattern": "^api/utilisateurs$",
+      "target": "/api/legacy/users.php",
+      "flags": [
+        "L"
+      ],
+      "conditions": [],
+      "category": "user",
+      "seoImpact": "none"
+    }
+  ]
+}

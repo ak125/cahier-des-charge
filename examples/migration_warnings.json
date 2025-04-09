@@ -1,0 +1,105 @@
+[
+  {
+    "id": "W001",
+    "timestamp": "2025-04-21T10:15:23Z",
+    "type": "removed_field",
+    "severity": "high",
+    "file": "users/profile.php",
+    "table": "users",
+    "column": "legacy_password",
+    "usages": [
+      {
+        "line": 142,
+        "context": "$hashedPassword = $user['legacy_password'];",
+        "functionName": "authenticateUser"
+      }
+    ],
+    "action_required": "Remove usage or create fallback logic",
+    "suggested_fix": "Use the new 'password' field or implement authentication adapter",
+    "status": "pending",
+    "assignee": null
+  },
+  {
+    "id": "W002",
+    "timestamp": "2025-04-21T10:15:24Z",
+    "type": "renamed_field",
+    "severity": "medium",
+    "file": "orders/commande.php",
+    "table": "orders",
+    "from": "is_active",
+    "to": "isActive",
+    "usages": [
+      {
+        "line": 78,
+        "context": "if ($order['is_active']) {",
+        "functionName": "displayOrderStatus"
+      },
+      {
+        "line": 203,
+        "context": "$activeOrders = array_filter($orders, function($o) { return $o['is_active']; });",
+        "functionName": "filterOrders"
+      }
+    ],
+    "action_required": "Refactor variable names",
+    "suggested_fix": "Replace all occurrences of 'is_active' with 'isActive'",
+    "status": "in_progress",
+    "assignee": "developer@example.com"
+  },
+  {
+    "id": "W003",
+    "timestamp": "2025-04-21T10:15:25Z",
+    "type": "type_changed",
+    "severity": "low",
+    "file": "products/catalog.php",
+    "table": "products",
+    "column": "price",
+    "from_type": "DECIMAL(10,2)",
+    "to_type": "Float",
+    "usages": [
+      {
+        "line": 156,
+        "context": "$totalPrice = $product['price'] * $quantity;",
+        "functionName": "calculateTotal"
+      }
+    ],
+    "action_required": "Verify decimal precision handling",
+    "suggested_fix": "Ensure correct rounding with toFixed(2) or similar function",
+    "status": "pending",
+    "assignee": null
+  },
+  {
+    "id": "W004",
+    "timestamp": "2025-04-21T10:15:26Z",
+    "type": "added_field",
+    "severity": "info",
+    "file": "multiple files",
+    "table": "users",
+    "column": "email_verified",
+    "action_required": "Consider adding verification logic",
+    "suggested_fix": "Add default value handling in authentication flow",
+    "status": "pending",
+    "assignee": null
+  },
+  {
+    "id": "W005",
+    "timestamp": "2025-04-21T10:15:27Z",
+    "type": "relation_changed",
+    "severity": "high",
+    "file": "products/details.php",
+    "table": "products",
+    "relation": "categories",
+    "from": "implicit via category_id",
+    "to": "explicit @relation",
+    "usages": [
+      {
+        "line": 89,
+        "context": "$categoryName = getCategoryName($product['category_id']);",
+        "functionName": "displayProductDetails"
+      }
+    ],
+    "action_required": "Update relation handling",
+    "suggested_fix": "Use prisma relation instead of manual join",
+    "status": "pending",
+    "assignee": null
+  }
+]

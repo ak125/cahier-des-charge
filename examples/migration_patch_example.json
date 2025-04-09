@@ -1,0 +1,236 @@
+{
+  "migration_batch": "seo_module_v1",
+  "generated_at": "2025-04-10T14:30:00Z",
+  "files": [
+    {
+      "source_file": "src/_seo/pieces.gamme.php",
+      "status": "pending_review",
+      "reviewer": "ak125",
+      "last_update": "2025-04-07T23:25:00Z",
+      "mappings": [
+        {
+          "sql_column": "gamme",
+          "legacy_php_var": "$row['gamme']",
+          "prisma_model": "Gamme",
+          "prisma_field": "libelle",
+          "change_type": "rename",
+          "reason": "standardisation",
+          "confidence": 0.96,
+          "verified": false
+        },
+        {
+          "sql_column": "slug",
+          "legacy_php_var": "$row['slug']",
+          "prisma_model": "Gamme",
+          "prisma_field": "slug",
+          "change_type": "keep",
+          "reason": "match exact",
+          "confidence": 1.0,
+          "verified": true
+        },
+        {
+          "sql_column": "marque_id",
+          "legacy_php_var": "$marque_id",
+          "prisma_model": "Gamme",
+          "prisma_field": "marqueId",
+          "change_type": "rename",
+          "reason": "convention camelCase",
+          "confidence": 0.98,
+          "verified": false
+        }
+      ]
+    },
+    {
+      "source_file": "src/panier/afficher.php",
+      "status": "validated",
+      "reviewer": "jsmith",
+      "last_update": "2025-04-08T15:12:33Z",
+      "mappings": [
+        {
+          "sql_column": "prix",
+          "legacy_php_var": "$item['prix']",
+          "prisma_model": "Produit",
+          "prisma_field": "price",
+          "change_type": "rename",
+          "reason": "standardisation anglais",
+          "confidence": 0.95,
+          "verified": true
+        },
+        {
+          "sql_column": "quantite",
+          "legacy_php_var": "$item['quantite']",
+          "prisma_model": "PanierItem",
+          "prisma_field": "quantity",
+          "change_type": "rename",
+          "reason": "standardisation anglais",
+          "confidence": 0.92,
+          "verified": true
+        },
+        {
+          "sql_column": "id_produit",
+          "legacy_php_var": "$item['id_produit']",
+          "prisma_model": "PanierItem",
+          "prisma_field": "productId",
+          "change_type": "rename",
+          "reason": "convention camelCase",
+          "confidence": 0.97,
+          "verified": true
+        }
+      ]
+    },
+    {
+      "source_file": "src/user/profil.php",
+      "status": "in_progress",
+      "reviewer": "mlopez",
+      "last_update": "2025-04-09T11:08:45Z",
+      "mappings": [
+        {
+          "sql_column": "nom",
+          "legacy_php_var": "$user['nom']",
+          "prisma_model": "User",
+          "prisma_field": "lastName",
+          "change_type": "rename",
+          "reason": "standardisation anglais",
+          "confidence": 0.88,
+          "verified": false
+        },
+        {
+          "sql_column": "prenom",
+          "legacy_php_var": "$user['prenom']",
+          "prisma_model": "User",
+          "prisma_field": "firstName",
+          "change_type": "rename",
+          "reason": "standardisation anglais",
+          "confidence": 0.89,
+          "verified": false
+        },
+        {
+          "sql_column": "email",
+          "legacy_php_var": "$user['email']",
+          "prisma_model": "User",
+          "prisma_field": "email",
+          "change_type": "keep",
+          "reason": "match exact",
+          "confidence": 1.0,
+          "verified": true
+        },
+        {
+          "sql_column": "date_naissance",
+          "legacy_php_var": "$user['date_naissance']",
+          "prisma_model": "User",
+          "prisma_field": "birthDate",
+          "change_type": "rename",
+          "reason": "convention camelCase + anglais",
+          "confidence": 0.85,
+          "verified": false
+        }
+      ]
+    },
+    {
+      "source_file": "src/catalogue/categories.php",
+      "status": "validated",
+      "reviewer": "ak125",
+      "last_update": "2025-04-10T09:15:21Z",
+      "mappings": [
+        {
+          "sql_column": "nom_categorie",
+          "legacy_php_var": "$cat['nom_categorie']",
+          "prisma_model": "Category",
+          "prisma_field": "name",
+          "change_type": "rename",
+          "reason": "simplification + anglais",
+          "confidence": 0.91,
+          "verified": true
+        },
+        {
+          "sql_column": "parent_id",
+          "legacy_php_var": "$cat['parent_id']",
+          "prisma_model": "Category",
+          "prisma_field": "parentId",
+          "change_type": "rename",
+          "reason": "convention camelCase",
+          "confidence": 0.99,
+          "verified": true
+        },
+        {
+          "sql_column": "slug",
+          "legacy_php_var": "$cat['slug']",
+          "prisma_model": "Category",
+          "prisma_field": "slug",
+          "change_type": "keep",
+          "reason": "match exact",
+          "confidence": 1.0,
+          "verified": true
+        },
+        {
+          "sql_column": "visible",
+          "legacy_php_var": "$cat['visible']",
+          "prisma_model": "Category",
+          "prisma_field": "isVisible",
+          "change_type": "rename",
+          "reason": "convention boolean prefix",
+          "confidence": 0.93,
+          "verified": true
+        }
+      ]
+    },
+    {
+      "source_file": "src/commande/confirmation.php",
+      "status": "pending_review",
+      "reviewer": null,
+      "last_update": "2025-04-10T14:20:15Z",
+      "mappings": [
+        {
+          "sql_column": "id_commande",
+          "legacy_php_var": "$commande['id_commande']",
+          "prisma_model": "Order",
+          "prisma_field": "id",
+          "change_type": "rename",
+          "reason": "simplification + convention Prisma",
+          "confidence": 0.94,
+          "verified": false
+        },
+        {
+          "sql_column": "date_commande",
+          "legacy_php_var": "$commande['date_commande']",
+          "prisma_model": "Order",
+          "prisma_field": "createdAt",
+          "change_type": "rename",
+          "reason": "convention Prisma",
+          "confidence": 0.86,
+          "verified": false
+        },
+        {
+          "sql_column": "total",
+          "legacy_php_var": "$commande['total']",
+          "prisma_model": "Order",
+          "prisma_field": "totalAmount",
+          "change_type": "rename",
+          "reason": "précision",
+          "confidence": 0.89,
+          "verified": false
+        },
+        {
+          "sql_column": "statut",
+          "legacy_php_var": "$commande['statut']",
+          "prisma_model": "Order",
+          "prisma_field": "status",
+          "change_type": "rename",
+          "reason": "standardisation anglais",
+          "confidence": 0.97,
+          "verified": false
+        },
+        {
+          "sql_column": "id_client",
+          "legacy_php_var": "$commande['id_client']",
+          "prisma_model": "Order",
+          "prisma_field": "userId",
+          "change_type": "rename",
+          "reason": "convention standard + anglais",
+          "confidence": 0.82,
+          "verified": false
+        }
+      ]
+    }
+  ]
+}

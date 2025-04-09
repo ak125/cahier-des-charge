@@ -1,0 +1,129 @@
+{
+  "remix": [
+    {
+      "from": "^article-([0-9]+)\\.html$",
+      "to": "/blog/$1",
+      "type": "dynamic",
+      "file": "routes/blog_.$id.tsx",
+      "params": [
+        "id"
+      ],
+      "seoImpact": "high"
+    },
+    {
+      "from": "^corepanel/blog-([0-9]+)\\.html$",
+      "to": "/blog/$1",
+      "type": "dynamic",
+      "file": "routes/blog_.$id.tsx",
+      "params": [
+        "id"
+      ],
+      "seoImpact": "high"
+    },
+    {
+      "from": "^categorie/([a-z0-9-]+)$",
+      "to": "/categories/$1",
+      "type": "dynamic",
+      "file": "routes/categories_.$slug.tsx",
+      "params": [
+        "slug"
+      ],
+      "seoImpact": "medium"
+    },
+    {
+      "from": "^pieces/([a-z0-9-]+)/([a-z0-9-]+)$",
+      "to": "/core/_seo/pieces.gamme.php?marque=$1&type=$2",
+      "type": "dynamic",
+      "file": "routes/pieces_.$marque_.$type.tsx",
+      "params": [
+        "marque",
+        "type"
+      ],
+      "seoImpact": "high"
+    },
+    {
+      "from": "^pieces/([a-z0-9-]+)$",
+      "to": "/core/_seo/marque.php?slug=$1",
+      "type": "dynamic",
+      "file": "routes/pieces_.$slug.tsx",
+      "params": [
+        "slug"
+      ],
+      "seoImpact": "high"
+    },
+    {
+      "from": "/ancien-page.html",
+      "to": "/nouvelle-page",
+      "type": "static",
+      "file": "routes/_ancien-page.html.tsx",
+      "seoImpact": "medium"
+    },
+    {
+      "from": "/promo.php",
+      "to": "/promotions",
+      "type": "static",
+      "file": "routes/_promo.php.tsx",
+      "seoImpact": "medium"
+    },
+    {
+      "from": "/blog.php",
+      "to": "/blog",
+      "type": "static",
+      "file": "routes/_blog.php.tsx",
+      "seoImpact": "high"
+    },
+    {
+      "from": "Error 404",
+      "to": "/404.html",
+      "type": "static",
+      "file": "routes/_404.tsx",
+      "seoImpact": "low"
+    },
+    {
+      "from": "Error 500",
+      "to": "/erreur-serveur.html",
+      "type": "static",
+      "file": "routes/_500.tsx",
+      "seoImpact": "low"
+    }
+  ],
+  "nestjs": [
+    {
+      "path": "/api/produits",
+      "controller": "ProduitsController",
+      "middleware": [
+        "RewriteConditionMiddleware"
+      ]
+    },
+    {
+      "path": "/api/pieces-gamme",
+      "controller": "PiecesGammeController"
+    },
+    {
+      "path": "/api/marque",
+      "controller": "MarqueController"
+    },
+    {
+      "path": "/api/panier",
+      "controller": "PanierController",
+      "middleware": [
+        "RewriteConditionMiddleware"
+      ]
+    },
+    {
+      "path": "/api/commandes",
+      "controller": "CommandesController"
+    },
+    {
+      "path": "/api/users",
+      "controller": "UsersController"
+    },
+    {
+      "path": "/*",
+      "controller": "AuthController",
+      "middleware": [
+        "AuthGuard"
+      ]
+    }
+  ]
+}

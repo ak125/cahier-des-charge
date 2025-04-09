@@ -1,0 +1,427 @@
+{
+  "name": "PHP Migration PR Creator",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "create-migration-pr",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        250,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "phpFilePath",
+              "value": "={{ $json.phpFilePath }}"
+            },
+            {
+              "name": "outputDir",
+              "value": "={{ $json.outputDir || '/workspaces/cahier-des-charge/output' }}"
+            },
+            {
+              "name": "repository",
+              "value": "={{ $json.repository || 'organization/repo' }}"
+            },
+            {
+              "name": "createPr",
+              "value": "={{ $json.createPr !== false }}"
+            }
+          ]
+        }
+      },
+      "name": "Set Parameters",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        450,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "filePath": "={{ $node[\"Set Parameters\"].json[\"outputDir\"] + \"/\" + $node[\"Set Parameters\"].json[\"phpFilePath\"].split(\"/\").pop().replace(\".php\", \".audit.md\") }}"
+      },
+      "name": "Read Audit File",
+      "type": "n8n-nodes-base.readBinaryFile",
+      "typeVersion": 1,
+      "position": [
+        650,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "filePath": "={{ $node[\"Set Parameters\"].json[\"outputDir\"] + \"/\" + $node[\"Set Parameters\"].json[\"phpFilePath\"].split(\"/\").pop().replace(\".php\", \".backlog.json\") }}"
+      },
+      "name": "Read Backlog File",
+      "type": "n8n-nodes-base.readBinaryFile",
+      "typeVersion": 1,
+      "position": [
+        650,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "// Convertir le contenu binaire en chaîne de caractères\nconst auditContent = Buffer.from($input.item.json.audit, 'base64').toString();\nconst backlogContent = Buffer.from($input.item.json.backlog, 'base64').toString();\n\n// Parser le backlog JSON\nlet backlog;\ntry {\n  backlog = JSON.parse(backlogContent);\n} catch (error) {\n  throw new Error(`Failed to parse backlog JSON: ${error.message}`);\n}\n\n// Extraire des informations de l'audit\nconst complexityMatch = auditContent.match(/complexity_rating:\\s*([0-9.]+)\\/5/i);\nconst complexity = complexityMatch ? parseFloat(complexityMatch[1]) * 2 : 'N/A';\n\nconst seoMatch = auditContent.match(/seo_impact:\\s*\"?(high|medium|low)\"?/i);\nconst seoImpact = seoMatch ? seoMatch[1] : 'N/A';\n\nconst securityIssuesMatch = auditContent.match(/security_issues:\\s*([0-9]+)/i);\nconst securityIssues = securityIssuesMatch ? parseInt(securityIssuesMatch[1]) : 0;\n\n// Extraire les tables SQL depuis le backlog\nconst sqlTables = backlog.sql_tables || [];\n\n// Générer des tags pertinents\nconst tags = [];\nif (backlog.tags) {\n  tags.push(...backlog.tags);\n}\n\nif (seoImpact === 'high') {\n  tags.push('seo-critical');\n}\n\nif (complexity > 7) {\n  tags.push('complex');\n}\n\nif (securityIssues > 0) {\n  tags.push('security-issues');\n}\n\n// Déterminer le type de fichier à partir du path\nconst filePath = $node[\"Set Parameters\"].json[\"phpFilePath\"];\nconst fileSegments = filePath.split('/');\nconst fileType = fileSegments.length > 1 ? fileSegments[fileSegments.length - 2] : 'unknown';\ntags.push(fileType);\n\n// Extraire le status de chaque tâche\nconst completedTasks = backlog.tasks?.filter(t => t.status === 'completed' || t.status === 'done')?.length || 0;\nconst totalTasks = backlog.tasks?.length || 0;\nconst progress = totalTasks ? Math.round((completedTasks / totalTasks) * 100) : 0;\n\n// Résultat enrichi\nreturn {\n  json: {\n    filePath,\n    fileName: fileSegments[fileSegments.length - 1],\n    audit: auditContent,\n    backlog,\n    complexity,\n    seoImpact,\n    securityIssues,\n    sqlTables,\n    tags: [...new Set(tags)], // Dédupliquer\n    progress,\n    completedTasks,\n    totalTasks\n  }\n};"
+      },
+      "name": "Process Files",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        850,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "command": "node /workspaces/cahier-des-charge/agents/dev-generator.ts --file=\"{{ $node[\"Set Parameters\"].json[\"phpFilePath\"] }}\" --output=\"/workspaces/cahier-des-charge\""
+      },
+      "name": "Generate Code",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        1050,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "command": "node /workspaces/cahier-des-charge/agents/mcp-integrator.ts --file=\"{{ $node[\"Set Parameters\"].json[\"phpFilePath\"] }}\" --create-pr=\"{{ $node[\"Set Parameters\"].json[\"createPr\"] }}\" --output=\"{{ $node[\"Set Parameters\"].json[\"outputDir\"] }}\""
+      },
+      "name": "Create PR with MCP",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        1250,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "// Extraire les données de la PR\nlet prData;\ntry {\n  const output = $input.item.json.stdout || '';\n  const prMatch = output.match(/Pull request created: (.+)/);\n  \n  if (prMatch && prMatch[1]) {\n    // Extraire le numéro de PR et l'URL de GitHub\n    const prUrl = prMatch[1];\n    const prNumberMatch = prUrl.match(/\\/(\\d+)$/);\n    const prNumber = prNumberMatch ? prNumberMatch[1] : null;\n    \n    prData = {\n      url: prUrl,\n      number: prNumber,\n      repository: $node[\"Set Parameters\"].json.repository\n    };\n  } else {\n    throw new Error('PR data not found in output');\n  }\n} catch (error) {\n  console.log('Error parsing PR data:', error);\n  prData = {\n    error: true,\n    message: error.message\n  };\n}\n\n// Construire les données pour GitHub API et Supabase\nreturn {\n  json: {\n    ...$input.item.json,\n    pr: prData,\n    // Préparation pour Supabase\n    supabase_record: {\n      file_path: $node[\"Set Parameters\"].json.phpFilePath,\n      status: 'migrated',\n      pr_url: prData?.url || null,\n      pr_number: prData?.number || null,\n      migrated_at: new Date().toISOString(),\n      complexity: $node[\"Process Files\"].json.complexity,\n      seo_impact: $node[\"Process Files\"].json.seoImpact,\n      tags: $node[\"Process Files\"].json.tags\n    }\n  }\n};"
+      },
+      "name": "Parse PR Result",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        1450,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ !!$node[\"Parse PR Result\"].json.pr?.number }}",
+              "operation": "equal",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "name": "PR Created Successfully?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        1650,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "url": "=https://api.github.com/repos/{{ $node[\"Set Parameters\"].json.repository }}/issues/{{ $node[\"Parse PR Result\"].json.pr.number }}/labels",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "httpHeaderAuth": {
+          "name": "Authorization",
+          "value": "Bearer {{ $env.GITHUB_TOKEN }}"
+        },
+        "requestMethod": "POST",
+        "bodyParametersUi": {
+          "parameter": [
+            {
+              "name": "labels",
+              "value": "={{ $node[\"Process Files\"].json.tags.concat(['migration-auto']) }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "Add Labels to PR",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [
+        1850,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "url": "=https://api.github.com/repos/{{ $node[\"Set Parameters\"].json.repository }}/issues/{{ $node[\"Parse PR Result\"].json.pr.number }}/comments",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "httpHeaderAuth": {
+          "name": "Authorization",
+          "value": "Bearer {{ $env.GITHUB_TOKEN }}"
+        },
+        "requestMethod": "POST",
+        "bodyParametersUi": {
+          "parameter": [
+            {
+              "name": "body",
+              "value": "=## 🤖 Audit IA\n\n**Fichier migré**: `{{ $node[\"Set Parameters\"].json.phpFilePath }}`\n\n**Métriques**:\n- Complexité: {{ $node[\"Process Files\"].json.complexity }}/10\n- Impact SEO: {{ $node[\"Process Files\"].json.seoImpact }}\n- Tables SQL: {{ $node[\"Process Files\"].json.sqlTables.join(\", \") }}\n- Progression: {{ $node[\"Process Files\"].json.progress }}% ({{ $node[\"Process Files\"].json.completedTasks }}/{{ $node[\"Process Files\"].json.totalTasks }} tâches)\n\n**Tags**: {{ $node[\"Process Files\"].json.tags.join(\", \") }}\n\nCette PR a été générée automatiquement par le pipeline de migration IA.\n\n[Voir l'audit complet]({{ $node[\"Set Parameters\"].json.outputDir }}/{{ $node[\"Set Parameters\"].json.phpFilePath.split(\"/\").pop().replace(\".php\", \".audit.md\") }})"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "Add Comment to PR",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [
+        1850,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{ $env.SUPABASE_REST_URL }}/rest/v1/migration_files",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "httpHeaderAuth": {
+          "entries": [
+            {
+              "name": "apikey",
+              "value": "={{ $env.SUPABASE_API_KEY }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "requestMethod": "POST",
+        "bodyParametersUi": {
+          "parameter": [
+            {
+              "name": "",
+              "value": "={{ $node[\"Parse PR Result\"].json.supabase_record }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "Update Supabase",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [
+        2050,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "channel": "migration-pipeline",
+        "text": "=🚀 Migration de fichier PHP terminée !\n\n• Fichier: `{{ $node[\"Set Parameters\"].json.phpFilePath }}`\n• PR: {{ $node[\"Parse PR Result\"].json.pr.url }}\n• Complexité: {{ $node[\"Process Files\"].json.complexity }}/10\n• Impact SEO: {{ $node[\"Process Files\"].json.seoImpact }}\n• Tags: {{ $node[\"Process Files\"].json.tags.join(\", \") }}",
+        "attachments": [],
+        "otherOptions": {}
+      },
+      "name": "Send Slack Success Notification",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 1,
+      "position": [
+        2250,
+        300
+      ],
+      "credentials": {
+        "slackApi": {
+          "id": "1",
+          "name": "Slack account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "channel": "migration-pipeline",
+        "text": "=⚠️ Échec lors de la migration du fichier PHP\n\n• Fichier: `{{ $node[\"Set Parameters\"].json.phpFilePath }}`\n• Erreur: {{ $json.message || 'PR non créée' }}",
+        "attachments": [],
+        "otherOptions": {}
+      },
+      "name": "Send Slack Error Notification",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 1,
+      "position": [
+        1850,
+        600
+      ],
+      "credentials": {
+        "slackApi": {
+          "id": "1",
+          "name": "Slack account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Set Parameters",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Parameters": {
+      "main": [
+        [
+          {
+            "node": "Read Audit File",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Read Backlog File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Audit File": {
+      "main": [
+        [
+          {
+            "node": "Process Files",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Backlog File": {
+      "main": [
+        [
+          {
+            "node": "Process Files",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Process Files": {
+      "main": [
+        [
+          {
+            "node": "Generate Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Code": {
+      "main": [
+        [
+          {
+            "node": "Create PR with MCP",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create PR with MCP": {
+      "main": [
+        [
+          {
+            "node": "Parse PR Result",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse PR Result": {
+      "main": [
+        [
+          {
+            "node": "PR Created Successfully?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PR Created Successfully?": {
+      "main": [
+        [
+          {
+            "node": "Add Labels to PR",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Add Comment to PR",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send Slack Error Notification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add Labels to PR": {
+      "main": [
+        [
+          {
+            "node": "Update Supabase",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add Comment to PR": {
+      "main": [
+        [
+          {
+            "node": "Update Supabase",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Supabase": {
+      "main": [
+        [
+          {
+            "node": "Send Slack Success Notification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}

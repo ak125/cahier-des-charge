@@ -1,0 +1,56 @@
+# Configuration principales du site
+Options -Indexes +FollowSymLinks
+AddDefaultCharset UTF-8
+
+# Protection du répertoire
+<Files .htaccess>
+  Order Allow,Deny
+  Deny from all
+</Files>
+
+# Activation de la réécriture
+RewriteEngine On
+RewriteBase /
+
+# Redirections 301 pour SEO
+Redirect 301 /ancien-page.html /nouvelle-page
+Redirect 301 /promo.php /promotions
+Redirect 301 /blog.php /blog
+
+# Règles de redirection SEO des anciens contenus
+RewriteRule ^article-([0-9]+)\.html$ /blog/$1 [R=301,L]
+RewriteRule ^corepanel/blog-([0-9]+)\.html$ /blog/$1 [R=301,L]
+RewriteRule ^categorie/([a-z0-9-]+)$ /categories/$1 [R=301,L]
+
+# Routes dynamiques pour les produits
+RewriteRule ^produit/([a-z0-9-]+)$ /produits.php?slug=$1 [L,QSA]
+
+# Routes pour les pièces auto
+RewriteRule ^pieces/([a-z0-9-]+)/([a-z0-9-]+)$ /core/_seo/pieces.gamme.php?marque=$1&type=$2 [L,QSA]
+RewriteRule ^pieces/([a-z0-9-]+)$ /core/_seo/marque.php?slug=$1 [L,QSA]
+
+# Pages d'erreur personnalisées
+ErrorDocument 404 /404.html
+ErrorDocument 500 /erreur-serveur.html
+
+# Protection de l'administration
+<Directory "/admin">
+  AuthType Basic
+  AuthName "Zone d'administration"
+  AuthUserFile /path/to/.htpasswd
+  Require valid-user
+</Directory>
+
+# Règles spécifiques pour le panier
+RewriteCond %{REQUEST_URI} ^/panier$
+RewriteCond %{QUERY_STRING} !^action=
+RewriteRule ^(.*)$ /panier.php?action=afficher [L,QSA]
+
+# API Legacy
+RewriteRule ^api/commandes$ /api/legacy/commandes.php [L]
+RewriteRule ^api/utilisateurs$ /api/legacy/users.php [L]
+
+# Cache Control pour les ressources statiques
+<FilesMatch "\.(jpg|jpeg|png|gif|css|js)$">
+  Header set Cache-Control "max-age=2592000, public"
+</FilesMatch>

@@ -1,0 +1,509 @@
+{
+  "totalFiles": 426,
+  "analyzedFiles": 87,
+  "completedFiles": 12,
+  "totalWaves": 9,
+  "estimatedTotalEffort": 76,
+  "waves": [
+    {
+      "id": "wave-1",
+      "name": "Vague 1 - Modèles de données fondamentaux",
+      "description": "Migration des modèles de données et services de base essentiels à l'écosystème.",
+      "priority": "critical",
+      "files": [
+        {
+          "path": "src/models/User.php",
+          "priority": "critical",
+          "status": "completed",
+          "complexity": 0.65,
+          "seoImpact": "low",
+          "businessImpact": "critical",
+          "dependencies": [],
+          "blockingFor": [
+            "src/models/Order.php",
+            "src/controllers/UserController.php",
+            "src/services/AuthService.php"
+          ],
+          "module": "models",
+          "estimatedEffort": 16
+        },
+        {
+          "path": "src/models/Product.php",
+          "priority": "critical",
+          "status": "completed",
+          "complexity": 0.78,
+          "seoImpact": "high",
+          "businessImpact": "critical",
+          "dependencies": [],
+          "blockingFor": [
+            "src/models/Cart.php",
+            "src/controllers/ProductController.php"
+          ],
+          "module": "models",
+          "estimatedEffort": 24
+        },
+        {
+          "path": "src/models/Category.php",
+          "priority": "high",
+          "status": "completed",
+          "complexity": 0.52,
+          "seoImpact": "high",
+          "businessImpact": "high",
+          "dependencies": [],
+          "blockingFor": [
+            "src/models/Product.php",
+            "src/controllers/CategoryController.php"
+          ],
+          "module": "models",
+          "estimatedEffort": 12
+        }
+      ],
+      "dependencies": [],
+      "estimatedEffort": 7,
+      "status": "completed",
+      "startDate": "2025-05-01",
+      "endDate": "2025-05-10"
+    },
+    {
+      "id": "wave-2",
+      "name": "Vague 2 - Services fondamentaux",
+      "description": "Migration des services métier essentiels qui dépendent des modèles de base.",
+      "priority": "critical",
+      "files": [
+        {
+          "path": "src/services/AuthService.php",
+          "priority": "critical",
+          "status": "completed",
+          "complexity": 0.85,
+          "seoImpact": "none",
+          "businessImpact": "critical",
+          "dependencies": [
+            "src/models/User.php"
+          ],
+          "blockingFor": [
+            "src/controllers/AuthController.php",
+            "src/middleware/AuthMiddleware.php"
+          ],
+          "module": "services",
+          "estimatedEffort": 32
+        },
+        {
+          "path": "src/services/ProductService.php",
+          "priority": "high",
+          "status": "completed",
+          "complexity": 0.72,
+          "seoImpact": "medium",
+          "businessImpact": "high",
+          "dependencies": [
+            "src/models/Product.php",
+            "src/models/Category.php"
+          ],
+          "blockingFor": [
+            "src/controllers/ProductController.php"
+          ],
+          "module": "services",
+          "estimatedEffort": 24
+        }
+      ],
+      "dependencies": [
+        "wave-1"
+      ],
+      "estimatedEffort": 7,
+      "status": "completed",
+      "startDate": "2025-05-12",
+      "endDate": "2025-05-20"
+    },
+    {
+      "id": "wave-3",
+      "name": "Vague 3 - Controllers principaux",
+      "description": "Migration des contrôleurs principaux pour les fonctionnalités essentielles.",
+      "priority": "high",
+      "files": [
+        {
+          "path": "src/controllers/AuthController.php",
+          "priority": "critical",
+          "status": "completed",
+          "complexity": 0.68,
+          "seoImpact": "none",
+          "businessImpact": "critical",
+          "dependencies": [
+            "src/services/AuthService.php"
+          ],
+          "blockingFor": [
+            "src/routes/auth.php"
+          ],
+          "module": "controllers",
+          "estimatedEffort": 16
+        },
+        {
+          "path": "src/controllers/ProductController.php",
+          "priority": "high",
+          "status": "completed",
+          "complexity": 0.75,
+          "seoImpact": "high",
+          "businessImpact": "high",
+          "dependencies": [
+            "src/services/ProductService.php"
+          ],
+          "blockingFor": [
+            "src/routes/products.php"
+          ],
+          "module": "controllers",
+          "estimatedEffort": 20
+        },
+        {
+          "path": "src/controllers/CategoryController.php",
+          "priority": "high",
+          "status": "completed",
+          "complexity": 0.62,
+          "seoImpact": "high",
+          "businessImpact": "high",
+          "dependencies": [
+            "src/models/Category.php"
+          ],
+          "blockingFor": [
+            "src/routes/categories.php"
+          ],
+          "module": "controllers",
+          "estimatedEffort": 16
+        }
+      ],
+      "dependencies": [
+        "wave-1",
+        "wave-2"
+      ],
+      "estimatedEffort": 7,
+      "status": "completed",
+      "startDate": "2025-05-22",
+      "endDate": "2025-05-31"
+    },
+    {
+      "id": "wave-4",
+      "name": "Vague 4 - Fonctionnalités panier et commande",
+      "description": "Migration des fonctionnalités de panier et de commande.",
+      "priority": "critical",
+      "files": [
+        {
+          "path": "src/models/Cart.php",
+          "priority": "critical",
+          "status": "completed",
+          "complexity": 0.82,
+          "seoImpact": "low",
+          "businessImpact": "critical",
+          "dependencies": [
+            "src/models/User.php",
+            "src/models/Product.php"
+          ],
+          "blockingFor": [
+            "src/services/CartService.php"
+          ],
+          "module": "models",
+          "estimatedEffort": 24
+        },
+        {
+          "path": "src/models/Order.php",
+          "priority": "critical",
+          "status": "completed",
+          "complexity": 0.88,
+          "seoImpact": "low",
+          "businessImpact": "critical",
+          "dependencies": [
+            "src/models/User.php",
+            "src/models/Cart.php"
+          ],
+          "blockingFor": [
+            "src/services/OrderService.php"
+          ],
+          "module": "models",
+          "estimatedEffort": 28
+        },
+        {
+          "path": "src/services/CartService.php",
+          "priority": "critical",
+          "status": "in_progress",
+          "complexity": 0.86,
+          "seoImpact": "low",
+          "businessImpact": "critical",
+          "dependencies": [
+            "src/models/Cart.php",
+            "src/models/Product.php"
+          ],
+          "blockingFor": [
+            "src/controllers/CartController.php"
+          ],
+          "module": "services",
+          "estimatedEffort": 32
+        }
+      ],
+      "dependencies": [
+        "wave-1",
+        "wave-2"
+      ],
+      "estimatedEffort": 11,
+      "status": "in_progress",
+      "startDate": "2025-06-01"
+    },
+    {
+      "id": "wave-5",
+      "name": "Vague 5 - Fonctionnalités de paiement",
+      "description": "Migration des fonctionnalités de paiement et facturation.",
+      "priority": "critical",
+      "files": [
+        {
+          "path": "src/services/OrderService.php",
+          "priority": "critical",
+          "status": "pending",
+          "complexity": 0.92,
+          "seoImpact": "low",
+          "businessImpact": "critical",
+          "dependencies": [
+            "src/models/Order.php",
+            "src/services/CartService.php"
+          ],
+          "blockingFor": [
+            "src/controllers/OrderController.php"
+          ],
+          "module": "services",
+          "estimatedEffort": 40
+        },
+        {
+          "path": "src/services/PaymentService.php",
+          "priority": "critical",
+          "status": "pending",
+          "complexity": 0.95,
+          "seoImpact": "none",
+          "businessImpact": "critical",
+          "dependencies": [
+            "src/services/OrderService.php"
+          ],
+          "blockingFor": [
+            "src/controllers/PaymentController.php"
+          ],
+          "module": "services",
+          "estimatedEffort": 48
+        }
+      ],
+      "dependencies": [
+        "wave-4"
+      ],
+      "estimatedEffort": 11,
+      "status": "pending"
+    },
+    {
+      "id": "wave-6",
+      "name": "Vague 6 - Contrôleurs de transaction",
+      "description": "Migration des contrôleurs pour le panier, les commandes et paiements.",
+      "priority": "high",
+      "files": [
+        {
+          "path": "src/controllers/CartController.php",
+          "priority": "high",
+          "status": "pending",
+          "complexity": 0.78,
+          "seoImpact": "low",
+          "businessImpact": "high",
+          "dependencies": [
+            "src/services/CartService.php"
+          ],
+          "blockingFor": [
+            "src/routes/cart.php"
+          ],
+          "module": "controllers",
+          "estimatedEffort": 24
+        },
+        {
+          "path": "src/controllers/OrderController.php",
+          "priority": "high",
+          "status": "pending",
+          "complexity": 0.84,
+          "seoImpact": "low",
+          "businessImpact": "high",
+          "dependencies": [
+            "src/services/OrderService.php"
+          ],
+          "blockingFor": [
+            "src/routes/orders.php"
+          ],
+          "module": "controllers",
+          "estimatedEffort": 28
+        },
+        {
+          "path": "src/controllers/PaymentController.php",
+          "priority": "high",
+          "status": "pending",
+          "complexity": 0.88,
+          "seoImpact": "none",
+          "businessImpact": "high",
+          "dependencies": [
+            "src/services/PaymentService.php"
+          ],
+          "blockingFor": [
+            "src/routes/payment.php"
+          ],
+          "module": "controllers",
+          "estimatedEffort": 32
+        }
+      ],
+      "dependencies": [
+        "wave-4",
+        "wave-5"
+      ],
+      "estimatedEffort": 11,
+      "status": "pending"
+    },
+    {
+      "id": "wave-7",
+      "name": "Vague 7 - Routes et SEO",
+      "description": "Migration des routes et optimisation SEO.",
+      "priority": "high",
+      "files": [
+        {
+          "path": "src/routes/auth.php",
+          "priority": "high",
+          "status": "pending",
+          "complexity": 0.45,
+          "seoImpact": "none",
+          "businessImpact": "high",
+          "dependencies": [
+            "src/controllers/AuthController.php"
+          ],
+          "blockingFor": [],
+          "module": "routes",
+          "estimatedEffort": 8
+        },
+        {
+          "path": "src/routes/products.php",
+          "priority": "high",
+          "status": "pending",
+          "complexity": 0.65,
+          "seoImpact": "high",
+          "businessImpact": "high",
+          "dependencies": [
+            "src/controllers/ProductController.php"
+          ],
+          "blockingFor": [],
+          "module": "routes",
+          "estimatedEffort": 16
+        },
+        {
+          "path": "src/routes/categories.php",
+          "priority": "high",
+          "status": "pending",
+          "complexity": 0.55,
+          "seoImpact": "high",
+          "businessImpact": "high",
+          "dependencies": [
+            "src/controllers/CategoryController.php"
+          ],
+          "blockingFor": [],
+          "module": "routes",
+          "estimatedEffort": 12
+        }
+      ],
+      "dependencies": [
+        "wave-3"
+      ],
+      "estimatedEffort": 5,
+      "status": "pending"
+    },
+    {
+      "id": "wave-8",
+      "name": "Vague 8 - Routes de transaction",
+      "description": "Migration des routes pour le panier, les commandes et paiements.",
+      "priority": "high",
+      "files": [
+        {
+          "path": "src/routes/cart.php",
+          "priority": "high",
+          "status": "pending",
+          "complexity": 0.58,
+          "seoImpact": "medium",
+          "businessImpact": "high",
+          "dependencies": [
+            "src/controllers/CartController.php"
+          ],
+          "blockingFor": [],
+          "module": "routes",
+          "estimatedEffort": 12
+        },
+        {
+          "path": "src/routes/orders.php",
+          "priority": "high",
+          "status": "pending",
+          "complexity": 0.62,
+          "seoImpact": "medium",
+          "businessImpact": "high",
+          "dependencies": [
+            "src/controllers/OrderController.php"
+          ],
+          "blockingFor": [],
+          "module": "routes",
+          "estimatedEffort": 16
+        },
+        {
+          "path": "src/routes/payment.php",
+          "priority": "high",
+          "status": "pending",
+          "complexity": 0.68,
+          "seoImpact": "low",
+          "businessImpact": "high",
+          "dependencies": [
+            "src/controllers/PaymentController.php"
+          ],
+          "blockingFor": [],
+          "module": "routes",
+          "estimatedEffort": 20
+        }
+      ],
+      "dependencies": [
+        "wave-6"
+      ],
+      "estimatedEffort": 6,
+      "status": "pending"
+    },
+    {
+      "id": "wave-9",
+      "name": "Vague 9 - Middlewares et outils",
+      "description": "Migration des middlewares, helpers et outils divers.",
+      "priority": "medium",
+      "files": [
+        {
+          "path": "src/middleware/AuthMiddleware.php",
+          "priority": "high",
+          "status": "pending",
+          "complexity": 0.72,
+          "seoImpact": "none",
+          "businessImpact": "high",
+          "dependencies": [
+            "src/services/AuthService.php"
+          ],
+          "blockingFor": [],
+          "module": "middleware",
+          "estimatedEffort": 16
+        },
+        {
+          "path": "src/helpers/CartHelper.php",
+          "priority": "medium",
+          "status": "pending",
+          "complexity": 0.65,
+          "seoImpact": "none",
+          "businessImpact": "medium",
+          "dependencies": [
+            "src/models/Cart.php"
+          ],
+          "blockingFor": [],
+          "module": "helpers",
+          "estimatedEffort": 12
+        }
+      ],
+      "dependencies": [
+        "wave-2",
+        "wave-4"
+      ],
+      "estimatedEffort": 11,
+      "status": "pending"
+    }
+  ],
+  "generatedAt": "2025-07-15T11:30:00.000Z",
+  "version": "1.0.0"
+}

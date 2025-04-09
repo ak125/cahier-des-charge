@@ -1,0 +1,392 @@
+{
+  "name": "PHP File Audit Analyzer",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {
+          "cronExpression": "0 0 * * *"
+        }
+      },
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.cron",
+      "typeVersion": 1,
+      "position": [
+        220,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "path": "execute-audit",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        220,
+        460
+      ]
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "sourceDir",
+              "value": "={{ $json.sourceDir || \"/workspaces/cahier-des-charge/legacy/src\" }}"
+            },
+            {
+              "name": "outputDir",
+              "value": "={{ $json.outputDir || \"/workspaces/cahier-des-charge/output/audits\" }}"
+            },
+            {
+              "name": "maxFiles",
+              "value": "={{ $json.maxFiles || \"10\" }}"
+            },
+            {
+              "name": "priorityLevel",
+              "value": "={{ $json.priorityLevel || \"high\" }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "Set Config Variables",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        440,
+        380
+      ]
+    },
+    {
+      "parameters": {
+        "command": "mkdir -p {{ $node[\"Set Config Variables\"].json[\"outputDir\"] }}"
+      },
+      "name": "Ensure Output Directory",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        660,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "command": "node /workspaces/cahier-des-charge/agents/selector-agent.ts --source {{ $node[\"Set Config Variables\"].json[\"sourceDir\"] }} --max {{ $node[\"Set Config Variables\"].json[\"maxFiles\"] }} --priority {{ $node[\"Set Config Variables\"].json[\"priorityLevel\"] }} --output {{ $node[\"Set Config Variables\"].json[\"outputDir\"] }}/priority_files.json"
+      },
+      "name": "Run Selector Agent",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        660,
+        460
+      ]
+    },
+    {
+      "parameters": {
+        "filePath": "={{ $node[\"Set Config Variables\"].json[\"outputDir\"] + \"/priority_files.json\" }}"
+      },
+      "name": "Read Priority Files",
+      "type": "n8n-nodes-base.readBinaryFile",
+      "typeVersion": 1,
+      "position": [
+        880,
+        460
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "const data = JSON.parse(Buffer.from($input.item.binary.data, 'base64').toString());\n\n// Extraire la liste des fichiers en sortie\nconst files = data.files;\n\n// Créer un item par fichier pour traitement en parallèle\nreturn files.map(file => {\n  return {\n    json: {\n      filePath: file.path,\n      priority: file.priority,\n      seoImpact: file.seo_impact || 'medium',\n      complexity: file.complexity || 'unknown',\n      outputDir: $input.item.json.outputDir\n    }\n  };\n});"
+      },
+      "name": "Prepare Files Array",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        1100,
+        460
+      ]
+    },
+    {
+      "parameters": {
+        "batchSize": 3,
+        "options": {}
+      },
+      "name": "Split Batch",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 1,
+      "position": [
+        1320,
+        460
+      ]
+    },
+    {
+      "parameters": {
+        "command": "node /workspaces/cahier-des-charge/agents/audit-analyzer.ts --file {{ $json.filePath }} --output {{ $json.outputDir }} --priority {{ $json.priority }} --seo {{ $json.seoImpact }}"
+      },
+      "name": "Analyze Each File",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        1540,
+        460
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.exitCode }}",
+              "value2": "0"
+            }
+          ]
+        }
+      },
+      "name": "Check Success",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        1760,
+        460
+      ]
+    },
+    {
+      "parameters": {
+        "channel": "migration-audits",
+        "text": "✅ Successfully analyzed file: {{ $json.filePath }}",
+        "attachments": [],
+        "otherOptions": {
+          "text": "More details at: {{ $json.outputDir }}/{{ $json.filePath.split('/').pop() }}.audit.md"
+        }
+      },
+      "name": "Success Notification",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 1,
+      "position": [
+        1980,
+        380
+      ],
+      "credentials": {
+        "slackApi": {
+          "id": "1",
+          "name": "Slack account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "channel": "migration-audits",
+        "text": "❌ Error analyzing file: {{ $json.filePath }}\n\nError: {{ $json.stderr }}",
+        "attachments": []
+      },
+      "name": "Error Notification",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 1,
+      "position": [
+        1980,
+        540
+      ],
+      "credentials": {
+        "slackApi": {
+          "id": "1",
+          "name": "Slack account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://api.github.com/repos/orgname/migration-project/issues",
+        "authentication": "genericCredentialType",
+        "method": "POST",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "title",
+              "value": "Audit completed for: {{ $json.filePath.split('/').pop() }}"
+            },
+            {
+              "name": "body",
+              "value": "The automated audit for `{{ $json.filePath }}` has been completed.\n\n- Priority: {{ $json.priority }}\n- SEO Impact: {{ $json.seoImpact }}\n\nPlease review the following files:\n- [Audit Report]({{ $json.outputDir }}/{{ $json.filePath.split('/').pop() }}.audit.md)\n- [Backlog]({{ $json.outputDir }}/{{ $json.filePath.split('/').pop() }}.backlog.json)\n- [Impact Graph]({{ $json.outputDir }}/{{ $json.filePath.split('/').pop() }}.impact_graph.json)\n\nAssign this issue to the developer who will handle the migration."
+            },
+            {
+              "name": "labels",
+              "value": "[\"audit\", \"{{ $json.priority }}\", \"{{ $json.seoImpact }}\"]"
+            }
+          ]
+        }
+      },
+      "name": "Create GitHub Issue",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [
+        2200,
+        380
+      ]
+    },
+    {
+      "parameters": {
+        "content": "=# 📊 Audit Analysis Report\n\n## Summary\n\nThe automated audit process has analyzed {{ $json.total_files || 'multiple' }} PHP files with the following breakdown:\n\n- High priority: {{ $json.high_priority || 0 }} files\n- Medium priority: {{ $json.medium_priority || 0 }} files\n- Low priority: {{ $json.low_priority || 0 }} files\n\n## Detailed Results\n\n{{ $json.results || 'No detailed results available' }}\n\n## Next Steps\n\n1. Review the generated audit files in `{{ $json.outputDir }}`\n2. Assign developers to the created GitHub issues\n3. Begin migration planning based on the backlog files",
+        "fileFormat": "md",
+        "fileName": "={{ \"audit_report_\" + $now }}.md",
+        "options": {}
+      },
+      "name": "Generate Summary Report",
+      "type": "n8n-nodes-base.writeBinaryFile",
+      "typeVersion": 1,
+      "position": [
+        2200,
+        540
+      ]
+    }
+  ],
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Set Config Variables",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Set Config Variables",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Config Variables": {
+      "main": [
+        [
+          {
+            "node": "Ensure Output Directory",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Run Selector Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ensure Output Directory": {
+      "main": [
+        [
+          {
+            "node": "Run Selector Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Run Selector Agent": {
+      "main": [
+        [
+          {
+            "node": "Read Priority Files",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Priority Files": {
+      "main": [
+        [
+          {
+            "node": "Prepare Files Array",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Files Array": {
+      "main": [
+        [
+          {
+            "node": "Split Batch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Batch": {
+      "main": [
+        [
+          {
+            "node": "Analyze Each File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analyze Each File": {
+      "main": [
+        [
+          {
+            "node": "Check Success",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Success": {
+      "main": [
+        [
+          {
+            "node": "Success Notification",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Error Notification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Success Notification": {
+      "main": [
+        [
+          {
+            "node": "Create GitHub Issue",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Error Notification": {
+      "main": [
+        [
+          {
+            "node": "Generate Summary Report",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}

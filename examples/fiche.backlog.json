@@ -1,0 +1,125 @@
+{
+  "file": "src/product/fiche.php",
+  "analyzedAt": "2025-07-25T14:32:47Z",
+  "priority": "high",
+  "status": "audited",
+  "progress": 45,
+  "tasks": [
+    {
+      "id": "task-001",
+      "type": "prisma.model",
+      "description": "Créer modèle Prisma pour Product et ProductReference",
+      "status": "completed",
+      "target_file": "prisma/schema.prisma",
+      "assigned_to": "prisma-adapter.ts"
+    },
+    {
+      "id": "task-002",
+      "type": "nestjs.dto",
+      "description": "Générer les DTOs pour Product",
+      "status": "completed",
+      "target_file": "apps/backend/src/products/dto/product.dto.ts",
+      "assigned_to": "dev-generator.ts"
+    },
+    {
+      "id": "task-003",
+      "type": "nestjs.service",
+      "description": "Implémenter ProductService",
+      "status": "in_progress",
+      "target_file": "apps/backend/src/products/services/product.service.ts", 
+      "assigned_to": "dev-generator.ts"
+    },
+    {
+      "id": "task-004",
+      "type": "nestjs.controller",
+      "description": "Créer ProductController",
+      "status": "in_progress",
+      "target_file": "apps/backend/src/products/controllers/product.controller.ts",
+      "assigned_to": "dev-generator.ts"
+    },
+    {
+      "id": "task-005",
+      "type": "remix.route",
+      "description": "Générer route Remix produit/$slug",
+      "status": "completed",
+      "target_file": "apps/frontend/app/routes/produit.$slug.tsx",
+      "assigned_to": "remix-loader-builder.ts"
+    },
+    {
+      "id": "task-006",
+      "type": "remix.component",
+      "description": "Créer composant ProductDetail",
+      "status": "completed",
+      "target_file": "apps/frontend/app/components/product/ProductDetail.tsx",
+      "assigned_to": "component-generator.ts"
+    },
+    {
+      "id": "task-007",
+      "type": "test.unit",
+      "description": "Générer tests unitaires",
+      "status": "pending",
+      "target_file": "apps/backend/src/products/__tests__/product.spec.ts",
+      "assigned_to": "test-writer.ts"
+    },
+    {
+      "id": "task-008",
+      "type": "test.e2e",
+      "description": "Générer tests E2E",
+      "status": "pending",
+      "target_file": "apps/e2e/tests/product.spec.ts",
+      "assigned_to": "test-writer.ts"
+    },
+    {
+      "id": "task-009",
+      "type": "github.pr",
+      "description": "Créer Pull Request",
+      "status": "pending",
+      "trigger": "on_all_tasks_completed",
+      "assigned_to": "mcp-integrator.ts"
+    }
+  ],
+  "dependencies": [
+    "src/db/database.php",
+    "src/common/helper.php",
+    "src/product/category.php"
+  ],
+  "tags": ["product", "seo-critical", "e-commerce"],
+  "github": {
+    "branch": "migration/product-fiche",
+    "pull_request": null,
+    "labels": ["migration-auto", "product", "seo-critical"],
+    "status": "pending",
+    "hooks": {
+      "on_pr_created": {
+        "action": "update_status",
+        "params": {
+          "status": "in_review"
+        }
+      },
+      "on_pr_merged": {
+        "action": "update_status",
+        "params": {
+          "status": "completed"
+        }
+      },
+      "on_pr_closed": {
+        "action": "update_status",
+        "params": {
+          "status": "cancelled"
+        }
+      },
+      "on_ci_success": {
+        "action": "add_label",
+        "params": {
+          "label": "tests-passed"
+        }
+      },
+      "on_ci_failure": {
+        "action": "add_label",
+        "params": {
+          "label": "tests-failed"
+        }
+      }
+    }
+  }
+}

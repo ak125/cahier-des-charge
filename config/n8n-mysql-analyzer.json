@@ -1,0 +1,122 @@
+{
+  "name": "MySQL Analyzer Workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "triggerTimes": {
+          "item": [
+            {
+              "mode": "everyX",
+              "value": 1,
+              "unit": "day"
+            }
+          ]
+        }
+      },
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.cron",
+      "typeVersion": 1,
+      "position": [
+        250,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "path": "analyze-mysql",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "name": "Webhook Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        250,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "sqlFilePath",
+              "value": "={{ $json.sqlFilePath || '/workspaces/cahier-des-charge/data/mysql_schema.sql' }}"
+            },
+            {
+              "name": "outputDir",
+              "value": "={{ $json.outputDir || '/workspaces/cahier-des-charge/output' }}"
+            },
+            {
+              "name": "configPath",
+              "value": "={{ $json.configPath || '/workspaces/cahier-des-charge/config/mysql_type_converter.json' }}"
+            },
+            {
+              "name": "existingPrismaPath",
+              "value": "={{ $json.existingPrismaPath || '/workspaces/cahier-des-charge/prisma/schema.prisma' }}"
+            }
+          ]
+        }
+      },
+      "name": "Set Parameters",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        500,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "command": "node /workspaces/cahier-des-charge/agents/mysql-analyzer+optimizer.ts --input=\"{{ $json.sqlFilePath }}\" --output=\"{{ $json.outputDir }}\" --config=\"{{ $json.configPath }}\" --existing-prisma=\"{{ $json.existingPrismaPath }}\""
+      },
+      "name": "Execute MySQL Analyzer",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        750,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.exitCode }}",
+              "operation": "equal",
+              "value2": "0"
+            }
+          ]
+        }
+      },
+      "name": "Check Success",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        1000,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "content": "=## Analyse MySQL terminée avec succès\n\nL'analyse de la base de données MySQL a été effectuée avec succès.\n\n### Fichiers générés:\n- mysql_schema_map.json\n- mysql_to_prisma_map.json\n- prisma_models.suggestion.prisma\n- sql_analysis.md\n\n### Répertoire de sortie:\n{{ $json.outputDir }}\n\n### Date d'exécution:\n{{ $now }}",
+        "options": {}
+      },
+      "name": "Success Notification",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 1,
+      "position": [
+        1250,
+        300
+      ],
+      "credentials": {
+        "slackApi": {
+          "id": "1",
+          "name": "Slack account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "=## ❌ Échec de l'analyse MySQL\n\nL'analyse de la base de données MySQL a échoué.\n\n### Message d'erreur:\n
