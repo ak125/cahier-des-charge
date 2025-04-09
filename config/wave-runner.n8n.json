@@ -1,0 +1,758 @@
+{
+  "name": "Wave Migration Runner",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "run-wave-migration",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "name": "Wave Migration Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        250,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "values": {
+          "number": [
+            {
+              "name": "waveId",
+              "value": "={{ $json.waveId || 1 }}"
+            }
+          ],
+          "string": [
+            {
+              "name": "waveName",
+              "value": "={{ $json.waveName || 'Wave ' + $json.waveId }}"
+            },
+            {
+              "name": "outputDir",
+              "value": "={{ $json.outputDir || '/workspaces/cahier-des-charge/output/wave_' + $json.waveId }}"
+            }
+          ],
+          "boolean": [
+            {
+              "name": "createPR",
+              "value": "={{ $json.createPR !== false }}"
+            },
+            {
+              "name": "runTests",
+              "value": "={{ $json.runTests !== false }}"
+            }
+          ]
+        }
+      },
+      "name": "Set Wave Parameters",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        450,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "command": "git checkout -b migration/wave-{{ $node[\"Set Wave Parameters\"].json[\"waveId\"] }} && echo \"# Migration {{ $node[\"Set Wave Parameters\"].json[\"waveName\"] }}\\nStarted: $(date)\\n\" > {{ $node[\"Set Wave Parameters\"].json[\"outputDir\"] }}/wave_{{ $node[\"Set Wave Parameters\"].json[\"waveId\"] }}_migration.log"
+      },
+      "name": "Initialize Wave Branch",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        650,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "command": "node /workspaces/cahier-des-charge/tools/extract-wave-files.js --wave {{ $node[\"Set Wave Parameters\"].json[\"waveId\"] }} --output {{ $node[\"Set Wave Parameters\"].json[\"outputDir\"] }}/wave_{{ $node[\"Set Wave Parameters\"].json[\"waveId\"] }}_files.json"
+      },
+      "name": "Extract Wave Files",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        850,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "filePath": "={{ $node[\"Set Wave Parameters\"].json[\"outputDir\"] + \"/wave_\" + $node[\"Set Wave Parameters\"].json[\"waveId\"] + \"_files.json\" }}"
+      },
+      "name": "Read Wave Files",
+      "type": "n8n-nodes-base.readBinaryFile",
+      "typeVersion": 1,
+      "position": [
+        1050,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "command": "node /workspaces/cahier-des-charge/agents/prisma-adapter.ts --wave {{ $node[\"Set Wave Parameters\"].json[\"waveId\"] }} --input /workspaces/cahier-des-charge/schema_migration_diff.json --output /workspaces/cahier-des-charge/prisma/"
+      },
+      "name": "Run prisma-adapter",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        1250,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "command": "cd /workspaces/cahier-des-charge && npx prisma validate && npx prisma format"
+      },
+      "name": "Validate Prisma Schema",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        1450,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $node[\"Set Wave Parameters\"].json[\"runTests\"] }}",
+              "value2": "true"
+            }
+          ]
+        }
+      },
+      "name": "Should Run Tests?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        1650,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "command": "cd /workspaces/cahier-des-charge && npm run test:prisma"
+      },
+      "name": "Run Prisma Tests",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        1850,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.exitCode }}",
+              "value2": "0"
+            }
+          ]
+        }
+      },
+      "name": "Prisma Tests Passed?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        2050,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "command": "node /workspaces/cahier-des-charge/agents/dev-generator.ts --wave {{ $node[\"Set Wave Parameters\"].json[\"waveId\"] }} --type backend --input {{ $node[\"Set Wave Parameters\"].json[\"outputDir\"] }}/wave_{{ $node[\"Set Wave Parameters\"].json[\"waveId\"] }}_files.json --output /workspaces/cahier-des-charge/apps/backend/"
+      },
+      "name": "Run NestJS Generator",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        2250,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "command": "cd /workspaces/cahier-des-charge && npm run test:nestjs"
+      },
+      "name": "Run NestJS Tests",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        2450,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.exitCode }}",
+              "value2": "0"
+            }
+          ]
+        }
+      },
+      "name": "NestJS Tests Passed?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        2650,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "command": "node /workspaces/cahier-des-charge/agents/remix-loader-builder.ts --wave {{ $node[\"Set Wave Parameters\"].json[\"waveId\"] }} --input {{ $node[\"Set Wave Parameters\"].json[\"outputDir\"] }}/wave_{{ $node[\"Set Wave Parameters\"].json[\"waveId\"] }}_files.json --output /workspaces/cahier-des-charge/apps/frontend/"
+      },
+      "name": "Run Remix Generator",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        2850,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "command": "cd /workspaces/cahier-des-charge && npm run test:remix"
+      },
+      "name": "Run Remix Tests",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        3050,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.exitCode }}",
+              "value2": "0"
+            }
+          ]
+        }
+      },
+      "name": "Remix Tests Passed?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        3250,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "command": "node /workspaces/cahier-des-charge/agents/qa-checklist.ts --wave {{ $node[\"Set Wave Parameters\"].json[\"waveId\"] }} --output {{ $node[\"Set Wave Parameters\"].json[\"outputDir\"] }}/qa_report_wave_{{ $node[\"Set Wave Parameters\"].json[\"waveId\"] }}.md"
+      },
+      "name": "Run QA Checklist",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        3450,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.exitCode }}",
+              "value2": "0"
+            }
+          ]
+        }
+      },
+      "name": "QA Checklist Passed?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        3650,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $node[\"Set Wave Parameters\"].json[\"createPR\"] }}",
+              "value2": "true"
+            }
+          ]
+        }
+      },
+      "name": "Should Create PR?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        3850,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "command": "node /workspaces/cahier-des-charge/agents/mcp-integrator.ts --wave {{ $node[\"Set Wave Parameters\"].json[\"waveId\"] }} --create-pr"
+      },
+      "name": "Create GitHub PR",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        4050,
+        100
+      ]
+    },
+    {
+      "parameters": {
+        "command": "git tag migration-wave-{{ $node[\"Set Wave Parameters\"].json[\"waveId\"] }}-done && git push origin migration-wave-{{ $node[\"Set Wave Parameters\"].json[\"waveId\"] }}-done"
+      },
+      "name": "Create Git Tag",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        4050,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "command": "node /workspaces/cahier-des-charge/tools/generate-migration-report.js --wave {{ $node[\"Set Wave Parameters\"].json[\"waveId\"] }} --output {{ $node[\"Set Wave Parameters\"].json[\"outputDir\"] }}/wave_{{ $node[\"Set Wave Parameters\"].json[\"waveId\"] }}_report.md"
+      },
+      "name": "Generate Migration Report",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        4250,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "channel": "migration-waves",
+        "text": "=🌊 Migration Wave {{ $node[\"Set Wave Parameters\"].json[\"waveId\"] }}: {{ $node[\"Set Wave Parameters\"].json[\"waveName\"] }} completed successfully!\n\nModules generated:\n{{ $json.stdout }}\n\nView the full report at: {{ $node[\"Set Wave Parameters\"].json[\"outputDir\"] }}/wave_{{ $node[\"Set Wave Parameters\"].json[\"waveId\"] }}_report.md",
+        "attachments": []
+      },
+      "name": "Send Success Notification",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 1,
+      "position": [
+        4450,
+        200
+      ],
+      "credentials": {
+        "slackApi": {
+          "id": "1",
+          "name": "Slack account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "command": "echo \"Wave {{ $node[\"Set Wave Parameters\"].json[\"waveId\"] }} migration failed at Prisma tests\" >> {{ $node[\"Set Wave Parameters\"].json[\"outputDir\"] }}/wave_{{ $node[\"Set Wave Parameters\"].json[\"waveId\"] }}_migration.log && cat {{ $json.stderr }} >> {{ $node[\"Set Wave Parameters\"].json[\"outputDir\"] }}/wave_{{ $node[\"Set Wave Parameters\"].json[\"waveId\"] }}_migration.log"
+      },
+      "name": "Log Prisma Failure",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        2250,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "command": "echo \"Wave {{ $node[\"Set Wave Parameters\"].json[\"waveId\"] }} migration failed at NestJS tests\" >> {{ $node[\"Set Wave Parameters\"].json[\"outputDir\"] }}/wave_{{ $node[\"Set Wave Parameters\"].json[\"waveId\"] }}_migration.log && cat {{ $json.stderr }} >> {{ $node[\"Set Wave Parameters\"].json[\"outputDir\"] }}/wave_{{ $node[\"Set Wave Parameters\"].json[\"waveId\"] }}_migration.log"
+      },
+      "name": "Log NestJS Failure",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        2850,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "command": "echo \"Wave {{ $node[\"Set Wave Parameters\"].json[\"waveId\"] }} migration failed at Remix tests\" >> {{ $node[\"Set Wave Parameters\"].json[\"outputDir\"] }}/wave_{{ $node[\"Set Wave Parameters\"].json[\"waveId\"] }}_migration.log && cat {{ $json.stderr }} >> {{ $node[\"Set Wave Parameters\"].json[\"outputDir\"] }}/wave_{{ $node[\"Set Wave Parameters\"].json[\"waveId\"] }}_migration.log"
+      },
+      "name": "Log Remix Failure",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        3450,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "command": "echo \"Wave {{ $node[\"Set Wave Parameters\"].json[\"waveId\"] }} migration failed at QA Checklist\" >> {{ $node[\"Set Wave Parameters\"].json[\"outputDir\"] }}/wave_{{ $node[\"Set Wave Parameters\"].json[\"waveId\"] }}_migration.log && cat {{ $json.stderr }} >> {{ $node[\"Set Wave Parameters\"].json[\"outputDir\"] }}/wave_{{ $node[\"Set Wave Parameters\"].json[\"waveId\"] }}_migration.log"
+      },
+      "name": "Log QA Failure",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        3850,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "channel": "migration-alerts",
+        "text": "=⚠️ Migration Wave {{ $node[\"Set Wave Parameters\"].json[\"waveId\"] }}: {{ $node[\"Set Wave Parameters\"].json[\"waveName\"] }} failed!\n\nError: {{ $json.stdout }}\n\nCheck logs at: {{ $node[\"Set Wave Parameters\"].json[\"outputDir\"] }}/wave_{{ $node[\"Set Wave Parameters\"].json[\"waveId\"] }}_migration.log",
+        "attachments": []
+      },
+      "name": "Send Failure Notification",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 1,
+      "position": [
+        4050,
+        500
+      ],
+      "credentials": {
+        "slackApi": {
+          "id": "1",
+          "name": "Slack account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Wave Migration Trigger": {
+      "main": [
+        [
+          {
+            "node": "Set Wave Parameters",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Wave Parameters": {
+      "main": [
+        [
+          {
+            "node": "Initialize Wave Branch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Initialize Wave Branch": {
+      "main": [
+        [
+          {
+            "node": "Extract Wave Files",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Wave Files": {
+      "main": [
+        [
+          {
+            "node": "Read Wave Files",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Wave Files": {
+      "main": [
+        [
+          {
+            "node": "Run prisma-adapter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Run prisma-adapter": {
+      "main": [
+        [
+          {
+            "node": "Validate Prisma Schema",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate Prisma Schema": {
+      "main": [
+        [
+          {
+            "node": "Should Run Tests?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Should Run Tests?": {
+      "main": [
+        [
+          {
+            "node": "Run Prisma Tests",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Run NestJS Generator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Run Prisma Tests": {
+      "main": [
+        [
+          {
+            "node": "Prisma Tests Passed?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prisma Tests Passed?": {
+      "main": [
+        [
+          {
+            "node": "Run NestJS Generator",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Log Prisma Failure",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Run NestJS Generator": {
+      "main": [
+        [
+          {
+            "node": "Run NestJS Tests",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Run NestJS Tests": {
+      "main": [
+        [
+          {
+            "node": "NestJS Tests Passed?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "NestJS Tests Passed?": {
+      "main": [
+        [
+          {
+            "node": "Run Remix Generator",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Log NestJS Failure",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Run Remix Generator": {
+      "main": [
+        [
+          {
+            "node": "Run Remix Tests",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Run Remix Tests": {
+      "main": [
+        [
+          {
+            "node": "Remix Tests Passed?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Remix Tests Passed?": {
+      "main": [
+        [
+          {
+            "node": "Run QA Checklist",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Log Remix Failure",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Run QA Checklist": {
+      "main": [
+        [
+          {
+            "node": "QA Checklist Passed?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "QA Checklist Passed?": {
+      "main": [
+        [
+          {
+            "node": "Should Create PR?",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Log QA Failure",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Should Create PR?": {
+      "main": [
+        [
+          {
+            "node": "Create GitHub PR",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Create Git Tag",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create GitHub PR": {
+      "main": [
+        [
+          {
+            "node": "Generate Migration Report",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Git Tag": {
+      "main": [
+        [
+          {
+            "node": "Generate Migration Report",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Migration Report": {
+      "main": [
+        [
+          {
+            "node": "Send Success Notification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log Prisma Failure": {
+      "main": [
+        [
+          {
+            "node": "Send Failure Notification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log NestJS Failure": {
+      "main": [
+        [
+          {
+            "node": "Send Failure Notification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log Remix Failure": {
+      "main": [
+        [
+          {
+            "node": "Send Failure Notification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log QA Failure": {
+      "main": [
+        [
+          {
+            "node": "Send Failure Notification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}

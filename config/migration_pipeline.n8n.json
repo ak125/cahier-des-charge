@@ -1,0 +1,732 @@
+{
+  "name": "Migration Pipeline Orchestrator",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {
+          "cronExpression": "0 0 * * 1"
+        }
+      },
+      "name": "Weekly Schedule",
+      "type": "n8n-nodes-base.cron",
+      "typeVersion": 1,
+      "position": [
+        100,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "path": "trigger-migration",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "name": "Manual Webhook Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        100,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "repository": "={{$json.repository || 'organization/migration-project'}}",
+        "events": [
+          "push"
+        ],
+        "filters": {
+          "branchFilter": "legacy-migration"
+        }
+      },
+      "name": "GitHub Webhook",
+      "type": "n8n-nodes-base.githubTrigger",
+      "typeVersion": 1,
+      "position": [
+        100,
+        660
+      ]
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "mode",
+              "value": "={{$json.mode || \"analyze\"}}"
+            },
+            {
+              "name": "sourceDir",
+              "value": "={{$json.sourceDir || \"/workspaces/cahier-des-charge/legacy\"}}"
+            },
+            {
+              "name": "outputDir",
+              "value": "={{$json.outputDir || \"/workspaces/cahier-des-charge/output\"}}"
+            },
+            {
+              "name": "waveId",
+              "value": "={{$json.wave_id || \"wave_01\"}}"
+            }
+          ],
+          "boolean": [
+            {
+              "name": "fullScan",
+              "value": "={{$json.fullScan || false}}"
+            },
+            {
+              "name": "createPR",
+              "value": "={{$json.createPR || true}}"
+            },
+            {
+              "name": "runTests",
+              "value": "={{$json.runTests || true}}"
+            }
+          ],
+          "array": [
+            {
+              "name": "specificFiles",
+              "value": "={{$json.files || []}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "Set Parameters",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        340,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $node[\"Set Parameters\"].json[\"mode\"] }}",
+              "operation": "equals",
+              "value2": "analyze"
+            }
+          ]
+        }
+      },
+      "name": "Analyze or Generate?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        560,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "command": "node /workspaces/cahier-des-charge/agents/legacy-discovery.ts --source={{ $node[\"Set Parameters\"].json[\"sourceDir\"] }} --output={{ $node[\"Set Parameters\"].json[\"outputDir\"] }}/discovery_map.json --full={{ $node[\"Set Parameters\"].json[\"fullScan\"] }}"
+      },
+      "name": "Run legacy-discovery",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        780,
+        360
+      ]
+    },
+    {
+      "parameters": {
+        "command": "node /workspaces/cahier-des-charge/agents/mysql-analyzer.ts --input=/workspaces/cahier-des-charge/dump/mysql.sql --output={{ $node[\"Set Parameters\"].json[\"outputDir\"] }} --detect-debt=true"
+      },
+      "name": "Run mysql-analyzer",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        780,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "// Read discovery_map.json to get files to analyze\nconst fs = require('fs');\nconst path = require('path');\n\nconst outputDir = $node[\"Set Parameters\"].json.outputDir;\nconst discoveryMapPath = path.join(outputDir, 'discovery_map.json');\n\n// Check if we have specific files list\nconst specificFiles = $node[\"Set Parameters\"].json.specificFiles;\nif (specificFiles && specificFiles.length > 0) {\n  // Process specific files\n  return specificFiles.map(file => {\n    return {\n      json: {\n        filePath: path.join($node[\"Set Parameters\"].json.sourceDir, file),\n        outputDir: outputDir,\n        priority: 'high',\n        waveId: $node[\"Set Parameters\"].json.waveId\n      }\n    };\n  });\n}\n\n// Otherwise read from discovery map\nif (fs.existsSync(discoveryMapPath)) {\n  try {\n    const discoveryMap = JSON.parse(fs.readFileSync(discoveryMapPath, 'utf8'));\n    \n    // Get high priority files first (limit to 10 for this run)\n    let filesToProcess = discoveryMap.files\n      .filter(f => f.priority === 'high')\n      .slice(0, 10)\n      .map(file => {\n        return {\n          json: {\n            filePath: file.path,\n            outputDir: outputDir,\n            priority: file.priority,\n            waveId: $node[\"Set Parameters\"].json.waveId\n          }\n        };\n      });\n    \n    return filesToProcess;\n  } catch (error) {\n    return [{\n      json: {\n        error: 'Failed to parse discovery_map.json',\n        message: error.message\n      }\n    }];\n  }\n} else {\n  return [{\n    json: {\n      error: 'discovery_map.json not found',\n      path: discoveryMapPath\n    }\n  }];\n}"
+      },
+      "name": "Prepare Files List",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        1000,
+        360
+      ]
+    },
+    {
+      "parameters": {
+        "batchSize": 1,
+        "options": {}
+      },
+      "name": "Process Files Individually",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 1,
+      "position": [
+        1220,
+        360
+      ]
+    },
+    {
+      "parameters": {
+        "command": "node /workspaces/cahier-des-charge/agents/php-analyzer-v2.ts --file={{ $json.filePath }} --output={{ $json.outputDir }}"
+      },
+      "name": "Run php-analyzer-v2",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        1440,
+        360
+      ]
+    },
+    {
+      "parameters": {
+        "command": "node /workspaces/cahier-des-charge/agents/sync-mapper.ts --file={{ $json.filePath }} --output={{ $json.outputDir }} --schema={{ $json.outputDir }}/schema_migration_diff.json"
+      },
+      "name": "Run sync-mapper",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        1660,
+        360
+      ]
+    },
+    {
+      "parameters": {
+        "command": "node /workspaces/cahier-des-charge/agents/htaccess-analyzer.ts --input=/workspaces/cahier-des-charge/legacy/.htaccess --output={{ $node[\"Set Parameters\"].json[\"outputDir\"] }}"
+      },
+      "name": "Run htaccess-analyzer",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        780,
+        600
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $node[\"Set Parameters\"].json[\"mode\"] }}",
+              "operation": "equals",
+              "value2": "generate"
+            }
+          ]
+        }
+      },
+      "name": "Start Wave Processing?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        1880,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://api.github.com/repos/{{$json.repository || 'organization/migration-project'}}/dispatches",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "httpHeaderAuth": {
+          "name": "Authorization",
+          "value": "token {{$env.GITHUB_TOKEN}}"
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "event_type",
+              "value": "analysis_complete"
+            },
+            {
+              "name": "client_payload",
+              "value": "={{ {wave_id: $node[\"Set Parameters\"].json.waveId, timestamp: $now, files_analyzed: $json.filesAnalyzed || 0} }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "Notify Analysis Complete",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [
+        2100,
+        360
+      ]
+    },
+    {
+      "parameters": {
+        "command": "node /workspaces/cahier-des-charge/agents/wave-runner.ts --wave={{ $node[\"Set Parameters\"].json[\"waveId\"] }} --output={{ $node[\"Set Parameters\"].json[\"outputDir\"] }} --create-pr={{ $node[\"Set Parameters\"].json[\"createPR\"] }} --run-tests={{ $node[\"Set Parameters\"].json[\"runTests\"] }}"
+      },
+      "name": "Prepare Wave Runner",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        2100,
+        600
+      ]
+    },
+    {
+      "parameters": {
+        "command": "node /workspaces/cahier-des-charge/agents/prisma-adapter.ts --wave={{ $node[\"Set Parameters\"].json[\"waveId\"] }} --input={{ $node[\"Set Parameters\"].json[\"outputDir\"] }}/schema_migration_diff.json --output=/workspaces/cahier-des-charge/prisma/"
+      },
+      "name": "Run prisma-adapter",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        2320,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "command": "cd /workspaces/cahier-des-charge && npx prisma validate && npx prisma format"
+      },
+      "name": "Validate Prisma Schema",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        2540,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "command": "node /workspaces/cahier-des-charge/agents/dev-generator.ts --wave={{ $node[\"Set Parameters\"].json[\"waveId\"] }} --type=backend --output=/workspaces/cahier-des-charge/apps/backend/"
+      },
+      "name": "Run dev-generator",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        2760,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "command": "node /workspaces/cahier-des-charge/agents/remix-loader-builder.ts --wave={{ $node[\"Set Parameters\"].json[\"waveId\"] }} --output=/workspaces/cahier-des-charge/apps/frontend/"
+      },
+      "name": "Run remix-loader-builder",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        2980,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "command": "node /workspaces/cahier-des-charge/agents/test-writer.ts --wave={{ $node[\"Set Parameters\"].json[\"waveId\"] }} --output=/workspaces/cahier-des-charge/"
+      },
+      "name": "Run test-writer",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        3200,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "command": "node /workspaces/cahier-des-charge/agents/qa-checklist.ts --wave={{ $node[\"Set Parameters\"].json[\"waveId\"] }} --output={{ $node[\"Set Parameters\"].json[\"outputDir\"] }}/qa_report_{{ $node[\"Set Parameters\"].json[\"waveId\"] }}.md"
+      },
+      "name": "Run qa-checklist",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        3420,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $node[\"Set Parameters\"].json[\"createPR\"] }}",
+              "operation": "equals",
+              "value2": "true"
+            }
+          ]
+        }
+      },
+      "name": "Create PR?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        3640,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "command": "node /workspaces/cahier-des-charge/agents/mcp-integrator.ts --wave={{ $node[\"Set Parameters\"].json[\"waveId\"] }} --create-pr"
+      },
+      "name": "Run mcp-integrator",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        3860,
+        360
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.webhook_url || 'https://api.github.com/repos/organization/migration-project/actions/workflows/ci-test.yml/dispatches' }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "httpHeaderAuth": {
+          "name": "Authorization",
+          "value": "token {{$env.GITHUB_TOKEN}}"
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "ref",
+              "value": "migration/wave-{{ $node[\"Set Parameters\"].json[\"waveId\"] }}"
+            },
+            {
+              "name": "inputs",
+              "value": "={{ {wave_id: $node[\"Set Parameters\"].json.waveId, run_id: $runIndex} }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "Trigger CI Tests",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [
+        4080,
+        360
+      ]
+    },
+    {
+      "parameters": {
+        "command": "node /workspaces/cahier-des-charge/tools/update-supabase-status.js --wave={{ $node[\"Set Parameters\"].json[\"waveId\"] }} --status=completed --result={{ $json.stderr ? 'failed' : 'success' }}"
+      },
+      "name": "Update Supabase Status",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        4080,
+        600
+      ]
+    },
+    {
+      "parameters": {
+        "channel": "migration-pipeline",
+        "text": "=🚀 Migration {{ $node[\"Set Parameters\"].json[\"waveId\"] }} {{ $json.stderr ? 'failed' : 'completed successfully' }}!\n\n{{ $json.stderr || $json.stdout }}\n\nView details: https://dashboard.example.com/waves/{{ $node[\"Set Parameters\"].json[\"waveId\"] }}",
+        "attachments": []
+      },
+      "name": "Send Slack Notification",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 1,
+      "position": [
+        4300,
+        480
+      ]
+    }
+  ],
+  "connections": {
+    "Weekly Schedule": {
+      "main": [
+        [
+          {
+            "node": "Set Parameters",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Manual Webhook Trigger": {
+      "main": [
+        [
+          {
+            "node": "Set Parameters",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GitHub Webhook": {
+      "main": [
+        [
+          {
+            "node": "Set Parameters",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Parameters": {
+      "main": [
+        [
+          {
+            "node": "Analyze or Generate?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analyze or Generate?": {
+      "main": [
+        [
+          {
+            "node": "Run legacy-discovery",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Run mysql-analyzer",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Run htaccess-analyzer",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Start Wave Processing?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Run legacy-discovery": {
+      "main": [
+        [
+          {
+            "node": "Prepare Files List",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Run mysql-analyzer": {
+      "main": [
+        [
+          {
+            "node": "Prepare Files List",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Files List": {
+      "main": [
+        [
+          {
+            "node": "Process Files Individually",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Process Files Individually": {
+      "main": [
+        [
+          {
+            "node": "Run php-analyzer-v2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Run php-analyzer-v2": {
+      "main": [
+        [
+          {
+            "node": "Run sync-mapper",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Run sync-mapper": {
+      "main": [
+        [
+          {
+            "node": "Start Wave Processing?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Run htaccess-analyzer": {
+      "main": [
+        [
+          {
+            "node": "Start Wave Processing?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Start Wave Processing?": {
+      "main": [
+        [
+          {
+            "node": "Notify Analysis Complete",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Prepare Wave Runner",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Wave Runner": {
+      "main": [
+        [
+          {
+            "node": "Run prisma-adapter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Run prisma-adapter": {
+      "main": [
+        [
+          {
+            "node": "Validate Prisma Schema",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate Prisma Schema": {
+      "main": [
+        [
+          {
+            "node": "Run dev-generator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Run dev-generator": {
+      "main": [
+        [
+          {
+            "node": "Run remix-loader-builder",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Run remix-loader-builder": {
+      "main": [
+        [
+          {
+            "node": "Run test-writer",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Run test-writer": {
+      "main": [
+        [
+          {
+            "node": "Run qa-checklist",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Run qa-checklist": {
+      "main": [
+        [
+          {
+            "node": "Create PR?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create PR?": {
+      "main": [
+        [
+          {
+            "node": "Run mcp-integrator",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Update Supabase Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Run mcp-integrator": {
+      "main": [
+        [
+          {
+            "node": "Trigger CI Tests",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Trigger CI Tests": {
+      "main": [
+        [
+          {
+            "node": "Update Supabase Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Supabase Status": {
+      "main": [
+        [
+          {
+            "node": "Send Slack Notification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}

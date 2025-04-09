@@ -1,0 +1,121 @@
+{
+  "file": "{{FILE_PATH}}",
+  "analyzedAt": "{{TIMESTAMP}}",
+  "priority": "{{PRIORITY}}",
+  "status": "{{STATUS}}",
+  "progress": {{PROGRESS_PERCENTAGE}},
+  "tasks": [
+    {
+      "id": "task-001",
+      "type": "prisma.model",
+      "description": "Créer modèle Prisma pour {{TABLE_NAME}}",
+      "status": "{{TASK_STATUS}}",
+      "target_file": "prisma/schema.prisma",
+      "assigned_to": "prisma-adapter.ts"
+    },
+    {
+      "id": "task-002",
+      "type": "nestjs.dto",
+      "description": "Générer les DTOs pour {{ENTITY_NAME}}",
+      "status": "{{TASK_STATUS}}",
+      "target_file": "apps/backend/src/{{MODULE_PATH}}/dto/{{ENTITY_NAME}}.dto.ts",
+      "assigned_to": "dev-generator.ts"
+    },
+    {
+      "id": "task-003",
+      "type": "nestjs.service",
+      "description": "Implémenter {{ENTITY_NAME}}Service",
+      "status": "{{TASK_STATUS}}",
+      "target_file": "apps/backend/src/{{MODULE_PATH}}/services/{{ENTITY_NAME}}.service.ts", 
+      "assigned_to": "dev-generator.ts"
+    },
+    {
+      "id": "task-004",
+      "type": "nestjs.controller",
+      "description": "Créer {{ENTITY_NAME}}Controller",
+      "status": "{{TASK_STATUS}}",
+      "target_file": "apps/backend/src/{{MODULE_PATH}}/controllers/{{ENTITY_NAME}}.controller.ts",
+      "assigned_to": "dev-generator.ts"
+    },
+    {
+      "id": "task-005",
+      "type": "remix.route",
+      "description": "Générer route Remix {{ROUTE_PATH}}",
+      "status": "{{TASK_STATUS}}",
+      "target_file": "apps/frontend/app/routes/{{ROUTE_PATH}}.tsx",
+      "assigned_to": "remix-loader-builder.ts"
+    },
+    {
+      "id": "task-006",
+      "type": "remix.component",
+      "description": "Créer composant {{COMPONENT_NAME}}",
+      "status": "{{TASK_STATUS}}",
+      "target_file": "apps/frontend/app/components/{{COMPONENT_PATH}}.tsx",
+      "assigned_to": "component-generator.ts"
+    },
+    {
+      "id": "task-007",
+      "type": "test.unit",
+      "description": "Générer tests unitaires",
+      "status": "{{TASK_STATUS}}",
+      "target_file": "apps/backend/src/{{MODULE_PATH}}/__tests__/{{ENTITY_NAME}}.spec.ts",
+      "assigned_to": "test-writer.ts"
+    },
+    {
+      "id": "task-008",
+      "type": "test.e2e",
+      "description": "Générer tests E2E",
+      "status": "{{TASK_STATUS}}",
+      "target_file": "apps/e2e/tests/{{MODULE_NAME}}.spec.ts",
+      "assigned_to": "test-writer.ts"
+    },
+    {
+      "id": "task-009",
+      "type": "github.pr",
+      "description": "Créer Pull Request",
+      "status": "{{TASK_STATUS}}",
+      "trigger": "on_all_tasks_completed",
+      "assigned_to": "mcp-integrator.ts"
+    }
+  ],
+  "dependencies": {{DEPENDENCIES}},
+  "tags": {{TAGS}},
+  "github": {
+    "branch": "{{BRANCH_NAME}}",
+    "pull_request": {{PR_NUMBER}},
+    "labels": {{LABELS}},
+    "status": "{{PR_STATUS}}",
+    "hooks": {
+      "on_pr_created": {
+        "action": "update_status",
+        "params": {
+          "status": "in_review"
+        }
+      },
+      "on_pr_merged": {
+        "action": "update_status",
+        "params": {
+          "status": "completed"
+        }
+      },
+      "on_pr_closed": {
+        "action": "update_status",
+        "params": {
+          "status": "cancelled"
+        }
+      },
+      "on_ci_success": {
+        "action": "add_label",
+        "params": {
+          "label": "tests-passed"
+        }
+      },
+      "on_ci_failure": {
+        "action": "add_label",
+        "params": {
+          "label": "tests-failed"
+        }
+      }
+    }
+  }
+}
