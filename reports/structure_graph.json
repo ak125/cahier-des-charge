@@ -1,0 +1,38 @@
+{
+  "nodes": [
+    { "id": "structure_logic", "label": "Structure logique", "type": "analysis" },
+    { "id": "module_type", "label": "Type de module", "type": "classification" },
+    { "id": "code_quality", "label": "Qualité du code", "type": "evaluation" },
+    { "id": "duplication", "label": "Duplication", "type": "metric" },
+    { "id": "inline_logic", "label": "Logique inline", "type": "metric" },
+    { "id": "frontend_backend_mix", "label": "Mélange frontend/backend", "type": "metric" },
+    { "id": "lack_of_functions", "label": "Absence de fonctions", "type": "metric" },
+    { "id": "inline_js", "label": "JavaScript inline", "type": "metric" },
+    { "id": "variable_naming", "label": "Nommage des variables", "type": "metric" },
+    { "id": "structure_score", "label": "Score de structure", "type": "result" },
+    { "id": "refactor_task", "label": "Tâche de refactoring", "type": "action" },
+    { "id": "backlog", "label": "Backlog", "type": "output" },
+    { "id": "audit_md", "label": "Fichier .audit.md", "type": "output" },
+    { "id": "migration_strategy", "label": "Stratégie de migration", "type": "decision" }
+  ],
+  "edges": [
+    { "from": "structure_logic", "to": "module_type", "label": "influence" },
+    { "from": "structure_logic", "to": "code_quality", "label": "évalue" },
+    { "from": "duplication", "to": "code_quality", "label": "contribue" },
+    { "from": "inline_logic", "to": "code_quality", "label": "contribue" },
+    { "from": "frontend_backend_mix", "to": "code_quality", "label": "contribue" },
+    { "from": "lack_of_functions", "to": "code_quality", "label": "contribue" },
+    { "from": "inline_js", "to": "code_quality", "label": "contribue" },
+    { "from": "variable_naming", "to": "code_quality", "label": "contribue" },
+    { "from": "code_quality", "to": "structure_score", "label": "calcule" },
+    { "from": "structure_score", "to": "refactor_task", "label": "déclenche si < 1.5" },
+    { "from": "refactor_task", "to": "backlog", "label": "ajoute" },
+    { "from": "structure_score", "to": "backlog", "label": "ajoute" },
+    { "from": "module_type", "to": "backlog", "label": "ajoute" },
+    { "from": "structure_logic", "to": "audit_md", "label": "documente" },
+    { "from": "module_type", "to": "audit_md", "label": "documente" },
+    { "from": "code_quality", "to": "audit_md", "label": "documente" },
+    { "from": "structure_score", "to": "migration_strategy", "label": "influence" },
+    { "from": "module_type", "to": "migration_strategy", "label": "détermine" }
+  ]
+}

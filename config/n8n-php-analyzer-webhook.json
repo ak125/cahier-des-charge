@@ -1,0 +1,245 @@
+{
+  "name": "PHP Analyzer Webhook",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "run-php-analyzer",
+        "options": {
+          "rawBody": true,
+          "responseMode": "responseNode"
+        },
+        "authentication": "basicAuth",
+        "credentialsAuthentication": "webhookBasicAuth"
+      },
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        250,
+        300
+      ],
+      "webhookId": "php-analyzer-webhook"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Extraire et valider les données d'entrée\nconst inputData = $input.item.json.body || $input.item.json;\n\n// Validation des entrées\nif (!inputData.sourceDir) {\n  return {\n    error: true,\n    message: \"Le paramètre 'sourceDir' est requis\"\n  };\n}\n\n// Préparer les options pour l'agent d'analyse PHP\nconst options = inputData.options || {};\n\n// Définir le contexte de l'agent\nconst agentContext = {\n  sourceDir: inputData.sourceDir,\n  options: options\n};\n\nconst execMode = inputData.execMode || \"sync\";\nconst callbackUrl = inputData.callbackUrl || null;\n\nreturn {\n  agentContext,\n  execMode,\n  callbackUrl,\n  timestamp: new Date().toISOString(),\n  workflowId: $workflow.id\n};"
+      },
+      "name": "Préparer les paramètres",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [
+        450,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.execMode }}",
+              "operation": "equal",
+              "value2": "sync"
+            }
+          ]
+        }
+      },
+      "name": "Mode d'exécution",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        650,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "url": "=http://localhost:3000/agents/analysis/php-analyzer-v2",
+        "options": {
+          "allowUnauthorizedCerts": true
+        },
+        "headerParametersUi": {
+          "parameter": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameter": [
+            {
+              "name": "context",
+              "value": "={{ $json.agentContext }}"
+            }
+          ]
+        },
+        "sendQuery": false
+      },
+      "name": "Appel Synchrone MCP",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [
+        850,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "// Stocker le résultat dans Supabase si configuré\nconst supabaseUrl = process.env.SUPABASE_URL;\nconst supabaseKey = process.env.SUPABASE_KEY;\n\nif (!supabaseUrl || !supabaseKey) {\n  // Pas de configuration Supabase, retourner simplement le résultat\n  return {\n    success: true,\n    data: $input.item.json,\n    stored: false,\n    message: \"Résultat non stocké (Supabase non configuré)\"\n  };\n}\n\nconst { createClient } = require('@supabase/supabase-js');\nconst supabase = createClient(supabaseUrl, supabaseKey);\n\n// Préparer les données pour insertion\nconst analysisResult = $input.item.json;\nconst sourceDir = $node[\"Préparer les paramètres\"].json.agentContext.sourceDir;\n\n// Ajouter un ID unique basé sur le timestamp\nconst resultId = `php-analysis-${Date.now()}`;\n\n// Insérer le résultat dans Supabase\nconst { data, error } = await supabase\n  .from('analysis_results')\n  .insert({\n    id: resultId,\n    source_dir: sourceDir,\n    result: analysisResult,\n    created_at: new Date().toISOString(),\n    agent: \"php-analyzer-v2\"\n  });\n\nif (error) {\n  return {\n    success: false,\n    error: error.message,\n    message: \"Échec du stockage dans Supabase\"\n  };\n}\n\nreturn {\n  success: true,\n  data: analysisResult,\n  resultId,\n  stored: true,\n  message: \"Résultat stocké avec succès dans Supabase\"\n};"
+      },
+      "name": "Stocker Résultat",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        1050,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "command": "=node /workspaces/cahier-des-charge/run-pipeline.js --analyzer=php-analyzer-v2 --source=\"{{ $json.agentContext.sourceDir }}\" --mode=analyze --background=true --id=\"{{ $workflow.id }}-{{ Date.now() }}\""
+      },
+      "name": "Exécution Background",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        850,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "name": "Réponse Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        1250,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Préparer la réponse pour le webhook en fonction du mode d'exécution\nlet response;\n\nif ($node[\"Mode d'exécution\"].outgoingConnections.main[0].node === \"Appel Synchrone MCP\") {\n  // Mode synchrone - renvoyer le résultat complet\n  const stored = $node[\"Stocker Résultat\"].json.stored || false;\n  const resultId = $node[\"Stocker Résultat\"].json.resultId || null;\n  \n  response = {\n    success: true,\n    data: $node[\"Stocker Résultat\"].json.data,\n    mode: \"sync\",\n    stored,\n    resultId,\n    timestamp: new Date().toISOString()\n  };\n} else {\n  // Mode asynchrone - renvoyer confirmation de démarrage\n  const jobId = $node[\"Exécution Background\"].json.executionId || `job-${Date.now()}`;\n  \n  response = {\n    success: true,\n    mode: \"async\",\n    message: \"Analyse PHP démarrée en arrière-plan\",\n    jobId,\n    callbackUrl: $node[\"Préparer les paramètres\"].json.callbackUrl,\n    timestamp: new Date().toISOString()\n  };\n}\n\nreturn response;"
+      },
+      "name": "Préparer Réponse",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [
+        1050,
+        400
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Préparer les paramètres",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Préparer les paramètres": {
+      "main": [
+        [
+          {
+            "node": "Mode d'exécution",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mode d'exécution": {
+      "main": [
+        [
+          {
+            "node": "Appel Synchrone MCP",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Exécution Background",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Appel Synchrone MCP": {
+      "main": [
+        [
+          {
+            "node": "Stocker Résultat",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Stocker Résultat": {
+      "main": [
+        [
+          {
+            "node": "Réponse Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Exécution Background": {
+      "main": [
+        [
+          {
+            "node": "Préparer Réponse",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Préparer Réponse": {
+      "main": [
+        [
+          {
+            "node": "Réponse Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": true,
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": ""
+  },
+  "staticData": null,
+  "pinData": {},
+  "tags": [
+    {
+      "name": "migration"
+    },
+    {
+      "name": "php"
+    },
+    {
+      "name": "analyzer"
+    }
+  ],
+  "triggerCount": 0
+}

@@ -1,0 +1,15 @@
+{
+  "file": "exemple.php",
+  "tables": [
+    "users"
+  ],
+  "access_patterns": [
+    {
+      "type": "Read",
+      "tables": [
+        "users"
+      ],
+      "complexity": "simple"
+    }
+  ]
+}

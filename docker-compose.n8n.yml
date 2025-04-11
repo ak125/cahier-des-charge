@@ -1,0 +1,45 @@
+version: '3'
+
+services:
+  n8n:
+    image: n8nio/n8n:1.88.0
+    container_name: migration-n8n
+    restart: always
+    ports:
+      - "5678:5678"
+    environment:
+      # Configuration de l'authentification
+      - N8N_BASIC_AUTH_ACTIVE=false
+      - N8N_ENCRYPTION_KEY=cahier-des-charges-migration-key
+      
+      # Configuration de la création automatique du premier utilisateur
+      - N8N_EMAIL_MODE=smtp
+      - N8N_SMTP_HOST=smtp.example.com
+      - N8N_USER_MANAGEMENT_DISABLED=false
+      - N8N_DIAGNOSTICS_ENABLED=false
+      - N8N_DEFAULT_USER_EMAIL=automecanik.seo@gmail.com
+      - N8N_DEFAULT_USER_PASSWORD=63@Amg2025
+      - N8N_DEFAULT_USER_FIRSTNAME=fafa
+      - N8N_DEFAULT_USER_LASTNAME=mass
+      
+      # Configuration générale
+      - N8N_HOST=${N8N_HOST:-localhost}
+      - N8N_PORT=${N8N_PORT:-5678}
+      - N8N_PROTOCOL=${N8N_PROTOCOL:-http}
+      - NODE_ENV=production
+      - WEBHOOK_URL=http://${N8N_HOST:-localhost}:${N8N_PORT:-5678}/
+      - N8N_EXECUTION_MODE=regular
+      - DB_TYPE=sqlite
+      - DB_SQLITE_PATH=/home/node/.n8n/database.sqlite
+      - N8N_PUSH_BACKEND=websocket
+      - N8N_LOG_LEVEL=debug
+      - NODE_TLS_REJECT_UNAUTHORIZED=0
+      - GENERIC_TIMEZONE=Europe/Paris
+      - N8N_SKIP_OWNERSHIP_CHECK=true
+      - N8N_USER_FOLDER=/home/node/.n8n
+    volumes:
+      - n8n_data:/home/node/.n8n
+
+volumes:
+  n8n_data:
+    name: n8n_data

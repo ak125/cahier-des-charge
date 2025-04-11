@@ -1,0 +1,57 @@
+{
+  "file": "panier.php",
+  "priority": 8,
+  "status": "to-do",
+  "structure_score": 1.0,
+  "logic_type": "Page (vue)",
+  "tasks": [
+    {
+      "type": "refactorStructure",
+      "target": "backend",
+      "status": "pending",
+      "description": "Refactoriser la structure du code (score: 1.0/3)"
+    },
+    {
+      "type": "createSchema",
+      "target": "database",
+      "status": "pending",
+      "description": "Créer les modèles Prisma CartItem et Promotion"
+    },
+    {
+      "type": "createDTO",
+      "target": "backend",
+      "status": "pending",
+      "description": "Créer les DTOs pour le panier (CartItemDto, AddToCartDto, etc.)"
+    },
+    {
+      "type": "createService",
+      "target": "backend",
+      "status": "pending",
+      "description": "Développer CartService avec méthodes CRUD et calcul"
+    },
+    {
+      "type": "createController",
+      "target": "backend",
+      "status": "pending",
+      "description": "Implémenter CartController avec endpoints RESTful"
+    },
+    {
+      "type": "createRoute",
+      "target": "frontend",
+      "status": "pending",
+      "description": "Créer la route Remix /panier avec composants associés"
+    },
+    {
+      "type": "createTests",
+      "target": "backend",
+      "status": "pending",
+      "description": "Développer des tests unitaires et d'intégration pour le panier"
+    },
+    {
+      "type": "migrate",
+      "target": "data",
+      "status": "pending",
+      "description": "Migrer les données existantes vers la nouvelle structure"
+    }
+  ]
+}

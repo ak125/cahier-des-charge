@@ -1,0 +1,31 @@
+{
+  "file": "exemple.php",
+  "priority": 5,
+  "status": "audited",
+  "tasks": [
+    {
+      "type": "generate.dto",
+      "target": "backend",
+      "status": "pending",
+      "description": "Créer le DTO pour l'entité Example"
+    },
+    {
+      "type": "generate.controller",
+      "target": "backend",
+      "status": "pending",
+      "description": "Créer le contrôleur Examples"
+    },
+    {
+      "type": "generate.service",
+      "target": "backend",
+      "status": "pending",
+      "description": "Créer le service Examples"
+    },
+    {
+      "type": "generate.route",
+      "target": "frontend",
+      "status": "pending",
+      "description": "Créer la route Remix pour les exemples"
+    }
+  ]
+}
