@@ -1,0 +1,1338 @@
+{
+  "name": "Pipeline de Migration IA",
+  "workflows": [
+    {
+      "id": "php-analyzer",
+      "name": "PHP Analyzer",
+      "active": true,
+      "nodes": [
+        {
+          "parameters": {
+            "triggerTimes": {
+              "item": [
+                {
+                  "mode": "everyX",
+                  "value": 5,
+                  "unit": "minutes"
+                }
+              ]
+            }
+          },
+          "name": "Schedule Trigger",
+          "type": "n8n-nodes-base.scheduleTrigger",
+          "position": [100, 200]
+        },
+        {
+          "parameters": {
+            "path": "/workspaces/cahier-des-charge/app/legacy",
+            "fileExtensions": ["php"],
+            "options": {
+              "recursive": true
+            }
+          },
+          "name": "List PHP Files",
+          "type": "n8n-nodes-base.filesearch",
+          "position": [300, 200]
+        },
+        {
+          "parameters": {
+            "filePath": "={{ $json.path }}",
+            "agentUrl": "http://localhost:3001/api/analyze-php",
+            "outputPath": "/workspaces/cahier-des-charge/reports/analysis/{{$json.filename}}.json"
+          },
+          "name": "PHP Analysis",
+          "type": "n8n-nodes-base.httpRequest",
+          "position": [500, 200]
+        },
+        {
+          "parameters": {
+            "path": "=/workspaces/cahier-des-charge/reports/analysis/{{$json.filename}}.json",
+            "content": "={{ $json.analysis }}",
+            "options": {
+              "encoding": "utf8",
+              "createPath": true
+            }
+          },
+          "name": "Save Analysis",
+          "type": "n8n-nodes-base.writeBinaryFile",
+          "position": [700, 200]
+        }
+      ],
+      "connections": {
+        "Schedule Trigger": {
+          "main": [
+            [
+              {
+                "node": "List PHP Files",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        },
+        "List PHP Files": {
+          "main": [
+            [
+              {
+                "node": "PHP Analysis",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        },
+        "PHP Analysis": {
+          "main": [
+            [
+              {
+                "node": "Save Analysis",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "id": "code-generator",
+      "name": "Code Generator",
+      "active": true,
+      "nodes": [],
+      "connections": {}
+    },
+    {
+      "id": "docs-updater",
+      "name": "Documentation Updater",
+      "active": true,
+      "nodes": [],
+      "connections": {}
+    },
+    {
+      "id": "audit-validator",
+      "name": "Audit Validator",
+      "active": true,
+      "nodes": [
+        {
+          "parameters": {
+            "triggerTimes": {
+              "item": [
+                {
+                  "mode": "everyX",
+                  "value": 30,
+                  "unit": "minutes"
+                }
+              ]
+            }
+          },
+          "name": "Schedule Trigger",
+          "type": "n8n-nodes-base.scheduleTrigger",
+          "position": [100, 200]
+        },
+        {
+          "parameters": {
+            "functionCode": "// Exécute le script de validation des audits\nconst { spawnSync } = require('child_process');\n\nconst result = spawnSync('npx', ['ts-node', '/workspaces/cahier-des-charge/utils/validate-audit-outputs.ts', '--verbose'], {\n  encoding: 'utf8',\n  cwd: '/workspaces/cahier-des-charge'\n});\n\nif (result.error) {\n  throw new Error(`Erreur d'exécution: ${result.error.message}`);\n}\n\nlet validationReport;\ntry {\n  validationReport = require('/workspaces/cahier-des-charge/reports/audit_consistency_report.json');\n} catch (err) {\n  throw new Error(`Impossible de lire le rapport de validation: ${err.message}`);\n}\n\n// Ajouter des métadonnées pour la notification\nconst hasIssues = validationReport.missingFiles.length > 0 || \n                 validationReport.inconsistentFields.length > 0 || \n                 validationReport.duplicateAnalyses.length > 0;\n\nreturn {\n  json: {\n    validationReport,\n    timestamp: new Date().toISOString(),\n    hasIssues,\n    issueCount: validationReport.missingFiles.length + \n                validationReport.inconsistentFields.length + \n                validationReport.duplicateAnalyses.length,\n    summary: {\n      missingFiles: validationReport.missingFiles.length,\n      inconsistentFields: validationReport.inconsistentFields.length,\n      duplicateAnalyses: validationReport.duplicateAnalyses.length\n    }\n  }\n};"
+          },
+          "name": "Run Audit Validation",
+          "type": "n8n-nodes-base.function",
+          "position": [300, 200]
+        },
+        {
+          "parameters": {
+            "conditions": {
+              "boolean": [
+                {
+                  "value1": "={{ $json.hasIssues }}",
+                  "value2": true
+                }
+              ]
+            }
+          },
+          "name": "Has Issues?",
+          "type": "n8n-nodes-base.if",
+          "position": [500, 200]
+        },
+        {
+          "parameters": {
+            "functionCode": "// Exécute le script de correction automatique\nconst { spawnSync } = require('child_process');\n\nconst result = spawnSync('npx', ['ts-node', '/workspaces/cahier-des-charge/utils/recheck-missing-outputs.ts', '--force'], {\n  encoding: 'utf8',\n  cwd: '/workspaces/cahier-des-charge'\n});\n\nif (result.error) {\n  throw new Error(`Erreur d'exécution: ${result.error.message}`);\n}\n\nlet recheckReport;\ntry {\n  recheckReport = require('/workspaces/cahier-des-charge/reports/recheck_report.json');\n} catch (err) {\n  throw new Error(`Impossible de lire le rapport de retraitement: ${err.message}`);\n}\n\nreturn {\n  json: {\n    ...recheckReport,\n    timestamp: new Date().toISOString(),\n    output: result.stdout,\n    summary: {\n      successful: recheckReport.successful.length,\n      failed: recheckReport.failed.length,\n      notFound: recheckReport.notFound.length\n    }\n  }\n};"
+          },
+          "name": "Auto-Fix Issues",
+          "type": "n8n-nodes-base.function",
+          "position": [700, 140]
+        },
+        {
+          "parameters": {
+            "chatId": "{{ $env.NOTIFICATION_CHAT_ID }}",
+            "text": "⚠️ *Problèmes détectés dans les audits*\n\n*Résumé:*\n- Fichiers manquants: {{ $json.summary.missingFiles }}\n- Champs incohérents: {{ $json.summary.inconsistentFields }}\n- Analyses en double: {{ $json.summary.duplicateAnalyses }}\n\n[Voir le tableau de bord](http://localhost:3000/audit-dashboard)\n\nLe processus de correction automatique a été déclenché.",
+            "additionalFields": {
+              "parseMode": "Markdown",
+              "disableNotification": false
+            }
+          },
+          "name": "Send Alert",
+          "type": "n8n-nodes-base.telegram",
+          "position": [900, 140]
+        },
+        {
+          "parameters": {
+            "path": "/workspaces/cahier-des-charge/reports/latest_validation_status.json",
+            "options": {
+              "encoding": "utf8",
+              "createPath": true
+            }
+          },
+          "name": "Save Status",
+          "type": "n8n-nodes-base.writeBinaryFile",
+          "position": [700, 300]
+        },
+        {
+          "parameters": {
+            "chatId": "{{ $env.NOTIFICATION_CHAT_ID }}",
+            "text": "✅ *Validation des audits terminée*\n\nTous les fichiers d'audit sont cohérents et à jour.\n\n[Voir le tableau de bord](http://localhost:3000/audit-dashboard)",
+            "additionalFields": {
+              "parseMode": "Markdown",
+              "disableNotification": true
+            }
+          },
+          "name": "Send Success",
+          "type": "n8n-nodes-base.telegram",
+          "position": [900, 300]
+        }
+      ],
+      "connections": {
+        "Schedule Trigger": {
+          "main": [
+            [
+              {
+                "node": "Run Audit Validation",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        },
+        "Run Audit Validation": {
+          "main": [
+            [
+              {
+                "node": "Has Issues?",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        },
+        "Has Issues?": {
+          "main": [
+            [
+              {
+                "node": "Auto-Fix Issues",
+                "type": "main",
+                "index": 0
+              },
+              {
+                "node": "Save Status",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        },
+        "Auto-Fix Issues": {
+          "main": [
+            [
+              {
+                "node": "Send Alert",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        },
+        "Save Status": {
+          "main": [
+            [
+              {
+                "node": "Send Success",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "id": "audit-quality-metrics",
+      "name": "Audit Quality Metrics",
+      "active": true,
+      "nodes": [
+        {
+          "parameters": {
+            "triggerTimes": {
+              "item": [
+                {
+                  "mode": "everyX",
+                  "value": 24,
+                  "unit": "hours"
+                }
+              ]
+            }
+          },
+          "name": "Schedule Trigger",
+          "type": "n8n-nodes-base.scheduleTrigger",
+          "position": [100, 200]
+        },
+        {
+          "parameters": {
+            "functionCode": "// Exécute l'analyseur de qualité des audits\nconst { spawnSync } = require('child_process');\n\nconst result = spawnSync('npx', ['ts-node', '/workspaces/cahier-des-charge/utils/audit-quality-analyzer.ts', '--verbose'], {\n  encoding: 'utf8',\n  cwd: '/workspaces/cahier-des-charge'\n});\n\nif (result.error) {\n  throw new Error(`Erreur d'exécution: ${result.error.message}`);\n}\n\nlet qualityReport;\ntry {\n  qualityReport = require('/workspaces/cahier-des-charge/reports/audit_quality_metrics.json');\n} catch (err) {\n  throw new Error(`Impossible de lire le rapport de qualité: ${err.message}`);\n}\n\nreturn {\n  json: {\n    qualityReport,\n    timestamp: new Date().toISOString(),\n    summary: {\n      totalAudits: qualityReport.totalAudits,\n      averageCompleteness: qualityReport.averageMetrics.completeness.toFixed(1) + '%',\n      averageConsistency: qualityReport.averageMetrics.consistency.toFixed(1) + '%',\n      averageMigrationReadiness: qualityReport.averageMetrics.migrationReadiness.toFixed(1) + '%',\n      improvingAudits: qualityReport.trends.improving.length,\n      decliningAudits: qualityReport.trends.declining.length,\n      priorityAudits: qualityReport.recommendations.priority.length\n    }\n  }\n};"
+          },
+          "name": "Run Quality Analysis",
+          "type": "n8n-nodes-base.function",
+          "position": [300, 200]
+        },
+        {
+          "parameters": {
+            "chatId": "{{ $env.NOTIFICATION_CHAT_ID }}",
+            "text": "📊 *Rapport de qualité des audits*\n\n*Résumé:*\n- Total des audits: {{ $json.summary.totalAudits }}\n- Complétude moyenne: {{ $json.summary.averageCompleteness }}\n- Cohérence moyenne: {{ $json.summary.averageConsistency }}\n- Préparation à la migration: {{ $json.summary.averageMigrationReadiness }}\n\n*Tendances:*\n- Audits en amélioration: {{ $json.summary.improvingAudits }}\n- Audits en déclin: {{ $json.summary.decliningAudits }}\n- Audits prioritaires: {{ $json.summary.priorityAudits }}\n\n[Voir le tableau de bord](http://localhost:3000/audit-dashboard)",
+            "additionalFields": {
+              "parseMode": "Markdown",
+              "disableNotification": false
+            }
+          },
+          "name": "Send Quality Report",
+          "type": "n8n-nodes-base.telegram",
+          "position": [500, 200]
+        },
+        {
+          "parameters": {
+            "conditions": {
+              "number": [
+                {
+                  "value1": "={{ $json.summary.priorityAudits }}",
+                  "operation": "larger",
+                  "value2": 3
+                }
+              ]
+            }
+          },
+          "name": "Priority Audits?",
+          "type": "n8n-nodes-base.if",
+          "position": [700, 200]
+        },
+        {
+          "parameters": {
+            "chatId": "{{ $env.NOTIFICATION_CHAT_ID }}",
+            "text": "⚠️ *Attention: {{ $json.summary.priorityAudits }} audits prioritaires nécessitent des améliorations*\n\nVoici la liste des audits à améliorer en priorité:\n{% for slug in $json.qualityReport.recommendations.priority %}{% if loop.index <= 5 %}\n- `{{ slug }}`{% endif %}{% endfor %}\n{% if $json.qualityReport.recommendations.priority.length > 5 %}\n...et {{ $json.qualityReport.recommendations.priority.length - 5 }} autres.\n{% endif %}\n\nMerci de consulter le tableau de bord pour plus de détails:\n[Voir le dashboard](http://localhost:3000/audit-dashboard)",
+            "additionalFields": {
+              "parseMode": "Markdown",
+              "disableNotification": false
+            }
+          },
+          "name": "Send Priority Alert",
+          "type": "n8n-nodes-base.telegram",
+          "position": [900, 120]
+        },
+        {
+          "parameters": {
+            "keepOnlySet": true,
+            "values": {
+              "string": [
+                {
+                  "name": "totalAudits",
+                  "value": "={{ $json.summary.totalAudits }}"
+                },
+                {
+                  "name": "averageCompleteness",
+                  "value": "={{ $json.summary.averageCompleteness }}"
+                },
+                {
+                  "name": "averageConsistency",
+                  "value": "={{ $json.summary.averageConsistency }}"
+                },
+                {
+                  "name": "averageMigrationReadiness",
+                  "value": "={{ $json.summary.averageMigrationReadiness }}"
+                },
+                {
+                  "name": "improvingAudits",
+                  "value": "={{ $json.summary.improvingAudits }}"
+                },
+                {
+                  "name": "decliningAudits",
+                  "value": "={{ $json.summary.decliningAudits }}"
+                },
+                {
+                  "name": "priorityAudits",
+                  "value": "={{ $json.summary.priorityAudits }}"
+                },
+                {
+                  "name": "timestamp",
+                  "value": "={{ $json.timestamp }}"
+                }
+              ]
+            },
+            "options": {}
+          },
+          "name": "Prepare Metrics",
+          "type": "n8n-nodes-base.set",
+          "position": [900, 280]
+        },
+        {
+          "parameters": {
+            "operation": "upsert",
+            "schema": "public",
+            "table": "audit_metrics",
+            "primaryKey": "id",
+            "columns": "timestamp,total_audits,completeness,consistency,migration_readiness,improving,declining,priority",
+            "additionalFields": {}
+          },
+          "name": "Save to Database",
+          "type": "n8n-nodes-base.postgres",
+          "position": [1100, 280]
+        }
+      ],
+      "connections": {
+        "Schedule Trigger": {
+          "main": [
+            [
+              {
+                "node": "Run Quality Analysis",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        },
+        "Run Quality Analysis": {
+          "main": [
+            [
+              {
+                "node": "Send Quality Report",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        },
+        "Send Quality Report": {
+          "main": [
+            [
+              {
+                "node": "Priority Audits?",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        },
+        "Priority Audits?": {
+          "main": [
+            [
+              {
+                "node": "Send Priority Alert",
+                "type": "main",
+                "index": 0
+              },
+              {
+                "node": "Prepare Metrics",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        },
+        "Prepare Metrics": {
+          "main": [
+            [
+              {
+                "node": "Save to Database",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "id": "intelligent-php-selector",
+      "name": "Sélection Intelligente des Fichiers PHP",
+      "active": true,
+      "nodes": [
+        {
+          "parameters": {
+            "rule": {
+              "interval": [
+                {
+                  "field": "cronExpression",
+                  "expression": "0 0 * * *"
+                }
+              ]
+            }
+          },
+          "name": "Déclencheur Quotidien",
+          "type": "n8n-nodes-base.cron",
+          "position": [100, 200],
+          "typeVersion": 1
+        },
+        {
+          "parameters": {
+            "triggerTimes": {}
+          },
+          "name": "Trigger Manuel",
+          "type": "n8n-nodes-base.manualTrigger",
+          "position": [100, 340],
+          "typeVersion": 1
+        },
+        {
+          "parameters": {
+            "authentication": "genericCredentialType",
+            "httpMethod": "POST",
+            "path": "audit-trigger",
+            "options": {}
+          },
+          "name": "Webhook GitHub",
+          "type": "n8n-nodes-base.webhook",
+          "position": [100, 480],
+          "webhookId": "audit-php-files-webhook",
+          "typeVersion": 1
+        },
+        {
+          "parameters": {
+            "mode": "mergeByPosition"
+          },
+          "name": "Merge Déclencheurs",
+          "type": "n8n-nodes-base.merge",
+          "position": [300, 340],
+          "typeVersion": 2
+        },
+        {
+          "parameters": {
+            "command": "cd /workspaces/cahier-des-charge && npx ts-node agents/discovery/discovery-agent.ts",
+            "workingDirectory": "/workspaces/cahier-des-charge",
+            "executeTimeout": 300
+          },
+          "name": "Exécuter Discovery Agent",
+          "type": "n8n-nodes-base.executeCommand",
+          "position": [500, 340],
+          "typeVersion": 1
+        },
+        {
+          "parameters": {
+            "command": "cd /workspaces/cahier-des-charge && npx ts-node agents/discovery/audit-selector.ts",
+            "workingDirectory": "/workspaces/cahier-des-charge",
+            "executeTimeout": 60
+          },
+          "name": "Exécuter Audit Selector",
+          "type": "n8n-nodes-base.executeCommand",
+          "position": [700, 340],
+          "typeVersion": 1
+        },
+        {
+          "parameters": {
+            "jsCode": "// Extraction des fichiers PHP sélectionnés depuis la sortie JSON\nconst output = $input.item.json.stdout || '';\n\ntry {\n  // Extraction de la liste JSON des fichiers\n  const jsonMatch = output.match(/\\[.*?\\]/s);\n  \n  if (!jsonMatch) {\n    throw new Error('Aucune liste de fichiers trouvée dans la sortie');\n  }\n  \n  const selectedFiles = JSON.parse(jsonMatch[0]);\n  \n  if (!Array.isArray(selectedFiles) || selectedFiles.length === 0) {\n    return [\n      {\n        json: {\n          message: 'Aucun fichier à analyser pour cette exécution',\n          timestamp: new Date().toISOString(),\n          selectedFiles: []\n        }\n      }\n    ];\n  }\n  \n  // Retourner un item pour chaque fichier sélectionné\n  return selectedFiles.map(filePath => ({\n    json: {\n      filePath,\n      fileName: filePath.split('/').pop(),\n      timestamp: new Date().toISOString(),\n      batchId: new Date().toISOString().replace(/[:.]/g, '-'),\n      selectionMethod: 'intelligent-selector'\n    }\n  }));\n} catch (error) {\n  throw new Error(`Erreur lors du traitement de la sortie: ${error.message}`);\n}"
+          },
+          "name": "Traiter Liste Fichiers",
+          "type": "n8n-nodes-base.code",
+          "position": [900, 340],
+          "typeVersion": 1
+        },
+        {
+          "parameters": {
+            "conditions": {
+              "boolean": [
+                {
+                  "value1": "={{ Object.keys($json).includes('filePath') }}",
+                  "value2": true
+                }
+              ]
+            }
+          },
+          "name": "Fichiers Trouvés?",
+          "type": "n8n-nodes-base.if",
+          "position": [1100, 340],
+          "typeVersion": 1
+        },
+        {
+          "parameters": {
+            "chatId": "{{ $env.NOTIFICATION_CHAT_ID }}",
+            "text": "🔍 *Sélection intelligente des fichiers PHP*\n\nAucun fichier prioritaire n'a été trouvé pour cette exécution.\n\n*Timestamp:* {{ $json.timestamp }}\n\n[Voir le tableau de bord](http://localhost:3000/audit-dashboard)",
+            "additionalFields": {
+              "parseMode": "Markdown",
+              "disableNotification": true
+            }
+          },
+          "name": "Notifier Aucun Fichier",
+          "type": "n8n-nodes-base.telegram",
+          "position": [1300, 460],
+          "typeVersion": 1
+        },
+        {
+          "parameters": {
+            "functionCode": "// Préparation pour l'analyse d'audit\nreturn {\n  json: {\n    filePath: $input.item.json.filePath,\n    fileName: $input.item.json.fileName,\n    timestamp: $input.item.json.timestamp,\n    batchId: $input.item.json.batchId,\n    analysisType: 'audit',\n    priority: 'high'\n  }\n};"
+          },
+          "name": "Préparer pour Audit",
+          "type": "n8n-nodes-base.function",
+          "position": [1300, 240],
+          "typeVersion": 1
+        },
+        {
+          "parameters": {
+            "command": "cd /workspaces/cahier-des-charge && npx ts-node agents/analysis/audit-analyzer.ts --file={{ $json.filePath }} --output-dir=/workspaces/cahier-des-charge/reports/analysis",
+            "workingDirectory": "/workspaces/cahier-des-charge",
+            "executeTimeout": 180
+          },
+          "name": "Exécuter Analyse d'Audit",
+          "type": "n8n-nodes-base.executeCommand",
+          "position": [1500, 240],
+          "typeVersion": 1
+        },
+        {
+          "parameters": {
+            "chatId": "{{ $env.NOTIFICATION_CHAT_ID }}",
+            "text": "✅ *Analyse terminée pour {{ $json.fileName }}*\n\n📄 Audit : OK\n🧩 Backlog : OK\n🔁 Graphe : OK\n\n*Timestamp:* {{ $json.timestamp }}\n\n[Voir le rapport](http://localhost:3000/audit/{{ $json.fileName }})",
+            "additionalFields": {
+              "parseMode": "Markdown",
+              "disableNotification": false
+            }
+          },
+          "name": "Notifier Analyse Terminée",
+          "type": "n8n-nodes-base.telegram",
+          "position": [1700, 240],
+          "typeVersion": 1
+        },
+        {
+          "parameters": {
+            "chatId": "{{ $env.NOTIFICATION_CHAT_ID }}",
+            "text": "🧠 *Sélection intelligente des fichiers PHP*\n\nFichier sélectionné pour analyse : `{{ $json.filePath }}`\nPriorité: {{ $json.priority }}\nType d'analyse: {{ $json.analysisType }}\n\n*Batch ID:* {{ $json.batchId }}\n*Timestamp:* {{ $json.timestamp }}\n\n[Voir le tableau de bord](http://localhost:3000/audit-dashboard)",
+            "additionalFields": {
+              "parseMode": "Markdown",
+              "disableNotification": true
+            }
+          },
+          "name": "Notifier Fichier Sélectionné",
+          "type": "n8n-nodes-base.telegram",
+          "position": [1300, 120],
+          "typeVersion": 1
+        }
+      ],
+      "connections": {
+        "Déclencheur Quotidien": {
+          "main": [
+            [
+              {
+                "node": "Merge Déclencheurs",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        },
+        "Trigger Manuel": {
+          "main": [
+            [
+              {
+                "node": "Merge Déclencheurs",
+                "type": "main",
+                "index": 1
+              }
+            ]
+          ]
+        },
+        "Webhook GitHub": {
+          "main": [
+            [
+              {
+                "node": "Merge Déclencheurs",
+                "type": "main",
+                "index": 2
+              }
+            ]
+          ]
+        },
+        "Merge Déclencheurs": {
+          "main": [
+            [
+              {
+                "node": "Exécuter Discovery Agent",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        },
+        "Exécuter Discovery Agent": {
+          "main": [
+            [
+              {
+                "node": "Exécuter Audit Selector",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        },
+        "Exécuter Audit Selector": {
+          "main": [
+            [
+              {
+                "node": "Traiter Liste Fichiers",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        },
+        "Traiter Liste Fichiers": {
+          "main": [
+            [
+              {
+                "node": "Fichiers Trouvés?",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        },
+        "Fichiers Trouvés?": {
+          "main": [
+            [
+              {
+                "node": "Préparer pour Audit",
+                "type": "main",
+                "index": 0
+              },
+              {
+                "node": "Notifier Fichier Sélectionné",
+                "type": "main",
+                "index": 0
+              }
+            ],
+            [
+              {
+                "node": "Notifier Aucun Fichier",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        },
+        "Préparer pour Audit": {
+          "main": [
+            [
+              {
+                "node": "Exécuter Analyse d'Audit",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        },
+        "Exécuter Analyse d'Audit": {
+          "main": [
+            [
+              {
+                "node": "Notifier Analyse Terminée",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "id": "multi-agent-audit-pipeline",
+      "name": "Pipeline d'Audit Multi-Agents",
+      "active": true,
+      "nodes": [
+        {
+          "parameters": {
+            "rule": {
+              "interval": [
+                {
+                  "field": "cronExpression",
+                  "expression": "0 0 * * *"
+                }
+              ]
+            }
+          },
+          "name": "Déclencheur Quotidien",
+          "type": "n8n-nodes-base.cron",
+          "position": [100, 200],
+          "typeVersion": 1
+        },
+        {
+          "parameters": {
+            "triggerTimes": {}
+          },
+          "name": "Trigger Manuel",
+          "type": "n8n-nodes-base.manualTrigger",
+          "position": [100, 340],
+          "typeVersion": 1
+        },
+        {
+          "parameters": {
+            "authentication": "genericCredentialType",
+            "httpMethod": "POST",
+            "path": "audit-trigger",
+            "options": {
+              "responseMode": "responseNode",
+              "responseData": "firstEntryJson"
+            }
+          },
+          "name": "Webhook GitHub",
+          "type": "n8n-nodes-base.webhook",
+          "position": [100, 480],
+          "webhookId": "audit-php-files-webhook",
+          "typeVersion": 1
+        },
+        {
+          "parameters": {
+            "conditions": {
+              "boolean": [
+                {
+                  "value1": "={{ !!$json.body && !!$json.body.repository && $json.body.ref === 'refs/heads/legacy-integration' }}",
+                  "value2": true
+                }
+              ]
+            }
+          },
+          "name": "Est Branch Legacy?",
+          "type": "n8n-nodes-base.if",
+          "position": [300, 480],
+          "typeVersion": 1
+        },
+        {
+          "parameters": {
+            "mode": "mergeByPosition"
+          },
+          "name": "Merge Déclencheurs",
+          "type": "n8n-nodes-base.merge",
+          "position": [500, 340],
+          "typeVersion": 2
+        },
+        {
+          "parameters": {
+            "command": "cd /workspaces/cahier-des-charge && npx ts-node agents/discovery/discovery-agent.ts",
+            "workingDirectory": "/workspaces/cahier-des-charge",
+            "executeTimeout": 300
+          },
+          "name": "Exécuter Discovery Agent",
+          "type": "n8n-nodes-base.executeCommand",
+          "position": [700, 340],
+          "typeVersion": 1
+        },
+        {
+          "parameters": {
+            "functionCode": "// Lire la configuration du pipeline\nconst fs = require('fs');\nconst path = require('path');\n\nconst configPath = '/workspaces/cahier-des-charge/config/audit-pipeline-config.json';\nlet config;\n\ntry {\n  const configContent = fs.readFileSync(configPath, 'utf8');\n  config = JSON.parse(configContent).pipelineConfig;\n} catch (error) {\n  throw new Error(`Erreur lors de la lecture de la configuration: ${error.message}`);\n}\n\nreturn {\n  json: {\n    pipelineConfig: config,\n    timestamp: new Date().toISOString(),\n    maxFilesToProcess: config.maxFilesPerRun || 5,\n    highPriorityThreshold: config.highPriorityThreshold || 8\n  }\n};"
+          },
+          "name": "Charger Configuration",
+          "type": "n8n-nodes-base.function",
+          "position": [900, 340],
+          "typeVersion": 1
+        },
+        {
+          "parameters": {
+            "command": "cd /workspaces/cahier-des-charge && npx ts-node agents/discovery/audit-selector.ts --max-files={{ $json.maxFilesToProcess }} --priority-threshold={{ $json.highPriorityThreshold }}",
+            "workingDirectory": "/workspaces/cahier-des-charge",
+            "executeTimeout": 60
+          },
+          "name": "Exécuter Audit Selector",
+          "type": "n8n-nodes-base.executeCommand",
+          "position": [1100, 340],
+          "typeVersion": 1
+        },
+        {
+          "parameters": {
+            "jsCode": "// Extraction des fichiers PHP sélectionnés depuis la sortie JSON\nconst output = $input.item.json.stdout || '';\n\ntry {\n  // Extraction de la liste JSON des fichiers\n  const jsonMatch = output.match(/\\[.*?\\]/s);\n  \n  if (!jsonMatch) {\n    throw new Error('Aucune liste de fichiers trouvée dans la sortie');\n  }\n  \n  const selectedFiles = JSON.parse(jsonMatch[0]);\n  \n  if (!Array.isArray(selectedFiles) || selectedFiles.length === 0) {\n    return [\n      {\n        json: {\n          message: 'Aucun fichier à analyser pour cette exécution',\n          timestamp: new Date().toISOString(),\n          selectedFiles: [],\n          pipelineConfig: $input.item.json.pipelineConfig\n        }\n      }\n    ];\n  }\n  \n  // Retourner un item pour chaque fichier sélectionné\n  return selectedFiles.map(filePath => ({\n    json: {\n      filePath,\n      fileName: filePath.split('/').pop(),\n      timestamp: new Date().toISOString(),\n      batchId: new Date().toISOString().replace(/[:.]/g, '-'),\n      selectionMethod: 'intelligent-selector',\n      pipelineConfig: $input.item.json.pipelineConfig,\n      outputDir: `/workspaces/cahier-des-charge/reports/analysis/${filePath.split('/').pop().replace('.php', '')}`\n    }\n  }));\n} catch (error) {\n  throw new Error(`Erreur lors du traitement de la sortie: ${error.message}`);\n}"
+          },
+          "name": "Traiter Liste Fichiers",
+          "type": "n8n-nodes-base.code",
+          "position": [1300, 340],
+          "typeVersion": 1
+        },
+        {
+          "parameters": {
+            "conditions": {
+              "boolean": [
+                {
+                  "value1": "={{ Object.keys($json).includes('filePath') }}",
+                  "value2": true
+                }
+              ]
+            }
+          },
+          "name": "Fichiers Trouvés?",
+          "type": "n8n-nodes-base.if",
+          "position": [1500, 340],
+          "typeVersion": 1
+        },
+        {
+          "parameters": {
+            "chatId": "{{ $env.NOTIFICATION_CHAT_ID }}",
+            "text": "🔍 *Pipeline d'audit multi-agents*\n\nAucun fichier prioritaire n'a été trouvé pour cette exécution.\n\n*Timestamp:* {{ $json.timestamp }}\n\n[Voir le tableau de bord](http://localhost:3000/audit-dashboard)",
+            "additionalFields": {
+              "parseMode": "Markdown",
+              "disableNotification": true
+            }
+          },
+          "name": "Notifier Aucun Fichier",
+          "type": "n8n-nodes-base.telegram",
+          "position": [1700, 460],
+          "typeVersion": 1
+        },
+        {
+          "parameters": {
+            "command": "mkdir -p {{ $json.outputDir }}",
+            "workingDirectory": "/workspaces/cahier-des-charge",
+            "executeTimeout": 10
+          },
+          "name": "Créer Dossier Sorties",
+          "type": "n8n-nodes-base.executeCommand",
+          "position": [1700, 240],
+          "typeVersion": 1
+        },
+        {
+          "parameters": {
+            "functionCode": "// Générer la liste des agents à exécuter\nconst agents = $input.item.json.pipelineConfig.agents;\nconst sortedAgents = [...agents].sort((a, b) => a.priority - b.priority);\n\nreturn {\n  json: {\n    ...$input.item.json,\n    agentsToRun: sortedAgents,\n    currentAgentIndex: 0,\n    agentResults: {}\n  }\n};"
+          },
+          "name": "Préparer Pipeline d'Agents",
+          "type": "n8n-nodes-base.function",
+          "position": [1900, 240],
+          "typeVersion": 1
+        },
+        {
+          "parameters": {
+            "chatId": "{{ $env.NOTIFICATION_CHAT_ID }}",
+            "text": "🧠 *Pipeline d'audit multi-agents*\n\nDémarrage de l'analyse pour le fichier: `{{ $json.fileName }}`\nPriorité: {{ $json.priority || 'standard' }}\nNombre d'agents dans le pipeline: {{ $json.agentsToRun.length }}\n\n*Batch ID:* {{ $json.batchId }}\n*Timestamp:* {{ $json.timestamp }}\n\n[Voir le tableau de bord](http://localhost:3000/audit-dashboard)",
+            "additionalFields": {
+              "parseMode": "Markdown",
+              "disableNotification": true
+            }
+          },
+          "name": "Notifier Démarrage Analyse",
+          "type": "n8n-nodes-base.telegram",
+          "position": [1700, 100],
+          "typeVersion": 1
+        },
+        {
+          "parameters": {
+            "functionCode": "// Récupérer l'agent actuel à exécuter\nconst currentIndex = $input.item.json.currentAgentIndex;\nconst agents = $input.item.json.agentsToRun;\n\nif (currentIndex >= agents.length) {\n  // Tous les agents ont été exécutés\n  return {\n    json: {\n      ...$input.item.json,\n      pipelineCompleted: true\n    }\n  };\n}\n\nconst currentAgent = agents[currentIndex];\n\nreturn {\n  json: {\n    ...$input.item.json,\n    currentAgent,\n    currentAgentCommand: `cd /workspaces/cahier-des-charge && npx ts-node ${currentAgent.script} --file=${$input.item.json.filePath} --output-dir=${$input.item.json.outputDir}`\n  }\n};"
+          },
+          "name": "Sélectionner Agent Actuel",
+          "type": "n8n-nodes-base.function",
+          "position": [2100, 240],
+          "typeVersion": 1
+        },
+        {
+          "parameters": {
+            "conditions": {
+              "boolean": [
+                {
+                  "value1": "={{ $json.pipelineCompleted }}",
+                  "value2": true
+                }
+              ]
+            }
+          },
+          "name": "Pipeline Terminé?",
+          "type": "n8n-nodes-base.if",
+          "position": [2300, 240],
+          "typeVersion": 1
+        },
+        {
+          "parameters": {
+            "command": "={{ $json.currentAgentCommand }}",
+            "workingDirectory": "/workspaces/cahier-des-charge",
+            "executeTimeout": "={{ $json.currentAgent.timeout || 120 }}"
+          },
+          "name": "Exécuter Agent Actuel",
+          "type": "n8n-nodes-base.executeCommand",
+          "position": [2500, 340],
+          "typeVersion": 1
+        },
+        {
+          "parameters": {
+            "functionCode": "// Stocker le résultat de l'agent actuel\nconst agentId = $input.item.json.currentAgent.id;\nconst agentResults = $input.item.json.agentResults || {};\n\n// Analyser la sortie pour vérifier si l'exécution a réussi\nconst stdout = $input.item.json.stdout || '';\nconst stderr = $input.item.json.stderr || '';\nconst exitCode = $input.item.json.exitCode;\n\nconst success = exitCode === 0;\n\n// Mettre à jour les résultats des agents\nagentResults[agentId] = {\n  success,\n  timestamp: new Date().toISOString(),\n  stdout: stdout.slice(0, 500) + (stdout.length > 500 ? '...' : ''),\n  stderr: stderr.slice(0, 500) + (stderr.length > 500 ? '...' : ''),\n  outputFiles: success ? $input.item.json.currentAgent.outputFiles.map(file => `${$input.item.json.outputDir}/${file}`) : []\n};\n\n// Passer à l'agent suivant\nreturn {\n  json: {\n    ...$input.item.json,\n    currentAgentIndex: $input.item.json.currentAgentIndex + 1,\n    agentResults\n  }\n};"
+          },
+          "name": "Traiter Résultat Agent",
+          "type": "n8n-nodes-base.function",
+          "position": [2700, 340],
+          "typeVersion": 1
+        },
+        {
+          "parameters": {
+            "command": "cd /workspaces/cahier-des-charge && npx ts-node agents/analysis/agent-assembleur.ts --file={{ $json.filePath }} --output-dir={{ $json.outputDir }}",
+            "workingDirectory": "/workspaces/cahier-des-charge",
+            "executeTimeout": 120
+          },
+          "name": "Assembler Résultats",
+          "type": "n8n-nodes-base.executeCommand",
+          "position": [2500, 140],
+          "typeVersion": 1
+        },
+        {
+          "parameters": {
+            "command": "cd /workspaces/cahier-des-charge && npx ts-node agents/integration/mcp-push.ts --file={{ $json.filePath }} --report-dir={{ $json.outputDir }} --branch={{ $json.pipelineConfig.integration.github.branch || 'audit-results' }}",
+            "workingDirectory": "/workspaces/cahier-des-charge",
+            "executeTimeout": 60
+          },
+          "name": "Pousser vers GitHub",
+          "type": "n8n-nodes-base.executeCommand",
+          "position": [2700, 140],
+          "typeVersion": 1
+        },
+        {
+          "parameters": {
+            "command": "cd /workspaces/cahier-des-charge && npx ts-node agents/integration/supabase-sync.ts --file={{ $json.filePath }} --report-dir={{ $json.outputDir }}",
+            "workingDirectory": "/workspaces/cahier-des-charge",
+            "executeTimeout": 60
+          },
+          "name": "Synchroniser Supabase",
+          "type": "n8n-nodes-base.executeCommand",
+          "position": [2900, 140],
+          "typeVersion": 1
+        },
+        {
+          "parameters": {
+            "chatId": "{{ $env.NOTIFICATION_CHAT_ID }}",
+            "text": "✅ *Analyse terminée pour {{ $json.fileName }}*\n\n*Agents exécutés:*\n{% for agentId, result in $json.agentResults %}\n- {{ agentId }}: {{ result.success ? '✅' : '❌' }}\n{% endfor %}\n\n*Résultats:*\n📄 Audit complet: [audit.md](http://localhost:3000/audit/{{ $json.fileName.replace('.php', '') }})\n🧩 Backlog des tâches: [backlog.json](http://localhost:3000/backlog/{{ $json.fileName.replace('.php', '') }})\n🔁 Graphe d'impact: [impact_graph.json](http://localhost:3000/graph/{{ $json.fileName.replace('.php', '') }})\n\n*GitHub PR:* {{ $json.prUrl || 'En cours de création...' }}\n*Timestamp:* {{ $json.timestamp }}",
+            "additionalFields": {
+              "parseMode": "Markdown",
+              "disableNotification": false
+            }
+          },
+          "name": "Notifier Analyse Terminée",
+          "type": "n8n-nodes-base.telegram",
+          "position": [3100, 140],
+          "typeVersion": 1
+        },
+        {
+          "parameters": {
+            "conditions": {
+              "string": [
+                {
+                  "value1": "={{ Object.values($json.agentResults).filter(result => !result.success).length }}",
+                  "operation": "notEqual",
+                  "value2": "0"
+                }
+              ]
+            }
+          },
+          "name": "Erreurs Détectées?",
+          "type": "n8n-nodes-base.if",
+          "position": [3300, 140],
+          "typeVersion": 1
+        },
+        {
+          "parameters": {
+            "chatId": "{{ $env.NOTIFICATION_CHAT_ID }}",
+            "text": "⚠️ *Attention: Erreurs détectées dans le pipeline d'audit*\n\nFichier: `{{ $json.fileName }}`\n\n*Agents en échec:*\n{% for agentId, result in $json.agentResults %}\n{% if !result.success %}\n- {{ agentId }}: {{ result.stderr }}\n{% endif %}\n{% endfor %}\n\nL'analyse est incomplète. Veuillez vérifier les logs pour plus de détails.\n\n*Timestamp:* {{ $json.timestamp }}\n\n[Voir le tableau de bord](http://localhost:3000/audit-dashboard)",
+            "additionalFields": {
+              "parseMode": "Markdown",
+              "disableNotification": false
+            }
+          },
+          "name": "Notifier Erreurs",
+          "type": "n8n-nodes-base.telegram",
+          "position": [3500, 140],
+          "typeVersion": 1
+        },
+        {
+          "parameters": {
+            "operation": "append",
+            "file": "/workspaces/cahier-des-charge/reports/audit_index.json",
+            "dataPropertyName": "data",
+            "options": {}
+          },
+          "name": "Mettre à jour Index Audits",
+          "type": "n8n-nodes-base.writeFile",
+          "position": [3500, 300],
+          "typeVersion": 1
+        },
+        {
+          "parameters": {
+            "functionCode": "// Préparer les données pour l'index des audits\nreturn {\n  json: {\n    ...$input.item.json,\n    data: {\n      filePath: $input.item.json.filePath,\n      fileName: $input.item.json.fileName,\n      timestamp: $input.item.json.timestamp,\n      batchId: $input.item.json.batchId,\n      status: Object.values($input.item.json.agentResults).every(result => result.success) ? 'completed' : 'partial',\n      outputDir: $input.item.json.outputDir,\n      agentResults: Object.keys($input.item.json.agentResults).reduce((acc, agentId) => {\n        acc[agentId] = { success: $input.item.json.agentResults[agentId].success };\n        return acc;\n      }, {})\n    }\n  }\n};"
+          },
+          "name": "Préparer Données Index",
+          "type": "n8n-nodes-base.function",
+          "position": [3300, 300],
+          "typeVersion": 1
+        }
+      ],
+      "connections": {
+        "Déclencheur Quotidien": {
+          "main": [
+            [
+              {
+                "node": "Merge Déclencheurs",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        },
+        "Trigger Manuel": {
+          "main": [
+            [
+              {
+                "node": "Merge Déclencheurs",
+                "type": "main",
+                "index": 1
+              }
+            ]
+          ]
+        },
+        "Webhook GitHub": {
+          "main": [
+            [
+              {
+                "node": "Est Branch Legacy?",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        },
+        "Est Branch Legacy?": {
+          "main": [
+            [
+              {
+                "node": "Merge Déclencheurs",
+                "type": "main",
+                "index": 2
+              }
+            ],
+            []
+          ]
+        },
+        "Merge Déclencheurs": {
+          "main": [
+            [
+              {
+                "node": "Exécuter Discovery Agent",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        },
+        "Exécuter Discovery Agent": {
+          "main": [
+            [
+              {
+                "node": "Charger Configuration",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        },
+        "Charger Configuration": {
+          "main": [
+            [
+              {
+                "node": "Exécuter Audit Selector",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        },
+        "Exécuter Audit Selector": {
+          "main": [
+            [
+              {
+                "node": "Traiter Liste Fichiers",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        },
+        "Traiter Liste Fichiers": {
+          "main": [
+            [
+              {
+                "node": "Fichiers Trouvés?",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        },
+        "Fichiers Trouvés?": {
+          "main": [
+            [
+              {
+                "node": "Créer Dossier Sorties",
+                "type": "main",
+                "index": 0
+              },
+              {
+                "node": "Notifier Démarrage Analyse",
+                "type": "main",
+                "index": 0
+              }
+            ],
+            [
+              {
+                "node": "Notifier Aucun Fichier",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        },
+        "Créer Dossier Sorties": {
+          "main": [
+            [
+              {
+                "node": "Préparer Pipeline d'Agents",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        },
+        "Préparer Pipeline d'Agents": {
+          "main": [
+            [
+              {
+                "node": "Sélectionner Agent Actuel",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        },
+        "Sélectionner Agent Actuel": {
+          "main": [
+            [
+              {
+                "node": "Pipeline Terminé?",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        },
+        "Pipeline Terminé?": {
+          "main": [
+            [
+              {
+                "node": "Assembler Résultats",
+                "type": "main",
+                "index": 0
+              }
+            ],
+            [
+              {
+                "node": "Exécuter Agent Actuel",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        },
+        "Exécuter Agent Actuel": {
+          "main": [
+            [
+              {
+                "node": "Traiter Résultat Agent",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        },
+        "Traiter Résultat Agent": {
+          "main": [
+            [
+              {
+                "node": "Sélectionner Agent Actuel",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        },
+        "Assembler Résultats": {
+          "main": [
+            [
+              {
+                "node": "Pousser vers GitHub",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        },
+        "Pousser vers GitHub": {
+          "main": [
+            [
+              {
+                "node": "Synchroniser Supabase",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        },
+        "Synchroniser Supabase": {
+          "main": [
+            [
+              {
+                "node": "Notifier Analyse Terminée",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        },
+        "Notifier Analyse Terminée": {
+          "main": [
+            [
+              {
+                "node": "Erreurs Détectées?",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        },
+        "Erreurs Détectées?": {
+          "main": [
+            [
+              {
+                "node": "Notifier Erreurs",
+                "type": "main",
+                "index": 0
+              }
+            ],
+            [
+              {
+                "node": "Préparer Données Index",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        },
+        "Préparer Données Index": {
+          "main": [
+            [
+              {
+                "node": "Mettre à jour Index Audits",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        }
+      }
+    }
+  ]
+}

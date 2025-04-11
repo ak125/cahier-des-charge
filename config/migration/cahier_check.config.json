@@ -1,0 +1,20 @@
+{
+  "paths": {
+    "cahier": "./cahier-des-charges/",
+    "scripts": "./scripts/",
+    "logs": "./logs/",
+    "htmlOutput": "./dist/cahier-des-charges.html"
+  },
+  "rules": {
+    "maxDuplicateThreshold": 0.92,
+    "minStructureScore": 75,
+    "allowInlineJS": false,
+    "requireAuditMd": true
+  },
+  "github": {
+    "owner": "votre-org",
+    "repo": "remix-nestjs-monorepo",
+    "branch": "main",
+    "autoPR": true
+  }
+}

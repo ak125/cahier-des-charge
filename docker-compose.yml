@@ -27,6 +27,8 @@ services:
       - WEBHOOK_URL=http://localhost:5678/
       - DB_TYPE=mongodb
       - DB_MONGODB_CONNECTION_URL=mongodb://migration:migration_password@mongo:27017/n8n?authSource=admin
+      - N8N_BASIC_AUTH_ACTIVE=false
+      - N8N_DISABLE_PRODUCTION_MAIN_PROCESS=true  # Ajouter cette ligne
     volumes:
       - n8n_data:/home/node/.n8n
       - ./workflows:/home/node/.n8n/workflows

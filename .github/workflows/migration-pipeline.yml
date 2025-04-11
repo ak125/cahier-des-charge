@@ -1,0 +1,184 @@
+name: PHP Migration Pipeline
+
+on:
+  push:
+    branches: [ main, master, develop ]
+    paths:
+      - 'agents/**'
+      - 'apps/mcp-server/**'
+      - 'config/**'
+      - 'run-pipeline.js'
+  pull_request:
+    branches: [ main, master ]
+    paths:
+      - 'agents/**'
+      - 'apps/mcp-server/**'
+      - 'config/**'
+  workflow_dispatch:
+    inputs:
+      source_dir:
+        description: 'Répertoire source PHP à analyser et migrer'
+        required: true
+        default: './sample-php'
+      target_dir:
+        description: 'Répertoire cible pour le code généré'
+        required: true
+        default: './migration-output'
+      run_mode:
+        description: 'Mode d'exécution du pipeline'
+        required: true
+        default: 'analyze'
+        type: choice
+        options:
+          - analyze
+          - migrate
+          - full
+          - quality
+      notify_discord:
+        description: 'Notifier Discord des résultats'
+        required: false
+        type: boolean
+        default: false
+  schedule:
+    - cron: '0 2 * * 1' # Tous les lundis à 2h du matin
+
+jobs:
+  migration-pipeline:
+    name: Exécuter le pipeline de migration
+    runs-on: ubuntu-latest
+    
+    env:
+      N8N_JWT_SECRET: ${{ secrets.N8N_JWT_SECRET }}
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+      DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+      START_N8N: "true"
+      IMPORT_N8N_WORKFLOWS: "true"
+      START_MCP_SERVER: "true"
+      
+    steps:
+      - name: Checkout du code
+        uses: actions/checkout@v3
+      
+      - name: Configuration de Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'pnpm'
+      
+      - name: Installation de PNPM
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+          run_install: false
+      
+      - name: Configuration de PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: mbstring, xml, curl, mysql, zip
+      
+      - name: Installation des dépendances
+        run: pnpm install
+      
+      - name: Construction du projet
+        run: pnpm turbo run build
+      
+      - name: Préparation du répertoire source
+        run: |
+          # Si un répertoire source personnalisé est spécifié via workflow_dispatch
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" && -n "${{ github.event.inputs.source_dir }}" ]]; then
+            SOURCE_DIR="${{ github.event.inputs.source_dir }}"
+          else
+            # Sinon, utiliser un répertoire par défaut ou télécharger un exemple
+            SOURCE_DIR="./sample-php"
+            if [ ! -d "$SOURCE_DIR" ]; then
+              mkdir -p "$SOURCE_DIR"
+              # Télécharger un projet PHP exemple si nécessaire
+              echo "Téléchargement d'un projet PHP exemple pour l'analyse..."
+              git clone https://github.com/example/php-sample.git "$SOURCE_DIR" || echo "Utilisez votre propre code source PHP"
+            fi
+          fi
+          echo "SOURCE_DIR=$SOURCE_DIR" >> $GITHUB_ENV
+      
+      - name: Démarrage de N8N (si nécessaire)
+        if: env.START_N8N == 'true'
+        run: |
+          n8n start &
+          echo "Attente du démarrage de N8N..."
+          sleep 10
+          # Importer les workflows si nécessaire
+          if [[ "${{ env.IMPORT_N8N_WORKFLOWS }}" == "true" ]]; then
+            node scripts/import-n8n-workflows.js
+          fi
+      
+      - name: Démarrage du serveur MCP
+        if: env.START_MCP_SERVER == 'true'
+        run: |
+          cd apps/mcp-server
+          ts-node src/index.ts &
+          cd ../..
+          echo "Attente du démarrage du serveur MCP..."
+          sleep 5
+      
+      - name: Exécution du pipeline de migration
+        run: |
+          # Déterminer le mode d'exécution
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            RUN_MODE="${{ github.event.inputs.run_mode }}"
+            TARGET_DIR="${{ github.event.inputs.target_dir }}"
+          else
+            RUN_MODE="analyze"
+            TARGET_DIR="./migration-output"
+          fi
+          
+          # Exécuter le pipeline avec les paramètres appropriés
+          node run-pipeline.js --source="$SOURCE_DIR" --target="$TARGET_DIR" --mode="$RUN_MODE"
+      
+      - name: Archivage des résultats
+        uses: actions/upload-artifact@v3
+        with:
+          name: migration-results
+          path: |
+            migration-output/**
+            reports/**
+            logs/**
+      
+      - name: Notification Discord
+        if: ${{ github.event.inputs.notify_discord == 'true' && env.DISCORD_WEBHOOK != '' }}
+        run: |
+          MIGRATION_STATUS=$(cat logs/migration-status.json 2>/dev/null || echo '{"success": false, "error": "Pas de fichier de statut"}')
+          
+          curl -H "Content-Type: application/json" \
+            -d '{
+              "username": "Migration Bot",
+              "avatar_url": "https://cdn-icons-png.flaticon.com/512/2166/2166860.png",
+              "embeds": [{
+                "title": "Rapport de Migration PHP → NestJS + Remix",
+                "color": 3447003,
+                "description": "Résultat de la migration exécutée via GitHub Actions",
+                "fields": [
+                  {
+                    "name": "Repository",
+                    "value": "'"$GITHUB_REPOSITORY"'",
+                    "inline": true
+                  },
+                  {
+                    "name": "Branch",
+                    "value": "'"$GITHUB_REF_NAME"'",
+                    "inline": true
+                  },
+                  {
+                    "name": "Mode",
+                    "value": "'"$RUN_MODE"'",
+                    "inline": true
+                  },
+                  {
+                    "name": "Statut",
+                    "value": "'"$(echo $MIGRATION_STATUS | jq -r '.success // false')"'",
+                    "inline": true
+                  }
+                ],
+                "timestamp": "'"$(date -u +"%Y-%m-%dT%H:%M:%SZ")"'"
+              }]
+            }' ${{ env.DISCORD_WEBHOOK }}

@@ -1,0 +1,111 @@
+{
+  "name": "Migration PHP vers NestJS+Remix",
+  "version": "1.0.0",
+  "description": "Serveur MCP pour orchestrer la migration automatisée de PHP vers NestJS+Remix",
+  "server": {
+    "port": 3000,
+    "host": "0.0.0.0",
+    "cors": {
+      "origin": "*",
+      "methods": ["GET", "POST", "PUT", "DELETE"]
+    }
+  },
+  "logging": {
+    "level": "info",
+    "file": "/workspaces/cahier-des-charge/logs/mcp-server.log"
+  },
+  "integrations": {
+    "n8n": {
+      "baseUrl": "http://localhost:5678",
+      "apiKey": "{{ N8N_API_KEY }}",
+      "webhooks": {
+        "analysisComplete": "/webhook/analysis-complete",
+        "codeGenerated": "/webhook/code-generated",
+        "migrationComplete": "/webhook/migration-complete"
+      }
+    },
+    "supabase": {
+      "url": "{{ SUPABASE_URL }}",
+      "key": "{{ SUPABASE_KEY }}",
+      "tables": {
+        "migrations": "migration_tasks",
+        "analysis": "code_analysis",
+        "components": "ui_components"
+      }
+    },
+    "github": {
+      "owner": "{{ GITHUB_OWNER }}",
+      "repo": "{{ GITHUB_REPO }}",
+      "token": "{{ GITHUB_TOKEN }}",
+      "branch": "migration"
+    }
+  },
+  "pipeline": {
+    "stages": [
+      {
+        "id": "analyze",
+        "name": "Analyse du code PHP",
+        "workflowId": "php-analyzer",
+        "dependsOn": []
+      },
+      {
+        "id": "generate-backend",
+        "name": "Génération du backend NestJS",
+        "workflowId": "nestjs-generator",
+        "dependsOn": ["analyze"]
+      },
+      {
+        "id": "generate-frontend",
+        "name": "Génération du frontend Remix",
+        "workflowId": "remix-generator",
+        "dependsOn": ["analyze"]
+      },
+      {
+        "id": "test",
+        "name": "Tests automatisés",
+        "workflowId": "test-workflow",
+        "dependsOn": ["generate-backend", "generate-frontend"]
+      },
+      {
+        "id": "deploy",
+        "name": "Déploiement",
+        "workflowId": "deploy-workflow",
+        "dependsOn": ["test"]
+      }
+    ]
+  },
+  "agents": {
+    "codeAnalyzer": {
+      "type": "analysis",
+      "enabled": true,
+      "config": {
+        "model": "gpt-4",
+        "maxTokens": 8000,
+        "temperature": 0.1
+      }
+    },
+    "codeGenerator": {
+      "type": "migration",
+      "enabled": true,
+      "config": {
+        "model": "gpt-4",
+        "maxTokens": 8000,
+        "temperature": 0.2,
+        "templates": {
+          "nestjs": "/workspaces/cahier-des-charge/templates/nestjs",
+          "remix": "/workspaces/cahier-des-charge/templates/remix"
+        }
+      }
+    },
+    "qualityChecker": {
+      "type": "quality",
+      "enabled": true,
+      "config": {
+        "model": "gpt-4",
+        "maxTokens": 4000,
+        "temperature": 0.1,
+        "rules": "/workspaces/cahier-des-charge/rules/quality-rules.json"
+      }
+    }
+  }
+}

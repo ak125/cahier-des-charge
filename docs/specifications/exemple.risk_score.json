@@ -1,0 +1,15 @@
+{
+  "file": "exemple.php",
+  "timestamp": "2025-04-10T13:01:09.650Z",
+  "scores": {
+    "security": 5,
+    "quality": 10,
+    "overall": 7
+  },
+  "metrics": {
+    "securityVulnerabilities": 2,
+    "dynamicBehaviors": 0,
+    "complexityIssues": 0
+  },
+  "migrationPriority": "low"
+}

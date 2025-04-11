@@ -1,0 +1,113 @@
+{
+  "pipelineConfig": {
+    "name": "PHP Audit Pipeline",
+    "version": "1.0.0",
+    "maxFilesPerRun": 5,
+    "highPriorityThreshold": 8,
+    "agents": [
+      {
+        "id": "agent-metier",
+        "name": "Agent Métier",
+        "script": "agents/analysis/agent-metier.ts",
+        "timeout": 120,
+        "description": "Analyse le rôle métier, les déclencheurs et la zone fonctionnelle du fichier",
+        "outputFiles": [
+          "metier.json",
+          "metier.md"
+        ],
+        "priority": 1
+      },
+      {
+        "id": "agent-structure",
+        "name": "Agent Structure",
+        "script": "agents/analysis/agent-structure.ts",
+        "timeout": 120,
+        "description": "Analyse les fonctions, includes, switch et la logique inline",
+        "outputFiles": [
+          "structure.json",
+          "structure.md"
+        ],
+        "priority": 2
+      },
+      {
+        "id": "agent-donnees",
+        "name": "Agent Données",
+        "script": "agents/analysis/agent-donnees.ts",
+        "timeout": 120,
+        "description": "Analyse les $_POST, $_GET, SQL, headers et manipulations de données",
+        "outputFiles": [
+          "donnees.json",
+          "donnees.md"
+        ],
+        "priority": 3
+      },
+      {
+        "id": "agent-dependance",
+        "name": "Agent Dépendance",
+        "script": "agents/analysis/agent-dependance.ts",
+        "timeout": 120,
+        "description": "Analyse les includes, lib externes et génère une carte JSON de dépendances",
+        "outputFiles": [
+          "dependance.json",
+          "impact_graph.json"
+        ],
+        "priority": 4
+      },
+      {
+        "id": "agent-qualite",
+        "name": "Agent Qualité",
+        "script": "agents/analysis/agent-qualite.ts",
+        "timeout": 120,
+        "description": "Analyse la complexité, duplication et aspects de sécurité",
+        "outputFiles": [
+          "qualite.json",
+          "qualite.md"
+        ],
+        "priority": 5
+      },
+      {
+        "id": "agent-strategie",
+        "name": "Agent Stratégie",
+        "script": "agents/analysis/agent-strategie.ts",
+        "timeout": 150,
+        "description": "Élabore un plan de migration, définit des tâches et priorise",
+        "outputFiles": [
+          "strategie.json",
+          "backlog.json",
+          "migration_tasks.md"
+        ],
+        "priority": 6
+      },
+      {
+        "id": "agent-assembleur",
+        "name": "Agent Assembleur",
+        "script": "agents/analysis/agent-assembleur.ts",
+        "timeout": 90,
+        "description": "Assemble tous les résultats des analyses en un rapport cohérent",
+        "outputFiles": [
+          "audit.md",
+          "audit_summary.json"
+        ],
+        "priority": 7
+      }
+    ],
+    "integration": {
+      "github": {
+        "enabled": true,
+        "agent": "mcp-push.ts",
+        "branch": "audit-results",
+        "commitMessage": "Audit automatique: {filename}"
+      },
+      "supabase": {
+        "enabled": true,
+        "agent": "supabase-sync.ts"
+      },
+      "notifications": {
+        "enabled": true,
+        "critical": true,
+        "summary": true,
+        "channel": "telegram"
+      }
+    }
+  }
+}

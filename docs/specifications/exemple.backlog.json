@@ -1,0 +1,56 @@
+{
+  "file": "exemple.php",
+  "tasks": [
+    {
+      "type": "create",
+      "target": "backend",
+      "status": "pending",
+      "description": "Créer le module NestJS ExempleModule",
+      "priority": 1
+    },
+    {
+      "type": "create",
+      "target": "frontend",
+      "status": "pending",
+      "description": "Créer la route Remix exemple",
+      "priority": 3
+    },
+    {
+      "type": "test",
+      "target": "backend",
+      "status": "pending",
+      "description": "Créer des tests unitaires pour ExempleService",
+      "priority": 4
+    },
+    {
+      "type": "test",
+      "target": "frontend",
+      "status": "pending",
+      "description": "Créer des tests pour la route exemple",
+      "priority": 4
+    },
+    {
+      "type": "migrateSQLtoPrisma",
+      "target": "backend",
+      "status": "pending",
+      "description": "Migrer les requêtes SQL vers Prisma (1 requêtes)"
+    }
+  ],
+  "priority": 2,
+  "migration": {
+    "wave": 4,
+    "difficulty": "faible",
+    "score": 1,
+    "impactScore": 0,
+    "needsRefactoringFirst": false
+  },
+  "data_analysis": {
+    "input_sources": 0,
+    "output_types": [
+      "HTML"
+    ],
+    "sql_queries": 1,
+    "sql_score": 2.4,
+    "mixed_output": false
+  }
+}
