@@ -1,0 +1,355 @@
+{
+  "name": "SQL Analyzer - Analyse Relationnelle & Cohérence Référentielle",
+  "nodes": [
+    {
+      "parameters": {
+        "filePath": "./config/sql_analyzer.config.json"
+      },
+      "name": "Read Config File",
+      "type": "n8n-nodes-base.readBinaryFile",
+      "typeVersion": 1,
+      "position": [
+        240,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "dataType": "string",
+        "value": "={{ $json.data.toString('utf8') }}"
+      },
+      "name": "Parse Config",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        420,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "// Vérifier si l'agent est activé\nconst config = JSON.parse(items[0].json.value);\n\nif (!config.agents || !config.agents.analyseRelationnelle || !config.agents.analyseRelationnelle.enabled) {\n  return [\n    {\n      json: {\n        success: false,\n        message: \"L'agent Analyse Relationnelle est désactivé dans la configuration\"\n      }\n    }\n  ];\n}\n\n// Vérifier si les fichiers d'entrée existent\nconst fs = require('fs');\nconst schemaPath = `${config.baseOutputPath}/schema_raw.json`;\n\nif (!fs.existsSync(schemaPath)) {\n  return [\n    {\n      json: {\n        success: false,\n        message: `Le fichier schema_raw.json n'existe pas au chemin ${schemaPath}. Exécutez d'abord l'agent Extracteur.`\n      }\n    }\n  ];\n}\n\nreturn [\n  {\n    json: {\n      success: true,\n      config,\n      schemaPath\n    }\n  }\n];"
+      },
+      "name": "Validate Config",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        600,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.success }}",
+              "operation": "equal",
+              "value2": "true"
+            }
+          ]
+        }
+      },
+      "name": "Config Valid?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        780,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "command": "node ./agents/analysis/relation-analyzer.ts --config=./config/sql_analyzer.config.json --schema={{ $json.schemaPath }}"
+      },
+      "name": "Execute Analyzer",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        980,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ {success: false, message: $json.message} }}",
+        "options": {}
+      },
+      "name": "Error Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        980,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "filePath": "={{ $json.config.baseOutputPath + '/relation_graph.json' }}"
+      },
+      "name": "Read Graph Data",
+      "type": "n8n-nodes-base.readBinaryFile",
+      "typeVersion": 1,
+      "position": [
+        1180,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "dataType": "string",
+        "value": "={{ $json.data.toString('utf8') }}"
+      },
+      "name": "Parse Graph",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        1380,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "filePath": "={{ $json.config.baseOutputPath + '/relation_audit.md' }}"
+      },
+      "name": "Read Audit Report",
+      "type": "n8n-nodes-base.readBinaryFile",
+      "typeVersion": 1,
+      "position": [
+        1180,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "dataType": "string",
+        "value": "={{ $json.data.toString('utf8') }}"
+      },
+      "name": "Parse Audit",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        1380,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "// Fusionner les résultats\nconst graphData = JSON.parse(items[0].json.value);\nconst auditContent = items[1].json.value;\n\n// Extraire des statistiques intéressantes du graphe\nconst relations = graphData.relations || [];\nconst relationTypes = {\n  explicit: relations.filter(r => r.confidence === 1.0).length,\n  implicit: relations.filter(r => r.confidence < 1.0 && !r.is_polymorphic).length,\n  polymorphic: relations.filter(r => r.is_polymorphic).length\n};\n\n// Identifier les problèmes et risques\nconst warnings = relations.filter(r => r.warning).length;\nconst polymorphicTables = [...new Set(relations.filter(r => r.is_polymorphic).map(r => r.from_table))];\n\n// Rechercher les tables centrales\nconst centralTables = graphData.graph.nodes\n  .filter(n => n.centrality > 0.1)\n  .sort((a, b) => b.centrality - a.centrality)\n  .slice(0, 3)\n  .map(n => n.label);\n\nreturn [\n  {\n    json: {\n      success: true,\n      message: \"Analyse relationnelle terminée avec succès\",\n      stats: {\n        totalTables: graphData.graph.nodes.length,\n        totalRelations: relations.length,\n        explicitRelations: relationTypes.explicit,\n        implicitRelations: relationTypes.implicit,\n        polymorphicRelations: relationTypes.polymorphic,\n        warnings: warnings,\n        polymorphicTables: polymorphicTables,\n        centralTables: centralTables\n      },\n      graphJson: items[0].json.value,\n      auditMarkdown: auditContent,\n      prismaRecommendations: relations.map(r => ({\n        fromTable: r.from_table,\n        relationName: r.prisma_relation.relation_name,\n        toTable: r.to_table,\n        relationCode: `${r.prisma_relation.relation_name}: ${r.to_table} @relation(fields: [${r.from_column}], references: [${r.to_column}]${r.prisma_relation.onDelete ? ', onDelete: ' + r.prisma_relation.onDelete : ''})`\n      }))\n    }\n  }\n];"
+      },
+      "name": "Compile Results",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        1580,
+        320
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}",
+        "options": {}
+      },
+      "name": "Success Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        1780,
+        320
+      ]
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "sql-analyzer/relation-analyzer",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        60,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "// Vérifier s'il existe un fichier polymorphic_candidates.json\nconst fs = require('fs');\nconst path = require('path');\nconst polymorphicPath = path.join(items[0].json.config.baseOutputPath, 'polymorphic_candidates.json');\n\nif (fs.existsSync(polymorphicPath)) {\n  const polymorphicData = JSON.parse(fs.readFileSync(polymorphicPath, 'utf8'));\n  \n  return [\n    {\n      json: {\n        ...items[0].json,\n        polymorphicCandidates: polymorphicData\n      }\n    }\n  ];\n}\n\nreturn items;"
+      },
+      "name": "Check Polymorphic Data",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        1680,
+        320
+      ]
+    },
+    {
+      "parameters": {
+        "content": "=== RAPPORT D'ANALYSE RELATIONNELLE ===\n\n🔍 {{ $json.stats.totalRelations }} relations détectées parmi {{ $json.stats.totalTables }} tables\n\n✅ Relations explicites: {{ $json.stats.explicitRelations }}\n⚠️ Relations implicites: {{ $json.stats.implicitRelations }}\n🚨 Relations polymorphiques: {{ $json.stats.polymorphicRelations }}\n\n🌟 Tables centrales: {{ $json.stats.centralTables.join(', ') }}\n\n{% if $json.stats.warnings > 0 %}\n⚠️ {{ $json.stats.warnings }} avertissements détectés!\n{% endif %}\n\n{% if $json.stats.polymorphicTables.length > 0 %}\n🔄 Tables polymorphiques à restructurer: {{ $json.stats.polymorphicTables.join(', ') }}\n{% endif %}",
+        "messageType": "text"
+      },
+      "name": "Post to Slack",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 1,
+      "position": [
+        1880,
+        180
+      ]
+    }
+  ],
+  "connections": {
+    "Read Config File": {
+      "main": [
+        [
+          {
+            "node": "Parse Config",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Config": {
+      "main": [
+        [
+          {
+            "node": "Validate Config",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate Config": {
+      "main": [
+        [
+          {
+            "node": "Config Valid?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Config Valid?": {
+      "main": [
+        [
+          {
+            "node": "Execute Analyzer",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Error Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute Analyzer": {
+      "main": [
+        [
+          {
+            "node": "Read Graph Data",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Read Audit Report",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Graph Data": {
+      "main": [
+        [
+          {
+            "node": "Parse Graph",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Graph": {
+      "main": [
+        [
+          {
+            "node": "Compile Results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Audit Report": {
+      "main": [
+        [
+          {
+            "node": "Parse Audit",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Audit": {
+      "main": [
+        [
+          {
+            "node": "Compile Results",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Compile Results": {
+      "main": [
+        [
+          {
+            "node": "Check Polymorphic Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Read Config File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Polymorphic Data": {
+      "main": [
+        [
+          {
+            "node": "Success Response",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Post to Slack",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}

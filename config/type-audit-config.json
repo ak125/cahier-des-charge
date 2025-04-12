@@ -1,0 +1,41 @@
+{
+  "schemaPath": "/workspaces/cahier-des-charge/agents/migration/mysql-analyzer/examples/mysql_schema_map.json",
+  "outputDir": "/workspaces/cahier-des-charge/outputs/type-audit",
+  "deepAnalysis": false,
+  "adjustSizes": true,
+  "detectEnums": true,
+  "defaultFieldSizes": {
+    "email": 100,
+    "name": 100,
+    "first_name": 50,
+    "last_name": 50,
+    "password": 60,
+    "username": 50,
+    "phone": 20,
+    "address": 150,
+    "title": 100,
+    "description": 500,
+    "url": 200
+  },
+  "recommendations": {
+    "booleanFields": [
+      "is_*", 
+      "has_*", 
+      "can_*", 
+      "active", 
+      "enabled", 
+      "visible"
+    ],
+    "dateTimeFields": [
+      "*_at",
+      "*_date",
+      "*_time"
+    ],
+    "enumFields": [
+      "status",
+      "type",
+      "gender",
+      "role"
+    ]
+  }
+}

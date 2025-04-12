@@ -104,8 +104,215 @@ services:
       - postgres
       - redis
 
+  # Base de données MySQL (legacy)
+  mysql-legacy:
+    image: mysql:8.0
+    platform: ${DOCKER_PLATFORM:-linux/amd64}
+    restart: unless-stopped
+    ports:
+      - "${MYSQL_PORT:-3306}:3306"
+    volumes:
+      - mysql_legacy_data:/var/lib/mysql
+      - ./scripts/mysql/init:/docker-entrypoint-initdb.d
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-password}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-legacy_app}
+      MYSQL_USER: ${MYSQL_USER:-app_user}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-app_password}
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD:-password}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - migration-network
+    labels:
+      - "mcp.service=mysql-legacy"
+      - "mcp.type=database"
+      - "mcp.stage=source"
+
+  # Base de données PostgreSQL (cible intermédiaire)
+  postgres-intermediate:
+    image: postgres:15-alpine
+    platform: ${DOCKER_PLATFORM:-linux/amd64}
+    restart: unless-stopped
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres_intermediate_data:/var/lib/postgresql/data
+      - ./scripts/postgres/init:/docker-entrypoint-initdb.d
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_DB: ${POSTGRES_DB:-app_migration}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-app_migration}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - migration-network
+    labels:
+      - "mcp.service=postgres-intermediate"
+      - "mcp.type=database"
+      - "mcp.stage=intermediate"
+
+  # Serveur MCP pour MySQL
+  mcp-server-mysql:
+    build:
+      context: ./apps/mcp-server-mysql
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "${MCP_MYSQL_PORT:-3002}:3000"
+    volumes:
+      - ./apps/mcp-server-mysql:/app
+      - /app/node_modules
+    environment:
+      NODE_ENV: development
+      DATABASE_URL: mysql://${MYSQL_USER:-app_user}:${MYSQL_PASSWORD:-app_password}@mysql-legacy:3306/${MYSQL_DATABASE:-legacy_app}
+      MCP_SERVER_ID: mysql-source
+      CORS_ORIGIN: ${CORS_ORIGIN:-*}
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+    depends_on:
+      mysql-legacy:
+        condition: service_healthy
+    networks:
+      - migration-network
+    labels:
+      - "mcp.service=mcp-server-mysql"
+      - "mcp.type=agent"
+      - "mcp.stage=source"
+
+  # Serveur MCP pour PostgreSQL
+  mcp-server-postgres:
+    build:
+      context: ./apps/mcp-server-postgres
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "${MCP_POSTGRES_PORT:-3003}:3000"
+    volumes:
+      - ./apps/mcp-server-postgres:/app
+      - /app/node_modules
+    environment:
+      NODE_ENV: development
+      DATABASE_URL: postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgres-intermediate:5432/${POSTGRES_DB:-app_migration}
+      MCP_SERVER_ID: postgres-target
+      CORS_ORIGIN: ${CORS_ORIGIN:-*}
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+    depends_on:
+      postgres-intermediate:
+        condition: service_healthy
+    networks:
+      - migration-network
+    labels:
+      - "mcp.service=mcp-server-postgres"
+      - "mcp.type=agent"
+      - "mcp.stage=target"
+
+  # Service d'analyse et transformation du code PHP vers NestJS/Remix
+  code-transformer:
+    build:
+      context: ./agents/migration
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "${CODE_TRANSFORMER_PORT:-3004}:3000"
+    volumes:
+      - ./agents/migration:/app
+      - ./src:/app/src
+      - ./apps/frontend:/app/target
+      - /app/node_modules
+    environment:
+      NODE_ENV: development
+      MCP_MYSQL_URL: http://mcp-server-mysql:3000
+      MCP_POSTGRES_URL: http://mcp-server-postgres:3000
+      N8N_WEBHOOK_URL: ${N8N_WEBHOOK_URL:-http://n8n:5678/webhook/transformer}
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      SOURCE_DIR: /app/src
+      TARGET_DIR: /app/target
+    depends_on:
+      - mcp-server-mysql
+      - mcp-server-postgres
+    networks:
+      - migration-network
+    labels:
+      - "mcp.service=code-transformer"
+      - "mcp.type=agent"
+      - "mcp.stage=transformation"
+
+  # Outil de génération de schéma Prisma
+  prisma-generator:
+    build:
+      context: ./tools/prisma-generator
+      dockerfile: Dockerfile
+    restart: "no"
+    volumes:
+      - ./tools/prisma-generator:/app
+      - ./apps/frontend/prisma:/app/output
+      - /app/node_modules
+    environment:
+      DATABASE_URL_SOURCE: mysql://${MYSQL_USER:-app_user}:${MYSQL_PASSWORD:-app_password}@mysql-legacy:3306/${MYSQL_DATABASE:-legacy_app}
+      DATABASE_URL_TARGET: postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgres-intermediate:5432/${POSTGRES_DB:-app_migration}
+      SCHEMA_MAP_PATH: /app/schema_map.json
+      OUTPUT_DIR: /app/output
+    depends_on:
+      - mcp-server-mysql
+      - mcp-server-postgres
+    networks:
+      - migration-network
+    labels:
+      - "mcp.service=prisma-generator"
+      - "mcp.type=tool"
+      - "mcp.stage=schema-generation"
+
+  # Adminer pour visualisation des bases de données
+  adminer:
+    image: adminer:latest
+    restart: unless-stopped
+    ports:
+      - "${ADMINER_PORT:-8080}:8080"
+    environment:
+      ADMINER_DEFAULT_SERVER: mysql-legacy
+      ADMINER_DESIGN: pepa-linha
+      ADMINER_PLUGINS: "tables-filter tinymce"
+    networks:
+      - migration-network
+    labels:
+      - "mcp.service=adminer"
+      - "mcp.type=tool"
+      - "mcp.stage=visualization"
+
+  # Supabase CLI pour interactions avec Supabase
+  supabase-cli:
+    image: supabase/cli:latest
+    restart: "no"
+    volumes:
+      - ./scripts/supabase:/supabase
+      - ~/.supabase:/root/.supabase
+    environment:
+      SUPABASE_ACCESS_TOKEN: ${SUPABASE_ACCESS_TOKEN}
+      SUPABASE_PROJECT_ID: ${SUPABASE_PROJECT_ID}
+      SUPABASE_DB_PASSWORD: ${SUPABASE_DB_PASSWORD}
+    networks:
+      - migration-network
+    labels:
+      - "mcp.service=supabase-cli"
+      - "mcp.type=tool"
+      - "mcp.stage=deployment"
+
+networks:
+  migration-network:
+    driver: bridge
+    name: migration-network
+
 volumes:
   postgres_data:
   redis_data:
   n8n_data:
   code_server_data:
+  mysql_legacy_data:
+    name: mysql_legacy_data
+  postgres_intermediate_data:
+    name: postgres_intermediate_data

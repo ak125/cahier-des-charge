@@ -1,0 +1,170 @@
+{
+  "name": "MySQL Analyzer Workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "/data/mysql-dumps",
+        "options": {
+          "includeHiddenFiles": false,
+          "fileExtensions": [".sql", ".sql.gz"]
+        }
+      },
+      "name": "Watch MySQL Dumps",
+      "type": "n8n-nodes-base.filesWatcher",
+      "typeVersion": 1,
+      "position": [250, 300]
+    },
+    {
+      "parameters": {
+        "functionCode": "// Récupérer le chemin complet du fichier\nconst filePath = $input.item.path;\n\n// Déterminer si le fichier est compressé\nconst isCompressed = filePath.endsWith('.gz');\n\n// Définir le dossier de sortie basé sur le nom du fichier\nconst fileName = filePath.split('/').pop().replace(/\\.(sql|sql\\.gz)$/, '');\nconst outputDir = `/data/analyses/${fileName}-${new Date().toISOString().replace(/:/g, '-').split('.')[0]}`;\n\n// Construire la commande\nlet command = `cd /workspaces/cahier-des-charge && ts-node agents/migration/mysql-analyzer.ts \"${filePath}\" --output-dir \"${outputDir}\"`;\n\n// Ajouter les options\nif (isCompressed) {\n  command += ' --compressed';\n}\n\n// Ajouter l'option pour analyser les JOINs\ncommand += ' --analyze-joins';\n\nreturn {\n  command,\n  outputDir,\n  filePath,\n  fileName,\n  timestamp: new Date().toISOString()\n};"
+      },
+      "name": "Préparer la commande",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [450, 300]
+    },
+    {
+      "parameters": {
+        "command": "={{ $node[\"Préparer la commande\"].json[\"command\"] }}",
+        "executeTimeout": 300
+      },
+      "name": "Exécuter l'analyse",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [650, 300]
+    },
+    {
+      "parameters": {
+        "fileFormat": "text",
+        "binaryData": true,
+        "fileName": "analyse-results.log",
+        "path": "={{ $node[\"Préparer la commande\"].json[\"outputDir\"] }}"
+      },
+      "name": "Sauvegarder les résultats",
+      "type": "n8n-nodes-base.writeBinaryFile",
+      "typeVersion": 1,
+      "position": [850, 300]
+    },
+    {
+      "parameters": {
+        "to": ["equipe-migration@exemple.com"],
+        "subject": "Analyse MySQL terminée: {{ $node[\"Préparer la commande\"].json[\"fileName\"] }}",
+        "text": "# Analyse MySQL terminée\n\nL'analyse du fichier **{{ $node[\"Préparer la commande\"].json[\"fileName\"] }}** est terminée.\n\n## Détails\n- **Fichier analysé**: {{ $node[\"Préparer la commande\"].json[\"filePath\"] }}\n- **Dossier de résultats**: {{ $node[\"Préparer la commande\"].json[\"outputDir\"] }}\n- **Date d'analyse**: {{ $node[\"Préparer la commande\"].json[\"timestamp\"] }}\n\n## Résultat de l'exécution\n```\n{{ $node[\"Exécuter l'analyse\"].json[\"stdout\"] }}\n```\n\n## Erreurs (si présentes)\n```\n{{ $node[\"Exécuter l'analyse\"].json[\"stderr\"] }}\n```\n\nVous pouvez consulter les fichiers d'analyse générés dans le dossier mentionné ci-dessus.",
+        "options": {
+          "attachments": "={{ $node[\"Sauvegarder les résultats\"].binary }}"
+        }
+      },
+      "name": "Envoyer notification",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 1,
+      "position": [1050, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $node[\"Exécuter l'analyse\"].json[\"exitCode\"] }}",
+              "operation": "notEqual",
+              "value2": "0"
+            }
+          ]
+        }
+      },
+      "name": "Vérifier erreurs",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [850, 500]
+    },
+    {
+      "parameters": {
+        "url": "https://hooks.slack.com/services/TXXXXXX/BXXXXXX/XXXXXXXX",
+        "jsonParameters": true,
+        "options": {},
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "text",
+              "value": "⚠️ Erreur lors de l'analyse MySQL du fichier {{ $node[\"Préparer la commande\"].json[\"fileName\"] }} :\n```\n{{ $node[\"Exécuter l'analyse\"].json[\"stderr\"] }}\n```"
+            }
+          ]
+        }
+      },
+      "name": "Alerter sur Slack",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [1050, 500]
+    }
+  ],
+  "connections": {
+    "Watch MySQL Dumps": {
+      "main": [
+        [
+          {
+            "node": "Préparer la commande",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Préparer la commande": {
+      "main": [
+        [
+          {
+            "node": "Exécuter l'analyse",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Exécuter l'analyse": {
+      "main": [
+        [
+          {
+            "node": "Sauvegarder les résultats",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Vérifier erreurs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Sauvegarder les résultats": {
+      "main": [
+        [
+          {
+            "node": "Envoyer notification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Vérifier erreurs": {
+      "main": [
+        [
+          {
+            "node": "Alerter sur Slack",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": true,
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": "mysql-analyzer-error-handler"
+  },
+  "tags": ["mysql", "analyze", "migration", "database"],
+  "versionId": "d8aa47a6-bfac-4f7f-952a-90ae1bd9dff9"
+}

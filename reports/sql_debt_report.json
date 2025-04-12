@@ -1,0 +1,159 @@
+{
+  "project": "Analyse de Dette Technique SQL",
+  "version": "1.0.0",
+  "date": "2025-04-12",
+  "summary": {
+    "tables_analyzed": 12,
+    "columns_analyzed": 68,
+    "redundant_fields": 14,
+    "unused_fields": 5,
+    "multi_purpose_columns": 8,
+    "poor_schema_design": 7,
+    "overall_debt_score": 6.2,
+    "risk_level": "Moyen"
+  },
+  "redundant_fields": [
+    {
+      "pattern": "Timestamps redondants",
+      "description": "Utilisation incohérente de champs de timestamp",
+      "affected_tables": ["users", "orders", "products", "categories", "payment_transactions"],
+      "affected_columns": [
+        "created_on", "created_at", "date_created", 
+        "updated_on", "updated_at", "last_update"
+      ],
+      "severity": "Moyenne",
+      "remediation": "Standardiser sur created_at et updated_at avec type TIMESTAMP et déclencher automatiquement les mises à jour"
+    },
+    {
+      "pattern": "Champs d'état textuels avec codes numériques",
+      "description": "Champs status accompagnés de status_txt décrivant la même information",
+      "affected_tables": ["orders", "payment_transactions", "shipping"],
+      "affected_columns": [
+        "status", "status_txt", "status_description"
+      ],
+      "severity": "Élevée",
+      "remediation": "Utiliser un ENUM ou une table de référence pour le statut plutôt que des codes et descriptions dupliqués"
+    },
+    {
+      "pattern": "Identifiants dupliqués",
+      "description": "Colonnes stockant la même information d'identifiant sous différentes formes",
+      "affected_tables": ["users", "orders", "products"],
+      "affected_columns": [
+        "id", "user_id", "user_uuid", 
+        "order_id", "order_number",
+        "product_id", "product_code"
+      ],
+      "severity": "Moyenne",
+      "remediation": "Choisir un format d'identifiant unique et cohérent (soit numérique, soit UUID) et s'y tenir"
+    }
+  ],
+  "unused_fields": [
+    {
+      "pattern": "Colonnes obsolètes",
+      "description": "Colonnes inutilisées ou devenues obsolètes",
+      "affected_tables": ["users", "products", "orders"],
+      "affected_columns": [
+        "users.legacy_id", 
+        "products.old_category", 
+        "orders.shipping_old_method",
+        "users.temp_flag",
+        "products.discontinued"
+      ],
+      "severity": "Faible",
+      "remediation": "Supprimer les colonnes inutilisées après avoir vérifié qu'aucune application ne les utilise"
+    }
+  ],
+  "multi_purpose_columns": [
+    {
+      "pattern": "Colonnes génériques de données",
+      "description": "Colonnes utilisées pour stocker différents types de données",
+      "affected_tables": ["products", "orders", "users", "configs"],
+      "affected_columns": [
+        "products.data1", "products.data2",
+        "orders.additional_data", 
+        "users.preferences", 
+        "configs.value"
+      ],
+      "severity": "Élevée",
+      "remediation": "Décomposer en colonnes spécifiques ou utiliser une structure JSON correctement typée"
+    },
+    {
+      "pattern": "Colonnes JSON non structurées",
+      "description": "Utilisation de TEXT ou VARCHAR pour stocker du JSON sans validation",
+      "affected_tables": ["products", "orders", "configs"],
+      "affected_columns": [
+        "products.json_blob", 
+        "orders.meta_info",
+        "configs.settings"
+      ],
+      "severity": "Élevée",
+      "remediation": "Migrer vers le type JSON/JSONB natif avec validation de schéma ou décomposer en colonnes si possible"
+    }
+  ],
+  "poor_schema_design": [
+    {
+      "pattern": "Tables fourre-tout",
+      "description": "Tables contenant des données de nature différente",
+      "affected_tables": ["core_param", "config_all_in_one", "misc_data"],
+      "severity": "Critique",
+      "remediation": "Normaliser en divisant en tables distinctes avec des relations claires"
+    },
+    {
+      "pattern": "Clés étrangères manquantes",
+      "description": "Relations implicites sans contraintes de clé étrangère",
+      "affected_tables": ["orders", "order_items", "user_addresses", "product_categories"],
+      "affected_columns": [
+        "orders.user_id", 
+        "order_items.order_id", 
+        "user_addresses.user_id", 
+        "product_categories.product_id"
+      ],
+      "severity": "Moyenne",
+      "remediation": "Ajouter des contraintes de clé étrangère explicites avec comportement de suppression approprié"
+    },
+    {
+      "pattern": "Champs de type inapproprié",
+      "description": "Utilisation de types de données inappropriés pour le contenu",
+      "affected_tables": ["products", "orders", "users"],
+      "affected_columns": [
+        "products.price (FLOAT au lieu de DECIMAL)",
+        "orders.order_date (VARCHAR au lieu de DATE)",
+        "users.is_active (INT au lieu de BOOLEAN)"
+      ],
+      "severity": "Élevée",
+      "remediation": "Utiliser le type de données approprié pour chaque colonne"
+    },
+    {
+      "pattern": "Noms de colonnes incohérents",
+      "description": "Conventions de nommage incohérentes entre les tables",
+      "affected_tables": ["users", "products", "orders", "categories"],
+      "examples": [
+        "user_id vs. userId", 
+        "created_at vs. dateCreated", 
+        "product_name vs. productName"
+      ],
+      "severity": "Faible",
+      "remediation": "Standardiser les conventions de nommage dans tout le schéma"
+    }
+  ],
+  "detailed_recommendations": {
+    "short_term": [
+      "Standardiser tous les champs temporels (created_at, updated_at) sur le type TIMESTAMP",
+      "Convertir les champs financiers FLOAT en DECIMAL avec précision appropriée",
+      "Ajouter les contraintes de clé étrangère manquantes",
+      "Convertir les TINYINT(1) utilisés comme booléens en BOOLEAN natif"
+    ],
+    "medium_term": [
+      "Remplacer les paires de champs redondants (status/status_txt) par des ENUM ou tables de référence",
+      "Migrer les colonnes JSON stockées comme TEXT vers le type JSON/JSONB natif",
+      "Décomposer les colonnes multi-usages (data1, data2) en colonnes spécifiques",
+      "Standardiser les conventions de nommage des colonnes"
+    ],
+    "long_term": [
+      "Normaliser les tables fourre-tout (core_param, config_all_in_one)",
+      "Migrer les identifiants vers un format cohérent (numérique ou UUID)",
+      "Supprimer les colonnes obsolètes après vérification d'usage",
+      "Implémenter un processus de revue de schéma pour prévenir l'accumulation de dette"
+    ]
+  }
+}

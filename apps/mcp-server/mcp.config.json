@@ -1,0 +1,15 @@
+{
+  "agents": [
+    "php-analyzer",
+    "component-generator"
+  ],
+  "sourceDir": "../../src/legacy",
+  "outputDir": "outputs",
+  "filters": {
+    "includeExtensions": [".php"]
+  },
+  "performance": {
+    "maxWorkers": 4,
+    "chunkSize": 1048576
+  }
+}
