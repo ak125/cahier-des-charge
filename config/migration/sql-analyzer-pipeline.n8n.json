@@ -1,0 +1,326 @@
+{
+  "name": "SQL Analyzer IA Pipeline",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "sql-analyzer",
+        "options": {
+          "responseMode": "responseNode"
+        },
+        "authentication": "basicAuth"
+      },
+      "name": "Webhook Déclencheur",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        250,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "filePath": "={{ $json.auditIndexPath || './reports/sql_analyzer/audit_index.json' }}"
+      },
+      "name": "Charger Index d'Audit",
+      "type": "n8n-nodes-base.readBinaryFile",
+      "typeVersion": 1,
+      "position": [
+        450,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "dataType": "string",
+        "value": "={{ $binary.data.toString('utf8') }}"
+      },
+      "name": "Parser JSON Audit",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        650,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "jsonToBinary",
+        "sourceKey": "",
+        "options": {
+          "keepSource": true
+        }
+      },
+      "name": "Convertir en JSON",
+      "type": "n8n-nodes-base.moveData",
+      "typeVersion": 1,
+      "position": [
+        850,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "// Récupérer le répertoire de base\nconst outputDir = $input.item.json.outputDir || './reports/sql_analyzer';\n\n// Charger les fichiers référencés dans l'index d'audit\nconst auditIndex = $input.item.json;\nconst results = {\n  timestamp: auditIndex.timestamp,\n  database: auditIndex.database,\n  schemas: {},\n  reports: {},\n  prisma: {},\n  migrations: {}\n};\n\n// Fonction pour charger un fichier\nasync function loadFile(path) {\n  try {\n    const fullPath = `${outputDir}/${path}`;\n    const fs = require('fs');\n    if (!fs.existsSync(fullPath)) {\n      return null;\n    }\n    const content = fs.readFileSync(fullPath, 'utf8');\n    return path.endsWith('.json') ? JSON.parse(content) : content;\n  } catch (error) {\n    console.error(`Erreur lors du chargement du fichier ${path}:`, error);\n    return null;\n  }\n}\n\n// Charger les schémas\nif (auditIndex.schema_file) {\n  results.schemas.raw = await loadFile(auditIndex.schema_file);\n}\nif (auditIndex.normalized_schema) {\n  results.schemas.normalized = await loadFile(auditIndex.normalized_schema);\n}\nif (auditIndex.type_map) {\n  results.schemas.typeMap = await loadFile(auditIndex.type_map);\n}\n\n// Charger les rapports\nif (auditIndex.reports && Array.isArray(auditIndex.reports)) {\n  for (const reportPath of auditIndex.reports) {\n    const reportName = reportPath.split('/').pop().replace('.md', '').replace('.json', '');\n    results.reports[reportName] = await loadFile(reportPath);\n  }\n}\n\n// Charger le modèle Prisma\nif (auditIndex.prisma_model) {\n  results.prisma.model = await loadFile(auditIndex.prisma_model);\n}\n\n// Charger le plan de migration\nif (auditIndex.migration_plan) {\n  results.migrations.plan = await loadFile(auditIndex.migration_plan);\n}\n\n// Extraire des métriques\nresults.metrics = {\n  tables: 0,\n  columns: 0,\n  relations: 0,\n  risks: { high: 0, medium: 0, low: 0 }\n};\n\n// Compter les tables et colonnes\nif (results.schemas.normalized) {\n  const tables = results.schemas.normalized.tables || [];\n  results.metrics.tables = tables.length;\n  \n  // Compter les colonnes et relations\n  let columnCount = 0;\n  let relationCount = 0;\n  \n  for (const table of tables) {\n    columnCount += (table.columns || []).length;\n    relationCount += (table.foreignKeys || []).length;\n  }\n  \n  results.metrics.columns = columnCount;\n  results.metrics.relations = relationCount;\n}\n\n// Calculer les risques\nif (results.reports.table_risks) {\n  const risks = results.reports.table_risks;\n  for (const table in risks) {\n    const risk = risks[table].risk || 'low';\n    results.metrics.risks[risk]++;\n  }\n}\n\nreturn {json: results};"
+      },
+      "name": "Collecter Résultats Audit",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        1050,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "content": "=## Rapport d'Analyse SQL IA pour `{{ $json.database }}`\n\n**Date d'analyse:** {{ $json.timestamp }}\n\n### 📊 Métriques\n- Tables: {{ $json.metrics.tables }}\n- Colonnes: {{ $json.metrics.columns }}\n- Relations: {{ $json.metrics.relations }}\n\n### ⚠️ Risques identifiés\n- Risques élevés: {{ $json.metrics.risks.high }}\n- Risques moyens: {{ $json.metrics.risks.medium }}\n- Risques faibles: {{ $json.metrics.risks.low }}\n\n### Prochaines étapes\n1. Examiner le rapport de dette technique complet\n2. Valider le modèle Prisma généré\n3. Revoir le plan de migration\n",
+        "options": {}
+      },
+      "name": "Créer Résumé Markdown",
+      "type": "n8n-nodes-base.markdown",
+      "typeVersion": 1,
+      "position": [
+        1250,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $env.CHAT_ID }}",
+        "text": "=🧠 **Analyse SQL complétée!**\n\n{{ $node[\"Créer Résumé Markdown\"].data[\"output\"] }}\n\nVous pouvez consulter les rapports complets dans:\n{{ $json.outputDir || './reports/sql_analyzer' }}",
+        "options": {
+          "parseMode": "Markdown"
+        }
+      },
+      "name": "Notification Telegram",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [
+        1450,
+        300
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "1",
+          "name": "Telegram Account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}",
+        "options": {}
+      },
+      "name": "Réponse HTTP",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        1450,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ Object.keys($json.reports).includes('sql_dette_technique') }}",
+              "operation": "equal",
+              "value2": "true"
+            }
+          ]
+        }
+      },
+      "name": "Vérifier Dette Technique",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        1250,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "// Analyser la dette technique\nconst rapport = $input.item.json.reports.sql_dette_technique || '';\nconst risques = $input.item.json.reports.table_risks || {};\n\n// Extraire les risques élevés\nconst risquesEleves = Object.entries(risques)\n  .filter(([_, data]) => data.risk === 'high')\n  .map(([table, data]) => ({\n    table,\n    score: data.score,\n    raisons: data.reasons\n  }));\n\n// Créer les suggestions\nconst suggestions = [];\n\n// Suggestions pour les risques élevés\nif (risquesEleves.length > 0) {\n  suggestions.push({\n    titre: \"Tables à risque élevé\",\n    description: `${risquesEleves.length} tables ont un risque élevé de problèmes lors de la migration`,\n    actions: risquesEleves.map(r => `Revoir la table ${r.table}: ${r.raisons.join(', ')}`)\n  });\n}\n\n// Suggestions pour les types\nif ($input.item.json.schemas.typeMap) {\n  const typesMap = $input.item.json.schemas.typeMap;\n  const typesSuggestions = [];\n  \n  // Détecter les types problématiques\n  for (const [mysqlType, pgType] of Object.entries(typesMap)) {\n    if (pgType === '?') {\n      typesSuggestions.push(`Définir un type PostgreSQL pour le type MySQL ${mysqlType}`);\n    }\n  }\n  \n  if (typesSuggestions.length > 0) {\n    suggestions.push({\n      titre: \"Conversion de types\",\n      description: \"Certains types MySQL n'ont pas d'équivalent direct en PostgreSQL\",\n      actions: typesSuggestions\n    });\n  }\n}\n\n// Suggérer les étapes de migration\nsuggestions.push({\n  titre: \"Plan de migration\",\n  description: \"Étapes recommandées pour migrer vers PostgreSQL + Prisma\",\n  actions: [\n    \"1. Valider et ajuster le modèle Prisma généré\",\n    \"2. Créer un backup complet des données\",\n    \"3. Exécuter le plan de migration par étapes\",\n    \"4. Vérifier l'intégrité des données migrées\",\n    \"5. Mettre à jour les clients d'application\"\n  ]\n});\n\nreturn {\n  json: {\n    ...$input.item.json,\n    suggestions\n  }\n};"
+      },
+      "name": "Générer Suggestions",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        1050,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "filePath": "={{ $json.outputDir + '/prisma_migration_suggestions.md' || './reports/sql_analyzer/prisma_migration_suggestions.md' }}",
+        "options": {}
+      },
+      "name": "Sauvegarder Suggestions",
+      "type": "n8n-nodes-base.writeBinaryFile",
+      "typeVersion": 1,
+      "position": [
+        1250,
+        700
+      ]
+    },
+    {
+      "parameters": {
+        "dataType": "string",
+        "value": "=# Suggestions de Migration vers Prisma + PostgreSQL\n\n## Points d'attention pour la migration\n\n{{#each suggestions}}\n### {{titre}}\n\n{{description}}\n\n{{#each actions}}\n- {{this}}\n{{/each}}\n\n{{/each}}\n\n## Impact sur l'application\n\nCette migration peut affecter les composants suivants de votre application:\n\n- API REST utilisant les modèles actuels\n- Requêtes SQL brutes dans le code PHP\n- ORM existant\n- Validation de formulaires liée au schéma\n\n## Prochaines étapes recommandées\n\n1. **Réviser le modèle Prisma**: Vérifiez que le modèle Prisma généré correspond à vos besoins.\n2. **Tests de validation**: Créez des tests pour valider que la nouvelle structure fonctionne correctement.\n3. **Migration par phases**: Migrez progressivement par groupes de tables liées.\n4. **Adaptation du code**: Mettez à jour le code de l'application pour utiliser le nouveau modèle de données.\n\n## Timeline suggérée\n\n1. **Phase d'analyse** (terminée) - Comprendre le schéma et générer le modèle Prisma\n2. **Phase de préparation** (1-2 semaines) - Réviser et ajuster le modèle, préparer les tests\n3. **Phase de migration** (1-3 jours) - Exécuter la migration de la base de données\n4. **Phase d'adaptation** (1-4 semaines) - Adapter le code de l'application aux nouveaux modèles\n5. **Phase de validation** (1 semaine) - Tests finaux et surveillance"
+      },
+      "name": "Préparer Suggestions Markdown",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        1050,
+        700
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// Créer un rapport n8n intégré\nconst fs = require('fs');\nconst path = require('path');\n\n// Récupérer les données d'entrée\nconst item = $input.item.json;\nconst outputDir = item.outputDir || './reports/sql_analyzer';\n\n// Créer un rapport HTML pour le tableau de bord\nconst reportPath = path.join(outputDir, 'dashboard_report.html');\n\n// Générer le contenu HTML avec les statistiques et graphiques\nconst htmlContent = `<!DOCTYPE html>\n<html lang=\"fr\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Rapport d'analyse SQL - ${item.database}</title>\n    <style>\n        body { font-family: Arial, sans-serif; max-width: 1200px; margin: 0 auto; padding: 20px; }\n        h1, h2, h3 { color: #2c3e50; }\n        .card { background: #f8f9fa; border-radius: 5px; padding: 15px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }\n        .metrics { display: flex; flex-wrap: wrap; gap: 15px; }\n        .metric-card { background: #fff; border-radius: 5px; padding: 15px; flex: 1; min-width: 200px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }\n        .metric-title { font-size: 0.9em; color: #7f8c8d; margin-bottom: 5px; }\n        .metric-value { font-size: 2em; font-weight: bold; color: #2980b9; }\n        .risks { display: flex; gap: 10px; }\n        .risk { padding: 10px; border-radius: 5px; flex: 1; text-align: center; color: white; }\n        .risk.high { background-color: #e74c3c; }\n        .risk.medium { background-color: #f39c12; }\n        .risk.low { background-color: #27ae60; }\n        .suggestion { margin-bottom: 15px; }\n        .code-block { background: #f1f1f1; padding: 10px; border-radius: 5px; font-family: monospace; white-space: pre-wrap; }\n    </style>\n</head>\n<body>\n    <h1>Rapport d'analyse SQL - Migration vers PostgreSQL/Prisma</h1>\n    \n    <div class=\"card\">\n        <h2>Informations générales</h2>\n        <p><strong>Base de données analysée:</strong> ${item.database}</p>\n        <p><strong>Date d'analyse:</strong> ${item.timestamp}</p>\n    </div>\n    \n    <div class=\"card\">\n        <h2>Métriques</h2>\n        <div class=\"metrics\">\n            <div class=\"metric-card\">\n                <div class=\"metric-title\">Tables</div>\n                <div class=\"metric-value\">${item.metrics.tables}</div>\n            </div>\n            <div class=\"metric-card\">\n                <div class=\"metric-title\">Colonnes</div>\n                <div class=\"metric-value\">${item.metrics.columns}</div>\n            </div>\n            <div class=\"metric-card\">\n                <div class=\"metric-title\">Relations</div>\n                <div class=\"metric-value\">${item.metrics.relations}</div>\n            </div>\n        </div>\n    </div>\n    \n    <div class=\"card\">\n        <h2>Analyse de risques</h2>\n        <div class=\"risks\">\n            <div class=\"risk high\">\n                <h3>Élevé</h3>\n                <p>${item.metrics.risks.high}</p>\n            </div>\n            <div class=\"risk medium\">\n                <h3>Moyen</h3>\n                <p>${item.metrics.risks.medium}</p>\n            </div>\n            <div class=\"risk low\">\n                <h3>Faible</h3>\n                <p>${item.metrics.risks.low}</p>\n            </div>\n        </div>\n    </div>\n    \n    <div class=\"card\">\n        <h2>Suggestions</h2>\n        ${(item.suggestions || []).map(s => `\n            <div class=\"suggestion\">\n                <h3>${s.titre}</h3>\n                <p>${s.description}</p>\n                <ul>\n                    ${s.actions.map(a => `<li>${a}</li>`).join('')}\n                </ul>\n            </div>\n        `).join('')}\n    </div>\n    \n    <div class=\"card\">\n        <h2>Extrait du modèle Prisma</h2>\n        <div class=\"code-block\">${item.prisma?.model ? item.prisma.model.substring(0, 1000) + (item.prisma.model.length > 1000 ? '...' : '') : 'Modèle non disponible'}</div>\n    </div>\n    \n    <div class=\"card\">\n        <h2>Prochaines étapes</h2>\n        <ol>\n            <li>Examiner le rapport de dette technique complet: <code>${outputDir}/reports/sql_dette_technique.md</code></li>\n            <li>Valider le modèle Prisma généré: <code>${outputDir}/prisma/prisma_models.suggestion.prisma</code></li>\n            <li>Revoir le plan de migration: <code>${outputDir}/migrations/migration_plan.sql</code></li>\n            <li>Exécuter la migration lorsque tout est validé</li>\n        </ol>\n    </div>\n</body>\n</html>`;\n\n// Écrire le fichier\ntry {\n  fs.writeFileSync(reportPath, htmlContent);\n  console.log(`Rapport HTML généré avec succès: ${reportPath}`);\n} catch (error) {\n  console.error(`Erreur lors de la génération du rapport HTML: ${error.message}`);\n}\n\n// Mettre à jour les métriques pour le dashboard\nconst metricsPath = path.join('./dashboard/data', 'sql_analysis_metrics.json');\nlet metrics = [];\n\n// Charger les métriques existantes si elles existent\ntry {\n  if (fs.existsSync(metricsPath)) {\n    const metricsData = fs.readFileSync(metricsPath, 'utf8');\n    metrics = JSON.parse(metricsData);\n  }\n} catch (error) {\n  console.error(`Erreur lors du chargement des métriques: ${error.message}`);\n}\n\n// Ajouter les nouvelles métriques\nmetrics.push({\n  timestamp: item.timestamp,\n  database: item.database,\n  tables: item.metrics.tables,\n  columns: item.metrics.columns,\n  relations: item.metrics.relations,\n  risks: item.metrics.risks\n});\n\n// Limiter à 10 entrées\nif (metrics.length > 10) {\n  metrics = metrics.slice(-10);\n}\n\n// Sauvegarder les métriques\ntry {\n  // Créer le répertoire si nécessaire\n  const dir = path.dirname(metricsPath);\n  if (!fs.existsSync(dir)) {\n    fs.mkdirSync(dir, { recursive: true });\n  }\n  \n  fs.writeFileSync(metricsPath, JSON.stringify(metrics, null, 2));\n  console.log(`Métriques mises à jour avec succès: ${metricsPath}`);\n} catch (error) {\n  console.error(`Erreur lors de la sauvegarde des métriques: ${error.message}`);\n}\n\n// Retourner les données\nreturn {\n  ...item,\n  reportPath,\n  metricsPath\n};"
+      },
+      "name": "Générer Dashboard HTML",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [
+        650,
+        500
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook Déclencheur": {
+      "main": [
+        [
+          {
+            "node": "Charger Index d'Audit",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Charger Index d'Audit": {
+      "main": [
+        [
+          {
+            "node": "Parser JSON Audit",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parser JSON Audit": {
+      "main": [
+        [
+          {
+            "node": "Convertir en JSON",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convertir en JSON": {
+      "main": [
+        [
+          {
+            "node": "Collecter Résultats Audit",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Collecter Résultats Audit": {
+      "main": [
+        [
+          {
+            "node": "Créer Résumé Markdown",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Générer Dashboard HTML",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Créer Résumé Markdown": {
+      "main": [
+        [
+          {
+            "node": "Notification Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Générer Dashboard HTML": {
+      "main": [
+        [
+          {
+            "node": "Générer Suggestions",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Générer Suggestions": {
+      "main": [
+        [
+          {
+            "node": "Préparer Suggestions Markdown",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Vérifier Dette Technique",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Vérifier Dette Technique": {
+      "main": [
+        [
+          {
+            "node": "Réponse HTTP",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Préparer Suggestions Markdown": {
+      "main": [
+        [
+          {
+            "node": "Sauvegarder Suggestions",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "saveExecutionProgress": true,
+    "saveManualExecutions": true,
+    "callerPolicy": "workflowsFromSameOwner",
+    "timezone": "Europe/Paris"
+  },
+  "id": "sql-analyzer-pipeline"
+}

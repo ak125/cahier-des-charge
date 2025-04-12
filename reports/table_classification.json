@@ -1,0 +1,173 @@
+[
+  {
+    "table": "PIECES",
+    "role": "entité_métier",
+    "module": "produit",
+    "confidence": 0.96,
+    "reasons": [
+      "Entité métier centrale identifiée par structure",
+      "Contient des champs d'identification clairs",
+      "Se trouve au centre de nombreuses relations"
+    ],
+    "tags": [
+      "central",
+      "data:product"
+    ]
+  },
+  {
+    "table": "AUTO_MARQUE",
+    "role": "entité_métier",
+    "module": "catalogue",
+    "confidence": 0.92,
+    "reasons": [
+      "Entité de référence avec peu de colonnes",
+      "Référencée par d'autres tables"
+    ]
+  },
+  {
+    "table": "AUTO_MODELE",
+    "role": "entité_métier",
+    "module": "catalogue",
+    "confidence": 0.93,
+    "reasons": [
+      "Entité de référence liée à AUTO_MARQUE",
+      "Structure typique d'une entité métier"
+    ]
+  },
+  {
+    "table": "USERS",
+    "role": "entité_métier",
+    "module": "user",
+    "confidence": 0.97,
+    "reasons": [
+      "Nom caractéristique d'une entité utilisateur",
+      "Possède des attributs d'authentification",
+      "Référencée par d'autres tables métier"
+    ]
+  },
+  {
+    "table": "COMMANDES",
+    "role": "entité_métier",
+    "module": "commande",
+    "confidence": 0.95,
+    "reasons": [
+      "Nom caractéristique d'une entité métier principale",
+      "Possède des attributs de date et de statut",
+      "Reliée à plusieurs autres tables métier"
+    ]
+  },
+  {
+    "table": "USERS_COMMANDES",
+    "role": "liaison",
+    "module": "commande",
+    "confidence": 0.89,
+    "reasons": [
+      "Nom composé de deux entités",
+      "Structure typique d'une table de liaison",
+      "Contient principalement des clés étrangères"
+    ]
+  },
+  {
+    "table": "PIECES_COMMANDES",
+    "role": "liaison",
+    "module": "commande",
+    "confidence": 0.88,
+    "reasons": [
+      "Nom composé de deux entités",
+      "Structure typique d'une table de liaison",
+      "Contient principalement des clés étrangères"
+    ]
+  },
+  {
+    "table": "PIECES_COMPATIBILITE",
+    "role": "liaison",
+    "module": "produit",
+    "confidence": 0.87,
+    "reasons": [
+      "Lié à l'entité PIECES",
+      "Structure suggérant une relation many-to-many"
+    ]
+  },
+  {
+    "table": "CONFIG_LOG",
+    "role": "technique",
+    "module": null,
+    "confidence": 0.98,
+    "reasons": [
+      "Préfixe CONFIG_ typique des tables techniques",
+      "Suffixe _LOG indiquant une table de journalisation"
+    ]
+  },
+  {
+    "table": "TRACKING_STATS",
+    "role": "technique",
+    "module": null,
+    "confidence": 0.97,
+    "reasons": [
+      "Préfixe TRACKING_ caractéristique d'une table technique",
+      "Contient probablement des données d'analyse"
+    ]
+  },
+  {
+    "table": "SESSIONS_TEMP",
+    "role": "technique",
+    "module": null,
+    "confidence": 0.99,
+    "reasons": [
+      "Nom SESSIONS typique d'une table technique",
+      "Suffixe _TEMP indiquant des données temporaires"
+    ]
+  },
+  {
+    "table": "TMP_IMPORT2020",
+    "role": "orpheline_suspecte",
+    "module": null,
+    "confidence": 0.71,
+    "reasons": [
+      "Préfixe TMP_ indiquant une table temporaire",
+      "Contient une année dans le nom (possiblement obsolète)",
+      "Aucune relation avec d'autres tables"
+    ]
+  },
+  {
+    "table": "PIECES_GAMME",
+    "role": "entité_métier",
+    "module": "produit",
+    "confidence": 0.84,
+    "reasons": [
+      "Lié à l'entité PIECES",
+      "Probablement une classification ou catégorisation"
+    ]
+  },
+  {
+    "table": "PAIEMENTS",
+    "role": "entité_métier",
+    "module": "paiement",
+    "confidence": 0.93,
+    "reasons": [
+      "Nom caractéristique d'une entité métier",
+      "Probablement liée aux COMMANDES"
+    ]
+  },
+  {
+    "table": "LIVRAISONS",
+    "role": "entité_métier",
+    "module": "livraison",
+    "confidence": 0.91,
+    "reasons": [
+      "Nom caractéristique d'une entité métier",
+      "Probablement liée aux COMMANDES"
+    ]
+  },
+  {
+    "table": "OLD_CLIENTS_IMPORT",
+    "role": "orpheline_suspecte",
+    "module": null,
+    "confidence": 0.75,
+    "reasons": [
+      "Préfixe OLD_ indiquant des données obsolètes",
+      "Contient IMPORT suggérant une importation ponctuelle",
+      "Probablement non intégrée dans le modèle actuel"
+    ]
+  }
+]

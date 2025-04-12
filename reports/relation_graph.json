@@ -1,0 +1,449 @@
+{
+  "relations": [
+    {
+      "from_table": "COMMANDES",
+      "from_column": "user_id",
+      "to_table": "USERS",
+      "to_column": "id",
+      "on_delete": "CASCADE",
+      "on_update": "NO ACTION",
+      "confidence": 1.0,
+      "prisma_relation": {
+        "relation_name": "user",
+        "onDelete": "Cascade",
+        "relation_type": "many-to-one",
+        "optional": false
+      }
+    },
+    {
+      "from_table": "COMMANDES",
+      "from_column": "livraison_id",
+      "to_table": "LIVRAISONS",
+      "to_column": "id",
+      "on_delete": "SET NULL",
+      "on_update": "NO ACTION",
+      "confidence": 1.0,
+      "prisma_relation": {
+        "relation_name": "livraison",
+        "onDelete": "SetNull",
+        "relation_type": "many-to-one",
+        "optional": true
+      }
+    },
+    {
+      "from_table": "COMMANDES",
+      "from_column": "paiement_id",
+      "to_table": "PAIEMENTS",
+      "to_column": "id",
+      "on_delete": "NO ACTION",
+      "on_update": "NO ACTION",
+      "confidence": 1.0,
+      "warning": "⚠️ FK paiement_id NOT NULL sans ON DELETE SET NULL/CASCADE",
+      "prisma_relation": {
+        "relation_name": "paiement",
+        "onDelete": "NoAction",
+        "relation_type": "one-to-one",
+        "optional": false
+      }
+    },
+    {
+      "from_table": "PIECES_COMMANDES",
+      "from_column": "commande_id",
+      "to_table": "COMMANDES",
+      "to_column": "id",
+      "on_delete": "CASCADE",
+      "on_update": "NO ACTION",
+      "confidence": 1.0,
+      "prisma_relation": {
+        "relation_name": "commande",
+        "onDelete": "Cascade",
+        "relation_type": "many-to-one",
+        "optional": false
+      }
+    },
+    {
+      "from_table": "PIECES_COMMANDES",
+      "from_column": "piece_id",
+      "to_table": "PIECES",
+      "to_column": "id",
+      "on_delete": "RESTRICT",
+      "on_update": "NO ACTION",
+      "confidence": 1.0,
+      "prisma_relation": {
+        "relation_name": "piece",
+        "onDelete": "Restrict",
+        "relation_type": "many-to-one",
+        "optional": false
+      }
+    },
+    {
+      "from_table": "AUTO_MODELE",
+      "from_column": "marque_id",
+      "to_table": "AUTO_MARQUE",
+      "to_column": "id",
+      "on_delete": "NO ACTION",
+      "on_update": "NO ACTION",
+      "confidence": 1.0,
+      "warning": "⚠️ FK marque_id NOT NULL sans ON DELETE SET NULL/CASCADE",
+      "prisma_relation": {
+        "relation_name": "marque",
+        "onDelete": "NoAction",
+        "relation_type": "many-to-one",
+        "optional": false
+      }
+    },
+    {
+      "from_table": "PIECES_COMPATIBILITE",
+      "from_column": "piece_id",
+      "to_table": "PIECES",
+      "to_column": "id",
+      "on_delete": "CASCADE",
+      "on_update": "NO ACTION",
+      "confidence": 1.0,
+      "prisma_relation": {
+        "relation_name": "piece",
+        "onDelete": "Cascade",
+        "relation_type": "many-to-many",
+        "optional": false
+      }
+    },
+    {
+      "from_table": "PIECES_COMPATIBILITE",
+      "from_column": "modele_id",
+      "to_table": "AUTO_MODELE",
+      "to_column": "id",
+      "on_delete": "CASCADE",
+      "on_update": "NO ACTION",
+      "confidence": 1.0,
+      "prisma_relation": {
+        "relation_name": "modele",
+        "onDelete": "Cascade",
+        "relation_type": "many-to-many",
+        "optional": false
+      }
+    },
+    {
+      "from_table": "USERS_COMMANDES",
+      "from_column": "user_id",
+      "to_table": "USERS",
+      "to_column": "id",
+      "on_delete": "CASCADE",
+      "on_update": "NO ACTION",
+      "confidence": 1.0,
+      "prisma_relation": {
+        "relation_name": "user",
+        "onDelete": "Cascade",
+        "relation_type": "many-to-many",
+        "optional": false
+      }
+    },
+    {
+      "from_table": "USERS_COMMANDES",
+      "from_column": "commande_id",
+      "to_table": "COMMANDES",
+      "to_column": "id",
+      "on_delete": "CASCADE",
+      "on_update": "NO ACTION",
+      "confidence": 1.0,
+      "prisma_relation": {
+        "relation_name": "commande",
+        "onDelete": "Cascade",
+        "relation_type": "many-to-many",
+        "optional": false
+      }
+    },
+    {
+      "from_table": "PIECES",
+      "from_column": "gamme_id",
+      "to_table": "PIECES_GAMME",
+      "to_column": "id",
+      "on_delete": "SET NULL",
+      "on_update": "NO ACTION",
+      "confidence": 1.0,
+      "prisma_relation": {
+        "relation_name": "gamme",
+        "onDelete": "SetNull",
+        "relation_type": "many-to-one",
+        "optional": true
+      }
+    },
+    {
+      "from_table": "MEDIA",
+      "from_column": "ref_id",
+      "to_table": "PIECES",
+      "to_column": "id",
+      "confidence": 0.5,
+      "is_polymorphic": true,
+      "polymorphic_type_column": "ref_type",
+      "warning": "Relation polymorphique (via type_column) - limitée en Prisma",
+      "prisma_relation": {
+        "relation_name": "refOnPIECES",
+        "onDelete": "SetNull",
+        "optional": true,
+        "relation_type": "many-to-one"
+      }
+    },
+    {
+      "from_table": "MEDIA",
+      "from_column": "ref_id",
+      "to_table": "AUTO_MODELE",
+      "to_column": "id",
+      "confidence": 0.5,
+      "is_polymorphic": true,
+      "polymorphic_type_column": "ref_type",
+      "warning": "Relation polymorphique (via type_column) - limitée en Prisma",
+      "prisma_relation": {
+        "relation_name": "refOnAUTO_MODELE",
+        "onDelete": "SetNull",
+        "optional": true,
+        "relation_type": "many-to-one"
+      }
+    },
+    {
+      "from_table": "TRACKING_STATS",
+      "from_column": "commande_id",
+      "to_table": "COMMANDES",
+      "to_column": "id",
+      "confidence": 0.7,
+      "warning": "Relation implicite détectée, non définié comme FK dans le schéma",
+      "prisma_relation": {
+        "relation_name": "commande",
+        "onDelete": "SetNull",
+        "optional": true,
+        "relation_type": "many-to-one"
+      }
+    }
+  ],
+  "graph": {
+    "nodes": [
+      {
+        "id": "COMMANDES",
+        "label": "COMMANDES",
+        "type": "entity",
+        "relations_in": 3,
+        "relations_out": 3,
+        "centrality": 0.428
+      },
+      {
+        "id": "PIECES",
+        "label": "PIECES",
+        "type": "entity",
+        "relations_in": 3,
+        "relations_out": 1,
+        "centrality": 0.285
+      },
+      {
+        "id": "USERS",
+        "label": "USERS",
+        "type": "entity",
+        "relations_in": 2,
+        "relations_out": 0,
+        "centrality": 0.142
+      },
+      {
+        "id": "PIECES_COMMANDES",
+        "label": "PIECES_COMMANDES",
+        "type": "junction",
+        "relations_in": 0,
+        "relations_out": 2,
+        "centrality": 0.142
+      },
+      {
+        "id": "PIECES_COMPATIBILITE",
+        "label": "PIECES_COMPATIBILITE",
+        "type": "junction",
+        "relations_in": 0,
+        "relations_out": 2,
+        "centrality": 0.142
+      },
+      {
+        "id": "AUTO_MODELE",
+        "label": "AUTO_MODELE",
+        "type": "entity",
+        "relations_in": 2,
+        "relations_out": 1,
+        "centrality": 0.214
+      },
+      {
+        "id": "AUTO_MARQUE",
+        "label": "AUTO_MARQUE",
+        "type": "entity",
+        "relations_in": 1,
+        "relations_out": 0,
+        "centrality": 0.071
+      },
+      {
+        "id": "USERS_COMMANDES",
+        "label": "USERS_COMMANDES",
+        "type": "junction",
+        "relations_in": 0,
+        "relations_out": 2,
+        "centrality": 0.142
+      },
+      {
+        "id": "PAIEMENTS",
+        "label": "PAIEMENTS",
+        "type": "entity",
+        "relations_in": 1,
+        "relations_out": 0,
+        "centrality": 0.071
+      },
+      {
+        "id": "LIVRAISONS",
+        "label": "LIVRAISONS",
+        "type": "entity",
+        "relations_in": 1,
+        "relations_out": 0,
+        "centrality": 0.071
+      },
+      {
+        "id": "PIECES_GAMME",
+        "label": "PIECES_GAMME",
+        "type": "entity",
+        "relations_in": 1,
+        "relations_out": 0,
+        "centrality": 0.071
+      },
+      {
+        "id": "MEDIA",
+        "label": "MEDIA",
+        "type": "polymorphic",
+        "relations_in": 0,
+        "relations_out": 2,
+        "centrality": 0.142
+      },
+      {
+        "id": "TRACKING_STATS",
+        "label": "TRACKING_STATS",
+        "type": "entity",
+        "relations_in": 0,
+        "relations_out": 1,
+        "centrality": 0.071
+      },
+      {
+        "id": "CONFIG_LOG",
+        "label": "CONFIG_LOG",
+        "type": "entity",
+        "relations_in": 0,
+        "relations_out": 0,
+        "centrality": 0.0
+      },
+      {
+        "id": "SESSIONS_TEMP",
+        "label": "SESSIONS_TEMP",
+        "type": "entity",
+        "relations_in": 0,
+        "relations_out": 0,
+        "centrality": 0.0
+      },
+      {
+        "id": "TMP_IMPORT2020",
+        "label": "TMP_IMPORT2020",
+        "type": "entity",
+        "relations_in": 0,
+        "relations_out": 0,
+        "centrality": 0.0
+      }
+    ],
+    "edges": [
+      {
+        "source": "COMMANDES",
+        "target": "USERS",
+        "label": "user_id → id",
+        "type": "direct",
+        "warning": false
+      },
+      {
+        "source": "COMMANDES",
+        "target": "LIVRAISONS",
+        "label": "livraison_id → id",
+        "type": "direct",
+        "warning": false
+      },
+      {
+        "source": "COMMANDES",
+        "target": "PAIEMENTS",
+        "label": "paiement_id → id",
+        "type": "direct",
+        "warning": true
+      },
+      {
+        "source": "PIECES_COMMANDES",
+        "target": "COMMANDES",
+        "label": "commande_id → id",
+        "type": "direct",
+        "warning": false
+      },
+      {
+        "source": "PIECES_COMMANDES",
+        "target": "PIECES",
+        "label": "piece_id → id",
+        "type": "direct",
+        "warning": false
+      },
+      {
+        "source": "AUTO_MODELE",
+        "target": "AUTO_MARQUE",
+        "label": "marque_id → id",
+        "type": "direct",
+        "warning": true
+      },
+      {
+        "source": "PIECES_COMPATIBILITE",
+        "target": "PIECES",
+        "label": "piece_id → id",
+        "type": "direct",
+        "warning": false
+      },
+      {
+        "source": "PIECES_COMPATIBILITE",
+        "target": "AUTO_MODELE",
+        "label": "modele_id → id",
+        "type": "direct",
+        "warning": false
+      },
+      {
+        "source": "USERS_COMMANDES",
+        "target": "USERS",
+        "label": "user_id → id",
+        "type": "direct",
+        "warning": false
+      },
+      {
+        "source": "USERS_COMMANDES",
+        "target": "COMMANDES",
+        "label": "commande_id → id",
+        "type": "direct",
+        "warning": false
+      },
+      {
+        "source": "PIECES",
+        "target": "PIECES_GAMME",
+        "label": "gamme_id → id",
+        "type": "direct",
+        "warning": false
+      },
+      {
+        "source": "MEDIA",
+        "target": "PIECES",
+        "label": "ref_id → id",
+        "type": "polymorphic",
+        "warning": true
+      },
+      {
+        "source": "MEDIA",
+        "target": "AUTO_MODELE",
+        "label": "ref_id → id",
+        "type": "polymorphic",
+        "warning": true
+      },
+      {
+        "source": "TRACKING_STATS",
+        "target": "COMMANDES",
+        "label": "commande_id → id",
+        "type": "implicit",
+        "warning": true
+      }
+    ]
+  }
+}

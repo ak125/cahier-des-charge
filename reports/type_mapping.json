@@ -1,0 +1,584 @@
+{
+  "users.id": {
+    "mysql": "INT(11) UNSIGNED AUTO_INCREMENT",
+    "postgres": "SERIAL",
+    "prisma": "Int @id @default(autoincrement())",
+    "originalLength": 11,
+    "originalUnsigned": true,
+    "warning": "MySQL INT UNSIGNED n'a pas d'équivalent direct dans PostgreSQL",
+    "recommendation": "Utiliser CHECK (id >= 0) en PostgreSQL"
+  },
+  "users.username": {
+    "mysql": "VARCHAR(50) NOT NULL",
+    "postgres": "VARCHAR(50)",
+    "prisma": "String @db.VarChar(50)",
+    "originalLength": 50
+  },
+  "users.email": {
+    "mysql": "VARCHAR(255) NOT NULL",
+    "postgres": "VARCHAR(255)",
+    "prisma": "String @db.VarChar(255)",
+    "originalLength": 255
+  },
+  "users.password_hash": {
+    "mysql": "VARCHAR(255) NOT NULL",
+    "postgres": "VARCHAR(255)",
+    "prisma": "String @db.VarChar(255)"
+  },
+  "users.role": {
+    "mysql": "ENUM('admin', 'user', 'guest') NOT NULL DEFAULT 'user'",
+    "postgres": "TEXT",
+    "prisma": "String @db.Text @default(\"user\") // Enum original: ENUM('admin', 'user', 'guest')",
+    "warning": "Les ENUM MySQL ne sont pas nativement supportés par PostgreSQL",
+    "suggestion": "Créer un type ENUM en Prisma ou utiliser une table de référence"
+  },
+  "users.is_active": {
+    "mysql": "TINYINT(1) NOT NULL DEFAULT '1'",
+    "postgres": "BOOLEAN",
+    "prisma": "Boolean @default(true)",
+    "originalLength": 1
+  },
+  "users.status": {
+    "mysql": "VARCHAR(20)",
+    "postgres": "VARCHAR(20)",
+    "prisma": "String @db.VarChar(20)",
+    "originalLength": 20,
+    "warning": "Candidat potentiel pour ENUM: status",
+    "recommendation": "Envisager de convertir en type enum Prisma pour une meilleure validation"
+  },
+  "users.created_at": {
+    "mysql": "TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP",
+    "postgres": "TIMESTAMP",
+    "prisma": "DateTime @default(now())"
+  },
+  "users.updated_at": {
+    "mysql": "TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP",
+    "postgres": "TIMESTAMP",
+    "prisma": "DateTime? @updatedAt"
+  },
+  "products.id": {
+    "mysql": "INT(11) UNSIGNED AUTO_INCREMENT",
+    "postgres": "SERIAL",
+    "prisma": "Int @id @default(autoincrement())",
+    "originalLength": 11,
+    "originalUnsigned": true,
+    "warning": "MySQL INT UNSIGNED n'a pas d'équivalent direct dans PostgreSQL",
+    "recommendation": "Utiliser CHECK (id >= 0) en PostgreSQL"
+  },
+  "products.name": {
+    "mysql": "VARCHAR(255) NOT NULL",
+    "postgres": "VARCHAR(255)",
+    "prisma": "String @db.VarChar(255)",
+    "originalLength": 100
+  },
+  "products.description": {
+    "mysql": "TEXT",
+    "postgres": "TEXT",
+    "prisma": "String @db.Text",
+    "warning": "Contenu potentiellement riche détecté",
+    "recommendation": "Envisager d'ajouter un champ personnalisé RichText dans votre modèle si ce champ contient du HTML/Markdown"
+  },
+  "products.price": {
+    "mysql": "FLOAT(10,2) NOT NULL",
+    "postgres": "REAL",
+    "prisma": "Float",
+    "originalPrecision": 10,
+    "originalScale": 2,
+    "warning": "Le type FLOAT a une précision limitée, considérer NUMERIC pour des calculs financiers",
+    "recommendation": "Utiliser NUMERIC(10,2) pour les montants financiers",
+    "suggestion": "Utiliser NUMERIC(precision,scale) pour une précision exacte"
+  },
+  "products.stock_quantity": {
+    "mysql": "INT(11) NOT NULL DEFAULT '0'",
+    "postgres": "INTEGER",
+    "prisma": "Int @default(0)"
+  },
+  "products.quantity": {
+    "mysql": "INT(11) UNSIGNED",
+    "postgres": "INTEGER",
+    "prisma": "Int",
+    "originalLength": 11,
+    "originalUnsigned": true,
+    "warning": "MySQL INT UNSIGNED n'a pas d'équivalent direct dans PostgreSQL",
+    "recommendation": "Utiliser CHECK (quantity >= 0) en PostgreSQL"
+  },
+  "products.category_id": {
+    "mysql": "INT(11) UNSIGNED",
+    "postgres": "INTEGER",
+    "prisma": "Int",
+    "originalLength": 11,
+    "originalUnsigned": true,
+    "warning": "MySQL INT UNSIGNED n'a pas d'équivalent direct dans PostgreSQL",
+    "recommendation": "Utiliser CHECK (category_id >= 0) en PostgreSQL",
+    "suggestion": "Utiliser un type de taille supérieure (ex: INT -> BIGINT)"
+  },
+  "products.tags": {
+    "mysql": "SET('eco', 'promo', 'new', 'sale', 'featured')",
+    "postgres": "TEXT[]",
+    "prisma": "String[] @db.Text // Set original: SET('eco', 'promo', 'new', 'sale', 'featured')",
+    "warning": "Les types SET MySQL ne sont pas supportés par PostgreSQL",
+    "suggestion": "Utiliser un tableau (TEXT[]) ou une table de jointure"
+  },
+  "products.is_available": {
+    "mysql": "TINYINT(1) NOT NULL DEFAULT '1'",
+    "postgres": "BOOLEAN",
+    "prisma": "Boolean @default(true)"
+  },
+  "products.created_at": {
+    "mysql": "TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP",
+    "postgres": "TIMESTAMP",
+    "prisma": "DateTime @default(now())"
+  },
+  "products.updated_at": {
+    "mysql": "TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP",
+    "postgres": "TIMESTAMP",
+    "prisma": "DateTime? @updatedAt"
+  },
+  "categories.id": {
+    "mysql": "INT(11) UNSIGNED AUTO_INCREMENT",
+    "postgres": "SERIAL",
+    "prisma": "Int @id @default(autoincrement())",
+    "originalLength": 11,
+    "originalUnsigned": true,
+    "warning": "MySQL INT UNSIGNED n'a pas d'équivalent direct dans PostgreSQL",
+    "recommendation": "Utiliser CHECK (id >= 0) en PostgreSQL"
+  },
+  "categories.name": {
+    "mysql": "VARCHAR(100) NOT NULL",
+    "postgres": "VARCHAR(100)",
+    "prisma": "String @db.VarChar(100)",
+    "originalLength": 50
+  },
+  "categories.slug": {
+    "mysql": "VARCHAR(120) NOT NULL",
+    "postgres": "VARCHAR(120)",
+    "prisma": "String @db.VarChar(120)"
+  },
+  "categories.parent_id": {
+    "mysql": "INT(11) UNSIGNED DEFAULT NULL",
+    "postgres": "INTEGER",
+    "prisma": "Int?",
+    "originalLength": 11,
+    "originalUnsigned": true,
+    "warning": "MySQL INT UNSIGNED n'a pas d'équivalent direct dans PostgreSQL",
+    "recommendation": "Utiliser CHECK (parent_id >= 0) en PostgreSQL",
+    "suggestion": "Utiliser un type de taille supérieure (ex: INT -> BIGINT)"
+  },
+  "orders.id": {
+    "mysql": "BIGINT(20) UNSIGNED AUTO_INCREMENT",
+    "postgres": "BIGSERIAL",
+    "prisma": "BigInt @id @default(autoincrement()) @db.BigInt",
+    "originalLength": 11,
+    "originalUnsigned": true,
+    "warning": "MySQL INT UNSIGNED n'a pas d'équivalent direct dans PostgreSQL",
+    "recommendation": "Utiliser CHECK (id >= 0) en PostgreSQL"
+  },
+  "orders.user_id": {
+    "mysql": "INT(11) UNSIGNED NOT NULL",
+    "postgres": "INTEGER",
+    "prisma": "Int",
+    "originalLength": 11,
+    "originalUnsigned": true,
+    "warning": "MySQL INT UNSIGNED n'a pas d'équivalent direct dans PostgreSQL",
+    "recommendation": "Utiliser CHECK (user_id >= 0) en PostgreSQL",
+    "suggestion": "Utiliser un type de taille supérieure (ex: INT -> BIGINT)"
+  },
+  "orders.status": {
+    "mysql": "ENUM('pending','processing','completed','cancelled')",
+    "postgres": "TEXT",
+    "prisma": "String @db.Text @default(\"pending\") // Enum original: ENUM('pending', 'processing', 'shipped', 'delivered', 'canceled')",
+    "warning": "Les ENUMs MySQL ne se mappent pas directement à PostgreSQL, utiliser un type enum Prisma",
+    "recommendation": "Créer un enum Prisma: enum OrdersStatusEnum { pending processing completed cancelled }"
+  },
+  "orders.total_amount": {
+    "mysql": "DECIMAL(12,2) NOT NULL",
+    "postgres": "NUMERIC(12,2)",
+    "prisma": "Decimal @db.Decimal(12,2)",
+    "originalPrecision": 10,
+    "originalScale": 2
+  },
+  "orders.payment_method": {
+    "mysql": "VARCHAR(50) NOT NULL DEFAULT 'credit_card'",
+    "postgres": "VARCHAR(50)",
+    "prisma": "String @db.VarChar(50) @default(\"credit_card\")"
+  },
+  "orders.shipping_address": {
+    "mysql": "JSON",
+    "postgres": "JSONB",
+    "prisma": "Json",
+    "warning": "Colonne stockant probablement du JSON sans validation de structure",
+    "suggestion": "Utiliser JSONB avec contraintes ou définir un zod schema"
+  },
+  "orders.created_at": {
+    "mysql": "TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP",
+    "postgres": "TIMESTAMP",
+    "prisma": "DateTime @default(now())"
+  },
+  "orders.updated_at": {
+    "mysql": "TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP",
+    "postgres": "TIMESTAMP",
+    "prisma": "DateTime? @updatedAt"
+  },
+  "order_items.id": {
+    "mysql": "BIGINT(20) UNSIGNED AUTO_INCREMENT",
+    "postgres": "BIGSERIAL",
+    "prisma": "BigInt @id @default(autoincrement()) @db.BigInt",
+    "originalLength": 11,
+    "originalUnsigned": true,
+    "warning": "MySQL INT UNSIGNED n'a pas d'équivalent direct dans PostgreSQL",
+    "recommendation": "Utiliser CHECK (id >= 0) en PostgreSQL"
+  },
+  "order_items.order_id": {
+    "mysql": "BIGINT(20) UNSIGNED NOT NULL",
+    "postgres": "BIGINT",
+    "prisma": "BigInt @db.BigInt",
+    "originalLength": 11,
+    "originalUnsigned": true,
+    "warning": "MySQL INT UNSIGNED n'a pas d'équivalent direct dans PostgreSQL",
+    "recommendation": "Utiliser CHECK (order_id >= 0) en PostgreSQL"
+  },
+  "order_items.product_id": {
+    "mysql": "INT(11) UNSIGNED NOT NULL",
+    "postgres": "INTEGER",
+    "prisma": "Int",
+    "originalLength": 11,
+    "originalUnsigned": true,
+    "warning": "MySQL INT UNSIGNED n'a pas d'équivalent direct dans PostgreSQL",
+    "recommendation": "Utiliser CHECK (product_id >= 0) en PostgreSQL",
+    "suggestion": "Utiliser un type de taille supérieure (ex: INT -> BIGINT)"
+  },
+  "order_items.quantity": {
+    "mysql": "INT(11) NOT NULL DEFAULT '1'",
+    "postgres": "INTEGER",
+    "prisma": "Int @default(1)",
+    "originalLength": 11,
+    "originalUnsigned": true,
+    "warning": "MySQL INT UNSIGNED n'a pas d'équivalent direct dans PostgreSQL",
+    "recommendation": "Utiliser CHECK (quantity >= 0) en PostgreSQL"
+  },
+  "order_items.unit_price": {
+    "mysql": "DECIMAL(10,2) NOT NULL",
+    "postgres": "NUMERIC(10,2)",
+    "prisma": "Decimal @db.Decimal(10,2)",
+    "originalPrecision": 10,
+    "originalScale": 2
+  },
+  "media.id": {
+    "mysql": "INT(11) UNSIGNED",
+    "postgres": "SERIAL",
+    "prisma": "Int @id @default(autoincrement())",
+    "originalLength": 11,
+    "originalUnsigned": true,
+    "warning": "MySQL INT UNSIGNED n'a pas d'équivalent direct dans PostgreSQL",
+    "recommendation": "Utiliser CHECK (id >= 0) en PostgreSQL"
+  },
+  "media.filename": {
+    "mysql": "VARCHAR(255)",
+    "postgres": "VARCHAR(255)",
+    "prisma": "String @db.VarChar(255)",
+    "originalLength": 255
+  },
+  "media.mime_type": {
+    "mysql": "VARCHAR(100)",
+    "postgres": "VARCHAR(100)",
+    "prisma": "String @db.VarChar(100)",
+    "originalLength": 100
+  },
+  "media.ref_type": {
+    "mysql": "VARCHAR(50)",
+    "postgres": "VARCHAR(50)",
+    "prisma": "String @db.VarChar(50)",
+    "originalLength": 50,
+    "warning": "Candidat potentiel pour ENUM: ref_type",
+    "recommendation": "Envisager de convertir en type enum Prisma pour une meilleure validation"
+  },
+  "media.ref_id": {
+    "mysql": "INT(11) UNSIGNED",
+    "postgres": "INTEGER",
+    "prisma": "Int",
+    "originalLength": 11,
+    "originalUnsigned": true,
+    "warning": "MySQL INT UNSIGNED n'a pas d'équivalent direct dans PostgreSQL",
+    "recommendation": "Utiliser CHECK (ref_id >= 0) en PostgreSQL"
+  },
+  "media.created_at": {
+    "mysql": "DATETIME",
+    "postgres": "TIMESTAMP",
+    "prisma": "DateTime @default(now())"
+  },
+  "user_preferences.id": {
+    "mysql": "INT(11) UNSIGNED",
+    "postgres": "SERIAL",
+    "prisma": "Int @id @default(autoincrement())",
+    "originalLength": 11,
+    "originalUnsigned": true,
+    "warning": "MySQL INT UNSIGNED n'a pas d'équivalent direct dans PostgreSQL",
+    "recommendation": "Utiliser CHECK (id >= 0) en PostgreSQL"
+  },
+  "user_preferences.user_id": {
+    "mysql": "INT(11) UNSIGNED",
+    "postgres": "INTEGER",
+    "prisma": "Int",
+    "originalLength": 11,
+    "originalUnsigned": true,
+    "warning": "MySQL INT UNSIGNED n'a pas d'équivalent direct dans PostgreSQL",
+    "recommendation": "Utiliser CHECK (user_id >= 0) en PostgreSQL"
+  },
+  "user_preferences.preferences": {
+    "mysql": "JSON",
+    "postgres": "JSONB",
+    "prisma": "Json"
+  },
+  "user_preferences.updated_at": {
+    "mysql": "TIMESTAMP",
+    "postgres": "TIMESTAMP",
+    "prisma": "DateTime @updatedAt"
+  },
+  "tags.id": {
+    "mysql": "INT(11) UNSIGNED",
+    "postgres": "SERIAL",
+    "prisma": "Int @id @default(autoincrement())",
+    "originalLength": 11,
+    "originalUnsigned": true,
+    "warning": "MySQL INT UNSIGNED n'a pas d'équivalent direct dans PostgreSQL",
+    "recommendation": "Utiliser CHECK (id >= 0) en PostgreSQL"
+  },
+  "tags.name": {
+    "mysql": "VARCHAR(50)",
+    "postgres": "VARCHAR(50)",
+    "prisma": "String @db.VarChar(50)",
+    "originalLength": 50
+  },
+  "product_tags.product_id": {
+    "mysql": "INT(11) UNSIGNED",
+    "postgres": "INTEGER",
+    "prisma": "Int",
+    "originalLength": 11,
+    "originalUnsigned": true,
+    "warning": "MySQL INT UNSIGNED n'a pas d'équivalent direct dans PostgreSQL",
+    "recommendation": "Utiliser CHECK (product_id >= 0) en PostgreSQL"
+  },
+  "product_tags.tag_id": {
+    "mysql": "INT(11) UNSIGNED",
+    "postgres": "INTEGER",
+    "prisma": "Int",
+    "originalLength": 11,
+    "originalUnsigned": true,
+    "warning": "MySQL INT UNSIGNED n'a pas d'équivalent direct dans PostgreSQL",
+    "recommendation": "Utiliser CHECK (tag_id >= 0) en PostgreSQL"
+  },
+  "logs.id": {
+    "mysql": "BIGINT(20) UNSIGNED",
+    "postgres": "BIGSERIAL",
+    "prisma": "BigInt @id @default(autoincrement())",
+    "originalLength": 20,
+    "originalUnsigned": true,
+    "warning": "MySQL BIGINT UNSIGNED n'a pas d'équivalent direct dans PostgreSQL",
+    "recommendation": "Utiliser CHECK (id >= 0) en PostgreSQL"
+  },
+  "logs.message": {
+    "mysql": "TEXT",
+    "postgres": "TEXT",
+    "prisma": "String @db.Text"
+  },
+  "logs.level": {
+    "mysql": "VARCHAR(20)",
+    "postgres": "VARCHAR(20)",
+    "prisma": "String @db.VarChar(20)",
+    "originalLength": 20,
+    "warning": "Candidat potentiel pour ENUM: level",
+    "recommendation": "Envisager de convertir en type enum Prisma pour une meilleure validation"
+  },
+  "logs.context": {
+    "mysql": "JSON",
+    "postgres": "JSONB",
+    "prisma": "Json"
+  },
+  "logs.timestamp": {
+    "mysql": "TIMESTAMP",
+    "postgres": "TIMESTAMP",
+    "prisma": "DateTime @default(now())"
+  },
+  "geo_locations.id": {
+    "mysql": "INT(11) UNSIGNED",
+    "postgres": "SERIAL",
+    "prisma": "Int @id @default(autoincrement())",
+    "originalLength": 11,
+    "originalUnsigned": true,
+    "warning": "MySQL INT UNSIGNED n'a pas d'équivalent direct dans PostgreSQL",
+    "recommendation": "Utiliser CHECK (id >= 0) en PostgreSQL"
+  },
+  "geo_locations.name": {
+    "mysql": "VARCHAR(100)",
+    "postgres": "VARCHAR(100)",
+    "prisma": "String @db.VarChar(100)",
+    "originalLength": 100
+  },
+  "geo_locations.coordinates": {
+    "mysql": "POINT",
+    "postgres": "GEOMETRY",
+    "prisma": "String @db.Text",
+    "warning": "Les types géométriques MySQL doivent être gérés avec PostGIS dans PostgreSQL",
+    "recommendation": "Installer l'extension PostGIS"
+  },
+  "product_variants.id": {
+    "mysql": "INT(11) UNSIGNED",
+    "postgres": "SERIAL",
+    "prisma": "Int @id @default(autoincrement())",
+    "originalLength": 11,
+    "originalUnsigned": true,
+    "warning": "MySQL INT UNSIGNED n'a pas d'équivalent direct dans PostgreSQL",
+    "recommendation": "Utiliser CHECK (id >= 0) en PostgreSQL"
+  },
+  "product_variants.product_id": {
+    "mysql": "INT(11) UNSIGNED",
+    "postgres": "INTEGER",
+    "prisma": "Int",
+    "originalLength": 11,
+    "originalUnsigned": true,
+    "warning": "MySQL INT UNSIGNED n'a pas d'équivalent direct dans PostgreSQL",
+    "recommendation": "Utiliser CHECK (product_id >= 0) en PostgreSQL"
+  },
+  "product_variants.sku": {
+    "mysql": "VARCHAR(50)",
+    "postgres": "VARCHAR(50)",
+    "prisma": "String @db.VarChar(50)",
+    "originalLength": 50
+  },
+  "product_variants.attributes": {
+    "mysql": "SET('color','size','material','style')",
+    "postgres": "TEXT[]",
+    "prisma": "String[]",
+    "warning": "Le type SET MySQL n'existe pas dans PostgreSQL, converti en tableau TEXT[]",
+    "recommendation": "Utiliser des requêtes ARRAY en PostgreSQL pour manipuler ces données"
+  },
+  "product_variants.price_adjustment": {
+    "mysql": "DECIMAL(10,2)",
+    "postgres": "NUMERIC(10,2)",
+    "prisma": "Decimal @db.Decimal(10,2)",
+    "originalPrecision": 10,
+    "originalScale": 2
+  },
+  "reviews.id": {
+    "mysql": "BIGINT(20) UNSIGNED AUTO_INCREMENT",
+    "postgres": "BIGSERIAL",
+    "prisma": "BigInt @id @default(autoincrement()) @db.BigInt"
+  },
+  "reviews.product_id": {
+    "mysql": "INT(11) UNSIGNED NOT NULL",
+    "postgres": "INTEGER",
+    "prisma": "Int",
+    "warning": "Les entiers UNSIGNED ne sont pas supportés par PostgreSQL",
+    "suggestion": "Utiliser un type de taille supérieure (ex: INT -> BIGINT)"
+  },
+  "reviews.user_id": {
+    "mysql": "INT(11) UNSIGNED NOT NULL",
+    "postgres": "INTEGER",
+    "prisma": "Int",
+    "warning": "Les entiers UNSIGNED ne sont pas supportés par PostgreSQL",
+    "suggestion": "Utiliser un type de taille supérieure (ex: INT -> BIGINT)"
+  },
+  "reviews.rating": {
+    "mysql": "TINYINT(1) NOT NULL DEFAULT '5'",
+    "postgres": "SMALLINT",
+    "prisma": "Int @db.SmallInt @default(5)"
+  },
+  "reviews.review_text": {
+    "mysql": "TEXT",
+    "postgres": "TEXT",
+    "prisma": "String @db.Text"
+  },
+  "reviews.created_at": {
+    "mysql": "TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP",
+    "postgres": "TIMESTAMP",
+    "prisma": "DateTime @default(now())"
+  },
+  "payment_transactions.id": {
+    "mysql": "BIGINT(20) UNSIGNED AUTO_INCREMENT",
+    "postgres": "BIGSERIAL",
+    "prisma": "BigInt @id @default(autoincrement()) @db.BigInt"
+  },
+  "payment_transactions.order_id": {
+    "mysql": "BIGINT(20) UNSIGNED NOT NULL",
+    "postgres": "BIGINT",
+    "prisma": "BigInt @db.BigInt"
+  },
+  "payment_transactions.transaction_id": {
+    "mysql": "VARCHAR(255) NOT NULL",
+    "postgres": "VARCHAR(255)",
+    "prisma": "String @db.VarChar(255)"
+  },
+  "payment_transactions.payment_provider": {
+    "mysql": "VARCHAR(50) NOT NULL",
+    "postgres": "VARCHAR(50)",
+    "prisma": "String @db.VarChar(50)"
+  },
+  "payment_transactions.amount": {
+    "mysql": "DECIMAL(12,2) NOT NULL",
+    "postgres": "NUMERIC(12,2)",
+    "prisma": "Decimal @db.Decimal(12,2)"
+  },
+  "payment_transactions.status": {
+    "mysql": "ENUM('pending', 'completed', 'failed', 'refunded') NOT NULL",
+    "postgres": "TEXT",
+    "prisma": "String @db.Text // Enum original: ENUM('pending', 'completed', 'failed', 'refunded')",
+    "warning": "Les ENUM MySQL ne sont pas nativement supportés par PostgreSQL",
+    "suggestion": "Créer un type ENUM en Prisma ou utiliser une table de référence"
+  },
+  "payment_transactions.created_at": {
+    "mysql": "TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP",
+    "postgres": "TIMESTAMP",
+    "prisma": "DateTime @default(now())"
+  },
+  "payment_transactions.updated_at": {
+    "mysql": "TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP",
+    "postgres": "TIMESTAMP",
+    "prisma": "DateTime? @updatedAt"
+  },
+  "payment_transactions.metadata": {
+    "mysql": "JSON",
+    "postgres": "JSONB",
+    "prisma": "Json",
+    "warning": "Colonne stockant probablement du JSON sans validation de structure",
+    "suggestion": "Utiliser JSONB avec contraintes ou définir un zod schema"
+  },
+  "configs.id": {
+    "mysql": "INT(11) UNSIGNED AUTO_INCREMENT",
+    "postgres": "SERIAL",
+    "prisma": "Int @id @default(autoincrement())"
+  },
+  "configs.key": {
+    "mysql": "VARCHAR(100) NOT NULL",
+    "postgres": "VARCHAR(100)",
+    "prisma": "String @db.VarChar(100)"
+  },
+  "configs.value": {
+    "mysql": "LONGTEXT",
+    "postgres": "TEXT",
+    "prisma": "String @db.Text",
+    "warning": "Colonne stockant probablement du JSON sans validation de structure",
+    "suggestion": "Utiliser JSONB avec contraintes ou définir un zod schema"
+  },
+  "configs.data_type": {
+    "mysql": "ENUM('string', 'number', 'boolean', 'json', 'array') NOT NULL DEFAULT 'string'",
+    "postgres": "TEXT",
+    "prisma": "String @db.Text @default(\"string\") // Enum original: ENUM('string', 'number', 'boolean', 'json', 'array')",
+    "warning": "Les ENUM MySQL ne sont pas nativement supportés par PostgreSQL",
+    "suggestion": "Créer un type ENUM en Prisma ou utiliser une table de référence"
+  },
+  "configs.module": {
+    "mysql": "VARCHAR(50) DEFAULT NULL",
+    "postgres": "VARCHAR(50)",
+    "prisma": "String? @db.VarChar(50)"
+  },
+  "configs.description": {
+    "mysql": "VARCHAR(255) DEFAULT NULL",
+    "postgres": "VARCHAR(255)",
+    "prisma": "String? @db.VarChar(255)"
+  },
+  "configs.updated_at": {
+    "mysql": "TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP",
+    "postgres": "TIMESTAMP",
+    "prisma": "DateTime? @updatedAt"
+  }
+}
