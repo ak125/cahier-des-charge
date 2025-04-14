@@ -3,3 +3,5 @@ packages:
   - 'dashboard'
   - 'monorepo/apps/*'
   - 'monorepo/packages/*'
+  - 'packages/*'
+  - 'apps/*'

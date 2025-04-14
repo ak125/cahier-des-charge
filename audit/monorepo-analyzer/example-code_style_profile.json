@@ -1,0 +1,21 @@
+{
+  "indentation": {
+    "type": "spaces",
+    "size": 2
+  },
+  "quotes": "single",
+  "semicolons": true,
+  "maxLineLength": 100,
+  "componentNaming": "PascalCase",
+  "importOrder": [
+    "react",
+    "@remix-run",
+    "@nestjs",
+    "@fafa",
+    "~",
+    "./",
+    "../"
+  ],
+  "braceStyle": "same-line",
+  "trailingComma": true
+}

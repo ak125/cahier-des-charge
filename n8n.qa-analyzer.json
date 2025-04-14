@@ -1,0 +1,257 @@
+{
+  "name": "QA Analyzer Pipeline",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "minutesInterval": 60
+            }
+          ]
+        }
+      },
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1,
+      "position": [
+        250,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "// Récupérer les fichiers PHP récemment migrés\nconst fs = require('fs');\nconst path = require('path');\n\n// Chemin vers le dossier de résultats de migration\nconst migrationsDir = '/workspaces/cahier-des-charge/migration-results';\n\n// Récupérer les fichiers de résultats de migration récents\nconst recentFiles = [];\nconst files = fs.readdirSync(migrationsDir);\n\nfor (const file of files) {\n  if (file.endsWith('.json') && file.startsWith('migration-results-')) {\n    const filePath = path.join(migrationsDir, file);\n    const stats = fs.statSync(filePath);\n    \n    // Vérifier si le fichier a été créé il y a moins de 24 heures\n    const now = new Date();\n    const fileDate = new Date(stats.mtime);\n    const hoursDiff = (now.getTime() - fileDate.getTime()) / (1000 * 60 * 60);\n    \n    if (hoursDiff < 24) {\n      const content = JSON.parse(fs.readFileSync(filePath, 'utf8'));\n      recentFiles.push({\n        filePath,\n        content,\n        date: fileDate\n      });\n    }\n  }\n}\n\n// Trier par date (plus récent en premier)\nrecentFiles.sort((a, b) => b.date.getTime() - a.date.getTime());\n\n// Prendre les 10 plus récents\nconst results = recentFiles.slice(0, 10);\n\n// Extraire les informations nécessaires pour l'analyse QA\nconst migrations = [];\n\nfor (const result of results) {\n  for (const migration of result.content.migrations || []) {\n    if (migration.sourceFile && migration.generatedFiles) {\n      migrations.push({\n        sourceFile: migration.sourceFile,\n        generatedFiles: migration.generatedFiles\n      });\n    }\n  }\n}\n\nreturn { migrations };"
+      },
+      "name": "Get Recent Migrations",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        450,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "batchSize": 1,
+        "options": {}
+      },
+      "name": "Split Migrations",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 1,
+      "position": [
+        700,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "// Extraire les informations de la migration\nconst migration = $input.item.json;\n\n// Formater les données pour l'appel à qa-analyzer\nconst sourcePhpPath = migration.sourceFile;\nconst generatedFiles = migration.generatedFiles;\n\n// Convertir les chemins de fichiers générés en format attendu par qa-analyzer\nconst formattedFiles = {};\nfor (const [key, filePath] of Object.entries(generatedFiles)) {\n  // Extraire le type de fichier (component, loader, meta)\n  const fileType = key.includes('.') ? key.split('.').pop() : key;\n  formattedFiles[fileType] = filePath;\n}\n\nconst options = {\n  outputDir: '/workspaces/cahier-des-charge/docs/qa-reports',\n  verbose: true,\n  taggingEnabled: true,\n  dashboardEnabled: true,\n  aiMatching: true,\n  threshold: 70\n};\n\nreturn {\n  command: `cd /workspaces/cahier-des-charge && ts-node agents/qa-analyzer.ts \"${sourcePhpPath}\" '${JSON.stringify(formattedFiles)}' '${JSON.stringify(options)}'`,\n  sourceFile: sourcePhpPath,\n  generatedFiles: formattedFiles\n};"
+      },
+      "name": "Prepare QA Command",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        910,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "command": "={{ $json.command }}",
+        "executeInLine": true
+      },
+      "name": "Run QA Analyzer",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        1120,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.exitCode }}",
+              "operation": "equal",
+              "value2": "0"
+            }
+          ]
+        }
+      },
+      "name": "Success IF",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        1340,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "channel": "qa-alerts",
+        "text": "✅ Analyse QA terminée avec succès pour {{ $('Prepare QA Command').item.json.sourceFile }}\n\nRapport disponible dans /docs/qa-reports",
+        "attachments": [],
+        "otherOptions": {}
+      },
+      "name": "Slack Success",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 1,
+      "position": [
+        1580,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "channel": "qa-alerts",
+        "text": "❌ Échec de l'analyse QA pour {{ $('Prepare QA Command').item.json.sourceFile }}\n\nErreur : {{ $json.stderr }}",
+        "attachments": [],
+        "otherOptions": {}
+      },
+      "name": "Slack Error",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 1,
+      "position": [
+        1580,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "// Synchroniser les résultats en cache avec le dashboard\nconst command = 'cd /workspaces/cahier-des-charge && ts-node apps/dashboard/integration/qa-dashboard.ts';\n\nreturn { command };"
+      },
+      "name": "Prepare Sync",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        1800,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "command": "={{ $json.command }}",
+        "executeInLine": true
+      },
+      "name": "Sync Dashboard",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        2000,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get Recent Migrations",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Recent Migrations": {
+      "main": [
+        [
+          {
+            "node": "Split Migrations",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Migrations": {
+      "main": [
+        [
+          {
+            "node": "Prepare QA Command",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare QA Command": {
+      "main": [
+        [
+          {
+            "node": "Run QA Analyzer",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Run QA Analyzer": {
+      "main": [
+        [
+          {
+            "node": "Success IF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Success IF": {
+      "main": [
+        [
+          {
+            "node": "Slack Success",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Slack Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Slack Success": {
+      "main": [
+        [
+          {
+            "node": "Prepare Sync",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Slack Error": {
+      "main": [
+        [
+          {
+            "node": "Prepare Sync",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Sync": {
+      "main": [
+        [
+          {
+            "node": "Sync Dashboard",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}

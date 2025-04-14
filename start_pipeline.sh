@@ -1,337 +1,365 @@
 #!/bin/bash
-set -e
 
-# Couleurs pour une meilleure lisibilité
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-BLUE='\033[0;34m'
+# start_pipeline.sh
+# Script d'orchestration du pipeline MCP pour la migration PHP -> Remix/NestJS
+# Date: 2025-04-13
+
+# Variables de configuration
+MCP_SERVER_URL=${MCP_SERVER_URL:-"http://localhost:3030"}
+N8N_WEBHOOK_URL=${N8N_WEBHOOK_URL:-"http://localhost:5678/webhook/"}
+SUPABASE_URL=${SUPABASE_URL:-"http://localhost:8000"}
+SUPABASE_KEY=${SUPABASE_KEY:-"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiJ9.ZopqoUt98AtQY6h9CFO9KS6_2iJZmlP4Dv5C0-4e2xw"}
+SIMULATION_MODE=${SIMULATION_MODE:-"false"}
+LOG_LEVEL=${LOG_LEVEL:-"info"}
+SOURCE_PATH=${SOURCE_PATH:-"./src"}
+TARGET_PATH=${TARGET_PATH:-"./apps/frontend/app/routes"}
+WORKFLOW_ID=${WORKFLOW_ID:-""}
+
+# Couleurs pour les logs
 RED='\033[0;31m'
-NC='\033[0m' # No Color
+GREEN='\033[0;32m'
+YELLOW='\033[0;33m'
+BLUE='\033[0;34m'
+MAGENTA='\033[0;35m'
+CYAN='\033[0;36m'
+NC='\033[0m' # Pas de couleur
 
-# Fonction pour afficher des messages avec timestamp
+# Fonction pour afficher les logs
 log() {
-  echo -e "${BLUE}[$(date +'%Y-%m-%d %H:%M:%S')]${NC} $1"
-}
-
-# Fonction pour afficher des étapes
-step() {
-  echo -e "\n${GREEN}=== ÉTAPE $1: $2 ===${NC}\n"
-}
-
-# Fonction pour afficher des avertissements
-warn() {
-  echo -e "${YELLOW}⚠️  $1${NC}"
-}
-
-# Fonction pour afficher des erreurs
-error() {
-  echo -e "${RED}❌ $1${NC}"
-  exit 1
-}
-
-# Vérification de l'environnement
-check_env() {
-  step "1" "Vérification de l'environnement"
+  local level=$1
+  local message=$2
+  local timestamp=$(date +'%Y-%m-%d %H:%M:%S')
   
-  # Vérifier si le fichier .env existe, sinon le créer à partir du modèle
-  if [ ! -f .env ]; then
-    if [ -f .env.example ]; then
-      log "Création du fichier .env à partir de .env.example"
-      cp .env.example .env
-      warn "Fichier .env créé à partir du modèle. Veuillez vérifier et ajuster les valeurs si nécessaire."
-    else
-      error "Aucun fichier .env ou .env.example trouvé. Veuillez en créer un avec les variables requises."
-    fi
-  fi
-  
-  # Charger les variables d'environnement
-  log "Chargement des variables d'environnement"
-  export $(grep -v '^#' .env | xargs)
-  
-  # Vérifier les variables essentielles
-  if [ -z "$MYSQL_ROOT_PASSWORD" ] || [ -z "$POSTGRES_PASSWORD" ]; then
-    error "Variables d'environnement MYSQL_ROOT_PASSWORD ou POSTGRES_PASSWORD non définies dans le fichier .env"
-  fi
-  
-  # Détection de l'architecture
-  ARCH=$(uname -m)
-  if [ "$ARCH" = "arm64" ] || [ "$ARCH" = "aarch64" ]; then
-    log "Architecture ARM détectée: $ARCH"
-    export DOCKER_PLATFORM="linux/arm64"
-  else
-    log "Architecture x86 détectée: $ARCH"
-    export DOCKER_PLATFORM="linux/amd64"
-  fi
-  
-  log "Environnement vérifié avec succès ✅"
-}
-
-# Démarrage des containers Docker
-start_containers() {
-  step "2" "Démarrage des containers Docker"
-  
-  # Arrêter les containers existants si besoin
-  if [ "$1" = "--force" ] || [ "$1" = "-f" ]; then
-    log "Arrêt des containers existants..."
-    docker-compose -f docker-compose.dev.yml down
-  fi
-  
-  # Démarrer les containers
-  log "Démarrage des containers Docker..."
-  docker-compose -f docker-compose.dev.yml up -d
-  
-  # Attendre que les bases de données soient prêtes
-  log "Attente de la disponibilité de MySQL..."
-  until docker-compose -f docker-compose.dev.yml exec -T mysql-legacy mysqladmin ping -h localhost -u root -p"$MYSQL_ROOT_PASSWORD" --silent; do
-    echo -n "."
-    sleep 2
-  done
-  
-  log "Attente de la disponibilité de PostgreSQL..."
-  until docker-compose -f docker-compose.dev.yml exec -T postgres-intermediate pg_isready -U "$POSTGRES_USER" -d "$POSTGRES_DB"; do
-    echo -n "."
-    sleep 2
-  done
-  
-  log "Tous les containers sont démarrés et opérationnels ✅"
-}
-
-# Injection des dumps dans les bases de données
-inject_dumps() {
-  step "3" "Injection des dumps de données"
-  
-  # Vérifier s'il existe des dumps à injecter
-  MYSQL_DUMPS_DIR="./scripts/mysql/dumps"
-  POSTGRES_DUMPS_DIR="./scripts/postgres/dumps"
-  
-  # Injection des dumps MySQL
-  if [ -d "$MYSQL_DUMPS_DIR" ] && [ "$(ls -A $MYSQL_DUMPS_DIR)" ]; then
-    log "Injection des dumps MySQL..."
-    for dump in $MYSQL_DUMPS_DIR/*.sql; do
-      if [ -f "$dump" ]; then
-        DUMP_NAME=$(basename "$dump")
-        log "Injection de $DUMP_NAME dans MySQL..."
-        docker-compose -f docker-compose.dev.yml exec -T mysql-legacy mysql -u root -p"$MYSQL_ROOT_PASSWORD" "$MYSQL_DATABASE" < "$dump"
+  case $level in
+    "info")
+      echo -e "${BLUE}[INFO]${NC} ${timestamp} - ${message}"
+      ;;
+    "success")
+      echo -e "${GREEN}[SUCCESS]${NC} ${timestamp} - ${message}"
+      ;;
+    "warning")
+      echo -e "${YELLOW}[WARNING]${NC} ${timestamp} - ${message}"
+      ;;
+    "error")
+      echo -e "${RED}[ERROR]${NC} ${timestamp} - ${message}"
+      ;;
+    "debug")
+      if [[ "$LOG_LEVEL" == "debug" ]]; then
+        echo -e "${MAGENTA}[DEBUG]${NC} ${timestamp} - ${message}"
       fi
-    done
-  else
-    warn "Aucun dump MySQL trouvé dans $MYSQL_DUMPS_DIR"
-  fi
-  
-  # Injection des dumps PostgreSQL
-  if [ -d "$POSTGRES_DUMPS_DIR" ] && [ "$(ls -A $POSTGRES_DUMPS_DIR)" ]; then
-    log "Injection des dumps PostgreSQL..."
-    for dump in $POSTGRES_DUMPS_DIR/*.sql; do
-      if [ -f "$dump" ]; then
-        DUMP_NAME=$(basename "$dump")
-        log "Injection de $DUMP_NAME dans PostgreSQL..."
-        docker-compose -f docker-compose.dev.yml exec -T postgres-intermediate psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" < "$dump"
-      fi
-    done
-  else
-    warn "Aucun dump PostgreSQL trouvé dans $POSTGRES_DUMPS_DIR"
-  fi
-  
-  # Injection des données de seed pour tests si disponibles
-  MYSQL_SEED="./scripts/mysql/seed.sql"
-  POSTGRES_SEED="./scripts/postgres/seed.sql"
-  
-  if [ -f "$MYSQL_SEED" ]; then
-    log "Injection des données de test MySQL..."
-    docker-compose -f docker-compose.dev.yml exec -T mysql-legacy mysql -u root -p"$MYSQL_ROOT_PASSWORD" "$MYSQL_DATABASE" < "$MYSQL_SEED"
-  fi
-  
-  if [ -f "$POSTGRES_SEED" ]; then
-    log "Injection des données de test PostgreSQL..."
-    docker-compose -f docker-compose.dev.yml exec -T postgres-intermediate psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" < "$POSTGRES_SEED"
-  fi
-  
-  log "Injection des dumps terminée ✅"
+      ;;
+    *)
+      echo -e "${timestamp} - ${message}"
+      ;;
+  esac
 }
 
-# Démarrage des agents MCP
-start_mcp_agents() {
-  step "4" "Démarrage des agents MCP"
+# Fonction pour vérifier que les services sont disponibles
+check_services() {
+  log "info" "Vérification des services requis..."
   
-  # Attendre que les serveurs MCP soient prêts
-  log "Attente de la disponibilité des serveurs MCP..."
-  # Vérifier si MCP MySQL est prêt
-  MCP_MYSQL_PORT=${MCP_MYSQL_PORT:-3002}
-  until curl -s "http://localhost:$MCP_MYSQL_PORT/health" > /dev/null; do
-    echo -n "."
-    sleep 2
-  done
-  
-  # Vérifier si MCP PostgreSQL est prêt
-  MCP_POSTGRES_PORT=${MCP_POSTGRES_PORT:-3003}
-  until curl -s "http://localhost:$MCP_POSTGRES_PORT/health" > /dev/null; do
-    echo -n "."
-    sleep 2
-  done
-  
-  log "Exécution de l'agent MySQL Analyzer..."
-  docker-compose -f docker-compose.dev.yml exec -T code-transformer node /app/bin/mysql-analyzer.js
-
-  log "Exécution de l'agent MySQL-to-PostgreSQL..."
-  docker-compose -f docker-compose.dev.yml exec -T code-transformer node /app/bin/mysql-to-pg.js
-
-  log "Exécution de l'agent Sync-Mapper..."
-  docker-compose -f docker-compose.dev.yml exec -T code-transformer node /app/bin/sync-mapper.js
-  
-  log "Tous les agents MCP sont démarrés ✅"
-}
-
-# Génération du schema Prisma
-generate_prisma_schema() {
-  step "5" "Génération du schema Prisma"
-  
-  log "Exécution du générateur de schema Prisma..."
-  docker-compose -f docker-compose.dev.yml run --rm prisma-generator
-  
-  log "Vérification du schema généré..."
-  if [ -f "./apps/frontend/prisma/schema.prisma" ]; then
-    log "Schema Prisma généré avec succès ✅"
+  # Vérifier MCP Server
+  if curl -s -o /dev/null -w "%{http_code}" "${MCP_SERVER_URL}/health" | grep -q "200"; then
+    log "success" "MCP Server est opérationnel"
   else
-    warn "Le schema Prisma n'a pas été généré correctement. Vérifiez les logs du container prisma-generator."
-  fi
-}
-
-# Push vers Supabase
-push_to_supabase() {
-  step "6" "Push vers Supabase"
-  
-  # Vérifier si les variables Supabase sont définies
-  if [ -z "$SUPABASE_ACCESS_TOKEN" ] || [ -z "$SUPABASE_PROJECT_ID" ]; then
-    warn "Variables Supabase non définies. Étape de push vers Supabase ignorée."
-    return
+    log "error" "MCP Server n'est pas accessible. Veuillez vérifier que le service est en cours d'exécution."
+    log "info" "Vous pouvez démarrer les services avec: docker-compose -f docker-compose.dev.yml up -d"
+    exit 1
   fi
   
-  if [ "$DRY_RUN" = "true" ]; then
-    log "Mode DRY RUN activé - Simulation du push vers Supabase"
-    docker-compose -f docker-compose.dev.yml run --rm supabase-cli supabase db diff --use-migra --schema public
+  # Vérifier n8n
+  if curl -s -o /dev/null -w "%{http_code}" "http://localhost:5678/healthz" | grep -q "200"; then
+    log "success" "n8n est opérationnel"
   else
-    log "Push vers Supabase..."
-    docker-compose -f docker-compose.dev.yml run --rm supabase-cli supabase db push
+    log "warning" "n8n n'est pas accessible. Certaines fonctionnalités d'orchestration pourraient ne pas fonctionner."
   fi
   
-  log "Push vers Supabase terminé ✅"
+  # Vérifier Supabase (si nécessaire)
+  log "info" "Supabase sera utilisé pour le stockage des métadonnées et des logs"
 }
 
-# Lancement du workflow n8n
-trigger_n8n_workflow() {
-  step "7" "Déclenchement du workflow n8n"
+# Fonction pour analyser un fichier PHP
+analyze_php_file() {
+  local file_path=$1
+  local output_file="${file_path}.analysis.json"
   
-  # Attendre que n8n soit prêt
-  log "Attente de la disponibilité de n8n..."
-  N8N_PORT=${N8N_PORT:-5678}
-  until curl -s "http://localhost:$N8N_PORT/healthz" > /dev/null; do
-    echo -n "."
-    sleep 2
-  done
+  log "info" "Analyse du fichier PHP: ${file_path}"
   
-  # Identifier l'ID du workflow à déclencher
-  WORKFLOW_NAME="Migration Data Validator"
+  # Appeler le serveur MCP pour analyser le fichier
+  response=$(curl -s -X POST "${MCP_SERVER_URL}/analyze" \
+    -H "Content-Type: application/json" \
+    -d "{\"filePath\": \"${file_path}\", \"outputFormat\": \"json\"}")
   
-  if [ "$DRY_RUN" = "true" ]; then
-    log "Mode DRY RUN activé - Simulation du déclenchement du workflow n8n '$WORKFLOW_NAME'"
-  else
-    log "Déclenchement du workflow n8n '$WORKFLOW_NAME'..."
-    # Deux méthodes possibles : webhook ou exécution directe
+  # Vérifier si la réponse est valide
+  if echo "$response" | jq -e '.status' > /dev/null 2>&1; then
+    status=$(echo "$response" | jq -r '.status')
     
-    # Option 1: Via webhook si configuré
-    if [ ! -z "$N8N_WEBHOOK_URL" ]; then
-      curl -X POST "$N8N_WEBHOOK_URL" \
-        -H "Content-Type: application/json" \
-        -d '{"event":"migration_completed","timestamp":"'$(date -u +"%Y-%m-%dT%H:%M:%SZ")'"}'
-    # Option 2: Via API n8n
+    if [[ "$status" == "success" ]]; then
+      log "success" "Analyse réussie pour ${file_path}"
+      
+      # Sauvegarder l'analyse dans un fichier
+      echo "$response" > "$output_file"
+      log "info" "Résultats d'analyse sauvegardés dans ${output_file}"
+      
+      # Retourner l'ID d'analyse pour utilisation ultérieure
+      analysis_id=$(echo "$response" | jq -r '.data.analysisId')
+      echo "$analysis_id"
     else
-      # Récupérer l'ID du workflow
-      WORKFLOW_ID=$(curl -s "http://localhost:$N8N_PORT/api/v1/workflows" | grep -o '"id":"[^"]*","name":"'"$WORKFLOW_NAME"'"' | cut -d'"' -f4)
-      if [ ! -z "$WORKFLOW_ID" ]; then
-        curl -X POST "http://localhost:$N8N_PORT/api/v1/workflows/$WORKFLOW_ID/activate"
-      else
-        warn "Workflow '$WORKFLOW_NAME' non trouvé dans n8n"
-      fi
+      error_message=$(echo "$response" | jq -r '.message')
+      log "error" "Échec de l'analyse: ${error_message}"
+      return 1
     fi
+  else
+    log "error" "La réponse du serveur MCP n'est pas au format attendu"
+    log "debug" "Réponse reçue: ${response}"
+    return 1
   fi
-  
-  log "Workflow n8n déclenché ✅"
 }
 
-# Affichage du résumé
-show_summary() {
-  step "8" "Résumé du pipeline"
+# Fonction pour générer du code Remix à partir d'une analyse
+generate_remix_component() {
+  local analysis_id=$1
+  local target_dir=$2
+  local options=$3
   
-  echo -e "${GREEN}✅ Pipeline de migration exécuté avec succès${NC}"
-  echo -e "📊 ${BLUE}Statistiques:${NC}"
-  echo -e "   - Containers Docker: En cours d'exécution"
-  echo -e "   - Bases de données: MySQL & PostgreSQL initialisées"
-  echo -e "   - Agents MCP: Exécutés"
-  echo -e "   - Schema Prisma: Généré"
+  log "info" "Génération du composant Remix à partir de l'analyse ${analysis_id}"
   
-  if [ "$DRY_RUN" = "true" ]; then
-    echo -e "   - Mode: ${YELLOW}DRY RUN${NC} (aucune modification dans Supabase)"
-  else
-    echo -e "   - Mode: ${GREEN}PRODUCTION${NC} (données synchronisées avec Supabase)"
+  # Construire les options de génération
+  if [[ -z "$options" ]]; then
+    options='{
+      "createRouteFiles": true,
+      "includeMeta": true,
+      "includeLoader": true,
+      "includeCanonical": true,
+      "preserveSeo": true,
+      "dryRun": '$SIMULATION_MODE'
+    }'
   fi
   
-  echo -e "\n${BLUE}Pour accéder aux interfaces:${NC}"
-  echo -e "   - Dashboard de migration: http://localhost:3000"
-  echo -e "   - Interface n8n: http://localhost:$N8N_PORT"
-  echo -e "   - Adminer (DB): http://localhost:8080"
+  # Appeler le serveur MCP pour générer le code
+  response=$(curl -s -X POST "${MCP_SERVER_URL}/generate" \
+    -H "Content-Type: application/json" \
+    -d "{
+      \"analysisId\": \"${analysis_id}\",
+      \"generator\": \"remix\",
+      \"targetDirectory\": \"${target_dir}\",
+      \"options\": ${options}
+    }")
   
-  echo -e "\n${YELLOW}Pour arrêter le pipeline:${NC} docker-compose -f docker-compose.dev.yml down"
+  # Vérifier si la réponse est valide
+  if echo "$response" | jq -e '.status' > /dev/null 2>&1; then
+    status=$(echo "$response" | jq -r '.status')
+    
+    if [[ "$status" == "success" ]]; then
+      log "success" "Génération Remix réussie"
+      
+      # Afficher les fichiers générés
+      files=$(echo "$response" | jq -r '.data.files[].path')
+      log "info" "Fichiers générés:"
+      echo "$files" | while read -r file; do
+        log "info" "  - ${file}"
+      done
+      
+      # Générer un rapport détaillé
+      generation_id=$(echo "$response" | jq -r '.data.generationId')
+      echo "$response" > "migration-results-$(date +%Y-%m-%dT%H-%M-%S-%3NZ).json"
+      
+      return 0
+    else
+      error_message=$(echo "$response" | jq -r '.message')
+      log "error" "Échec de la génération: ${error_message}"
+      return 1
+    fi
+  else
+    log "error" "La réponse du serveur MCP n'est pas au format attendu"
+    log "debug" "Réponse reçue: ${response}"
+    return 1
+  fi
+}
+
+# Fonction pour déclencher un workflow n8n
+trigger_n8n_workflow() {
+  local workflow_id=$1
+  local payload=$2
+  
+  log "info" "Déclenchement du workflow n8n: ${workflow_id}"
+  
+  # Appeler le webhook n8n
+  response=$(curl -s -X POST "${N8N_WEBHOOK_URL}${workflow_id}" \
+    -H "Content-Type: application/json" \
+    -d "${payload}")
+  
+  log "debug" "Réponse n8n: ${response}"
+  log "success" "Workflow n8n déclenché avec succès"
+}
+
+# Fonction pour traiter un répertoire entier
+process_directory() {
+  local source_dir=$1
+  local target_dir=$2
+  local file_pattern=${3:-"*.php"}
+  
+  log "info" "Traitement du répertoire: ${source_dir}"
+  log "info" "Fichiers cibles: ${file_pattern}"
+  
+  # Trouver tous les fichiers PHP dans le répertoire source
+  find "$source_dir" -name "$file_pattern" -type f | while read -r file; do
+    log "info" "Traitement du fichier: ${file}"
+    
+    # Analyser le fichier PHP
+    analysis_id=$(analyze_php_file "$file")
+    
+    if [[ -n "$analysis_id" ]]; then
+      # Générer le composant Remix
+      generate_remix_component "$analysis_id" "$target_dir" ""
+      
+      # Ajouter un délai pour éviter de surcharger le serveur
+      sleep 1
+    fi
+  done
+  
+  log "success" "Traitement du répertoire terminé"
+}
+
+# Fonction pour synchroniser les métadonnées avec Supabase
+sync_with_supabase() {
+  local metadata_file=$1
+  
+  log "info" "Synchronisation des métadonnées avec Supabase"
+  
+  # Envoyer les métadonnées à Supabase
+  response=$(curl -s -X POST "${SUPABASE_URL}/rest/v1/migration_metadata" \
+    -H "apikey: ${SUPABASE_KEY}" \
+    -H "Authorization: Bearer ${SUPABASE_KEY}" \
+    -H "Content-Type: application/json" \
+    -H "Prefer: return=minimal" \
+    -d "@${metadata_file}")
+  
+  log "success" "Métadonnées synchronisées avec Supabase"
+}
+
+# Fonction pour afficher l'aide
+show_help() {
+  echo -e "${CYAN}Usage:${NC} $0 [options] [command]"
+  echo ""
+  echo -e "${CYAN}Options:${NC}"
+  echo "  --source-path PATH     Chemin vers les fichiers source PHP (par défaut: $SOURCE_PATH)"
+  echo "  --target-path PATH     Chemin cible pour les fichiers générés (par défaut: $TARGET_PATH)"
+  echo "  --mcp-url URL          URL du serveur MCP (par défaut: $MCP_SERVER_URL)"
+  echo "  --n8n-url URL          URL du webhook n8n (par défaut: $N8N_WEBHOOK_URL)"
+  echo "  --workflow-id ID       ID du workflow n8n à déclencher"
+  echo "  --simulation           Exécuter en mode simulation (ne pas écrire les fichiers)"
+  echo "  --debug                Activer les logs de débogage"
+  echo "  --help                 Afficher cette aide"
+  echo ""
+  echo -e "${CYAN}Commandes:${NC}"
+  echo "  analyze FILE           Analyser un fichier PHP spécifique"
+  echo "  generate ID DIR        Générer un composant Remix à partir d'une analyse"
+  echo "  process DIR            Traiter un répertoire entier"
+  echo "  trigger-n8n ID PAYLOAD Déclencher un workflow n8n"
+  echo "  run-pipeline           Exécuter le pipeline complet"
+  echo ""
+  echo -e "${CYAN}Exemples:${NC}"
+  echo "  $0 analyze src/fiche.php"
+  echo "  $0 process src/pages"
+  echo "  $0 --simulation run-pipeline"
+  echo "  $0 --workflow-id abc123 trigger-n8n '{\"file\":\"src/fiche.php\"}'"
 }
 
 # Fonction principale
 main() {
-  # Bannière
-  echo -e "${GREEN}"
-  echo "╔═══════════════════════════════════════════════════════════╗"
-  echo "║         PIPELINE DE MIGRATION PHP → NESTJS/REMIX          ║"
-  echo "╚═══════════════════════════════════════════════════════════╝"
-  echo -e "${NC}"
-  
-  # Traitement des arguments
-  DRY_RUN=false
-  FORCE_RESTART=false
-  
-  while [[ "$#" -gt 0 ]]; do
-    case $1 in
-      --dry-run) DRY_RUN=true; shift ;;
-      --force|-f) FORCE_RESTART=true; shift ;;
-      -h|--help)
-        echo "Usage: $0 [options]"
-        echo "Options:"
-        echo "  --dry-run       Exécute le pipeline sans écrire dans Supabase"
-        echo "  --force, -f     Force le redémarrage des containers existants"
-        echo "  --help, -h      Affiche cette aide"
+  # Traiter les options
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      --source-path)
+        SOURCE_PATH="$2"
+        shift 2
+        ;;
+      --target-path)
+        TARGET_PATH="$2"
+        shift 2
+        ;;
+      --mcp-url)
+        MCP_SERVER_URL="$2"
+        shift 2
+        ;;
+      --n8n-url)
+        N8N_WEBHOOK_URL="$2"
+        shift 2
+        ;;
+      --workflow-id)
+        WORKFLOW_ID="$2"
+        shift 2
+        ;;
+      --simulation)
+        SIMULATION_MODE="true"
+        shift
+        ;;
+      --debug)
+        LOG_LEVEL="debug"
+        shift
+        ;;
+      --help)
+        show_help
         exit 0
         ;;
-      *) error "Option inconnue: $1" ;;
+      analyze)
+        check_services
+        analyze_php_file "$2"
+        exit $?
+        ;;
+      generate)
+        check_services
+        generate_remix_component "$2" "$3" "$4"
+        exit $?
+        ;;
+      process)
+        check_services
+        process_directory "$2" "$TARGET_PATH" "$3"
+        exit $?
+        ;;
+      trigger-n8n)
+        check_services
+        trigger_n8n_workflow "${WORKFLOW_ID:-$2}" "$3"
+        exit $?
+        ;;
+      run-pipeline)
+        # Exécuter le pipeline complet
+        check_services
+        
+        log "info" "Démarrage du pipeline complet"
+        
+        if [[ "$SIMULATION_MODE" == "true" ]]; then
+          log "warning" "Mode simulation activé - aucun fichier ne sera écrit"
+        fi
+        
+        # Si un workflow_id est fourni, utiliser n8n
+        if [[ -n "$WORKFLOW_ID" ]]; then
+          log "info" "Utilisation du workflow n8n: $WORKFLOW_ID"
+          trigger_n8n_workflow "$WORKFLOW_ID" "{\"sourcePath\": \"$SOURCE_PATH\", \"targetPath\": \"$TARGET_PATH\", \"simulation\": $SIMULATION_MODE}"
+        else
+          # Sinon, exécuter localement
+          process_directory "$SOURCE_PATH" "$TARGET_PATH"
+        fi
+        
+        log "success" "Pipeline terminé"
+        exit 0
+        ;;
+      *)
+        if [[ -z "$1" ]]; then
+          break
+        fi
+        
+        log "error" "Option ou commande inconnue: $1"
+        show_help
+        exit 1
+        ;;
     esac
   done
   
-  if [ "$DRY_RUN" = "true" ]; then
-    warn "Mode DRY RUN activé - Aucune donnée ne sera écrite dans Supabase"
-  fi
-  
-  # Exécution des étapes
-  check_env
-  
-  if [ "$FORCE_RESTART" = "true" ]; then
-    start_containers --force
-  else
-    start_containers
-  fi
-  
-  inject_dumps
-  start_mcp_agents
-  generate_prisma_schema
-  push_to_supabase
-  trigger_n8n_workflow
-  show_summary
+  # Si aucune commande n'est spécifiée, afficher l'aide
+  show_help
 }
 
-# Exécution du script
+# Exécuter la fonction principale
 main "$@"

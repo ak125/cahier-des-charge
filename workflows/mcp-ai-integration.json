@@ -1,0 +1,214 @@
+{
+  "name": "PHP to Remix AI Integration",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "php-transform",
+        "options": {}
+      },
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        250,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "url": "http://mcp-server:3333/api/ai/transform",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "phpCode",
+              "value": "={{ $json.body.phpCode }}"
+            },
+            {
+              "name": "routeInfo",
+              "value": "={{ $json.body.routeInfo }}"
+            },
+            {
+              "name": "model",
+              "value": "={{ $json.body.model || 'deepseek-coder' }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "AI Service",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [
+        450,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "// Récupérer les résultats de l'IA\nconst aiResult = items[0].json.result;\n\n// Extraire les composants Remix à partir du résultat\nconst components = {};\n\n// Recherche des blocs de code avec regex\nconst codeBlockRegex = /```(tsx|ts|javascript)\\s*\\n([\\s\\S]*?)\\n```/g;\nconst filePathRegex = /\\bfile\\b[:\\s]+([\\w\\.\\/-]+)\\b/i;\n\nlet match;\nwhile ((match = codeBlockRegex.exec(aiResult)) !== null) {\n  const language = match[1];\n  const code = match[2];\n  \n  // Chercher un commentaire ou une ligne mentionnant le chemin du fichier avant le bloc\n  const contentBefore = aiResult.substring(0, match.index);\n  const lastNewline = contentBefore.lastIndexOf('\\n');\n  const linesBefore = contentBefore.substring(lastNewline + 1);\n  \n  const filePathMatch = linesBefore.match(filePathRegex);\n  let fileName = \"\";\n  \n  if (filePathMatch) {\n    fileName = filePathMatch[1];\n  } else if (language === 'tsx') {\n    fileName = 'route.tsx';\n  } else if (code.includes('export async function loader')) {\n    fileName = 'loader.ts';\n  } else if (code.includes('export async function action')) {\n    fileName = 'action.ts';\n  } else {\n    fileName = `component-${Object.keys(components).length + 1}.${language}`;\n  }\n  \n  components[fileName] = code;\n}\n\nreturn [{\n  json: {\n    sourcePhpCode: items[0].json.body.phpCode,\n    routeInfo: items[0].json.body.routeInfo,\n    transformationId: `transform-${Date.now()}`,\n    components,\n    rawAiOutput: aiResult\n  }\n}];"
+      },
+      "name": "Parse AI Result",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        650,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "upsert",
+        "table": "transformations",
+        "schema": "public",
+        "columnsUi": {
+          "columnValues": [
+            {
+              "column": "id",
+              "value": "={{ $json.transformationId }}"
+            },
+            {
+              "column": "source_code",
+              "value": "={{ $json.sourcePhpCode }}"
+            },
+            {
+              "column": "route_info",
+              "value": "={{ $json.routeInfo }}"
+            },
+            {
+              "column": "components",
+              "value": "={{ JSON.stringify($json.components) }}"
+            },
+            {
+              "column": "raw_ai_output",
+              "value": "={{ $json.rawAiOutput }}"
+            },
+            {
+              "column": "created_at",
+              "value": "={{ $now }}"
+            },
+            {
+              "column": "status",
+              "value": "completed"
+            }
+          ]
+        }
+      },
+      "name": "Supabase",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 1,
+      "position": [
+        850,
+        300
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "supabase-credentials",
+          "name": "Supabase Postgres"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "http://mcp-server:3333/webhook/transformation-complete",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "X-MCP-Secret",
+              "value": "your-webhook-secret-here"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "transformationId",
+              "value": "={{ $json.transformationId }}"
+            },
+            {
+              "name": "status",
+              "value": "completed"
+            },
+            {
+              "name": "components",
+              "value": "={{ JSON.stringify($json.components) }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "Notify MCP",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [
+        1050,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "AI Service",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Service": {
+      "main": [
+        [
+          {
+            "node": "Parse AI Result",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse AI Result": {
+      "main": [
+        [
+          {
+            "node": "Supabase",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase": {
+      "main": [
+        [
+          {
+            "node": "Notify MCP",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {},
+  "id": "php-to-remix-ai-integration"
+}

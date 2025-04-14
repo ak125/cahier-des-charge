@@ -1,0 +1,419 @@
+{
+  "name": "Vérification PHP → NestJS/Remix",
+  "nodes": [
+    {
+      "parameters": {
+        "ruleName": "Surveillance des modifications de code",
+        "conditions": {
+          "all": [
+            {
+              "fact": "path",
+              "operator": "matches",
+              "value": "apps/backend/src/.+\\.ts$|apps/frontend/app/routes/.+\\.tsx$"
+            }
+          ]
+        }
+      },
+      "id": "rule-trigger",
+      "name": "Rule Trigger",
+      "type": "n8n-nodes-base.rulesNode",
+      "position": [
+        100,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "extractFromFile",
+        "sourceKey": "data.path",
+        "options": {
+          "extraction": {
+            "regex": ".*/(\\w+)\\.(service|controller|dto|entity|repository|tsx|ts)$",
+            "returnArray": false
+          }
+        },
+        "destinationKey": "moduleBase"
+      },
+      "id": "extract-module-name",
+      "name": "Extract Module Name",
+      "type": "n8n-nodes-base.function",
+      "position": [
+        280,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "command": "find src app -name \"{{$json.moduleBase}}.php\" -type f 2>/dev/null | head -n 1",
+        "executionMode": "command",
+        "outputMode": "firstLine"
+      },
+      "id": "find-php-file",
+      "name": "Find Original PHP File",
+      "type": "n8n-nodes-base.executeCommand",
+      "position": [
+        460,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{$json.stdout}}",
+              "operation": "isNotEmpty"
+            }
+          ]
+        }
+      },
+      "id": "check-file-exists",
+      "name": "PHP File Found?",
+      "type": "n8n-nodes-base.if",
+      "position": [
+        640,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "command": "./bin/diff-verifier.sh --file={{$json.stdout}} --auto-remediate --update-discovery --report",
+        "executionMode": "command",
+        "outputMode": "response"
+      },
+      "id": "run-verification",
+      "name": "Run Diff Verifier",
+      "type": "n8n-nodes-base.executeCommand",
+      "position": [
+        820,
+        260
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{$json.exitCode === 0}}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "id": "check-verification-success",
+      "name": "Verification Success?",
+      "type": "n8n-nodes-base.if",
+      "position": [
+        1000,
+        260
+      ]
+    },
+    {
+      "parameters": {
+        "fromEmail": "notifications@migration-project.com",
+        "toEmail": "team@migration-project.com",
+        "subject": "✅ Vérification réussie: {{$node[\"Extract Module Name\"].json.moduleBase}}",
+        "text": "=La vérification de parité entre le code PHP et le code migré a réussi pour le module {{$node[\"Extract Module Name\"].json.moduleBase}}.\n\nFichier PHP: {{$node[\"Find Original PHP File\"].json.stdout}}\nFichier migré: {{$node[\"rule-trigger\"].json.path}}\n\nRapport complet disponible dans reports/verification_summary.html",
+        "options": {
+          "attachments": "={{ [{name: \"verification_report.html\", content: $binary.report ? $binary.report.data : \"\"}] }}"
+        }
+      },
+      "id": "send-success-email",
+      "name": "Send Success Notification",
+      "type": "n8n-nodes-base.emailSend",
+      "position": [
+        1180,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "command": "cat reports/verifier_index.json",
+        "executionMode": "command",
+        "outputMode": "firstLine"
+      },
+      "id": "read-verifier-index",
+      "name": "Read Verifier Index",
+      "type": "n8n-nodes-base.executeCommand",
+      "position": [
+        1180,
+        340
+      ]
+    },
+    {
+      "parameters": {
+        "content": "={{$json.stdout}}",
+        "options": {}
+      },
+      "id": "parse-verifier-index",
+      "name": "Parse Verifier Index",
+      "type": "n8n-nodes-base.json",
+      "position": [
+        1360,
+        340
+      ]
+    },
+    {
+      "parameters": {
+        "channel": "#migration-progress",
+        "text": "=🔍 *Rapport de vérification pour {{$node[\"Extract Module Name\"].json.moduleBase}}*\n\n✅ *Fichiers vérifiés*: {{$json.verifiedCount}}\n⚠️ *Fichiers divergents*: {{$json.divergentCount}}\n🔴 *Fichiers critiques*: {{$json.criticalCount}}\n\n_Dernière mise à jour: {{$json.lastUpdated}}_",
+        "otherOptions": {
+          "attachments": "=[{\n  \"color\": \"{{$json.divergentCount > 0 || $json.criticalCount > 0 ? \\\"danger\\\" : \\\"good\\\"}}\",\n  \"title\": \"Détails de vérification\",\n  \"title_link\": \"https://github.com/votre-entreprise/votre-projet/actions?query=workflow%3A%22Vérification+fonctionnelle+PHP+-%3E+NestJS%2FRemix%22\",\n  \"text\": \"{{$json.divergentCount > 0 || $json.criticalCount > 0 ? \\\"⚠️ Des divergences ont été détectées\\\" : \\\"✅ Toutes les vérifications sont réussies\\\"}}\"\n}]"
+        }
+      },
+      "id": "slack-notification",
+      "name": "Send Slack Notification",
+      "type": "n8n-nodes-base.slack",
+      "position": [
+        1540,
+        340
+      ]
+    },
+    {
+      "parameters": {
+        "fromEmail": "notifications@migration-project.com",
+        "toEmail": "team@migration-project.com",
+        "subject": "⚠️ Divergences détectées: {{$node[\"Extract Module Name\"].json.moduleBase}}",
+        "text": "=Des divergences ont été détectées entre le code PHP et le code migré pour le module {{$node[\"Extract Module Name\"].json.moduleBase}}.\n\nFichier PHP: {{$node[\"Find Original PHP File\"].json.stdout}}\nFichier migré: {{$node[\"rule-trigger\"].json.path}}\n\nProblèmes détectés:\n{{$node[\"Run Diff Verifier\"].json.stdout}}\n\nVeuillez vérifier et corriger ces divergences pour assurer la parité fonctionnelle entre l'ancien et le nouveau code.",
+        "options": {
+          "attachments": "={{ [{name: \"verification_report.html\", content: $binary.report ? $binary.report.data : \"\"}] }}"
+        }
+      },
+      "id": "send-failure-email",
+      "name": "Send Divergence Alert",
+      "type": "n8n-nodes-base.emailSend",
+      "position": [
+        1180,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "command": "cat reports/verification_summary.html",
+        "executionMode": "command",
+        "outputMode": "response"
+      },
+      "id": "read-report",
+      "name": "Read Report File",
+      "type": "n8n-nodes-base.executeCommand",
+      "position": [
+        1000,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "dataPropertyName": "data",
+        "options": {}
+      },
+      "id": "create-binary-report",
+      "name": "Convert Report to Binary",
+      "type": "n8n-nodes-base.moveBinaryData",
+      "position": [
+        1000,
+        600
+      ]
+    },
+    {
+      "parameters": {
+        "text": "Aucun fichier PHP correspondant trouvé pour le fichier migré {{$node[\"rule-trigger\"].json.path}}",
+        "title": "Fichier PHP non trouvé",
+        "type": "warning"
+      },
+      "id": "no-php-file-alert",
+      "name": "No PHP File Alert",
+      "type": "n8n-nodes-base.notification",
+      "position": [
+        820,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://api.github.com/repos/votre-entreprise/votre-projet/issues",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {
+          "allowUnauthorizedCerts": true,
+          "bodyContentType": "json",
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "title",
+                "value": "Divergence détectée pour {{$node[\"Extract Module Name\"].json.moduleBase}}"
+              },
+              {
+                "name": "body",
+                "value": "=## Divergence détectée\n\nLors de la vérification automatique, des divergences ont été identifiées entre le code PHP d'origine et le code migré pour le module **{{$node[\"Extract Module Name\"].json.moduleBase}}**.\n\n### Détails\n\n- **Fichier PHP**: `{{$node[\"Find Original PHP File\"].json.stdout}}`\n- **Fichier migré**: `{{$node[\"rule-trigger\"].json.path}}`\n- **Date de vérification**: {{$today | date(\"YYYY-MM-DD HH:mm\")}}\n\n### Divergences\n\n```\n{{$node[\"Run Diff Verifier\"].json.stdout}}\n```\n\n### Action requise\n\nVeuillez vérifier et corriger ces divergences pour assurer la parité fonctionnelle entre l'ancien et le nouveau code.\n\n/cc @équipe-migration"
+              },
+              {
+                "name": "labels",
+                "value": "[\"divergence\", \"migration\", \"à vérifier\"]"
+              }
+            ]
+          }
+        }
+      },
+      "id": "create-github-issue",
+      "name": "Create GitHub Issue",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        1360,
+        480
+      ]
+    }
+  ],
+  "connections": {
+    "rule-trigger": {
+      "main": [
+        [
+          {
+            "node": "extract-module-name",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "extract-module-name": {
+      "main": [
+        [
+          {
+            "node": "find-php-file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "find-php-file": {
+      "main": [
+        [
+          {
+            "node": "check-file-exists",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "check-file-exists": {
+      "main": [
+        [
+          {
+            "node": "run-verification",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "no-php-file-alert",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "run-verification": {
+      "main": [
+        [
+          {
+            "node": "check-verification-success",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "read-report",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "check-verification-success": {
+      "main": [
+        [
+          {
+            "node": "send-success-email",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "read-verifier-index",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "send-failure-email",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "create-binary-report",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "read-verifier-index": {
+      "main": [
+        [
+          {
+            "node": "parse-verifier-index",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "parse-verifier-index": {
+      "main": [
+        [
+          {
+            "node": "slack-notification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "read-report": {
+      "main": [
+        [
+          {
+            "node": "create-binary-report",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "create-binary-report": {
+      "main": [
+        [
+          {
+            "node": "send-failure-email",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "create-github-issue",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "saveExecutionProgress": true,
+    "saveManualExecutions": true,
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "id": "diff-verifier-workflow"
+}
