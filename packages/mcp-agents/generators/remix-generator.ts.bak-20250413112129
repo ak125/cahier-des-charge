@@ -1,0 +1,905 @@
+/**
+ * remix-generator.ts
+ * Agent MCP pour générer des composants Remix à partir de fichiers PHP
+ * Partie du système MCP pour NestJS + Remix Monorepo
+ * 
+ * Date: 2025-04-13
+ * Auteur: Équipe MCP
+ */
+
+import * as fs from 'fs';
+import * as path from 'path';
+import { execSync } from 'child_process';
+import { PhpAnalyzer } from '../analysis/php-analyzer';
+import { SeoExtractor } from '../discovery/seo-extractor';
+import { MCPAgentResult, FileGenerationResult } from '../../types/mcp-types';
+import { logInfo, logSuccess, logWarning, logError } from '../utils/logger';
+
+// Types pour les options de génération
+interface RemixGeneratorOptions {
+  dryRun?: boolean;
+  createRouteFiles?: boolean;
+  includeMeta?: boolean;
+  includeLoader?: boolean;
+  includeCanonical?: boolean;
+  preserveSeo?: boolean;
+  includeTests?: boolean;
+  extractDataStructures?: boolean;
+  outputDir?: string;
+  templateDir?: string;
+  targetRouteFormat?: 'flat' | 'nested'; // Format des routes Remix
+  addTsDoc?: boolean;
+  routePrefix?: string;
+  includeDataValidation?: boolean;
+}
+
+// Interface pour les métadonnées SEO extraites
+interface SeoMetadata {
+  title?: string;
+  description?: string;
+  keywords?: string;
+  canonical?: string;
+  ogTags?: Record<string, string>;
+  twitterTags?: Record<string, string>;
+  structuredData?: any;
+  h1?: string;
+  robots?: string;
+}
+
+// Interface pour les paramètres de route extraits
+interface RouteParam {
+  name: string;
+  type: string;
+  required: boolean;
+  defaultValue?: any;
+  description?: string;
+}
+
+// Interface pour les données extraites du fichier PHP
+interface PhpFileData {
+  routePath: string;
+  routeParams: RouteParam[];
+  dataStructures: any[];
+  seoMetadata: SeoMetadata;
+  phpFunctions: string[];
+  phpIncludes: string[];
+  dataQueries: any[];
+  dependencies: string[];
+  redirections: any[];
+  hasAuthentication: boolean;
+  hasAuthorization: boolean;
+  hasFormSubmission: boolean;
+  sessionsUsage: any[];
+  responseType: 'html' | 'json' | 'redirect' | 'mixed';
+}
+
+/**
+ * RemixGenerator - Agent MCP pour transformer des fichiers PHP en composants Remix
+ */
+export class RemixGenerator {
+  private phpAnalyzer: PhpAnalyzer;
+  private seoExtractor: SeoExtractor;
+  private defaultOptions: RemixGeneratorOptions = {
+    dryRun: false,
+    createRouteFiles: true,
+    includeMeta: true,
+    includeLoader: true,
+    includeCanonical: true,
+    preserveSeo: true,
+    includeTests: false,
+    extractDataStructures: true,
+    outputDir: './apps/frontend/app/routes',
+    templateDir: './migration-toolkit/templates/routes-legacy',
+    targetRouteFormat: 'flat',
+    addTsDoc: true,
+    routePrefix: '',
+    includeDataValidation: true
+  };
+
+  constructor() {
+    this.phpAnalyzer = new PhpAnalyzer();
+    this.seoExtractor = new SeoExtractor();
+  }
+
+  /**
+   * Génère des composants Remix à partir d'un fichier PHP
+   * @param filePath Chemin du fichier PHP
+   * @param options Options de génération
+   * @returns Résultat de la génération MCP
+   */
+  public async generate(filePath: string, options: RemixGeneratorOptions = {}): Promise<MCPAgentResult> {
+    try {
+      const startTime = Date.now();
+      const mergedOptions = { ...this.defaultOptions, ...options };
+      logInfo(`Démarrage de la génération Remix pour ${filePath}`);
+
+      // Vérifier que le fichier existe
+      if (!fs.existsSync(filePath)) {
+        return {
+          status: 'error',
+          message: `Le fichier ${filePath} n'existe pas`,
+          data: null,
+          elapsedTime: Date.now() - startTime
+        };
+      }
+
+      // Analyser le fichier PHP
+      logInfo(`Analyse du fichier PHP ${filePath}`);
+      const phpAnalysisResult = await this.phpAnalyzer.analyze(filePath);
+      
+      if (phpAnalysisResult.status !== 'success') {
+        return {
+          status: 'error',
+          message: `Erreur lors de l'analyse du fichier PHP: ${phpAnalysisResult.message}`,
+          data: null,
+          elapsedTime: Date.now() - startTime
+        };
+      }
+
+      // Extraire les données du fichier PHP
+      const phpData = this.extractPhpData(filePath, phpAnalysisResult.data);
+      
+      // Extraire les métadonnées SEO si demandé
+      if (mergedOptions.preserveSeo) {
+        logInfo(`Extraction des métadonnées SEO de ${filePath}`);
+        const seoResult = await this.seoExtractor.extract(filePath);
+        if (seoResult.status === 'success') {
+          phpData.seoMetadata = { ...phpData.seoMetadata, ...seoResult.data };
+        } else {
+          logWarning(`Impossible d'extraire les métadonnées SEO: ${seoResult.message}`);
+        }
+      }
+
+      // Déterminer les noms des fichiers à générer
+      const { routeInfo, fileNames } = this.determineRouteFiles(filePath, phpData, mergedOptions);
+      
+      // Générer les fichiers
+      const generatedFiles: FileGenerationResult[] = [];
+      
+      if (mergedOptions.createRouteFiles) {
+        if (mergedOptions.dryRun) {
+          // Simulation - ne pas écrire les fichiers
+          logInfo(`Mode simulation: les fichiers ne seront pas écrits`);
+          generatedFiles.push(
+            ...this.simulateFileGeneration(fileNames, phpData, routeInfo, mergedOptions)
+          );
+        } else {
+          // Génération réelle
+          generatedFiles.push(
+            ...await this.generateFiles(fileNames, phpData, routeInfo, mergedOptions)
+          );
+        }
+      }
+
+      // Création du rapport de génération
+      const generationReport = {
+        originalFile: filePath,
+        routeInfo,
+        generatedFiles,
+        phpData: mergedOptions.extractDataStructures ? phpData : undefined,
+      };
+
+      logSuccess(`Génération Remix terminée pour ${filePath}`);
+      return {
+        status: 'success',
+        message: `Génération Remix terminée pour ${filePath}`,
+        data: {
+          files: generatedFiles,
+          report: generationReport
+        },
+        elapsedTime: Date.now() - startTime
+      };
+    } catch (error) {
+      logError(`Erreur lors de la génération Remix: ${error.message}`);
+      return {
+        status: 'error',
+        message: `Erreur lors de la génération Remix: ${error.message}`,
+        data: null,
+        elapsedTime: 0
+      };
+    }
+  }
+
+  /**
+   * Extrait les données utiles à partir de l'analyse PHP
+   */
+  private extractPhpData(filePath: string, analysisData: any): PhpFileData {
+    const filename = path.basename(filePath);
+    const routePath = this.phpFileToRemixRoute(filename);
+    
+    // Extraire les paramètres de la route
+    const routeParams: RouteParam[] = [];
+    const getParams = analysisData.queryParams || [];
+    const postParams = analysisData.postParams || [];
+    
+    // Combiner GET et POST params
+    [...getParams, ...postParams].forEach(param => {
+      if (!routeParams.some(rp => rp.name === param.name)) {
+        routeParams.push({
+          name: param.name,
+          type: this.inferTypeFromUsage(param.name, analysisData),
+          required: param.usage?.includes('required') || false,
+          description: param.comments || `Paramètre ${param.name}`
+        });
+      }
+    });
+    
+    // Extraire les redirections
+    const redirections = [];
+    if (analysisData.redirects) {
+      analysisData.redirects.forEach(redirect => {
+        redirections.push({
+          condition: redirect.condition || 'true',
+          target: redirect.target,
+          statusCode: redirect.statusCode || 302
+        });
+      });
+    }
+
+    // Déterminer le type de réponse
+    let responseType: 'html' | 'json' | 'redirect' | 'mixed' = 'html';
+    if (analysisData.outputsJson || filename.includes('api')) {
+      responseType = 'json';
+    } else if (analysisData.redirects && analysisData.redirects.length > 0 && !analysisData.htmlOutput) {
+      responseType = 'redirect';
+    } else if ((analysisData.redirects && analysisData.redirects.length > 0) && analysisData.htmlOutput) {
+      responseType = 'mixed';
+    }
+
+    // Extraire les métadonnées SEO de base
+    const seoMetadata: SeoMetadata = {
+      title: analysisData.pageTitle || '',
+      description: analysisData.metaTags?.find(tag => tag.name === 'description')?.content || '',
+      keywords: analysisData.metaTags?.find(tag => tag.name === 'keywords')?.content || '',
+      canonical: analysisData.linkTags?.find(tag => tag.rel === 'canonical')?.href || '',
+      h1: analysisData.h1Tag || '',
+      robots: analysisData.metaTags?.find(tag => tag.name === 'robots')?.content || ''
+    };
+
+    // Extraire les données structurées
+    const dataStructures = analysisData.dataStructures || [];
+
+    return {
+      routePath,
+      routeParams,
+      dataStructures,
+      seoMetadata,
+      phpFunctions: analysisData.functions || [],
+      phpIncludes: analysisData.includes || [],
+      dataQueries: analysisData.databaseQueries || [],
+      dependencies: analysisData.dependencies || [],
+      redirections,
+      hasAuthentication: analysisData.usesAuthentication || false,
+      hasAuthorization: analysisData.usesAuthorization || false,
+      hasFormSubmission: analysisData.hasFormSubmission || false,
+      sessionsUsage: analysisData.sessionsUsage || [],
+      responseType
+    };
+  }
+
+  /**
+   * Tente d'inférer le type TypeScript d'un paramètre à partir de son utilisation
+   */
+  private inferTypeFromUsage(paramName: string, analysisData: any): string {
+    // Logic to infer types based on parameter usage
+    const numericPattern = /id$|num|count|limit|page|offset|amount|price|quantity/i;
+    const booleanPattern = /^is|^has|^can|enabled|active|visible|confirmed|approved|completed/i;
+    const datePattern = /date|time|timestamp|created|updated|published|scheduled/i;
+
+    // Check variable names first
+    if (numericPattern.test(paramName)) {
+      return 'number';
+    } else if (booleanPattern.test(paramName)) {
+      return 'boolean';
+    } else if (datePattern.test(paramName)) {
+      return 'Date';
+    }
+
+    // Check usage in code
+    const usage = analysisData.queryParams?.find(p => p.name === paramName)?.usage || '';
+    if (usage.includes('numeric') || usage.includes('intval') || usage.includes('+') || usage.includes('-')) {
+      return 'number';
+    } else if (usage.includes('boolean') || usage.includes('true') || usage.includes('false')) {
+      return 'boolean';
+    } else if (usage.includes('date') || usage.includes('strtotime')) {
+      return 'Date';
+    } else if (usage.includes('array') || usage.includes('[')) {
+      return 'string[]';
+    }
+
+    // Default to string
+    return 'string';
+  }
+
+  /**
+   * Convertit un nom de fichier PHP en route Remix
+   */
+  private phpFileToRemixRoute(filename: string): string {
+    // Remove .php extension
+    let route = filename.replace(/\.php$/, '');
+    
+    // Handle special cases
+    if (route === 'index') {
+      return '/';
+    }
+    
+    // Convert to kebab-case
+    route = route.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
+    
+    // Add leading slash
+    if (!route.startsWith('/')) {
+      route = '/' + route;
+    }
+    
+    return route;
+  }
+
+  /**
+   * Détermine les fichiers de route à générer
+   */
+  private determineRouteFiles(
+    filePath: string, 
+    phpData: PhpFileData, 
+    options: RemixGeneratorOptions
+  ): { routeInfo: any, fileNames: Record<string, string> } {
+    const filename = path.basename(filePath, '.php');
+    const outputDir = options.outputDir;
+    
+    // Détecter les paramètres pour la route
+    const routeParams = phpData.routeParams.filter(p => p.required);
+    const hasRequiredParams = routeParams.length > 0;
+    
+    // Nom de fichier pour la convention flat-routes
+    let routeFilename: string;
+    
+    if (options.targetRouteFormat === 'flat') {
+      routeFilename = filename;
+      
+      // Ajouter des paramètres de route si nécessaire
+      if (hasRequiredParams) {
+        routeFilename += `.${routeParams.map(p => `$${p.name}`).join('.')}`;
+      }
+    } else {
+      // Format de route imbriqué (dossier/index)
+      routeFilename = `${filename}${hasRequiredParams ? `/$${routeParams.map(p => p.name).join('/$')}` : ''}/index`;
+    }
+    
+    // Ajouter le préfixe si spécifié
+    if (options.routePrefix) {
+      routeFilename = `${options.routePrefix}.${routeFilename}`;
+    }
+    
+    const sourceDir = path.dirname(filePath);
+    let paramString = hasRequiredParams ? routeParams.map(p => `:${p.name}`).join('/') : '';
+    paramString = paramString ? '/' + paramString : '';
+    
+    // Informations de route pour le rapport
+    const routeInfo = {
+      originalPhpFile: filePath,
+      newRoutePath: phpData.routePath + paramString,
+      routeParams,
+      responseType: phpData.responseType,
+      requiresLoader: true,
+      requiresAction: phpData.hasFormSubmission
+    };
+    
+    // Noms de fichiers pour les différents composants
+    const fileNames: Record<string, string> = {
+      component: path.join(outputDir, `${routeFilename}.tsx`),
+    };
+    
+    if (options.includeMeta) {
+      if (options.targetRouteFormat === 'flat') {
+        fileNames.meta = path.join(outputDir, `${routeFilename}.meta.ts`);
+      } else {
+        fileNames.meta = path.join(outputDir, `${filename}${hasRequiredParams ? `/$${routeParams.map(p => p.name).join('/$')}` : ''}/meta.ts`);
+      }
+    }
+    
+    if (options.includeLoader) {
+      if (options.targetRouteFormat === 'flat') {
+        fileNames.loader = path.join(outputDir, `${routeFilename}.loader.ts`);
+      } else {
+        fileNames.loader = path.join(outputDir, `${filename}${hasRequiredParams ? `/$${routeParams.map(p => p.name).join('/$')}` : ''}/loader.ts`);
+      }
+    }
+    
+    if (options.includeCanonical) {
+      if (options.targetRouteFormat === 'flat') {
+        fileNames.canonical = path.join(outputDir, `${routeFilename}.canonical.tsx`);
+      } else {
+        fileNames.canonical = path.join(outputDir, `${filename}${hasRequiredParams ? `/$${routeParams.map(p => p.name).join('/$')}` : ''}/canonical.tsx`);
+      }
+    }
+    
+    if (phpData.hasFormSubmission) {
+      if (options.targetRouteFormat === 'flat') {
+        fileNames.action = path.join(outputDir, `${routeFilename}.action.ts`);
+      } else {
+        fileNames.action = path.join(outputDir, `${filename}${hasRequiredParams ? `/$${routeParams.map(p => p.name).join('/$')}` : ''}/action.ts`);
+      }
+    }
+    
+    if (options.includeTests) {
+      fileNames.test = path.join(outputDir, `${routeFilename}.test.tsx`);
+    }
+    
+    return { routeInfo, fileNames };
+  }
+
+  /**
+   * Génère les fichiers simulés (dry-run)
+   */
+  private simulateFileGeneration(
+    fileNames: Record<string, string>, 
+    phpData: PhpFileData, 
+    routeInfo: any,
+    options: RemixGeneratorOptions
+  ): FileGenerationResult[] {
+    const results: FileGenerationResult[] = [];
+    
+    // Simuler la génération pour chaque fichier
+    for (const [fileType, filePath] of Object.entries(fileNames)) {
+      let content = '';
+      const targetDir = path.dirname(filePath);
+      const baseName = path.basename(filePath);
+      const simulationPath = path.join(options.outputDir || 'simulations', baseName);
+      
+      // Obtenir le contenu simulé selon le type de fichier
+      switch (fileType) {
+        case 'component':
+          content = this.generateComponentTemplate(phpData, routeInfo);
+          break;
+        case 'meta':
+          content = this.generateMetaTemplate(phpData, routeInfo);
+          break;
+        case 'loader':
+          content = this.generateLoaderTemplate(phpData, routeInfo);
+          break;
+        case 'canonical':
+          content = this.generateCanonicalTemplate(phpData, routeInfo);
+          break;
+        case 'action':
+          content = this.generateActionTemplate(phpData, routeInfo);
+          break;
+        case 'test':
+          content = this.generateTestTemplate(phpData, routeInfo);
+          break;
+      }
+      
+      // Créer une simulation
+      results.push({
+        path: filePath,
+        type: fileType,
+        originalPath: routeInfo.originalPhpFile,
+        simulationPath,
+        contentPreview: content.substring(0, 200) + '...',
+        status: 'simulated',
+        size: content.length
+      });
+    }
+    
+    return results;
+  }
+
+  /**
+   * Génère réellement les fichiers
+   */
+  private async generateFiles(
+    fileNames: Record<string, string>, 
+    phpData: PhpFileData, 
+    routeInfo: any,
+    options: RemixGeneratorOptions
+  ): Promise<FileGenerationResult[]> {
+    const results: FileGenerationResult[] = [];
+    
+    // Génération pour chaque fichier
+    for (const [fileType, filePath] of Object.entries(fileNames)) {
+      let content = '';
+      const targetDir = path.dirname(filePath);
+      
+      // Créer le répertoire si nécessaire
+      if (!fs.existsSync(targetDir)) {
+        fs.mkdirSync(targetDir, { recursive: true });
+      }
+      
+      // Obtenir le contenu selon le type de fichier
+      switch (fileType) {
+        case 'component':
+          content = this.generateComponentTemplate(phpData, routeInfo);
+          break;
+        case 'meta':
+          content = this.generateMetaTemplate(phpData, routeInfo);
+          break;
+        case 'loader':
+          content = this.generateLoaderTemplate(phpData, routeInfo);
+          break;
+        case 'canonical':
+          content = this.generateCanonicalTemplate(phpData, routeInfo);
+          break;
+        case 'action':
+          content = this.generateActionTemplate(phpData, routeInfo);
+          break;
+        case 'test':
+          content = this.generateTestTemplate(phpData, routeInfo);
+          break;
+      }
+      
+      // Écrire le fichier
+      try {
+        fs.writeFileSync(filePath, content, 'utf-8');
+        results.push({
+          path: filePath,
+          type: fileType,
+          originalPath: routeInfo.originalPhpFile,
+          status: 'created',
+          size: content.length
+        });
+        logSuccess(`Fichier créé: ${filePath}`);
+      } catch (error) {
+        logError(`Erreur lors de l'écriture du fichier ${filePath}: ${error.message}`);
+        results.push({
+          path: filePath,
+          type: fileType,
+          originalPath: routeInfo.originalPhpFile,
+          status: 'error',
+          error: error.message
+        });
+      }
+    }
+    
+    return results;
+  }
+
+  // Méthodes pour générer les différents templates
+
+  private generateComponentTemplate(phpData: PhpFileData, routeInfo: any): string {
+    // Structure de base du composant Remix
+    const hasParams = routeInfo.routeParams.length > 0;
+    const paramTypes = routeInfo.routeParams.map(p => `${p.name}: ${p.type}`).join(', ');
+    const paramImports = hasParams ? 'useParams, ' : '';
+    const useParamsCode = hasParams ? 'const params = useParams();' : '';
+    
+    // Title and h1 from SEO metadata
+    const pageTitle = phpData.seoMetadata.title || `Page ${path.basename(routeInfo.originalPhpFile, '.php')}`;
+    const pageH1 = phpData.seoMetadata.h1 || pageTitle;
+    
+    // Structurer le composant selon le type de réponse
+    let template = '';
+    
+    if (phpData.responseType === 'json') {
+      // API endpoint sans rendu UI
+      template = `import { json, LoaderFunctionArgs } from "@remix-run/node";
+import { useLoaderData, ${paramImports}useRevalidator } from "@remix-run/react";
+import { prisma } from "~/lib/db.server";
+
+/**
+ * API Endpoint pour ${routeInfo.newRoutePath}
+ * Migration de l'ancienne page PHP: ${path.basename(routeInfo.originalPhpFile)}
+ */
+
+// Définir les types de données
+interface ApiResponse {
+  data: any;
+  metadata?: {
+    page?: number;
+    limit?: number;
+    total?: number;
+  };
+}
+
+// Le composant principal n'est pas utilisé pour les API endpoints
+export default function ApiRoute() {
+  const data = useLoaderData<typeof loader>();
+  ${useParamsCode}
+  
+  // Ceci est juste un fallback UI au cas où la route est accédée directement
+  return (
+    <div className="api-endpoint">
+      <h1>API Endpoint: ${routeInfo.newRoutePath}</h1>
+      <p>Cette route est conçue pour être utilisée comme une API.</p>
+      <pre>{JSON.stringify(data, null, 2)}</pre>
+    </div>
+  );
+}`;
+    } else {
+      // Page UI standard
+      template = `import { json, LoaderFunctionArgs } from "@remix-run/node";
+import { useLoaderData, ${paramImports}useRevalidator } from "@remix-run/react";
+import { SeoTags } from "~/components/SeoTags";
+import { PageContainer } from "~/components/layout/PageContainer";
+
+/**
+ * Composant Remix pour la route ${routeInfo.newRoutePath}
+ * Migration de l'ancienne page PHP: ${path.basename(routeInfo.originalPhpFile)}
+ */
+
+// Définir l'interface de données
+interface PageData {
+  // TODO: Compléter l'interface selon les données extraites
+}
+
+// Composant principal
+export default function Page() {
+  const { data } = useLoaderData<typeof loader>();
+  ${useParamsCode}
+  
+  return (
+    <>
+      {/* Balises SEO */}
+      <SeoTags 
+        title="${pageTitle}"
+        description="${phpData.seoMetadata.description || ''}"
+        keywords="${phpData.seoMetadata.keywords || ''}"
+        canonicalUrl="${phpData.seoMetadata.canonical || routeInfo.newRoutePath}"
+      />
+      
+      <PageContainer>
+        <div className="mx-auto max-w-4xl py-8">
+          <header className="mb-8">
+            <h1 className="text-3xl font-bold mb-4">${pageH1}</h1>
+          </header>
+          
+          <main className="prose max-w-none mb-8">
+            {/* Contenu principal */}
+            <p>Contenu migré depuis ${path.basename(routeInfo.originalPhpFile)}</p>
+            
+            {/* TODO: Ajouter les éléments d'UI basés sur le design système */}
+          </main>
+        </div>
+      </PageContainer>
+    </>
+  );
+}`;
+    }
+    
+    return template;
+  }
+
+  private generateMetaTemplate(phpData: PhpFileData, routeInfo: any): string {
+    // Structure de base des métadonnées Remix
+    const pageTitle = phpData.seoMetadata.title || `Page ${path.basename(routeInfo.originalPhpFile, '.php')}`;
+    const pageDescription = phpData.seoMetadata.description || '';
+    const pageKeywords = phpData.seoMetadata.keywords || '';
+    const canonicalUrl = phpData.seoMetadata.canonical || routeInfo.newRoutePath;
+    
+    let template = `import type { MetaFunction } from "@remix-run/node";
+import { getCanonicalUrl } from "~/utils/seo";
+
+/**
+ * Métadonnées SEO pour la route ${routeInfo.newRoutePath}
+ * Migration depuis l'ancienne structure PHP ${path.basename(routeInfo.originalPhpFile)}
+ */
+
+export const meta: MetaFunction = ({ data, params, location }) => {
+  // Si aucune donnée n'est disponible (erreur ou chargement)
+  if (!data?.data) {
+    return [
+      { title: "Page non trouvée" },
+      { name: "description", content: "La page demandée n'a pas été trouvée." },
+      { name: "robots", content: "noindex, nofollow" }
+    ];
+  }
+
+  // Construire l'URL canonique
+  const canonicalUrl = getCanonicalUrl("${routeInfo.newRoutePath}", location);
+
+  return [
+    // Titre principal de la page
+    { title: "${pageTitle}" },
+    
+    // Description principale
+    { name: "description", content: "${pageDescription}" },
+    
+    // Mots-clés
+    { name: "keywords", content: "${pageKeywords}" },
+    
+    // URL canonique
+    { tagName: "link", rel: "canonical", href: canonicalUrl },
+    
+    // Open Graph - pour un meilleur partage sur les réseaux sociaux
+    { property: "og:title", content: "${pageTitle}" },
+    { property: "og:description", content: "${pageDescription}" },
+    { property: "og:url", content: canonicalUrl },
+    { property: "og:type", content: "website" },
+    
+    // Twitter Card
+    { name: "twitter:card", content: "summary" },
+    { name: "twitter:title", content: "${pageTitle}" },
+    { name: "twitter:description", content: "${pageDescription}" },`;
+    
+    // Ajouter les métadonnées structurées
+    template += `
+    
+    // Métadonnées structurées pour les moteurs de recherche
+    {
+      tagName: "script",
+      type: "application/ld+json",
+      children: JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        "name": "${pageTitle}",
+        "description": "${pageDescription}",
+        "url": canonicalUrl
+      })
+    }
+  ];
+};`;
+    
+    return template;
+  }
+
+  private generateLoaderTemplate(phpData: PhpFileData, routeInfo: any): string {
+    const hasParams = routeInfo.routeParams.length > 0;
+    const paramExtraction = hasParams ? 
+      `  // Extraire les paramètres de route\n  const { ${routeInfo.routeParams.map(p => p.name).join(', ')} } = params;\n` :
+      '';
+    
+    const paramValidation = hasParams ?
+      routeInfo.routeParams.map(p => {
+        if (p.type === 'number') {
+          return `  // Valider le paramètre ${p.name}\n  if (!${p.name} || isNaN(Number(${p.name}))) {\n    throw new Response("Paramètre ${p.name} invalide", { status: 400 });\n  }\n`;
+        }
+        return `  // Valider le paramètre ${p.name}\n  if (!${p.name}) {\n    throw new Response("Paramètre ${p.name} manquant", { status: 400 });\n  }\n`;
+      }).join('\n') :
+      '';
+    
+    // Détecter les redirections PHP pour les recréer
+    const redirections = phpData.redirections.map(r => {
+      return `  // Redirection basée sur la condition: ${r.condition}\n  if (${r.condition}) {\n    return redirect("${r.target}", { status: ${r.statusCode} });\n  }\n`;
+    }).join('\n');
+    
+    // Base du template loader
+    let template = `import { json, redirect, LoaderFunctionArgs } from "@remix-run/node";
+import { prisma } from "~/lib/db.server";
+
+/**
+ * Loader pour la route ${routeInfo.newRoutePath}
+ * Migration de l'ancienne page PHP: ${path.basename(routeInfo.originalPhpFile)}
+ */
+
+export async function loader({ params, request }: LoaderFunctionArgs) {
+${paramExtraction}
+${paramValidation}
+${redirections}
+  try {
+    // Récupérer les données nécessaires
+    // TODO: Implémenter la logique métier ici en remplaçant les requêtes SQL par Prisma
+    
+    // Exemple de requête Prisma
+    const data = {}; // Placeholder, à remplacer par la vraie logique
+
+    return json({ 
+      data,
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error("Erreur dans le loader:", error);
+    throw new Response("Une erreur est survenue lors du chargement des données", { 
+      status: 500 
+    });
+  }
+}`;
+    
+    return template;
+  }
+
+  private generateCanonicalTemplate(phpData: PhpFileData, routeInfo: any): string {
+    const canonicalPath = phpData.seoMetadata.canonical || routeInfo.newRoutePath;
+    
+    // Template de base pour les URLs canoniques
+    let template = `import { useParams, useLocation } from "@remix-run/react";
+import { generateCanonicalUrl } from "~/utils/seo";
+
+/**
+ * Composant pour générer les URLs canoniques pour la route ${routeInfo.newRoutePath}
+ * Assure la cohérence SEO et gère les problèmes de contenu dupliqué
+ */
+
+export function CanonicalUrl() {
+  const params = useParams();
+  const location = useLocation();
+  
+  // Construction de l'URL canonique
+  const baseUrl = \`https://\${window.location.hostname}\`;
+  const path = "${canonicalPath}";
+  
+  // Génération de l'URL canonique complète
+  const canonicalUrl = generateCanonicalUrl(baseUrl, path);
+  
+  return (
+    <link rel="canonical" href={canonicalUrl} />
+  );
+}`;
+    
+    return template;
+  }
+
+  private generateActionTemplate(phpData: PhpFileData, routeInfo: any): string {
+    // Template de base pour l'action de formulaire
+    let template = `import { ActionFunctionArgs, json, redirect } from "@remix-run/node";
+import { prisma } from "~/lib/db.server";
+
+/**
+ * Action pour la route ${routeInfo.newRoutePath}
+ * Gère les soumissions de formulaire
+ * Migration de l'ancienne page PHP: ${path.basename(routeInfo.originalPhpFile)}
+ */
+
+export async function action({ request, params }: ActionFunctionArgs) {
+  // Récupérer les données du formulaire
+  const formData = await request.formData();
+  
+  // Récupérer la méthode HTTP
+  const method = request.method.toUpperCase();
+  
+  // Validation basique du formulaire
+  const errors = {};
+  
+  try {
+    if (method === "POST") {
+      // Traitement du formulaire
+      // TODO: Implémenter la logique de traitement du formulaire
+      
+      // Exemple de réponse réussie
+      return redirect("${routeInfo.newRoutePath}", {
+        headers: {
+          "X-Success": "Formulaire traité avec succès"
+        }
+      });
+    } else if (method === "PUT") {
+      // Mise à jour
+      // TODO: Implémenter la logique de mise à jour
+      
+      return json({ success: true });
+    } else if (method === "DELETE") {
+      // Suppression
+      // TODO: Implémenter la logique de suppression
+      
+      return json({ success: true });
+    }
+    
+    // Méthode non supportée
+    return json({ error: "Méthode non supportée" }, { status: 405 });
+  } catch (error) {
+    console.error("Erreur dans l'action:", error);
+    return json({ 
+      success: false, 
+      error: "Une erreur est survenue lors du traitement de la demande" 
+    }, { status: 500 });
+  }
+}`;
+    
+    return template;
+  }
+
+  private generateTestTemplate(phpData: PhpFileData, routeInfo: any): string {
+    // Template de base pour les tests
+    let template = `import { test, expect } from "vitest";
+import { createRemixStub } from "@remix-run/testing";
+import Page from "./${path.basename(routeInfo.originalPhpFile, '.php')}";
+
+/**
+ * Tests pour la route ${routeInfo.newRoutePath}
+ */
+
+test("Le composant ${path.basename(routeInfo.originalPhpFile, '.php')} se rend correctement", () => {
+  const RemixStub = createRemixStub([
+    {
+      path: "${routeInfo.newRoutePath}",
+      Component: Page,
+      loader: () => {
+        return { data: {} };
+      }
+    }
+  ]);
+
+  // TODO: Implémenter les tests
+});`;
+    
+    return template;
+  }
+}
+
+// Exportation par défaut pour faciliter l'importation
+export default RemixGenerator;

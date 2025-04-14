@@ -239,6 +239,16 @@ export class DesyncAlertService {
             });
             break;
             
+          case 'teams':
+            await this.notificationService.sendNotification({
+              channel: 'teams',
+              recipient: channel.target,
+              subject: `[${AlertPriority[alert.priority]}] ${alert.title}`,
+              message: this.formatTeamsMessage(alert, channel.includeDetails),
+              priority: this.mapAlertPriorityToNotificationPriority(alert.priority)
+            });
+            break;
+            
           case 'dashboard':
             // Les alertes sont automatiquement affichées dans le dashboard
             break;
@@ -366,14 +376,17 @@ export class DesyncAlertService {
     const config = {
       [AlertPriority.CRITICAL]: [
         { type: 'slack', target: '#alerts-critical', includeDetails: true },
+        { type: 'teams', target: 'critical-alerts', includeDetails: true },
         { type: 'email', target: 'team-leads@company.com', includeDetails: true },
         { type: 'dashboard', highlight: true }
       ],
       [AlertPriority.HIGH]: [
         { type: 'slack', target: '#alerts-important', includeDetails: true },
+        { type: 'teams', target: 'project-alerts', includeDetails: true },
         { type: 'dashboard', highlight: true }
       ],
       [AlertPriority.MEDIUM]: [
+        { type: 'teams', target: 'project-alerts', includeDetails: false },
         { type: 'dashboard', highlight: false }
       ],
       [AlertPriority.LOW]: [
@@ -450,6 +463,107 @@ export class DesyncAlertService {
     message += `<p><a href="${this.configService.get('APP_URL')}/admin/alerts/${alert.id}">Voir l'alerte</a></p>`;
     
     return message;
+  }
+  
+  /**
+   * Formate un message Teams pour une alerte
+   */
+  private formatTeamsMessage(alert: DesyncAlert, includeDetails: boolean): any {
+    // Format adapté à Microsoft Teams (carte adaptative)
+    const cardBody = {
+      type: 'message',
+      attachments: [
+        {
+          contentType: 'application/vnd.microsoft.card.adaptive',
+          content: {
+            type: 'AdaptiveCard',
+            version: '1.2',
+            body: [
+              {
+                type: 'TextBlock',
+                size: 'medium',
+                weight: 'bolder',
+                text: alert.title,
+                wrap: true
+              },
+              {
+                type: 'FactSet',
+                facts: [
+                  {
+                    title: 'Composant',
+                    value: alert.component
+                  },
+                  {
+                    title: 'Priorité',
+                    value: AlertPriority[alert.priority]
+                  }
+                ]
+              },
+              {
+                type: 'TextBlock',
+                text: alert.description,
+                wrap: true
+              }
+            ],
+            actions: [
+              {
+                type: 'Action.OpenUrl',
+                title: 'Voir l\'alerte',
+                url: `${this.configService.get('APP_URL')}/admin/alerts/${alert.id}`
+              }
+            ]
+          }
+        }
+      ]
+    };
+    
+    // Ajouter les détails si nécessaire
+    if (includeDetails && alert.details) {
+      const detailsBlock = {
+        type: 'Container',
+        items: []
+      };
+      
+      if (alert.details.documentPath) {
+        detailsBlock.items.push({
+          type: 'TextBlock',
+          text: `**Document:** ${alert.details.documentPath}`,
+          wrap: true
+        });
+      }
+      
+      if (alert.details.codePath) {
+        detailsBlock.items.push({
+          type: 'TextBlock',
+          text: `**Code:** ${alert.details.codePath}`,
+          wrap: true
+        });
+      }
+      
+      if (alert.details.suggestedFix) {
+        detailsBlock.items.push({
+          type: 'TextBlock',
+          text: '**Correction suggérée:**',
+          wrap: true
+        });
+        detailsBlock.items.push({
+          type: 'TextBlock',
+          text: alert.details.suggestedFix,
+          wrap: true
+        });
+      }
+      
+      if (detailsBlock.items.length > 0) {
+        cardBody.attachments[0].content.body.push({
+          type: 'TextBlock',
+          text: '**Détails:**',
+          wrap: true
+        });
+        cardBody.attachments[0].content.body.push(detailsBlock);
+      }
+    }
+    
+    return cardBody;
   }
   
   /**

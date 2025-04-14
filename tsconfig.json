@@ -10,12 +10,17 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "baseUrl": ".",
+    "paths": {
+      "@fafa/mcp-agents/*": ["packages/mcp-agents/*"]
+    }
   },
   "include": [
     "agents/**/*",
     "scripts/**/*",
-    "apps/**/*"
+    "apps/**/*",
+    "packages/**/*"
   ],
   "exclude": [
     "node_modules",

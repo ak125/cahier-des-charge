@@ -1,0 +1,179 @@
+{
+  "name": "Auto-Remédiation des Divergences",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "days",
+              "minuteInterval": 1,
+              "triggerAtHour": 1,
+              "triggerAtMinute": 0
+            }
+          ]
+        }
+      },
+      "id": "bae0f8c8-d23a-424d-b3bd-8fc749979346",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1,
+      "position": [
+        650,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "command": "cd {{$node[\"Set Working Directory\"].json[\"path\"]}} && ./bin/remediator.sh --batch --report",
+        "executeTimeout": 600
+      },
+      "id": "b41f88c9-3f27-4689-a6b3-4a5ce58e8387",
+      "name": "Exécuter Remediator",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        1050,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "path",
+              "value": "/workspaces/cahier-des-charge"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "c1e60040-a86d-4d66-a8a1-a1c14dbe0e24",
+      "name": "Set Working Directory",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 2,
+      "position": [
+        850,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "command": "cd {{$node[\"Set Working Directory\"].json[\"path\"]}} && ./bin/diff-verifier.sh --batch --report",
+        "executeTimeout": 600
+      },
+      "id": "20d8dbf3-aec3-4ab0-ac74-93a2e6d578cc",
+      "name": "Vérifier les Résultats",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        1250,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "path": "{{$node[\"Set Working Directory\"].json[\"path\"]}}/reports/remediation_summary.html",
+        "options": {}
+      },
+      "id": "a3e4e37f-b4d9-4c87-ad51-93a733b5be9b",
+      "name": "Lire Rapport Remédiation",
+      "type": "n8n-nodes-base.readBinaryFile",
+      "typeVersion": 1,
+      "position": [
+        1450,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "fromEmail": "automation@example.com",
+        "toEmail": "team@example.com",
+        "subject": "Rapport de Remédiation Automatique - {{$today}}",
+        "text": "Voici le rapport de remédiation automatique exécuté le {{$today}}.\n\nRésultat de remédiation : {{$node[\"Exécuter Remediator\"].json[\"stderr\"]}}\n\nRésultat de vérification : {{$node[\"Vérifier les Résultats\"].json[\"stderr\"]}}\n\nConsultez les rapports en pièce jointe pour plus de détails.",
+        "attachments": "data={{$node[\"Lire Rapport Remédiation\"].json[\"data\"]}}",
+        "options": {}
+      },
+      "id": "ab735e37-a4f9-4da9-bfde-50acce65b1c0",
+      "name": "Envoyer Notification",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2,
+      "position": [
+        1650,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Set Working Directory",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Working Directory": {
+      "main": [
+        [
+          {
+            "node": "Exécuter Remediator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Exécuter Remediator": {
+      "main": [
+        [
+          {
+            "node": "Vérifier les Résultats",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Vérifier les Résultats": {
+      "main": [
+        [
+          {
+            "node": "Lire Rapport Remédiation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Lire Rapport Remédiation": {
+      "main": [
+        [
+          {
+            "node": "Envoyer Notification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {},
+  "staticData": null,
+  "tags": [
+    {
+      "name": "automation"
+    },
+    {
+      "name": "quality"
+    }
+  ],
+  "triggerCount": 0,
+  "updatedAt": "2025-04-13T11:24:00.000Z",
+  "versionId": "01c61f33-a4e5-4923-b376-51b7d0b9c03a"
+}

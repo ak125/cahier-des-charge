@@ -1,21 +1,76 @@
-import axios from 'axios';
+import { runCITester } from '@fafa/mcp-agents-ci-tester';
+
+// Route pour déclencher la génération CI
+app.post('/api/ci/generate', async (req, res) => {
+  const result = await runCITester({
+    outputPath: req.body.outputPath,
+    localTest: req.body.runLocalTests
+  });
+  
+  return res.json({ success: true, result });
+});import axios from 'axios';
 import dotenv from 'dotenv';
 
 // Charger les variables d'environnement
 dotenv.config();
 
-// Interface pour les options de notification
-interface NotificationOptions {
-  title?: string;
-  color?: number; // Couleur hexadécimale pour l'embed Discord
-  fields?: {
+/**
+ * Interface pour les options de notification Discord
+ */
+interface DiscordNotificationOptions {
+  username?: string;         // Nom d'utilisateur du webhook
+  avatar_url?: string;       // URL de l'avatar
+  tts?: boolean;             // Text-to-speech
+  embeds?: DiscordEmbed[];   // Embeds Discord
+  components?: any[];        // Composants interactifs
+  allowedMentions?: {        // Mentions autorisées
+    parse?: string[];
+    users?: string[];
+    roles?: string[];
+  };
+}
+
+/**
+ * Interface pour les embeds Discord
+ */
+interface DiscordEmbed {
+  title?: string;            // Titre de l'embed
+  description?: string;      // Description de l'embed
+  url?: string;              // URL du titre
+  timestamp?: string;        // Timestamp ISO8601
+  color?: number;            // Couleur (entier)
+  footer?: {                 // Pied de page
+    text: string;
+    icon_url?: string;
+  };
+  image?: {                  // Image
+    url: string;
+  };
+  thumbnail?: {              // Miniature
+    url: string;
+  };
+  author?: {                 // Auteur
+    name: string;
+    url?: string;
+    icon_url?: string;
+  };
+  fields?: {                 // Champs
     name: string;
     value: string;
     inline?: boolean;
   }[];
-  timestamp?: boolean; // Ajouter un timestamp automatiquement
-  footer?: string;
-  thumbnailUrl?: string;
+}
+
+/**
+ * Couleurs prédéfinies pour les différents niveaux de sévérité
+ */
+export enum DiscordColors {
+  DEFAULT = 0x000000,      // Noir
+  SUCCESS = 0x57F287,      // Vert
+  INFO = 0x3498DB,         // Bleu
+  WARNING = 0xFEE75C,      // Jaune
+  ERROR = 0xED4245,        // Rouge
+  CRITICAL = 0x9B59B6      // Violet
 }
 
 /**
@@ -27,7 +82,7 @@ interface NotificationOptions {
  */
 export async function sendDiscordNotification(
   message: string,
-  options: NotificationOptions = {},
+  options: DiscordNotificationOptions = {},
   webhookUrl?: string
 ): Promise<boolean> {
   // Récupérer l'URL du webhook
@@ -40,26 +95,15 @@ export async function sendDiscordNotification(
   }
   
   try {
-    // Préparer l'embed Discord
-    const embed = {
-      title: options.title || 'Pipeline de Migration PHP → NestJS + Remix',
-      description: message,
-      color: options.color || 3447003, // Bleu par défaut
-      fields: options.fields || [],
-      timestamp: options.timestamp ? new Date().toISOString() : undefined,
-      footer: options.footer ? {
-        text: options.footer
-      } : undefined,
-      thumbnail: options.thumbnailUrl ? {
-        url: options.thumbnailUrl
-      } : undefined
-    };
-    
     // Préparer la payload pour Discord
     const payload = {
-      username: 'Migration Bot',
-      avatar_url: 'https://cdn-icons-png.flaticon.com/512/2166/2166860.png',
-      embeds: [embed]
+      content: message,
+      username: options.username || 'Notification Bot',
+      avatar_url: options.avatar_url,
+      tts: options.tts || false,
+      embeds: options.embeds || [],
+      components: options.components || [],
+      allowed_mentions: options.allowedMentions
     };
     
     // Envoyer la notification
@@ -84,227 +128,262 @@ export async function sendDiscordNotification(
 }
 
 /**
- * Envoie une notification de début de migration
+ * Crée un embed Discord formaté
+ * @param title Titre de l'embed
+ * @param description Description de l'embed
+ * @param color Couleur de l'embed
+ * @param fields Champs de l'embed
+ * @param footerText Texte du pied de page
+ * @param includeTimestamp Inclure un timestamp automatiquement
+ * @returns Un objet embed Discord formaté
  */
-export async function sendMigrationStartNotification(
-  sourceDir: string,
-  mode: string,
+export function createDiscordEmbed(
+  title?: string,
+  description?: string,
+  color: number = DiscordColors.INFO,
+  fields?: Array<{ name: string; value: string; inline?: boolean }>,
+  footerText?: string,
+  includeTimestamp: boolean = false
+): DiscordEmbed {
+  const embed: DiscordEmbed = {
+    color
+  };
+  
+  if (title) embed.title = title;
+  if (description) embed.description = description;
+  if (fields) embed.fields = fields;
+  if (footerText) embed.footer = { text: footerText };
+  if (includeTimestamp) embed.timestamp = new Date().toISOString();
+  
+  return embed;
+}
+
+/**
+ * Envoie une notification d'erreur
+ * @param title Titre de l'erreur
+ * @param description Description de l'erreur
+ * @param details Détails supplémentaires (optionnel)
+ * @param webhookUrl URL du webhook Discord (optionnel)
+ * @returns true si la notification a été envoyée avec succès, false sinon
+ */
+export async function sendErrorNotification(
+  title: string,
+  description: string,
+  details?: Record<string, string>,
   webhookUrl?: string
 ): Promise<boolean> {
+  const fields = details 
+    ? Object.entries(details).map(([name, value]) => ({
+        name,
+        value,
+        inline: true
+      }))
+    : [];
+  
+  const embed = createDiscordEmbed(
+    `❌ ${title}`,
+    description,
+    DiscordColors.ERROR,
+    fields,
+    "Notification d'erreur automatique",
+    true
+  );
+  
   return sendDiscordNotification(
-    `🚀 Démarrage de la migration PHP → NestJS + Remix`,
+    "", // Pas de contenu principal, tout est dans l'embed
     {
-      title: 'Migration Démarrée',
-      color: 3066993, // Vert
-      fields: [
-        {
-          name: 'Répertoire Source',
-          value: sourceDir,
-          inline: true
-        },
-        {
-          name: 'Mode',
-          value: mode,
-          inline: true
-        },
-        {
-          name: 'État',
-          value: 'En cours',
-          inline: true
-        }
-      ],
-      timestamp: true
+      username: "Error Reporter",
+      embeds: [embed]
     },
     webhookUrl
   );
 }
 
 /**
- * Envoie une notification de progression de migration
+ * Envoie une notification de succès
+ * @param title Titre du succès
+ * @param description Description du succès
+ * @param details Détails supplémentaires (optionnel)
+ * @param webhookUrl URL du webhook Discord (optionnel)
+ * @returns true si la notification a été envoyée avec succès, false sinon
  */
-export async function sendMigrationProgressNotification(
-  sourceDir: string,
-  progress: number, // 0-100
-  stats: {
-    filesProcessed: number;
-    totalFiles: number;
-    filesSucceeded: number;
-    filesFailed: number;
-  },
+export async function sendSuccessNotification(
+  title: string,
+  description: string,
+  details?: Record<string, string>,
+  webhookUrl?: string
+): Promise<boolean> {
+  const fields = details 
+    ? Object.entries(details).map(([name, value]) => ({
+        name,
+        value,
+        inline: true
+      }))
+    : [];
+  
+  const embed = createDiscordEmbed(
+    `✅ ${title}`,
+    description,
+    DiscordColors.SUCCESS,
+    fields,
+    "Notification de succès automatique",
+    true
+  );
+  
+  return sendDiscordNotification(
+    "", // Pas de contenu principal, tout est dans l'embed
+    {
+      username: "Success Reporter",
+      embeds: [embed]
+    },
+    webhookUrl
+  );
+}
+
+/**
+ * Envoie une notification d'alerte
+ * @param title Titre de l'alerte
+ * @param description Description de l'alerte
+ * @param severity Niveau de sévérité ('info', 'warning', 'error', 'critical')
+ * @param details Détails supplémentaires (optionnel)
+ * @param webhookUrl URL du webhook Discord (optionnel)
+ * @returns true si la notification a été envoyée avec succès, false sinon
+ */
+export async function sendAlertNotification(
+  title: string,
+  description: string,
+  severity: 'info' | 'warning' | 'error' | 'critical',
+  details?: Record<string, string>,
+  webhookUrl?: string
+): Promise<boolean> {
+  // Choisir la couleur en fonction de la sévérité
+  let color: number;
+  let emoji: string;
+  
+  switch (severity) {
+    case 'info':
+      color = DiscordColors.INFO;
+      emoji = 'ℹ️';
+      break;
+    case 'warning':
+      color = DiscordColors.WARNING;
+      emoji = '⚠️';
+      break;
+    case 'error':
+      color = DiscordColors.ERROR;
+      emoji = '❌';
+      break;
+    case 'critical':
+      color = DiscordColors.CRITICAL;
+      emoji = '🚨';
+      break;
+    default:
+      color = DiscordColors.INFO;
+      emoji = 'ℹ️';
+  }
+  
+  const fields = details 
+    ? Object.entries(details).map(([name, value]) => ({
+        name,
+        value,
+        inline: true
+      }))
+    : [];
+  
+  const embed = createDiscordEmbed(
+    `${emoji} ${title}`,
+    description,
+    color,
+    fields,
+    `Niveau de sévérité: ${severity.toUpperCase()}`,
+    true
+  );
+  
+  return sendDiscordNotification(
+    "", // Pas de contenu principal, tout est dans l'embed
+    {
+      username: "Alert System",
+      embeds: [embed]
+    },
+    webhookUrl
+  );
+}
+
+/**
+ * Envoie une notification de progression
+ * @param title Titre de la progression
+ * @param description Description de la progression
+ * @param progress Pourcentage de progression (0-100)
+ * @param stats Statistiques supplémentaires (optionnel)
+ * @param webhookUrl URL du webhook Discord (optionnel)
+ * @returns true si la notification a été envoyée avec succès, false sinon
+ */
+export async function sendProgressNotification(
+  title: string,
+  description: string,
+  progress: number,
+  stats?: Record<string, string | number>,
   webhookUrl?: string
 ): Promise<boolean> {
   // Créer une barre de progression visuelle
   const progressBar = createProgressBar(progress);
   
-  return sendDiscordNotification(
-    `⏳ Migration en cours: ${progress.toFixed(1)}% terminée`,
+  // Préparer les champs
+  const fields = [
     {
-      title: 'Progression de la Migration',
-      color: 16776960, // Jaune
-      fields: [
-        {
-          name: 'Répertoire Source',
-          value: sourceDir,
-          inline: true
-        },
-        {
-          name: 'Progression',
-          value: progressBar,
-          inline: false
-        },
-        {
-          name: 'Fichiers Traités',
-          value: `${stats.filesProcessed}/${stats.totalFiles}`,
-          inline: true
-        },
-        {
-          name: 'Succès',
-          value: `${stats.filesSucceeded}`,
-          inline: true
-        },
-        {
-          name: 'Échecs',
-          value: `${stats.filesFailed}`,
-          inline: true
-        }
-      ],
-      timestamp: true
-    },
-    webhookUrl
+      name: "Progression",
+      value: progressBar,
+      inline: false
+    }
+  ];
+  
+  // Ajouter les statistiques si elles existent
+  if (stats) {
+    for (const [key, value] of Object.entries(stats)) {
+      fields.push({
+        name: key,
+        value: String(value),
+        inline: true
+      });
+    }
+  }
+  
+  const embed = createDiscordEmbed(
+    title,
+    description,
+    DiscordColors.INFO,
+    fields,
+    "Notification de progression",
+    true
   );
-}
-
-/**
- * Envoie une notification de fin de migration
- */
-export async function sendMigrationCompleteNotification(
-  sourceDir: string,
-  targetDir: string,
-  success: boolean,
-  stats: {
-    duration: number; // en secondes
-    filesProcessed: number;
-    totalFiles: number;
-    filesSucceeded: number;
-    filesFailed: number;
-  },
-  webhookUrl?: string
-): Promise<boolean> {
-  // Formater la durée
-  const duration = formatDuration(stats.duration);
   
   return sendDiscordNotification(
-    success 
-      ? `✅ Migration terminée avec succès en ${duration}` 
-      : `⚠️ Migration terminée avec des problèmes en ${duration}`,
+    "", // Pas de contenu principal, tout est dans l'embed
     {
-      title: success ? 'Migration Réussie' : 'Migration Terminée avec Avertissements',
-      color: success ? 3066993 : 16750899, // Vert ou Orange
-      fields: [
-        {
-          name: 'Répertoire Source',
-          value: sourceDir,
-          inline: true
-        },
-        {
-          name: 'Répertoire Cible',
-          value: targetDir,
-          inline: true
-        },
-        {
-          name: 'Durée',
-          value: duration,
-          inline: true
-        },
-        {
-          name: 'Fichiers Traités',
-          value: `${stats.filesProcessed}/${stats.totalFiles}`,
-          inline: true
-        },
-        {
-          name: 'Succès',
-          value: `${stats.filesSucceeded}`,
-          inline: true
-        },
-        {
-          name: 'Échecs',
-          value: `${stats.filesFailed}`,
-          inline: true
-        },
-        {
-          name: 'Taux de Réussite',
-          value: `${((stats.filesSucceeded / stats.totalFiles) * 100).toFixed(1)}%`,
-          inline: true
-        }
-      ],
-      timestamp: true
+      username: "Progress Tracker",
+      embeds: [embed]
     },
     webhookUrl
   );
 }
 
 /**
- * Envoie une notification d'erreur de migration
+ * Crée une barre de progression visuelle pour Discord
+ * @param progress Pourcentage de progression (0-100)
+ * @returns Une chaîne représentant une barre de progression
  */
-export async function sendMigrationErrorNotification(
-  sourceDir: string,
-  error: string,
-  webhookUrl?: string
-): Promise<boolean> {
-  return sendDiscordNotification(
-    `❌ Erreur lors de la migration PHP → NestJS + Remix`,
-    {
-      title: 'Erreur de Migration',
-      color: 15158332, // Rouge
-      fields: [
-        {
-          name: 'Répertoire Source',
-          value: sourceDir,
-          inline: true
-        },
-        {
-          name: 'Erreur',
-          value: error,
-          inline: false
-        }
-      ],
-      timestamp: true
-    },
-    webhookUrl
-  );
-}
-
-/**
- * Fonctions utilitaires
- */
-
-// Crée une barre de progression visuelle pour Discord
 function createProgressBar(progress: number): string {
   const filledBar = '█';
   const emptyBar = '░';
   const barLength = 20;
   
-  const filledLength = Math.floor((progress / 100) * barLength);
+  // S'assurer que la progression est entre 0 et 100
+  const clampedProgress = Math.max(0, Math.min(100, progress));
+  
+  const filledLength = Math.round((clampedProgress / 100) * barLength);
   const emptyLength = barLength - filledLength;
   
-  return `${filledBar.repeat(filledLength)}${emptyLength > 0 ? emptyBar.repeat(emptyLength) : ''} ${progress.toFixed(1)}%`;
-}
-
-// Formate une durée en secondes en format lisible
-function formatDuration(seconds: number): string {
-  if (seconds < 60) {
-    return `${seconds.toFixed(1)} seconde${seconds !== 1 ? 's' : ''}`;
-  }
-  
-  if (seconds < 3600) {
-    const minutes = Math.floor(seconds / 60);
-    const remainingSeconds = seconds % 60;
-    return `${minutes} minute${minutes !== 1 ? 's' : ''} ${remainingSeconds.toFixed(0)} seconde${remainingSeconds !== 1 ? 's' : ''}`;
-  }
-  
-  const hours = Math.floor(seconds / 3600);
-  const remainingMinutes = Math.floor((seconds % 3600) / 60);
-  return `${hours} heure${hours !== 1 ? 's' : ''} ${remainingMinutes} minute${remainingMinutes !== 1 ? 's' : ''}`;
+  return `${filledBar.repeat(filledLength)}${emptyBar.repeat(emptyLength)} ${clampedProgress.toFixed(1)}%`;
 }
 
 // Pour tester l'envoi de notification si ce script est exécuté directement
@@ -312,25 +391,32 @@ if (require.main === module) {
   (async () => {
     // Tester la notification
     const success = await sendDiscordNotification(
-      'Ceci est un test de notification depuis le pipeline de migration',
+      'Ceci est un test de notification Discord depuis le pipeline de migration',
       {
-        title: 'Test de Notification',
-        color: 3447003,
-        fields: [
-          {
-            name: 'Test',
-            value: 'Valeur de test',
-            inline: true
-          }
-        ],
-        timestamp: true
+        username: 'Test Bot',
+        embeds: [
+          createDiscordEmbed(
+            'Test de Notification Discord',
+            'Cet embed est un test pour vérifier que les notifications Discord fonctionnent correctement.',
+            DiscordColors.INFO,
+            [
+              {
+                name: 'Test',
+                value: 'Valeur de test',
+                inline: true
+              }
+            ],
+            'Ceci est un test',
+            true
+          )
+        ]
       }
     );
     
     if (success) {
-      console.log('✅ Test de notification envoyé avec succès');
+      console.log('✅ Test de notification Discord envoyé avec succès');
     } else {
-      console.error('❌ Échec du test de notification');
+      console.error('❌ Échec du test de notification Discord');
     }
   })();
 }

@@ -120,3 +120,33 @@ export async function updateMcpEventStatus(
     throw error;
   }
 }
+
+// utils/supabaseClient.ts
+// Client Supabase temporaire pour permettre le démarrage du serveur MCP
+
+import { createClient } from '@supabase/supabase-js';
+
+// Récupérer les variables d'environnement ou utiliser des valeurs par défaut pour développement
+const supabaseUrl = process.env.SUPABASE_URL || 'http://localhost:5433';
+const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.example-key';
+
+// Créer et exporter le client Supabase
+export const supabase = createClient(supabaseUrl, supabaseKey);
+
+// Exporter un client fictif pour permettre le démarrage sans connexion réelle
+export const mockSupabase = {
+  from: (table: string) => ({
+    select: () => ({ data: [], error: null }),
+    insert: (data: any) => ({ data, error: null }),
+    update: (data: any) => ({ data, error: null }),
+    delete: () => ({ data: null, error: null }),
+    eq: () => ({ data: null, error: null }),
+    order: () => ({ data: [], error: null }),
+    limit: () => ({ data: [], error: null }),
+    single: () => ({ data: {}, error: null }),
+    group: () => ({ data: [], error: null }),
+  }),
+};
+
+// Exporter par défaut un client qui utilise le mock si les variables d'environnement ne sont pas définies
+export default process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY ? supabase : mockSupabase;

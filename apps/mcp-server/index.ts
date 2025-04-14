@@ -12,6 +12,8 @@ import { supabase } from '../../utils/supabaseClient';
 import { exec } from 'child_process';
 import { promisify } from 'util';
 import axios from 'axios';
+// Import du registre centralisé d'agents MCP
+import { agentRegistry, executeAgent as runMcpAgent } from '@fafa/mcp-agents';
 
 // Convertir exec en version Promise
 const execAsync = promisify(exec);
@@ -66,26 +68,12 @@ app.get('/info', (req, res) => {
 // Route pour lister les agents disponibles
 app.get('/agents', async (req, res) => {
   try {
-    // Vérifier les agents disponibles dans le dossier agents
-    const agentsPath = path.resolve(__dirname, '../../agents');
-    const directories = fs.readdirSync(agentsPath, { withFileTypes: true })
-      .filter(dirent => dirent.isDirectory())
-      .map(dirent => dirent.name);
-    
-    const agents = [];
-    
-    for (const dir of directories) {
-      const dirPath = path.join(agentsPath, dir);
-      const files = fs.readdirSync(dirPath, { withFileTypes: true })
-        .filter(dirent => !dirent.isDirectory() && dirent.name.endsWith('.ts'))
-        .map(dirent => ({
-          name: dirent.name.replace('.ts', ''),
-          category: dir,
-          path: path.join(dir, dirent.name),
-        }));
-      
-      agents.push(...files);
-    }
+    // Récupérer les agents depuis le registre centralisé
+    const agents = Object.keys(agentRegistry).map(agentName => ({
+      name: agentName,
+      category: agentRegistry[agentName].category || 'default',
+      description: agentRegistry[agentName].description || 'Aucune description disponible'
+    }));
     
     // Récupérer aussi les statistiques d'exécution depuis Supabase
     const { data: agentStats, error } = await supabase
@@ -178,6 +166,11 @@ app.post('/run/:agentName', async (req, res) => {
     const { agentName } = req.params;
     const params = req.body;
     
+    // Vérifier que l'agent existe dans le registre centralisé
+    if (!agentRegistry[agentName]) {
+      return res.status(404).json({ error: `Agent ${agentName} introuvable dans le registre MCP` });
+    }
+    
     // Créer un enregistrement d'exécution d'agent
     const { data: agentRun, error } = await supabase.from('agent_runs').insert({
       agent_name: agentName,
@@ -193,15 +186,26 @@ app.post('/run/:agentName', async (req, res) => {
       runId: agentRun.id
     });
     
-    // Exécuter l'agent de façon asynchrone
-    executeAgent(agentName, params, null, agentRun.id).catch(async err => {
-      console.error(`Erreur lors de l'exécution de l'agent ${agentName}:`, err);
-      // Mettre à jour l'enregistrement d'agent en cas d'erreur
-      await supabase.from('agent_runs').update({
-        status: 'failed',
-        error_message: err.message,
-      }).eq('id', agentRun.id);
-    });
+    // Exécuter l'agent de façon asynchrone via le registre centralisé
+    console.info(`Agent utilisé : @fafa/mcp-agents/${agentName}`);
+    runMcpAgent(agentName, params)
+      .then(async (result) => {
+        // Mettre à jour l'enregistrement d'agent en cas de succès
+        await supabase.from('agent_runs').update({
+          status: 'completed',
+          output_result: result,
+        }).eq('id', agentRun.id);
+        
+        console.log(`Agent ${agentName} exécuté avec succès`);
+      })
+      .catch(async (err) => {
+        console.error(`Erreur lors de l'exécution de l'agent ${agentName}:`, err);
+        // Mettre à jour l'enregistrement d'agent en cas d'erreur
+        await supabase.from('agent_runs').update({
+          status: 'failed',
+          error_message: err.message,
+        }).eq('id', agentRun.id);
+      });
   } catch (error) {
     console.error('Erreur lors de l\'exécution de l\'agent:', error);
     res.status(500).json({ error: 'Erreur lors de l\'exécution de l\'agent' });
@@ -239,37 +243,15 @@ app.post('/notify/n8n', async (req, res) => {
 // Fonction pour exécuter un agent
 async function executeAgent(agentName: string, params: any, eventId?: number, runId?: number) {
   try {
-    // Construire le chemin vers l'agent
-    let agentPath = '';
+    console.info(`Agent utilisé : @fafa/mcp-agents/${agentName}`);
     
-    // Rechercher l'agent dans les différentes catégories
-    const agentsBasePath = path.resolve(__dirname, '../../agents');
-    const categories = fs.readdirSync(agentsBasePath, { withFileTypes: true })
-      .filter(dirent => dirent.isDirectory())
-      .map(dirent => dirent.name);
-    
-    for (const category of categories) {
-      const potentialPath = path.join(agentsBasePath, category, `${agentName}.ts`);
-      if (fs.existsSync(potentialPath)) {
-        agentPath = potentialPath;
-        break;
-      }
+    // Vérifier que l'agent existe dans le registre centralisé
+    if (!agentRegistry[agentName]) {
+      throw new Error(`Agent ${agentName} introuvable dans le registre MCP`);
     }
     
-    if (!agentPath) {
-      throw new Error(`Agent ${agentName} introuvable`);
-    }
-    
-    // Convertir les paramètres en arguments de ligne de commande
-    const args = Object.entries(params || {})
-      .map(([key, value]) => `--${key}=${value}`)
-      .join(' ');
-    
-    // Exécuter l'agent
-    const command = `ts-node ${agentPath} ${args}`;
-    console.log(`Exécution de la commande: ${command}`);
-    
-    const { stdout, stderr } = await execAsync(command);
+    // Exécuter l'agent via le registre centralisé
+    const result = await runMcpAgent(agentName, params);
     
     // Mettre à jour l'événement si un ID a été fourni
     if (eventId) {
@@ -283,12 +265,12 @@ async function executeAgent(agentName: string, params: any, eventId?: number, ru
     if (runId) {
       await supabase.from('agent_runs').update({
         status: 'completed',
-        output_result: { stdout, stderr },
+        output_result: result,
       }).eq('id', runId);
     }
     
     console.log(`Agent ${agentName} exécuté avec succès`);
-    return { stdout, stderr };
+    return result;
   } catch (error) {
     console.error(`Erreur lors de l'exécution de l'agent ${agentName}:`, error);
     
@@ -377,17 +359,13 @@ async function main() {
   // Traitement des fichiers par chaque agent, en parallèle
   for (const agentName of AGENTS) {
     console.log(chalk.cyan(`🔄 Chargement de l'agent ${agentName}...`));
-    const agentPath = path.resolve(__dirname, "agents", `${agentName}.ts`);
     
     try {
-      // Vérifier que l'agent existe
-      if (!fs.existsSync(agentPath)) {
-        console.error(chalk.red(`❌ Agent introuvable : ${agentPath}`));
+      // Vérifier que l'agent existe dans le registre centralisé
+      if (!agentRegistry[agentName]) {
+        console.error(chalk.red(`❌ Agent ${agentName} introuvable dans le registre MCP`));
         continue;
       }
-      
-      // Importer l'agent dynamiquement
-      const { run } = await import(agentPath);
       
       // Options de traitement
       const options: FileProcessingOptions = {
@@ -399,8 +377,12 @@ async function main() {
       console.log(chalk.cyan(`🚀 Démarrage du traitement parallèle avec l'agent ${agentName}...`));
       const startTime = Date.now();
       
+      // Utiliser l'agent via le registre centralisé
+      console.info(`Agent utilisé : @fafa/mcp-agents/${agentName}`);
+      const agentFunction = agentRegistry[agentName].run;
+      
       // Traitement en parallèle des fichiers
-      const results = await processFilesInParallel(SOURCE_DIR, run, options);
+      const results = await processFilesInParallel(SOURCE_DIR, agentFunction, options);
       
       const duration = ((Date.now() - startTime) / 1000).toFixed(2);
       console.log(chalk.green(`✅ Traitement terminé en ${duration}s avec ${results.length} résultats.`));

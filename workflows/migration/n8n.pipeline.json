@@ -830,8 +830,7 @@
           },
           "name": "Charger Configuration",
           "type": "n8n-nodes-base.function",
-          "position": [900, 340],
-          "typeVersion": 1
+          "position": [900, 340]
         },
         {
           "parameters": {
@@ -841,8 +840,7 @@
           },
           "name": "Exécuter Audit Selector",
           "type": "n8n-nodes-base.executeCommand",
-          "position": [1100, 340],
-          "typeVersion": 1
+          "position": [1100, 340]
         },
         {
           "parameters": {
@@ -850,8 +848,7 @@
           },
           "name": "Traiter Liste Fichiers",
           "type": "n8n-nodes-base.code",
-          "position": [1300, 340],
-          "typeVersion": 1
+          "position": [1300, 340]
         },
         {
           "parameters": {
@@ -866,8 +863,7 @@
           },
           "name": "Fichiers Trouvés?",
           "type": "n8n-nodes-base.if",
-          "position": [1500, 340],
-          "typeVersion": 1
+          "position": [1500, 340]
         },
         {
           "parameters": {
@@ -880,8 +876,7 @@
           },
           "name": "Notifier Aucun Fichier",
           "type": "n8n-nodes-base.telegram",
-          "position": [1700, 460],
-          "typeVersion": 1
+          "position": [1700, 460]
         },
         {
           "parameters": {
@@ -891,8 +886,7 @@
           },
           "name": "Créer Dossier Sorties",
           "type": "n8n-nodes-base.executeCommand",
-          "position": [1700, 240],
-          "typeVersion": 1
+          "position": [1700, 240]
         },
         {
           "parameters": {
@@ -900,8 +894,7 @@
           },
           "name": "Préparer Pipeline d'Agents",
           "type": "n8n-nodes-base.function",
-          "position": [1900, 240],
-          "typeVersion": 1
+          "position": [1900, 240]
         },
         {
           "parameters": {
@@ -914,8 +907,7 @@
           },
           "name": "Notifier Démarrage Analyse",
           "type": "n8n-nodes-base.telegram",
-          "position": [1700, 100],
-          "typeVersion": 1
+          "position": [1700, 100]
         },
         {
           "parameters": {
@@ -923,8 +915,7 @@
           },
           "name": "Sélectionner Agent Actuel",
           "type": "n8n-nodes-base.function",
-          "position": [2100, 240],
-          "typeVersion": 1
+          "position": [2100, 240]
         },
         {
           "parameters": {
@@ -939,8 +930,7 @@
           },
           "name": "Pipeline Terminé?",
           "type": "n8n-nodes-base.if",
-          "position": [2300, 240],
-          "typeVersion": 1
+          "position": [2300, 240]
         },
         {
           "parameters": {
@@ -950,8 +940,7 @@
           },
           "name": "Exécuter Agent Actuel",
           "type": "n8n-nodes-base.executeCommand",
-          "position": [2500, 340],
-          "typeVersion": 1
+          "position": [2500, 340]
         },
         {
           "parameters": {
@@ -959,8 +948,7 @@
           },
           "name": "Traiter Résultat Agent",
           "type": "n8n-nodes-base.function",
-          "position": [2700, 340],
-          "typeVersion": 1
+          "position": [2700, 340]
         },
         {
           "parameters": {
@@ -970,8 +958,7 @@
           },
           "name": "Assembler Résultats",
           "type": "n8n-nodes-base.executeCommand",
-          "position": [2500, 140],
-          "typeVersion": 1
+          "position": [2500, 140]
         },
         {
           "parameters": {
@@ -981,8 +968,7 @@
           },
           "name": "Pousser vers GitHub",
           "type": "n8n-nodes-base.executeCommand",
-          "position": [2700, 140],
-          "typeVersion": 1
+          "position": [2700, 140]
         },
         {
           "parameters": {
@@ -992,8 +978,7 @@
           },
           "name": "Synchroniser Supabase",
           "type": "n8n-nodes-base.executeCommand",
-          "position": [2900, 140],
-          "typeVersion": 1
+          "position": [2900, 140]
         },
         {
           "parameters": {
@@ -1006,8 +991,7 @@
           },
           "name": "Notifier Analyse Terminée",
           "type": "n8n-nodes-base.telegram",
-          "position": [3100, 140],
-          "typeVersion": 1
+          "position": [3100, 140]
         },
         {
           "parameters": {
@@ -1023,8 +1007,7 @@
           },
           "name": "Erreurs Détectées?",
           "type": "n8n-nodes-base.if",
-          "position": [3300, 140],
-          "typeVersion": 1
+          "position": [3300, 140]
         },
         {
           "parameters": {
@@ -1037,8 +1020,7 @@
           },
           "name": "Notifier Erreurs",
           "type": "n8n-nodes-base.telegram",
-          "position": [3500, 140],
-          "typeVersion": 1
+          "position": [3500, 140]
         },
         {
           "parameters": {
@@ -1049,8 +1031,7 @@
           },
           "name": "Mettre à jour Index Audits",
           "type": "n8n-nodes-base.writeFile",
-          "position": [3500, 300],
-          "typeVersion": 1
+          "position": [3500, 300]
         },
         {
           "parameters": {
@@ -1058,8 +1039,7 @@
           },
           "name": "Préparer Données Index",
           "type": "n8n-nodes-base.function",
-          "position": [3300, 300],
-          "typeVersion": 1
+          "position": [3300, 300]
         }
       ],
       "connections": {
@@ -1326,6 +1306,282 @@
             [
               {
                 "node": "Mettre à jour Index Audits",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "id": "dev-checker-workflow",
+      "name": "Vérification Qualité du Code",
+      "active": true,
+      "nodes": [
+        {
+          "parameters": {
+            "rule": {
+              "interval": [
+                {
+                  "field": "cronExpression",
+                  "expression": "0 0 * * *"
+                }
+              ]
+            }
+          },
+          "name": "Déclencheur Quotidien",
+          "type": "n8n-nodes-base.cron",
+          "position": [100, 200],
+          "typeVersion": 1
+        },
+        {
+          "parameters": {
+            "triggerTimes": {}
+          },
+          "name": "Déclencheur Manuel",
+          "type": "n8n-nodes-base.manualTrigger",
+          "position": [100, 340],
+          "typeVersion": 1
+        },
+        {
+          "parameters": {
+            "authentication": "genericCredentialType",
+            "httpMethod": "POST",
+            "path": "dev-check-trigger",
+            "options": {}
+          },
+          "name": "Webhook GitHub PR",
+          "type": "n8n-nodes-base.webhook",
+          "position": [100, 480],
+          "webhookId": "dev-check-webhook",
+          "typeVersion": 1
+        },
+        {
+          "parameters": {
+            "mode": "mergeByPosition"
+          },
+          "name": "Merge Déclencheurs",
+          "type": "n8n-nodes-base.merge",
+          "position": [300, 340],
+          "typeVersion": 2
+        },
+        {
+          "parameters": {
+            "command": "cd /workspaces/cahier-des-charge && npx tsx apps/mcp-server/src/handleAgentRequest.ts dev-checker",
+            "workingDirectory": "/workspaces/cahier-des-charge",
+            "executeTimeout": 300
+          },
+          "name": "Exécuter Dev Checker",
+          "type": "n8n-nodes-base.executeCommand",
+          "position": [500, 340],
+          "typeVersion": 1
+        },
+        {
+          "parameters": {
+            "conditions": {
+              "boolean": [
+                {
+                  "value1": "={{ $json.stdout.includes('❌ Erreur') }}",
+                  "value2": true
+                }
+              ]
+            }
+          },
+          "name": "Erreurs Détectées?",
+          "type": "n8n-nodes-base.if",
+          "position": [700, 340],
+          "typeVersion": 1
+        },
+        {
+          "parameters": {
+            "command": "cd /workspaces/cahier-des-charge && npx tsx apps/mcp-server/src/handleAgentRequest.ts dev-checker --fix",
+            "workingDirectory": "/workspaces/cahier-des-charge",
+            "executeTimeout": 300
+          },
+          "name": "Tentative Auto-Correction",
+          "type": "n8n-nodes-base.executeCommand",
+          "position": [900, 240],
+          "typeVersion": 1
+        },
+        {
+          "parameters": {
+            "conditions": {
+              "boolean": [
+                {
+                  "value1": "={{ $json.stdout.includes('corrections automatiques appliquées') }}",
+                  "value2": true
+                }
+              ]
+            }
+          },
+          "name": "Corrections Appliquées?",
+          "type": "n8n-nodes-base.if",
+          "position": [1100, 240],
+          "typeVersion": 1
+        },
+        {
+          "parameters": {
+            "chatId": "{{ $env.NOTIFICATION_CHAT_ID }}",
+            "text": "⚠️ *Problèmes détectés dans le code*\n\nL'agent dev-checker a détecté des problèmes dans le code qui nécessitent une attention manuelle.\n\n[Voir le rapport détaillé]({{ $env.DASHBOARD_URL }}/reports/dev_check_report.md)",
+            "additionalFields": {
+              "parseMode": "Markdown",
+              "disableNotification": false
+            }
+          },
+          "name": "Notifier Problèmes",
+          "type": "n8n-nodes-base.telegram",
+          "position": [1300, 340],
+          "typeVersion": 1
+        },
+        {
+          "parameters": {
+            "chatId": "{{ $env.NOTIFICATION_CHAT_ID }}",
+            "text": "🛠️ *Corrections automatiques appliquées*\n\nL'agent dev-checker a identifié et corrigé automatiquement certains problèmes dans le code.\n\n[Voir le rapport détaillé]({{ $env.DASHBOARD_URL }}/reports/dev_check_report.md)",
+            "additionalFields": {
+              "parseMode": "Markdown",
+              "disableNotification": false
+            }
+          },
+          "name": "Notifier Corrections",
+          "type": "n8n-nodes-base.telegram",
+          "position": [1300, 120],
+          "typeVersion": 1
+        },
+        {
+          "parameters": {
+            "command": "cd /workspaces/cahier-des-charge && git add . && git commit -m \"🤖 Corrections automatiques par dev-checker\" && git push",
+            "workingDirectory": "/workspaces/cahier-des-charge",
+            "executeTimeout": 60
+          },
+          "name": "Commit et Push Corrections",
+          "type": "n8n-nodes-base.executeCommand",
+          "position": [1500, 120],
+          "typeVersion": 1
+        },
+        {
+          "parameters": {
+            "chatId": "{{ $env.NOTIFICATION_CHAT_ID }}",
+            "text": "✅ *Vérification du code complétée*\n\nL'agent dev-checker n'a détecté aucun problème.\n\n[Voir le rapport détaillé]({{ $env.DASHBOARD_URL }}/reports/dev_check_report.md)",
+            "additionalFields": {
+              "parseMode": "Markdown",
+              "disableNotification": true
+            }
+          },
+          "name": "Notifier Succès",
+          "type": "n8n-nodes-base.telegram",
+          "position": [900, 440],
+          "typeVersion": 1
+        }
+      ],
+      "connections": {
+        "Déclencheur Quotidien": {
+          "main": [
+            [
+              {
+                "node": "Merge Déclencheurs",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        },
+        "Déclencheur Manuel": {
+          "main": [
+            [
+              {
+                "node": "Merge Déclencheurs",
+                "type": "main",
+                "index": 1
+              }
+            ]
+          ]
+        },
+        "Webhook GitHub PR": {
+          "main": [
+            [
+              {
+                "node": "Merge Déclencheurs",
+                "type": "main",
+                "index": 2
+              }
+            ]
+          ]
+        },
+        "Merge Déclencheurs": {
+          "main": [
+            [
+              {
+                "node": "Exécuter Dev Checker",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        },
+        "Exécuter Dev Checker": {
+          "main": [
+            [
+              {
+                "node": "Erreurs Détectées?",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        },
+        "Erreurs Détectées?": {
+          "main": [
+            [
+              {
+                "node": "Tentative Auto-Correction",
+                "type": "main",
+                "index": 0
+              }
+            ],
+            [
+              {
+                "node": "Notifier Succès",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        },
+        "Tentative Auto-Correction": {
+          "main": [
+            [
+              {
+                "node": "Corrections Appliquées?",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        },
+        "Corrections Appliquées?": {
+          "main": [
+            [
+              {
+                "node": "Notifier Corrections",
+                "type": "main",
+                "index": 0
+              }
+            ],
+            [
+              {
+                "node": "Notifier Problèmes",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        },
+        "Notifier Corrections": {
+          "main": [
+            [
+              {
+                "node": "Commit et Push Corrections",
                 "type": "main",
                 "index": 0
               }

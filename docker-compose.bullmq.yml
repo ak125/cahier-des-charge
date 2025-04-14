@@ -1,0 +1,136 @@
+version: '3.8'
+
+services:
+  # Service Redis pour BullMQ
+  redis:
+    image: redis:alpine
+    container_name: mcp-redis
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # Serveur MCP avec NestJS et Bull Board
+  mcp-server:
+    build:
+      context: .
+      dockerfile: ./apps/mcp-server/Dockerfile
+    container_name: mcp-server
+    restart: always
+    ports:
+      - "3030:3030"
+    volumes:
+      - ./apps/mcp-server:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - PORT=3030
+      - PHP_WORKER_CONCURRENCY=2
+      - JS_WORKER_CONCURRENCY=2
+      - BULL_BOARD_TOKEN=mcp-secret-token
+    depends_on:
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3030/api/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Worker PHP pour l'analyse de code PHP
+  php-worker:
+    build:
+      context: .
+      dockerfile: ./agents/workers/Dockerfile.worker
+    container_name: php-worker
+    restart: always
+    volumes:
+      - ./agents:/app/agents
+      - ./agents/workers:/app/workers
+      - ./.env:/app/.env
+    environment:
+      - NODE_ENV=development
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - PHP_WORKER_CONCURRENCY=2
+    depends_on:
+      redis:
+        condition: service_healthy
+      mcp-server:
+        condition: service_healthy
+    command: pnpm ts-node /app/workers/php-analyzer.worker.ts
+
+  # Worker JS pour l'analyse de code JavaScript/TypeScript
+  js-worker:
+    build:
+      context: .
+      dockerfile: ./agents/workers/Dockerfile.worker
+    container_name: js-worker
+    restart: always
+    volumes:
+      - ./agents:/app/agents
+      - ./agents/workers:/app/workers
+      - ./.env:/app/.env
+    environment:
+      - NODE_ENV=development
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - JS_WORKER_CONCURRENCY=2
+    depends_on:
+      redis:
+        condition: service_healthy
+      mcp-server:
+        condition: service_healthy
+    command: pnpm ts-node /app/workers/js-analyzer.worker.ts
+
+  # Orchestrateur BullMQ pour coordonner les workflows complexes
+  orchestrator:
+    build:
+      context: .
+      dockerfile: ./agents/Dockerfile.orchestrator
+    container_name: bullmq-orchestrator
+    restart: always
+    volumes:
+      - ./agents:/app/agents
+      - ./.env:/app/.env
+    environment:
+      - NODE_ENV=development
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    depends_on:
+      redis:
+        condition: service_healthy
+      mcp-server:
+        condition: service_healthy
+    command: pnpm ts-node /app/agents/bullmq-orchestrator.ts
+
+  # Frontend Remix avec dashboard BullMQ
+  remix-frontend:
+    build:
+      context: .
+      dockerfile: ./apps/frontend/Dockerfile
+    container_name: remix-frontend
+    restart: always
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./apps/frontend:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+      - MCP_API_URL=http://mcp-server:3030/api
+    depends_on:
+      mcp-server:
+        condition: service_healthy
+
+volumes:
+  redis-data:
