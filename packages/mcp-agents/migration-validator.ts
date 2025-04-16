@@ -1,3 +1,11 @@
+// Fichier adapté pour la nouvelle architecture à trois couches
+import { AbstractValidatorAgent, ValidatorConfig } from '../../core/abstract-validator-agent';
+import { AgentContext } from '../../core/mcp-agent';
+
+// Fichier adapté pour la nouvelle architecture à trois couches
+import { AbstractValidatorAgent, ValidatorConfig } from '../../core/abstract-validator-agent';
+import { AgentContext } from '../../core/mcp-agent';
+
 #!/usr/bin/env node
 /**
  * migration-validator.ts

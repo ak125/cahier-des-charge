@@ -1,53 +1,42 @@
-// Registre centralisé des agents MCP
-// Généré automatiquement par le script de nettoyage des doublons
+/**
+ * Point d'entrée principal pour le module MCP Agents
+ * Architecture standardisée à 3 couches:
+ * 1. Couche d'abstraction (interfaces communes)
+ * 2. Couche métier (implémentations spécifiques)
+ * 3. Couche d'intégration (connecteurs aux autres systèmes)
+ */
 
-// Export des agents individuels depuis la racine
-export * from './php-analyzer';
-export * from './remix-generator';
-export * from './nestjs-generator';
-export * from './mysql-to-postgresql';
-export * from './migration-validator';
-export * from './test-writer';
+// Exporter les interfaces et types de base
+export * from './core/interfaces';
+export * from './core/types';
 
-// Export des agents depuis les sous-répertoires
-// Analysis
-export * from './analysis/php-analyzer';
+// Exporter le registre d'agents
+export { AgentRegistry, AgentFactory } from './core/agent-registry';
 
-// Core
-export * from './core/nestjs-generator';
-export * from './core/remix-generator';
+// Exporter les classes de base pour chaque type d'agent
+export { BaseAnalyzerAgent, AnalyzerAgentConfig, AnalysisResult } from './analyzers';
+export { BaseGeneratorAgent, GeneratorAgentConfig, GenerationResult } from './generators';
+export { BaseValidatorAgent, ValidatorAgentConfig, ValidationResult } from './validators';
+export { 
+  BaseOrchestratorAgent, 
+  OrchestratorAgentConfig, 
+  OrchestrationResult,
+  OrchestratorEvent
+} from './orchestrators';
 
-// Generators
-export * from './generators/nestjs-generator';
-export * from './generators/remix-generator';
+// Exporter les implémentations d'agents
+// Analyseurs
+export * from './analyzers';
 
-// Types
-export * from './types/index';
+// Générateurs
+export * from './generators';
 
-// Registre d'agents pour une utilisation facilitée
-export const agentRegistry = {
-  // Agents racine
-  "php-analyzer": require('./php-analyzer'),
-  "remix-generator": require('./remix-generator'),
-  "nestjs-generator": require('./nestjs-generator'),
-  "mysql-to-postgresql": require('./mysql-to-postgresql'),
-  "migration-validator": require('./migration-validator'),
-  "test-writer": require('./test-writer'),
-  
-  // Agents dans les sous-répertoires
-  "analysis/php-analyzer": require('./analysis/php-analyzer'),
-  "core/nestjs-generator": require('./core/nestjs-generator'),
-  "core/remix-generator": require('./core/remix-generator'),
-  "generators/nestjs-generator": require('./generators/nestjs-generator'),
-  "generators/remix-generator": require('./generators/remix-generator')
-};
+// Validateurs
+export * from './validators';
 
-// Fonction utilitaire pour exécuter un agent
-export async function executeAgent(agentName: string, context: any) {
-  const agent = agentRegistry[agentName];
-  if (!agent) {
-    throw new Error(`Agent "${agentName}" introuvable dans le registre MCP.`);
-  }
-  console.info(`Agent utilisé : @fafa/mcp-agents/${agentName}`);
-  return await agent.run(context);
-}
+// Orchestrateurs
+export * from './orchestrators';
+
+// Services partagés
+export * from './core/logging/logger';
+export * from './core/metrics/metrics-collector';

@@ -1,3 +1,11 @@
+// Fichier adapté pour la nouvelle architecture à trois couches
+import { AbstractAnalyzerAgent, AnalyzerConfig } from '../../core/abstract-analyzer-agent';
+import { AgentContext } from '../../core/mcp-agent';
+
+// Fichier adapté pour la nouvelle architecture à trois couches
+import { AbstractAnalyzerAgent, AnalyzerConfig } from '../../core/abstract-analyzer-agent';
+import { AgentContext } from '../../core/mcp-agent';
+
 import fs from 'fs';
 import path from 'path';
 import { parse as parseHTML } from 'node-html-parser';

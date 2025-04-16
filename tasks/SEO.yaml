@@ -1,0 +1,40 @@
+version: "3"
+
+tasks:
+  audit:
+    desc: Lance un audit SEO complet
+    cmds:
+      - echo "🔍 Lancement de l'audit SEO..."
+      - node tools/seo-checker.ts
+      - echo "✅ Audit SEO terminé"
+
+  check-routes:
+    desc: Vérifie la correspondance des routes PHP et Remix
+    cmds:
+      - bash docs-routes-mappings.sh
+      - echo "✅ Vérification des routes terminée"
+
+  check-htaccess:
+    desc: Analyse les règles .htaccess pour la migration
+    cmds:
+      - bash analyze-htaccess.sh
+      - echo "✅ Analyse .htaccess terminée"
+
+  verify-redirects:
+    desc: Teste les redirections définies
+    cmds:
+      - bash test-redirections.sh
+      - echo "✅ Test des redirections terminé"
+
+  sync-canonicals:
+    desc: Synchronise les URL canoniques
+    cmds:
+      - bash sync-canonicals.sh
+      - echo "✅ Synchronisation des canonicals terminée"
+
+  report:
+    desc: Génère un rapport SEO
+    cmds:
+      - echo "📊 Génération du rapport SEO..."
+      - node tools/seo-report-generator.js
+      - echo "✅ Rapport généré"

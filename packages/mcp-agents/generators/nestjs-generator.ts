@@ -1,3 +1,12 @@
+// Fichier adapté pour la nouvelle architecture à trois couches
+import { AbstractGeneratorAgent, GeneratorConfig } from '../../core/abstract-generator-agent';
+import { AgentContext } from '../../core/mcp-agent';
+
+// Fichier adapté pour la nouvelle architecture à trois couches
+import { AbstractGeneratorAgent, GeneratorConfig } from '../../core/abstract-generator-agent';
+import { AgentContext } from '../../core/mcp-agent';
+
+import { AbstractGeneratorAgent } from '../abstract-generator';
 import fs from 'fs';
 import path from 'path';
 import { PhpAnalysisResult } from '../types';

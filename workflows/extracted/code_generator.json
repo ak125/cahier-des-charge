@@ -1,0 +1,10 @@
+{
+  "id": "code-generator",
+  "name": "Code Generator",
+  "active": true,
+  "nodes": [],
+  "connections": {},
+  "meta": {
+    "templateCredsSetupCompleted": true
+  }
+}
