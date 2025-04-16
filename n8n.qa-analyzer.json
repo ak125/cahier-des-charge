@@ -1,5 +1,5 @@
 {
-  "name": "QA Analyzer Pipeline",
+  "name": "QA Analyzer Workflow",
   "nodes": [
     {
       "parameters": {
@@ -7,14 +7,13 @@
           "interval": [
             {
               "field": "hours",
-              "minutesInterval": 60
+              "expression": "*/4"
             }
           ]
         }
       },
       "name": "Schedule Trigger",
       "type": "n8n-nodes-base.scheduleTrigger",
-      "typeVersion": 1,
       "position": [
         250,
         300
@@ -22,36 +21,35 @@
     },
     {
       "parameters": {
-        "functionCode": "// Récupérer les fichiers PHP récemment migrés\nconst fs = require('fs');\nconst path = require('path');\n\n// Chemin vers le dossier de résultats de migration\nconst migrationsDir = '/workspaces/cahier-des-charge/migration-results';\n\n// Récupérer les fichiers de résultats de migration récents\nconst recentFiles = [];\nconst files = fs.readdirSync(migrationsDir);\n\nfor (const file of files) {\n  if (file.endsWith('.json') && file.startsWith('migration-results-')) {\n    const filePath = path.join(migrationsDir, file);\n    const stats = fs.statSync(filePath);\n    \n    // Vérifier si le fichier a été créé il y a moins de 24 heures\n    const now = new Date();\n    const fileDate = new Date(stats.mtime);\n    const hoursDiff = (now.getTime() - fileDate.getTime()) / (1000 * 60 * 60);\n    \n    if (hoursDiff < 24) {\n      const content = JSON.parse(fs.readFileSync(filePath, 'utf8'));\n      recentFiles.push({\n        filePath,\n        content,\n        date: fileDate\n      });\n    }\n  }\n}\n\n// Trier par date (plus récent en premier)\nrecentFiles.sort((a, b) => b.date.getTime() - a.date.getTime());\n\n// Prendre les 10 plus récents\nconst results = recentFiles.slice(0, 10);\n\n// Extraire les informations nécessaires pour l'analyse QA\nconst migrations = [];\n\nfor (const result of results) {\n  for (const migration of result.content.migrations || []) {\n    if (migration.sourceFile && migration.generatedFiles) {\n      migrations.push({\n        sourceFile: migration.sourceFile,\n        generatedFiles: migration.generatedFiles\n      });\n    }\n  }\n}\n\nreturn { migrations };"
+        "path": "/workspaces/cahier-des-charge",
+        "command": "node packages/mcp-agents/qa-analyzer/qa-analyzer.js app/routes",
+        "executeTimeout": 120
       },
-      "name": "Get Recent Migrations",
-      "type": "n8n-nodes-base.function",
-      "typeVersion": 1,
+      "name": "Execute QA Analysis",
+      "type": "n8n-nodes-base.executeCommand",
       "position": [
-        450,
+        470,
         300
       ]
     },
     {
       "parameters": {
-        "batchSize": 1,
-        "options": {}
+        "filePath": "./qa-reports/qa-result-latest.json"
       },
-      "name": "Split Migrations",
-      "type": "n8n-nodes-base.splitInBatches",
-      "typeVersion": 1,
+      "name": "Read QA Results",
+      "type": "n8n-nodes-base.readBinaryFile",
       "position": [
-        700,
+        690,
         300
       ]
     },
     {
       "parameters": {
-        "functionCode": "// Extraire les informations de la migration\nconst migration = $input.item.json;\n\n// Formater les données pour l'appel à qa-analyzer\nconst sourcePhpPath = migration.sourceFile;\nconst generatedFiles = migration.generatedFiles;\n\n// Convertir les chemins de fichiers générés en format attendu par qa-analyzer\nconst formattedFiles = {};\nfor (const [key, filePath] of Object.entries(generatedFiles)) {\n  // Extraire le type de fichier (component, loader, meta)\n  const fileType = key.includes('.') ? key.split('.').pop() : key;\n  formattedFiles[fileType] = filePath;\n}\n\nconst options = {\n  outputDir: '/workspaces/cahier-des-charge/docs/qa-reports',\n  verbose: true,\n  taggingEnabled: true,\n  dashboardEnabled: true,\n  aiMatching: true,\n  threshold: 70\n};\n\nreturn {\n  command: `cd /workspaces/cahier-des-charge && ts-node agents/qa-analyzer.ts \"${sourcePhpPath}\" '${JSON.stringify(formattedFiles)}' '${JSON.stringify(options)}'`,\n  sourceFile: sourcePhpPath,\n  generatedFiles: formattedFiles\n};"
+        "dataType": "string",
+        "value": "={{ $node[\"Read QA Results\"].data.binary.data.toString('utf8') }}"
       },
-      "name": "Prepare QA Command",
-      "type": "n8n-nodes-base.function",
-      "typeVersion": 1,
+      "name": "Parse JSON",
+      "type": "n8n-nodes-base.set",
       "position": [
         910,
         300
@@ -59,62 +57,109 @@
     },
     {
       "parameters": {
-        "command": "={{ $json.command }}",
-        "executeInLine": true
-      },
-      "name": "Run QA Analyzer",
-      "type": "n8n-nodes-base.executeCommand",
-      "typeVersion": 1,
-      "position": [
-        1120,
-        300
-      ]
-    },
-    {
-      "parameters": {
         "conditions": {
-          "string": [
+          "boolean": [
             {
-              "value1": "={{ $json.exitCode }}",
-              "operation": "equal",
-              "value2": "0"
+              "value1": "={{ $json.hasFailedFiles }}",
+              "value2": true
             }
           ]
         }
       },
-      "name": "Success IF",
+      "name": "Has Failed Files?",
       "type": "n8n-nodes-base.if",
-      "typeVersion": 1,
       "position": [
-        1340,
+        1130,
         300
       ]
     },
     {
       "parameters": {
-        "channel": "qa-alerts",
-        "text": "✅ Analyse QA terminée avec succès pour {{ $('Prepare QA Command').item.json.sourceFile }}\n\nRapport disponible dans /docs/qa-reports",
-        "attachments": [],
-        "otherOptions": {}
+        "keepOnlySet": true,
+        "values": {
+          "string": [
+            {
+              "name": "summary",
+              "value": "=QA Analysis Report - {{ $json.failedFileCount }} fichier(s) n'ont pas passé les critères de qualité"
+            },
+            {
+              "name": "details",
+              "value": "={{ $json.failedFilesList.join(\"\\n\") }}"
+            },
+            {
+              "name": "severity",
+              "value": "high"
+            }
+          ]
+        }
       },
-      "name": "Slack Success",
-      "type": "n8n-nodes-base.slack",
-      "typeVersion": 1,
+      "name": "Prepare Alert",
+      "type": "n8n-nodes-base.set",
       "position": [
-        1580,
-        200
+        1350,
+        220
       ]
     },
     {
       "parameters": {
-        "channel": "qa-alerts",
-        "text": "❌ Échec de l'analyse QA pour {{ $('Prepare QA Command').item.json.sourceFile }}\n\nErreur : {{ $json.stderr }}",
-        "attachments": [],
-        "otherOptions": {}
+        "method": "POST",
+        "url": "=https://hooks.slack.com/services/{{ $env.SLACK_WEBHOOK_ID }}",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "text",
+              "value": "=:warning: {{ $json.summary }}\n```\n{{ $json.details }}\n```\nConsultez le dashboard de qualité pour plus de détails: https://dashboard.exemple.fr/qa-dashboard"
+            }
+          ]
+        },
+        "options": {}
       },
-      "name": "Slack Error",
-      "type": "n8n-nodes-base.slack",
-      "typeVersion": 1,
+      "name": "Send Slack Alert",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        1580,
+        220
+      ]
+    },
+    {
+      "parameters": {
+        "batchSize": 1,
+        "items": "={{ $json.createTickets ? $json.failedFilesList : [] }}"
+      },
+      "name": "Each Failed File",
+      "type": "n8n-nodes-base.splitInBatches",
+      "position": [
+        1350,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "keepOnlySet": true,
+        "values": {
+          "string": [
+            {
+              "name": "title",
+              "value": "=Problème de QA détecté sur {{ $json }}"
+            },
+            {
+              "name": "description",
+              "value": "=Le fichier {{ $json }} n'a pas passé les critères de qualité. Veuillez vérifier les champs manquants ou incorrects et les corriger selon les standards.\n\nScore: {{ $node[\"Parse JSON\"].json[$json].score }}/100\n\nChamps manquants: {{ $node[\"Parse JSON\"].json[$json].missingFields.join(\", \") }}\n\nDate de détection: {{ $now }}"
+            },
+            {
+              "name": "priority",
+              "value": "medium"
+            },
+            {
+              "name": "assignee",
+              "value": "={{ $node[\"Parse JSON\"].json.assignee || \"\" }}"
+            }
+          ]
+        }
+      },
+      "name": "Prepare Ticket Data",
+      "type": "n8n-nodes-base.set",
       "position": [
         1580,
         400
@@ -122,28 +167,89 @@
     },
     {
       "parameters": {
-        "functionCode": "// Synchroniser les résultats en cache avec le dashboard\nconst command = 'cd /workspaces/cahier-des-charge && ts-node apps/dashboard/integration/qa-dashboard.ts';\n\nreturn { command };"
+        "authentication": "oAuth2",
+        "resource": "issue",
+        "operation": "create",
+        "project": "={{ $env.JIRA_PROJECT_KEY }}",
+        "issueType": "Task",
+        "summary": "={{ $json.title }}",
+        "description": "={{ $json.description }}",
+        "additionalFields": {
+          "priority": {
+            "name": "={{ $json.priority }}"
+          },
+          "assignee": {
+            "name": "={{ $json.assignee }}"
+          },
+          "labels": [
+            "qa-analyzer",
+            "auto-generated",
+            "qa-issue"
+          ]
+        }
       },
-      "name": "Prepare Sync",
-      "type": "n8n-nodes-base.function",
-      "typeVersion": 1,
+      "name": "Create JIRA Ticket",
+      "type": "n8n-nodes-base.jira",
       "position": [
         1800,
-        300
+        400
       ]
     },
     {
       "parameters": {
-        "command": "={{ $json.command }}",
-        "executeInLine": true
+        "path": "qa-reports/qa-dashboard-data.json",
+        "options": {
+          "operation": "write",
+          "dataPropertyName": "",
+          "data": "={{ JSON.stringify({lastUpdate: $now, results: $json, stats: {totalFiles: Object.keys($json).length, passedFiles: Object.keys($json).filter(file => $json[file].status === \"success\").length, partialFiles: Object.keys($json).filter(file => $json[file].status === \"partial\").length, failedFiles: Object.keys($json).filter(file => $json[file].status === \"failed\").length}, averageScore: Object.values($json).reduce((sum, file) => sum + file.score, 0) / Object.keys($json).length}, null, 2) }}"
+        }
       },
-      "name": "Sync Dashboard",
-      "type": "n8n-nodes-base.executeCommand",
-      "typeVersion": 1,
+      "name": "Update Dashboard Data",
+      "type": "n8n-nodes-base.fileOperations",
       "position": [
-        2000,
-        300
+        910,
+        500
       ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ Object.keys($json.fieldsToAutofix).length > 0 }}"
+            }
+          ]
+        }
+      },
+      "name": "Has Fields To Autofix?",
+      "type": "n8n-nodes-base.if",
+      "position": [
+        1130,
+        700
+      ]
+    },
+    {
+      "parameters": {
+        "path": "/workspaces/cahier-des-charge",
+        "command": "node packages/mcp-agents/qa-analyzer/autofix.js --fields='={{ JSON.stringify($json.fieldsToAutofix) }}'",
+        "executeTimeout": 120
+      },
+      "name": "Run Autofix",
+      "type": "n8n-nodes-base.executeCommand",
+      "position": [
+        1350,
+        700
+      ]
+    },
+    {
+      "parameters": {},
+      "name": "Function",
+      "type": "n8n-nodes-base.function",
+      "position": [
+        690,
+        500
+      ],
+      "webhookId": "d5028e6d-5e5a-41a2-8db3-4cabe1b31695"
     }
   ],
   "connections": {
@@ -151,107 +257,146 @@
       "main": [
         [
           {
-            "node": "Get Recent Migrations",
+            "node": "Execute QA Analysis",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Get Recent Migrations": {
+    "Execute QA Analysis": {
       "main": [
         [
           {
-            "node": "Split Migrations",
+            "node": "Read QA Results",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Split Migrations": {
+    "Read QA Results": {
       "main": [
         [
           {
-            "node": "Prepare QA Command",
+            "node": "Parse JSON",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Prepare QA Command": {
+    "Parse JSON": {
       "main": [
         [
           {
-            "node": "Run QA Analyzer",
+            "node": "Has Failed Files?",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Update Dashboard Data",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Function",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Run QA Analyzer": {
+    "Has Failed Files?": {
       "main": [
         [
           {
-            "node": "Success IF",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Success IF": {
-      "main": [
-        [
-          {
-            "node": "Slack Success",
+            "node": "Prepare Alert",
             "type": "main",
             "index": 0
           }
         ],
         [
           {
-            "node": "Slack Error",
+            "node": "Each Failed File",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Slack Success": {
+    "Prepare Alert": {
       "main": [
         [
           {
-            "node": "Prepare Sync",
+            "node": "Send Slack Alert",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Slack Error": {
+    "Each Failed File": {
       "main": [
         [
           {
-            "node": "Prepare Sync",
+            "node": "Prepare Ticket Data",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Prepare Sync": {
+    "Prepare Ticket Data": {
       "main": [
         [
           {
-            "node": "Sync Dashboard",
+            "node": "Create JIRA Ticket",
             "type": "main",
             "index": 0
           }
         ]
+      ]
+    },
+    "Function": {
+      "main": [
+        [
+          {
+            "node": "Has Fields To Autofix?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Has Fields To Autofix?": {
+      "main": [
+        [
+          {
+            "node": "Run Autofix",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
       ]
     }
-  }
+  },
+  "settings": {
+    "saveDataSuccessExecution": "none",
+    "saveDataErrorExecution": "all",
+    "saveExecutionProgress": false,
+    "saveManualExecutions": false,
+    "callerPolicy": "workflowsFromSameOwner",
+    "timezone": "Europe/Paris"
+  },
+  "staticData": null,
+  "meta": {
+    "instanceId": "76b26d90e1facde5fb682fd1428788ecf8c8f42f35f559e8baac9a6de80caec4"
+  },
+  "tags": [
+    "QA",
+    "Automation",
+    "Monitoring"
+  ]
 }

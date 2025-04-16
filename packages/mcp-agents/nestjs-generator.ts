@@ -1,3 +1,11 @@
+// Fichier adapté pour la nouvelle architecture à trois couches
+import { AbstractGeneratorAgent, GeneratorConfig } from '../../core/abstract-generator-agent';
+import { AgentContext } from '../../core/mcp-agent';
+
+// Fichier adapté pour la nouvelle architecture à trois couches
+import { AbstractGeneratorAgent, GeneratorConfig } from '../../core/abstract-generator-agent';
+import { AgentContext } from '../../core/mcp-agent';
+
 /**
  * nestjs-generator.ts
  * Agent MCP pour générer automatiquement des composants NestJS à partir d'une analyse PHP

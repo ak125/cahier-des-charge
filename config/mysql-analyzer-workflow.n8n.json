@@ -3,6 +3,84 @@
   "nodes": [
     {
       "parameters": {
+        "triggerTimes": {
+          "item": [
+            {
+              "mode": "everyX",
+              "value": 6,
+              "unit": "hours"
+            }
+          ]
+        }
+      },
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "position": [100, 200],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "path": "/workspaces/cahier-des-charge/app/legacy",
+        "fileExtensions": ["sql", "mysql"],
+        "options": {
+          "recursive": true
+        }
+      },
+      "name": "List SQL Files",
+      "type": "n8n-nodes-base.filesearch",
+      "position": [300, 200],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "filePath": "={{ $json.path }}",
+        "agentUrl": "http://localhost:3333/api/mcp/execute/mysql-analyzer",
+        "outputPath": "/workspaces/cahier-des-charge/reports/analysis/sql/{{$json.path.split('/').pop()}}.json"
+      },
+      "name": "MySQL Analysis",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [500, 200],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "path": "=/workspaces/cahier-des-charge/reports/analysis/sql/{{$json.path.split('/').pop()}}.json",
+        "content": "={{ $json.analysis }}",
+        "options": {
+          "encoding": "utf8",
+          "createPath": true
+        }
+      },
+      "name": "Save Analysis",
+      "type": "n8n-nodes-base.writeBinaryFile",
+      "position": [700, 200],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "functionCode": "// Analyser les requêtes SQL pour la migration vers PostgreSQL\nconst fs = require('fs');\nconst path = require('path');\n\ntry {\n  const filePath = $input.item.json.path;\n  const fileName = path.basename(filePath);\n  const analysisPath = `/workspaces/cahier-des-charge/reports/analysis/sql/${fileName}.json`;\n  \n  // Vérifier si l'analyse existe\n  if (!fs.existsSync(analysisPath)) {\n    throw new Error(`Fichier d'analyse introuvable: ${analysisPath}`);\n  }\n  \n  // Lire l'analyse\n  const analysis = JSON.parse(fs.readFileSync(analysisPath, 'utf8'));\n  \n  // Générer des recommandations pour la migration MySQL vers PostgreSQL\n  const postgresRecommendations = {\n    originalFile: filePath,\n    analysisFile: analysisPath,\n    timestamp: new Date().toISOString(),\n    recommendations: [],\n    conversionPatterns: []\n  };\n  \n  // Analyser les requêtes SQL et générer des recommandations\n  if (analysis.queries && Array.isArray(analysis.queries)) {\n    analysis.queries.forEach(query => {\n      // Recherche de patterns MySQL spécifiques\n      if (query.sql.includes('AUTO_INCREMENT')) {\n        postgresRecommendations.recommendations.push({\n          type: 'AUTO_INCREMENT',\n          description: 'Remplacer AUTO_INCREMENT par SERIAL ou IDENTITY',\n          original: query.sql,\n          suggested: query.sql.replace(/AUTO_INCREMENT/g, 'SERIAL')\n        });\n        \n        postgresRecommendations.conversionPatterns.push({\n          pattern: 'AUTO_INCREMENT',\n          replacement: 'SERIAL',\n          context: 'column_definition'\n        });\n      }\n      \n      // Autres patterns spécifiques à MySQL\n      if (query.sql.includes('IFNULL')) {\n        postgresRecommendations.recommendations.push({\n          type: 'IFNULL',\n          description: 'Remplacer IFNULL par COALESCE',\n          original: query.sql,\n          suggested: query.sql.replace(/IFNULL\\s*\\(/g, 'COALESCE(')\n        });\n        \n        postgresRecommendations.conversionPatterns.push({\n          pattern: 'IFNULL',\n          replacement: 'COALESCE',\n          context: 'function'\n        });\n      }\n    });\n  }\n  \n  // Sauvegarder les recommandations\n  const recommendationsPath = `/workspaces/cahier-des-charge/reports/recommendations/sql/${fileName}.postgres.json`;\n  \n  // Créer le répertoire s'il n'existe pas\n  const recommendationsDir = path.dirname(recommendationsPath);\n  if (!fs.existsSync(recommendationsDir)) {\n    fs.mkdirSync(recommendationsDir, { recursive: true });\n  }\n  \n  // Écrire les recommandations\n  fs.writeFileSync(recommendationsPath, JSON.stringify(postgresRecommendations, null, 2));\n  \n  return {\n    json: {\n      ...postgresRecommendations,\n      recommendationsPath\n    }\n  };\n} catch (error) {\n  return {\n    json: {\n      error: error.message,\n      timestamp: new Date().toISOString()\n    }\n  };\n}"
+      },
+      "name": "Generate PostgreSQL Recommendations",
+      "type": "n8n-nodes-base.function",
+      "position": [900, 200],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "chatId": "{{ $env.NOTIFICATION_CHAT_ID }}",
+        "text": "📊 *Analyse MySQL complétée*\n\nFichier: `{{ $json.originalFile }}`\n\n✅ Recommandations PostgreSQL générées: {{ $json.recommendations.length }}\n✅ Patterns de conversion identifiés: {{ $json.conversionPatterns.length }}\n\n*Timestamp:* {{ $json.timestamp }}\n\n[Voir les recommandations](file://{{ $json.recommendationsPath }})",
+        "additionalFields": {
+          "parseMode": "Markdown",
+          "disableNotification": true
+        }
+      },
+      "name": "Send Notification",
+      "type": "n8n-nodes-base.telegram",
+      "position": [1100, 200],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
         "path": "/data/mysql-dumps",
         "options": {
           "includeHiddenFiles": false,
@@ -97,6 +175,61 @@
     }
   ],
   "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "List SQL Files",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "List SQL Files": {
+      "main": [
+        [
+          {
+            "node": "MySQL Analysis",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MySQL Analysis": {
+      "main": [
+        [
+          {
+            "node": "Save Analysis",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save Analysis": {
+      "main": [
+        [
+          {
+            "node": "Generate PostgreSQL Recommendations",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate PostgreSQL Recommendations": {
+      "main": [
+        [
+          {
+            "node": "Send Notification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
     "Watch MySQL Dumps": {
       "main": [
         [

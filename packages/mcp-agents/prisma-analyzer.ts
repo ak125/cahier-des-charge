@@ -1,3 +1,11 @@
+// Fichier adapté pour la nouvelle architecture à trois couches
+import { AbstractAnalyzerAgent, AnalyzerConfig } from '../../core/abstract-analyzer-agent';
+import { AgentContext } from '../../core/mcp-agent';
+
+// Fichier adapté pour la nouvelle architecture à trois couches
+import { AbstractAnalyzerAgent, AnalyzerConfig } from '../../core/abstract-analyzer-agent';
+import { AgentContext } from '../../core/mcp-agent';
+
 #!/usr/bin/env ts-node
 /**
  * 🧠 prisma-analyzer.ts — Analyseur de schéma Prisma et générateur de DTO/Zod

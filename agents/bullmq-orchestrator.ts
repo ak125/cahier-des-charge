@@ -243,48 +243,249 @@ export class BullMqOrchestrator {
 
   /**
    * Orchestre une vérification automatique après génération
+   * Version améliorée avec validations complètes
    */
   private async orchestrateVerificationAfterGeneration(filePrefix: string, options: any = {}) {
     this.logger.log(`🔍 Orchestration de la vérification après génération pour: ${filePrefix}`);
     
     try {
-      // Ajouter un job de vérification
-      const job = await this.queues['verification'].add('verify', { 
+      // Structure pour suivre toutes les étapes de vérification
+      const verificationSteps = {
+        typeCheck: { status: 'pending', startTime: null, endTime: null, result: null },
+        unitTests: { status: 'pending', startTime: null, endTime: null, result: null },
+        componentTests: { status: 'pending', startTime: null, endTime: null, result: null },
+        visualRegression: { status: 'pending', startTime: null, endTime: null, result: null },
+        accessibility: { status: 'pending', startTime: null, endTime: null, result: null },
+        functionalEquivalence: { status: 'pending', startTime: null, endTime: null, result: null },
+        securityAudit: { status: 'pending', startTime: null, endTime: null, result: null },
+        performanceCheck: { status: 'pending', startTime: null, endTime: null, result: null },
+      };
+      
+      // 1. Ajouter un job pour la vérification du typage TypeScript
+      if (options.typeCheck !== false) {
+        verificationSteps.typeCheck.status = 'queued';
+        verificationSteps.typeCheck.startTime = new Date().toISOString();
+        
+        await this.queues['verification'].add('verify-type', { 
+          filePrefix,
+          generatedPath: path.join(options.generatedDir || './apps/frontend/app/generated', filePrefix),
+          targetVersion: options.targetTsVersion || '5.0',
+          strict: options.strictTypeCheck || true,
+          includeLibs: options.includeLibs || ['react', 'remix'],
+          metadataPath: options.metadataPath,
+          timestamp: new Date().toISOString(),
+        }, {
+          priority: options.priority || 7,
+          attempts: options.attempts || 3,
+        });
+      }
+      
+      // 2. Ajouter un job pour les tests unitaires
+      if (options.unitTests !== false) {
+        verificationSteps.unitTests.status = 'queued';
+        verificationSteps.unitTests.startTime = new Date().toISOString();
+        
+        await this.queues['verification'].add('verify-unit-tests', { 
+          filePrefix,
+          generatedPath: path.join(options.generatedDir || './apps/frontend/app/generated', filePrefix),
+          testRunner: options.testRunner || 'vitest',
+          coverage: options.coverage || 70,
+          timestamp: new Date().toISOString(),
+        }, {
+          priority: options.priority || 6,
+          attempts: options.attempts || 3,
+        });
+      }
+      
+      // 3. Tester les composants avec des scénarios d'interaction
+      if (options.componentTests !== false) {
+        verificationSteps.componentTests.status = 'queued';
+        verificationSteps.componentTests.startTime = new Date().toISOString();
+        
+        await this.queues['verification'].add('verify-component', { 
+          filePrefix,
+          generatedPath: path.join(options.generatedDir || './apps/frontend/app/generated', filePrefix),
+          framework: options.testingFramework || 'playwright-component',
+          scenarios: options.componentScenarios || ['render', 'interact', 'navigate'],
+          timestamp: new Date().toISOString(),
+        }, {
+          priority: options.priority || 5,
+          attempts: options.attempts || 2,
+        });
+      }
+      
+      // 4. Tests de régression visuelle
+      if (options.visualTests !== false) {
+        verificationSteps.visualRegression.status = 'queued';
+        verificationSteps.visualRegression.startTime = new Date().toISOString();
+        
+        await this.queues['verification'].add('verify-visual', { 
+          filePrefix,
+          generatedPath: path.join(options.generatedDir || './apps/frontend/app/generated', filePrefix),
+          compareTo: options.visualBaseline || 'latest',
+          viewports: options.viewports || ['mobile', 'tablet', 'desktop'],
+          threshold: options.visualThreshold || 0.05, // 5% de différence max
+          timestamp: new Date().toISOString(),
+        }, {
+          priority: options.priority || 4,
+          attempts: options.attempts || 2,
+        });
+      }
+      
+      // 5. Tests d'accessibilité
+      if (options.a11yTests !== false) {
+        verificationSteps.accessibility.status = 'queued';
+        verificationSteps.accessibility.startTime = new Date().toISOString();
+        
+        await this.queues['verification'].add('verify-a11y', { 
+          filePrefix,
+          generatedPath: path.join(options.generatedDir || './apps/frontend/app/generated', filePrefix),
+          standard: options.a11yStandard || 'WCAG2.1AA',
+          includeAria: options.includeAria || true,
+          timestamp: new Date().toISOString(),
+        }, {
+          priority: options.priority || 4,
+          attempts: options.attempts || 2,
+        });
+      }
+      
+      // 6. Vérification de l'équivalence fonctionnelle avec le fichier PHP d'origine
+      if (options.equivalenceCheck !== false) {
+        verificationSteps.functionalEquivalence.status = 'queued';
+        verificationSteps.functionalEquivalence.startTime = new Date().toISOString();
+        
+        await this.queues['verification'].add('verify-equivalence', { 
+          filePrefix,
+          originalPath: options.originalPhpPath || `./legacy/${filePrefix}.php`,
+          generatedPath: path.join(options.generatedDir || './apps/frontend/app/generated', filePrefix),
+          endpoints: options.endpoints || [],
+          dataScenarios: options.dataScenarios || [],
+          timestamp: new Date().toISOString(),
+        }, {
+          priority: options.priority || 8, // Haute priorité car critique
+          attempts: options.attempts || 3,
+        });
+      }
+      
+      // 7. Audit de sécurité
+      if (options.securityAudit !== false) {
+        verificationSteps.securityAudit.status = 'queued';
+        verificationSteps.securityAudit.startTime = new Date().toISOString();
+        
+        await this.queues['verification'].add('verify-security', { 
+          filePrefix,
+          generatedPath: path.join(options.generatedDir || './apps/frontend/app/generated', filePrefix),
+          checks: options.securityChecks || ['xss', 'csrf', 'injection', 'dependencies'],
+          severity: options.securitySeverity || 'high',
+          timestamp: new Date().toISOString(),
+        }, {
+          priority: options.priority || 7,
+          attempts: options.attempts || 2,
+        });
+      }
+      
+      // 8. Vérification des performances
+      if (options.perfCheck !== false) {
+        verificationSteps.performanceCheck.status = 'queued';
+        verificationSteps.performanceCheck.startTime = new Date().toISOString();
+        
+        await this.queues['verification'].add('verify-performance', { 
+          filePrefix,
+          generatedPath: path.join(options.generatedDir || './apps/frontend/app/generated', filePrefix),
+          metrics: options.perfMetrics || ['fcp', 'lcp', 'cls', 'ttfb'],
+          baseline: options.perfBaseline || { fcp: 1000, lcp: 2500, cls: 0.1, ttfb: 300 },
+          timeout: options.perfTimeout || 10000,
+          timestamp: new Date().toISOString(),
+        }, {
+          priority: options.priority || 3,
+          attempts: options.attempts || 2,
+        });
+      }
+      
+      // Ajouter un job de vérification finale qui agrège tous les résultats
+      await this.queues['verification'].add('verify-summary', { 
         filePrefix,
-        options: {
-          generatedDir: options.generatedDir || './apps/frontend/app/generated',
-          specsDir: options.specsDir || './apps/frontend/app/specs',
-          typeCheck: options.typeCheck !== false, // true par défaut
-          verbosity: options.verbosity || 1,
-          addTags: options.addTags !== false // true par défaut
-        },
+        steps: verificationSteps,
+        options,
         timestamp: new Date().toISOString(),
         metadata: {
           source: 'orchestrator',
           batchId: options.batchId || `verify-${Date.now()}`,
           generationType: options.generationType || 'unknown',
+          originalAuthor: options.originalAuthor,
+          targetBranch: options.targetBranch || 'main',
           ...options.metadata
         }
       }, {
-        priority: options.priority || 5, // Priorité moyenne par défaut
-        attempts: options.attempts || 3,
-        backoff: {
-          type: 'exponential',
-          delay: 5000
-        }
+        priority: options.priority || 9, // Très haute priorité
+        delay: options.summaryDelay || 10000, // Attendre 10s pour que les autres jobs avancent
+        attempts: options.attempts || 5,
       });
       
-      this.logger.log(`✅ Job de vérification créé: ${job.id} pour ${filePrefix}`);
+      // Mettre à jour le statut global
+      await this.updateVerificationStatus(filePrefix, {
+        status: 'verification_started',
+        steps: verificationSteps,
+        timestamp: new Date().toISOString(),
+        expectedDuration: options.expectedDuration || '5m',
+      });
+      
+      this.logger.log(`✅ Orchestration de vérification complète lancée pour ${filePrefix}`);
       
       return {
         success: true,
-        jobId: job.id,
         filePrefix,
+        steps: Object.keys(verificationSteps),
         timestamp: new Date().toISOString()
       };
     } catch (error) {
       this.logger.error(`❌ Erreur lors de l'orchestration de la vérification: ${error.message}`);
       throw error;
+    }
+  }
+  
+  /**
+   * Met à jour le statut de vérification dans le fichier status.json
+   */
+  private async updateVerificationStatus(filePrefix: string, statusUpdate: any) {
+    if (!this.config.statusFilePath) return;
+    
+    try {
+      // Lire le fichier status.json actuel
+      let statusData = { verifications: {}, events: [] };
+      
+      if (fs.existsSync(this.config.statusFilePath)) {
+        const fileContent = fs.readFileSync(this.config.statusFilePath, 'utf8');
+        statusData = JSON.parse(fileContent);
+        if (!statusData.verifications) {
+          statusData.verifications = {};
+        }
+      }
+      
+      // Mettre à jour le statut de vérification pour ce fichier
+      statusData.verifications[filePrefix] = {
+        ...statusUpdate,
+        lastUpdated: new Date().toISOString()
+      };
+      
+      // Ajouter aux événements généraux
+      statusData.events.unshift({
+        id: `evt-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`,
+        type: 'verification.update',
+        filePrefix,
+        timestamp: new Date().toISOString(),
+        data: statusUpdate
+      });
+      
+      // Limiter à 1000 événements max
+      if (statusData.events.length > 1000) {
+        statusData.events = statusData.events.slice(0, 1000);
+      }
+      
+      // Écrire dans le fichier
+      fs.writeFileSync(this.config.statusFilePath, JSON.stringify(statusData, null, 2));
+    } catch (error) {
+      this.logger.error(`Erreur lors de la mise à jour du statut de vérification pour ${filePrefix}`, error);
     }
   }
   

@@ -1,0 +1,10 @@
+# Configuration dynamique de Temporal
+frontend.enableClientVersionCheck:
+  - value: true
+    constraints: {}
+history.persistenceMaxQPS:
+  - value: 3000
+    constraints: {}
+system.enableVisibility:
+  - value: true
+    constraints: {}

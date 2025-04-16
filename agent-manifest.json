@@ -1,0 +1,177 @@
+{
+  "version": "1.0.0",
+  "lastUpdated": "2025-04-14T10:00:00Z",
+  "project": "MCP-Framework",
+  "agents": [
+    {
+      "id": "qa-analyzer",
+      "name": "QAAnalyzer",
+      "path": "@fafa/mcp-agents/qa-analyzer",
+      "version": "2.0.0",
+      "description": "Agent de vérification qualité pour les migrations PHP vers Remix",
+      "status": "active",
+      "dependencies": ["diff-verifier"],
+      "apiEndpoint": "/mcp/qa-analyzer",
+      "runInGithubActions": true,
+      "tags": ["qa", "quality", "migration"],
+      "config": {
+        "outputDir": "./docs",
+        "threshold": 70,
+        "autoRetryOnFail": false
+      }
+    },
+    {
+      "id": "php-analyzer",
+      "name": "PhpAnalyzerAgent",
+      "path": "@fafa/mcp-agents/php-analyzer",
+      "version": "1.5.0",
+      "description": "Analyse les fichiers PHP pour identifier les structures à migrer",
+      "status": "active",
+      "dependencies": [],
+      "apiEndpoint": "/mcp/php-analyzer",
+      "runInGithubActions": true,
+      "tags": ["php", "analysis", "migration"],
+      "config": {
+        "maxDepth": 3,
+        "analyzeIncludes": true
+      }
+    },
+    {
+      "id": "diff-verifier",
+      "name": "DiffVerifier",
+      "path": "@fafa/mcp-agents/diff-verifier",
+      "version": "1.2.0",
+      "description": "Vérifie les différences entre les fichiers sources et générés",
+      "status": "active",
+      "dependencies": [],
+      "apiEndpoint": "/mcp/diff-verifier",
+      "runInGithubActions": true,
+      "tags": ["diff", "verification"],
+      "config": {}
+    },
+    {
+      "id": "seo-checker",
+      "name": "SeoCheckerAgent", 
+      "path": "@fafa/mcp-agents/seo-checker",
+      "version": "1.0.0",
+      "description": "Analyse et vérifie la qualité SEO des pages migrées",
+      "status": "active",
+      "dependencies": [],
+      "apiEndpoint": "/mcp/seo-checker",
+      "runInGithubActions": true,
+      "tags": ["seo", "verification"],
+      "config": {
+        "minMetaTags": 4,
+        "checkCanonical": true
+      }
+    },
+    {
+      "id": "mcp-manifest-manager",
+      "name": "MCPManifestManager",
+      "path": "@fafa/mcp-agents/mcp-manifest-manager",
+      "version": "1.0.0", 
+      "description": "Gère le fichier MCPManifest.json qui décrit les migrations",
+      "status": "active",
+      "dependencies": [],
+      "apiEndpoint": "/mcp/manifest-manager",
+      "runInGithubActions": false,
+      "tags": ["manifest", "management"],
+      "config": {}
+    },
+    {
+      "id": "dev-linter",
+      "name": "DevLinter",
+      "path": "@fafa/mcp-agents/dev-linter",
+      "version": "1.0.0",
+      "description": "Vérifie la qualité du code des fichiers générés",
+      "status": "active",
+      "dependencies": [],
+      "apiEndpoint": "/mcp/dev-linter",
+      "runInGithubActions": true,
+      "tags": ["lint", "dev", "quality"],
+      "config": {
+        "useEslint": true,
+        "usePrettier": true
+      }
+    },
+    {
+      "id": "monitoring-check",
+      "name": "MonitoringCheck",
+      "path": "@fafa/mcp-agents/monitoring-check",
+      "version": "1.0.0",
+      "description": "Surveille l'état des migrations en cours",
+      "status": "active",
+      "dependencies": ["mcp-manifest-manager"],
+      "apiEndpoint": "/mcp/monitoring",
+      "runInGithubActions": false,
+      "tags": ["monitoring", "status"],
+      "config": {
+        "checkInterval": 300
+      }
+    },
+    {
+      "id": "notifier",
+      "name": "Notifier",
+      "path": "@fafa/mcp-agents/notifier",
+      "version": "1.0.0",
+      "description": "Envoie des notifications sur divers canaux",
+      "status": "active",
+      "dependencies": [],
+      "apiEndpoint": "/mcp/notify",
+      "runInGithubActions": true,
+      "tags": ["notification", "alert"],
+      "config": {
+        "slack": true,
+        "email": true
+      }
+    },
+    {
+      "id": "orchestrator",
+      "name": "Orchestrator",
+      "path": "@fafa/mcp-agents/orchestrator",
+      "version": "1.0.0",
+      "description": "Orchestre l'exécution de pipelines d'agents",
+      "status": "active",
+      "dependencies": ["notifier"],
+      "apiEndpoint": "/mcp/orchestrate",
+      "runInGithubActions": true,
+      "tags": ["orchestration", "pipeline"],
+      "config": {}
+    },
+    {
+      "id": "pr-creator",
+      "name": "PRCreator",
+      "path": "@fafa/mcp-agents/pr-creator",
+      "version": "1.0.0",
+      "description": "Crée des PR GitHub pour les migrations validées",
+      "status": "active", 
+      "dependencies": ["diff-verifier", "qa-analyzer"],
+      "apiEndpoint": "/mcp/create-pr",
+      "runInGithubActions": true,
+      "tags": ["github", "pr"],
+      "config": {
+        "autoAssign": true
+      }
+    },
+    {
+      "id": "bullmq-orchestrator",
+      "name": "BullMQOrchestrator",
+      "path": "@fafa/mcp-agents/bullmq-orchestrator",
+      "version": "1.0.0",
+      "description": "Gère les files BullMQ pour les jobs d'agents",
+      "status": "active",
+      "dependencies": [],
+      "apiEndpoint": "/mcp/bullmq-jobs",
+      "runInGithubActions": false,
+      "tags": ["queue", "bullmq", "job"],
+      "config": {
+        "redisUrl": "redis://localhost:6379"
+      }
+    }
+  ],
+  "meta": {
+    "totalAgents": 11,
+    "activeAgents": 11,
+    "inactiveAgents": 0
+  }
+}

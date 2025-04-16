@@ -1,3 +1,4 @@
+import { AbstractGeneratorAgent } from '../abstract-generator';
 import fs from 'fs';
 import path from 'path';
 import { parse as parseHTML } from 'node-html-parser';
@@ -12,7 +13,15 @@ import { AgentResult, MigrationConfig, PhpAnalysisResult } from '../types';
  * Agent de génération Remix à partir de fichiers PHP
  * Responsable de la transformation d'un fichier PHP en composant Remix
  */
-export class RemixGenerator {
+export class RemixGenerator extends AbstractGeneratorAgent<any, any> {
+  protected async initializeInternal(): Promise<void> {
+  protected async cleanupInternal(): Promise<void> {
+    // Nettoyage des ressources
+  }
+
+    // Initialisation de l'agent
+  }
+
   constructor(private config: MigrationConfig) {}
 
   /**
