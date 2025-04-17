@@ -1,0 +1,1004 @@
+[
+  {
+    "agentName": "qa-analyzer",
+    "files": [
+      {
+        "path": "packages/mcp-agents/qa-analyzer/qa-analyzer.ts",
+        "isBackup": false,
+        "isVersioned": false,
+        "version": null,
+        "lastModified": "2025-04-16T20:29:06.745Z",
+        "lineCount": 834
+      },
+      {
+        "path": "packages/mcp-agents/analyzers/qa-analyzer/qa-analyzer.ts",
+        "isBackup": false,
+        "isVersioned": false,
+        "version": null,
+        "lastModified": "2025-04-16T22:37:51.919Z",
+        "lineCount": 1348
+      },
+      {
+        "path": "packages/mcp-agents/analyzers/qa-analyzer/qa-analyzer/qa-analyzer.ts",
+        "isBackup": false,
+        "isVersioned": false,
+        "version": null,
+        "lastModified": "2025-04-16T20:27:55.718Z",
+        "lineCount": 1358
+      },
+      {
+        "path": "agents/qa-analyzer.ts",
+        "isBackup": false,
+        "isVersioned": false,
+        "version": null,
+        "lastModified": "2025-04-14T10:50:43.872Z",
+        "lineCount": 1348
+      }
+    ],
+    "mainFile": "packages/mcp-agents/analyzers/qa-analyzer/qa-analyzer.ts",
+    "recommendedAction": "CONSOLIDATION_URGENTE"
+  },
+  {
+    "agentName": "caddyfile-generator",
+    "files": [
+      {
+        "path": "packages/mcp-agents/generators/caddyfile-generator/caddyfile-generator.ts",
+        "isBackup": false,
+        "isVersioned": false,
+        "version": null,
+        "lastModified": "2025-04-16T22:37:51.975Z",
+        "lineCount": 218
+      },
+      {
+        "path": "packages/mcp-agents/generators/caddyfile-generator/caddyfile-generator/caddyfile-generator.ts",
+        "isBackup": false,
+        "isVersioned": false,
+        "version": null,
+        "lastModified": "2025-04-16T11:13:17.544Z",
+        "lineCount": 223
+      },
+      {
+        "path": "agents/migration/caddyfile-generator.ts",
+        "isBackup": false,
+        "isVersioned": false,
+        "version": null,
+        "lastModified": "2025-04-12T22:12:01.757Z",
+        "lineCount": 218
+      },
+      {
+        "path": "agents/migration/nginx-to-caddy/caddyfile-generator.ts",
+        "isBackup": false,
+        "isVersioned": false,
+        "version": null,
+        "lastModified": "2025-04-12T22:20:19.458Z",
+        "lineCount": 485
+      }
+    ],
+    "mainFile": "packages/mcp-agents/generators/caddyfile-generator/caddyfile-generator.ts",
+    "recommendedAction": "CONSOLIDATION_URGENTE"
+  },
+  {
+    "agentName": "remix-generator",
+    "files": [
+      {
+        "path": "packages/mcp-agents/remix-generator.ts",
+        "isBackup": false,
+        "isVersioned": false,
+        "version": null,
+        "lastModified": "2025-04-16T20:28:29.764Z",
+        "lineCount": 1112
+      },
+      {
+        "path": "packages/mcp-agents/generators/remix-generator.ts",
+        "isBackup": false,
+        "isVersioned": false,
+        "version": null,
+        "lastModified": "2025-04-16T11:13:17.520Z",
+        "lineCount": 235
+      },
+      {
+        "path": "packages/mcp-agents/core/remix-generator.ts",
+        "isBackup": false,
+        "isVersioned": false,
+        "version": null,
+        "lastModified": "2025-04-13T11:16:46.669Z",
+        "lineCount": 664
+      }
+    ],
+    "mainFile": "packages/mcp-agents/remix-generator.ts",
+    "recommendedAction": "CONSOLIDATION_URGENTE"
+  },
+  {
+    "agentName": "php-analyzer",
+    "files": [
+      {
+        "path": "packages/mcp-agents/php-analyzer.ts",
+        "isBackup": false,
+        "isVersioned": false,
+        "version": null,
+        "lastModified": "2025-04-16T20:28:37.130Z",
+        "lineCount": 1077
+      },
+      {
+        "path": "packages/mcp-agents/analysis/php-analyzer.ts",
+        "isBackup": false,
+        "isVersioned": false,
+        "version": null,
+        "lastModified": "2025-04-16T20:31:00.132Z",
+        "lineCount": 448
+      },
+      {
+        "path": "agents/analysis/php-analyzer.ts",
+        "isBackup": false,
+        "isVersioned": false,
+        "version": null,
+        "lastModified": "2025-04-12T11:18:14.389Z",
+        "lineCount": 1181
+      }
+    ],
+    "mainFile": "packages/mcp-agents/analysis/php-analyzer.ts",
+    "recommendedAction": "CONSOLIDATION_URGENTE"
+  },
+  {
+    "agentName": "nestjs-generator",
+    "files": [
+      {
+        "path": "packages/mcp-agents/nestjs-generator.ts",
+        "isBackup": false,
+        "isVersioned": false,
+        "version": null,
+        "lastModified": "2025-04-16T20:28:41.524Z",
+        "lineCount": 1192
+      },
+      {
+        "path": "packages/mcp-agents/generators/nestjs-generator.ts",
+        "isBackup": false,
+        "isVersioned": false,
+        "version": null,
+        "lastModified": "2025-04-16T20:29:17.337Z",
+        "lineCount": 420
+      },
+      {
+        "path": "packages/mcp-agents/core/nestjs-generator.ts",
+        "isBackup": false,
+        "isVersioned": false,
+        "version": null,
+        "lastModified": "2025-04-13T11:16:46.652Z",
+        "lineCount": 827
+      }
+    ],
+    "mainFile": "packages/mcp-agents/generators/nestjs-generator.ts",
+    "recommendedAction": "CONSOLIDATION_URGENTE"
+  },
+  {
+    "agentName": "index",
+    "files": [
+      {
+        "path": "packages/mcp-agents/index.ts",
+        "isBackup": false,
+        "isVersioned": false,
+        "version": null,
+        "lastModified": "2025-04-16T01:53:40.412Z",
+        "lineCount": 43
+      },
+      {
+        "path": "packages/mcp-agents/types/index.ts",
+        "isBackup": false,
+        "isVersioned": false,
+        "version": null,
+        "lastModified": "2025-04-13T11:16:46.685Z",
+        "lineCount": 123
+      },
+      {
+        "path": "agents/index.ts",
+        "isBackup": false,
+        "isVersioned": false,
+        "version": null,
+        "lastModified": "2025-04-17T02:30:28.203Z",
+        "lineCount": 70
+      }
+    ],
+    "mainFile": "agents/index.ts",
+    "recommendedAction": "CONSOLIDATION_URGENTE"
+  },
+  {
+    "agentName": "seo-checker-agent",
+    "files": [
+      {
+        "path": "packages/mcp-agents/validators/seo-checker-agent.ts",
+        "isBackup": false,
+        "isVersioned": false,
+        "version": null,
+        "lastModified": "2025-04-16T11:13:17.294Z",
+        "lineCount": 334
+      },
+      {
+        "path": "packages/mcp-agents/validators/seo-checker/seo-checker-agent.ts",
+        "isBackup": false,
+        "isVersioned": false,
+        "version": null,
+        "lastModified": "2025-04-16T22:37:51.959Z",
+        "lineCount": 174
+      },
+      {
+        "path": "packages/mcp-agents/validators/seo-checker/seo-checker-agent/seo-checker-agent.ts",
+        "isBackup": false,
+        "isVersioned": false,
+        "version": null,
+        "lastModified": "2025-04-16T11:13:17.401Z",
+        "lineCount": 179
+      }
+    ],
+    "mainFile": "packages/mcp-agents/validators/seo-checker/seo-checker-agent.ts",
+    "recommendedAction": "CONSOLIDATION_URGENTE"
+  },
+  {
+    "agentName": "canonical-validator",
+    "files": [
+      {
+        "path": "packages/mcp-agents/validators/canonical-validator/canonical-validator.ts",
+        "isBackup": false,
+        "isVersioned": false,
+        "version": null,
+        "lastModified": "2025-04-16T22:37:51.953Z",
+        "lineCount": 399
+      },
+      {
+        "path": "packages/mcp-agents/validators/canonical-validator/canonical-validator/canonical-validator.ts",
+        "isBackup": false,
+        "isVersioned": false,
+        "version": null,
+        "lastModified": "2025-04-16T11:13:17.320Z",
+        "lineCount": 404
+      },
+      {
+        "path": "agents/canonical-validator.ts",
+        "isBackup": false,
+        "isVersioned": false,
+        "version": null,
+        "lastModified": "2025-04-17T03:14:57.577Z",
+        "lineCount": 432
+      }
+    ],
+    "mainFile": "agents/canonical-validator.ts",
+    "recommendedAction": "CONSOLIDATION_URGENTE"
+  },
+  {
+    "agentName": "base-agent",
+    "files": [
+      {
+        "path": "packages/mcp-agents/shared/base-agent.ts",
+        "isBackup": false,
+        "isVersioned": false,
+        "version": null,
+        "lastModified": "2025-04-16T01:10:29.659Z",
+        "lineCount": 23
+      },
+      {
+        "path": "packages/mcp-agents/core/base-agent.ts",
+        "isBackup": false,
+        "isVersioned": false,
+        "version": null,
+        "lastModified": "2025-04-16T01:35:20.881Z",
+        "lineCount": 352
+      },
+      {
+        "path": "packages/mcp-agents/core/interfaces/base-agent.ts",
+        "isBackup": false,
+        "isVersioned": false,
+        "version": null,
+        "lastModified": "2025-04-16T14:18:43.969Z",
+        "lineCount": 87
+      }
+    ],
+    "mainFile": "packages/mcp-agents/core/interfaces/base-agent.ts",
+    "recommendedAction": "CONSOLIDATION_URGENTE"
+  },
+  {
+    "agentName": "index",
+    "files": [
+      {
+        "path": "packages/mcp-agents/qa-analyzer/index.ts",
+        "isBackup": false,
+        "isVersioned": false,
+        "version": null,
+        "lastModified": "2025-04-16T01:10:29.648Z",
+        "lineCount": 1348
+      },
+      {
+        "path": "packages/mcp-agents/php-analyzer/index.ts",
+        "isBackup": false,
+        "isVersioned": false,
+        "version": null,
+        "lastModified": "2025-04-16T00:57:58.887Z",
+        "lineCount": 282
+      },
+      {
+        "path": "packages/mcp-agents/analyzers/index.ts",
+        "isBackup": false,
+        "isVersioned": false,
+        "version": null,
+        "lastModified": "2025-04-16T01:53:40.411Z",
+        "lineCount": 9
+      }
+    ],
+    "mainFile": "packages/mcp-agents/analyzers/index.ts",
+    "recommendedAction": "CONSOLIDATION_URGENTE"
+  },
+  {
+    "agentName": "temporal-adapter",
+    "files": [
+      {
+        "path": "packages/mcp-agents/orchestrators/three-layer/adapters/temporal-adapter.ts",
+        "isBackup": false,
+        "isVersioned": false,
+        "version": null,
+        "lastModified": "2025-04-16T11:13:35.159Z",
+        "lineCount": 920
+      },
+      {
+        "path": "packages/mcp-agents/orchestrators/implementations/temporal-adapter.ts",
+        "isBackup": false,
+        "isVersioned": false,
+        "version": null,
+        "lastModified": "2025-04-17T15:53:24.795Z",
+        "lineCount": 643
+      },
+      {
+        "path": "packages/mcp-agents/orchestrators/adapters/temporal-adapter.ts",
+        "isBackup": false,
+        "isVersioned": false,
+        "version": null,
+        "lastModified": "2025-04-16T11:13:35.186Z",
+        "lineCount": 384
+      }
+    ],
+    "mainFile": "packages/mcp-agents/orchestrators/implementations/temporal-adapter.ts",
+    "recommendedAction": "CONSOLIDATION_URGENTE"
+  },
+  {
+    "agentName": "orchestrator-bridge",
+    "files": [
+      {
+        "path": "packages/mcp-agents/orchestrators/bridges/orchestrator-bridge.ts",
+        "isBackup": false,
+        "isVersioned": false,
+        "version": null,
+        "lastModified": "2025-04-16T22:37:52.062Z",
+        "lineCount": 1402
+      },
+      {
+        "path": "packages/mcp-agents/orchestrators/bridges/orchestrator-bridge/orchestrator-bridge.ts",
+        "isBackup": false,
+        "isVersioned": false,
+        "version": null,
+        "lastModified": "2025-04-16T11:13:35.234Z",
+        "lineCount": 1403
+      },
+      {
+        "path": "agents/integration/orchestrator-bridge.ts",
+        "isBackup": false,
+        "isVersioned": false,
+        "version": null,
+        "lastModified": "2025-04-15T21:52:59.165Z",
+        "lineCount": 1402
+      }
+    ],
+    "mainFile": "packages/mcp-agents/orchestrators/bridges/orchestrator-bridge.ts",
+    "recommendedAction": "CONSOLIDATION_URGENTE"
+  },
+  {
+    "agentName": "php-analyzer-v2",
+    "files": [
+      {
+        "path": "packages/mcp-agents/analyzers/php-analyzer/php-analyzer-v2.ts",
+        "isBackup": false,
+        "isVersioned": false,
+        "version": null,
+        "lastModified": "2025-04-16T22:37:51.928Z",
+        "lineCount": 965
+      },
+      {
+        "path": "packages/mcp-agents/analyzers/php-analyzer/php-analyzer-v2/php-analyzer-v2.ts",
+        "isBackup": false,
+        "isVersioned": false,
+        "version": null,
+        "lastModified": "2025-04-16T20:31:23.214Z",
+        "lineCount": 973
+      },
+      {
+        "path": "agents/analysis/php-analyzer-v2.ts",
+        "isBackup": false,
+        "isVersioned": false,
+        "version": null,
+        "lastModified": "2025-04-11T10:53:41.781Z",
+        "lineCount": 965
+      }
+    ],
+    "mainFile": "packages/mcp-agents/analyzers/php-analyzer/php-analyzer-v2.ts",
+    "recommendedAction": "CONSOLIDATION_URGENTE"
+  },
+  {
+    "agentName": "htaccess-parser",
+    "files": [
+      {
+        "path": "agents/utils/htaccess-parser.ts",
+        "isBackup": false,
+        "isVersioned": false,
+        "version": null,
+        "lastModified": "2025-04-12T22:12:01.759Z",
+        "lineCount": 589
+      },
+      {
+        "path": "agents/migration/php-to-remix/htaccess-parser.ts",
+        "isBackup": false,
+        "isVersioned": false,
+        "version": null,
+        "lastModified": "2025-04-12T23:17:24.757Z",
+        "lineCount": 578
+      },
+      {
+        "path": "agents/analysis/config-parsers/htaccess-parser.ts",
+        "isBackup": false,
+        "isVersioned": false,
+        "version": null,
+        "lastModified": "2025-04-12T22:20:19.458Z",
+        "lineCount": 252
+      }
+    ],
+    "mainFile": "agents/migration/php-to-remix/htaccess-parser.ts",
+    "recommendedAction": "CONSOLIDATION_URGENTE"
+  },
+  {
+    "agentName": "mysql-to-postgresql",
+    "files": [
+      {
+        "path": "packages/mcp-agents/mysql-to-postgresql.ts",
+        "isBackup": false,
+        "isVersioned": false,
+        "version": null,
+        "lastModified": "2025-04-12T11:40:14.292Z",
+        "lineCount": 787
+      },
+      {
+        "path": "agents/migration/mysql-to-postgresql.ts",
+        "isBackup": false,
+        "isVersioned": false,
+        "version": null,
+        "lastModified": "2025-04-12T12:12:23.047Z",
+        "lineCount": 1287
+      }
+    ],
+    "mainFile": "agents/migration/mysql-to-postgresql.ts",
+    "recommendedAction": "REVUE_RECOMMANDEE"
+  },
+  {
+    "agentName": "mcp-verifier",
+    "files": [
+      {
+        "path": "packages/mcp-agents/mcp-verifier.ts",
+        "isBackup": false,
+        "isVersioned": false,
+        "version": null,
+        "lastModified": "2025-04-14T03:02:31.692Z",
+        "lineCount": 974
+      },
+      {
+        "path": "agents/mcp-verifier.ts",
+        "isBackup": false,
+        "isVersioned": false,
+        "version": null,
+        "lastModified": "2025-04-14T11:23:09.992Z",
+        "lineCount": 826
+      }
+    ],
+    "mainFile": "agents/mcp-verifier.ts",
+    "recommendedAction": "REVUE_RECOMMANDEE"
+  },
+  {
+    "agentName": "abstract-validator-agent",
+    "files": [
+      {
+        "path": "packages/mcp-agents/validators/abstract-validator-agent.ts",
+        "isBackup": false,
+        "isVersioned": false,
+        "version": null,
+        "lastModified": "2025-04-16T20:29:03.488Z",
+        "lineCount": 494
+      },
+      {
+        "path": "packages/mcp-agents/core/abstract-validator-agent.ts",
+        "isBackup": false,
+        "isVersioned": false,
+        "version": null,
+        "lastModified": "2025-04-16T16:43:49.056Z",
+        "lineCount": 1045
+      }
+    ],
+    "mainFile": "packages/mcp-agents/validators/abstract-validator-agent.ts",
+    "recommendedAction": "REVUE_RECOMMANDEE"
+  },
+  {
+    "agentName": "dev-checker",
+    "files": [
+      {
+        "path": "packages/mcp-agents/validators/dev-checker/dev-checker.ts",
+        "isBackup": false,
+        "isVersioned": false,
+        "version": null,
+        "lastModified": "2025-04-16T22:37:51.969Z",
+        "lineCount": 690
+      },
+      {
+        "path": "packages/mcp-agents/validators/dev-checker/dev-checker/dev-checker.ts",
+        "isBackup": false,
+        "isVersioned": false,
+        "version": null,
+        "lastModified": "2025-04-16T04:04:12.334Z",
+        "lineCount": 690
+      }
+    ],
+    "mainFile": "packages/mcp-agents/validators/dev-checker/dev-checker.ts",
+    "recommendedAction": "REVUE_RECOMMANDEE"
+  },
+  {
+    "agentName": "logger",
+    "files": [
+      {
+        "path": "packages/mcp-agents/utils/logger.ts",
+        "isBackup": false,
+        "isVersioned": false,
+        "version": null,
+        "lastModified": "2025-04-16T14:18:43.970Z",
+        "lineCount": 267
+      },
+      {
+        "path": "packages/mcp-agents/core/logging/logger.ts",
+        "isBackup": false,
+        "isVersioned": false,
+        "version": null,
+        "lastModified": "2025-04-16T01:37:27.443Z",
+        "lineCount": 205
+      }
+    ],
+    "mainFile": "packages/mcp-agents/utils/logger.ts",
+    "recommendedAction": "REVUE_RECOMMANDEE"
+  },
+  {
+    "agentName": "types",
+    "files": [
+      {
+        "path": "packages/mcp-agents/shared/types.ts",
+        "isBackup": false,
+        "isVersioned": false,
+        "version": null,
+        "lastModified": "2025-04-16T01:10:29.657Z",
+        "lineCount": 26
+      },
+      {
+        "path": "packages/mcp-agents/core/types.ts",
+        "isBackup": false,
+        "isVersioned": false,
+        "version": null,
+        "lastModified": "2025-04-16T01:35:38.219Z",
+        "lineCount": 305
+      }
+    ],
+    "mainFile": "packages/mcp-agents/core/types.ts",
+    "recommendedAction": "REVUE_RECOMMANDEE"
+  },
+  {
+    "agentName": "seo-checker",
+    "files": [
+      {
+        "path": "packages/mcp-agents/seo-checker/seo-checker.ts",
+        "isBackup": false,
+        "isVersioned": false,
+        "version": null,
+        "lastModified": "2025-04-15T22:44:59.258Z",
+        "lineCount": 670
+      },
+      {
+        "path": "packages/mcp-agents/core/seo/seo-checker.ts",
+        "isBackup": false,
+        "isVersioned": false,
+        "version": null,
+        "lastModified": "2025-04-16T01:58:56.967Z",
+        "lineCount": 432
+      }
+    ],
+    "mainFile": "packages/mcp-agents/core/seo/seo-checker.ts",
+    "recommendedAction": "REVUE_RECOMMANDEE"
+  },
+  {
+    "agentName": "index",
+    "files": [
+      {
+        "path": "packages/mcp-agents/remix-generator/index.ts",
+        "isBackup": false,
+        "isVersioned": false,
+        "version": null,
+        "lastModified": "2025-04-16T01:10:50.114Z",
+        "lineCount": 516
+      },
+      {
+        "path": "packages/mcp-agents/generators/index.ts",
+        "isBackup": false,
+        "isVersioned": false,
+        "version": null,
+        "lastModified": "2025-04-16T01:53:40.411Z",
+        "lineCount": 11
+      }
+    ],
+    "mainFile": "packages/mcp-agents/generators/index.ts",
+    "recommendedAction": "REVUE_RECOMMANDEE"
+  },
+  {
+    "agentName": "index",
+    "files": [
+      {
+        "path": "packages/mcp-agents/orchestrators/index.ts",
+        "isBackup": false,
+        "isVersioned": false,
+        "version": null,
+        "lastModified": "2025-04-16T01:53:40.411Z",
+        "lineCount": 11
+      },
+      {
+        "path": "packages/mcp-agents/migration-orchestrator/index.ts",
+        "isBackup": false,
+        "isVersioned": false,
+        "version": null,
+        "lastModified": "2025-04-16T01:10:29.654Z",
+        "lineCount": 917
+      }
+    ],
+    "mainFile": "packages/mcp-agents/orchestrators/index.ts",
+    "recommendedAction": "REVUE_RECOMMANDEE"
+  },
+  {
+    "agentName": "bullmq-orchestrator",
+    "files": [
+      {
+        "path": "packages/mcp-agents/orchestrators/bullmq/bullmq-orchestrator.ts",
+        "isBackup": false,
+        "isVersioned": false,
+        "version": null,
+        "lastModified": "2025-04-16T11:13:35.333Z",
+        "lineCount": 597
+      },
+      {
+        "path": "agents/bullmq-orchestrator.ts",
+        "isBackup": false,
+        "isVersioned": false,
+        "version": null,
+        "lastModified": "2025-04-15T11:07:38.979Z",
+        "lineCount": 596
+      }
+    ],
+    "mainFile": "packages/mcp-agents/orchestrators/bullmq/bullmq-orchestrator.ts",
+    "recommendedAction": "REVUE_RECOMMANDEE"
+  },
+  {
+    "agentName": "abstract-generator-agent",
+    "files": [
+      {
+        "path": "packages/mcp-agents/generators/abstract-generator-agent.ts",
+        "isBackup": false,
+        "isVersioned": false,
+        "version": null,
+        "lastModified": "2025-04-16T20:29:27.126Z",
+        "lineCount": 439
+      },
+      {
+        "path": "packages/mcp-agents/core/abstract-generator-agent.ts",
+        "isBackup": false,
+        "isVersioned": false,
+        "version": null,
+        "lastModified": "2025-04-16T16:57:24.034Z",
+        "lineCount": 453
+      }
+    ],
+    "mainFile": "packages/mcp-agents/generators/abstract-generator-agent.ts",
+    "recommendedAction": "REVUE_RECOMMANDEE"
+  },
+  {
+    "agentName": "seo-content-enhancer",
+    "files": [
+      {
+        "path": "packages/mcp-agents/generators/content-generator/seo-content-enhancer.ts",
+        "isBackup": false,
+        "isVersioned": false,
+        "version": null,
+        "lastModified": "2025-04-16T22:37:52.042Z",
+        "lineCount": 786
+      },
+      {
+        "path": "packages/mcp-agents/generators/content-generator/seo-content-enhancer/seo-content-enhancer.ts",
+        "isBackup": false,
+        "isVersioned": false,
+        "version": null,
+        "lastModified": "2025-04-16T11:13:17.471Z",
+        "lineCount": 791
+      }
+    ],
+    "mainFile": "packages/mcp-agents/generators/content-generator/seo-content-enhancer.ts",
+    "recommendedAction": "REVUE_RECOMMANDEE"
+  },
+  {
+    "agentName": "abstract-analyzer-agent",
+    "files": [
+      {
+        "path": "packages/mcp-agents/core/abstract-analyzer-agent.ts",
+        "isBackup": false,
+        "isVersioned": false,
+        "version": null,
+        "lastModified": "2025-04-16T21:56:58.120Z",
+        "lineCount": 815
+      },
+      {
+        "path": "packages/mcp-agents/analyzers/abstract-analyzer-agent.ts",
+        "isBackup": false,
+        "isVersioned": false,
+        "version": null,
+        "lastModified": "2025-04-16T20:30:56.300Z",
+        "lineCount": 398
+      }
+    ],
+    "mainFile": "packages/mcp-agents/core/abstract-analyzer-agent.ts",
+    "recommendedAction": "REVUE_RECOMMANDEE"
+  },
+  {
+    "agentName": "StructureAgent",
+    "files": [
+      {
+        "path": "packages/mcp-agents/analyzers/structure-analyzer/StructureAgent.ts",
+        "isBackup": false,
+        "isVersioned": false,
+        "version": null,
+        "lastModified": "2025-04-16T22:37:51.940Z",
+        "lineCount": 220
+      },
+      {
+        "path": "packages/mcp-agents/analyzers/structure-analyzer/StructureAgent/StructureAgent.ts",
+        "isBackup": false,
+        "isVersioned": false,
+        "version": null,
+        "lastModified": "2025-04-16T20:27:51.412Z",
+        "lineCount": 230
+      }
+    ],
+    "mainFile": "packages/mcp-agents/analyzers/structure-analyzer/StructureAgent.ts",
+    "recommendedAction": "REVUE_RECOMMANDEE"
+  },
+  {
+    "agentName": "php-analyzer-agent",
+    "files": [
+      {
+        "path": "packages/mcp-agents/analyzers/php-analyzer/php-analyzer-agent.ts",
+        "isBackup": false,
+        "isVersioned": false,
+        "version": null,
+        "lastModified": "2025-04-16T11:08:29.007Z",
+        "lineCount": 549
+      },
+      {
+        "path": "agents/php-analyzer-agent.ts",
+        "isBackup": false,
+        "isVersioned": false,
+        "version": null,
+        "lastModified": "2025-04-14T02:20:09.037Z",
+        "lineCount": 88
+      }
+    ],
+    "mainFile": "packages/mcp-agents/analyzers/php-analyzer/php-analyzer-agent.ts",
+    "recommendedAction": "REVUE_RECOMMANDEE"
+  },
+  {
+    "agentName": "DependencyAgent",
+    "files": [
+      {
+        "path": "packages/mcp-agents/analyzers/dependency-analyzer/DependencyAgent.ts",
+        "isBackup": false,
+        "isVersioned": false,
+        "version": null,
+        "lastModified": "2025-04-16T22:37:51.946Z",
+        "lineCount": 345
+      },
+      {
+        "path": "packages/mcp-agents/analyzers/dependency-analyzer/DependencyAgent/DependencyAgent.ts",
+        "isBackup": false,
+        "isVersioned": false,
+        "version": null,
+        "lastModified": "2025-04-16T20:28:09.167Z",
+        "lineCount": 355
+      }
+    ],
+    "mainFile": "packages/mcp-agents/analyzers/dependency-analyzer/DependencyAgent.ts",
+    "recommendedAction": "REVUE_RECOMMANDEE"
+  },
+  {
+    "agentName": "DataAgent",
+    "files": [
+      {
+        "path": "packages/mcp-agents/analyzers/data-analyzer/DataAgent.ts",
+        "isBackup": false,
+        "isVersioned": false,
+        "version": null,
+        "lastModified": "2025-04-16T22:37:51.935Z",
+        "lineCount": 335
+      },
+      {
+        "path": "packages/mcp-agents/analyzers/data-analyzer/DataAgent/DataAgent.ts",
+        "isBackup": false,
+        "isVersioned": false,
+        "version": null,
+        "lastModified": "2025-04-16T20:28:11.645Z",
+        "lineCount": 345
+      }
+    ],
+    "mainFile": "packages/mcp-agents/analyzers/data-analyzer/DataAgent.ts",
+    "recommendedAction": "REVUE_RECOMMANDEE"
+  },
+  {
+    "agentName": "nginx-config-parser",
+    "files": [
+      {
+        "path": "agents/utils/nginx-config-parser.ts",
+        "isBackup": false,
+        "isVersioned": false,
+        "version": null,
+        "lastModified": "2025-04-12T22:12:01.784Z",
+        "lineCount": 655
+      },
+      {
+        "path": "agents/analysis/config-parsers/nginx-config-parser.ts",
+        "isBackup": false,
+        "isVersioned": false,
+        "version": null,
+        "lastModified": "2025-04-12T22:20:19.458Z",
+        "lineCount": 202
+      }
+    ],
+    "mainFile": "agents/analysis/config-parsers/nginx-config-parser.ts",
+    "recommendedAction": "REVUE_RECOMMANDEE"
+  },
+  {
+    "agentName": "mysql-analyzer",
+    "files": [
+      {
+        "path": "agents/migration/mysql-analyzer.ts",
+        "isBackup": false,
+        "isVersioned": false,
+        "version": null,
+        "lastModified": "2025-04-11T23:20:57.853Z",
+        "lineCount": 374
+      },
+      {
+        "path": "agents/migration/mysql-analyzer/mysql-analyzer.ts",
+        "isBackup": false,
+        "isVersioned": false,
+        "version": null,
+        "lastModified": "2025-04-11T23:11:57.017Z",
+        "lineCount": 242
+      }
+    ],
+    "mainFile": "agents/migration/mysql-analyzer.ts",
+    "recommendedAction": "REVUE_RECOMMANDEE"
+  },
+  {
+    "agentName": "mysql-analyzer+optimizer",
+    "files": [
+      {
+        "path": "agents/migration/mysql-analyzer+optimizer.ts",
+        "isBackup": false,
+        "isVersioned": false,
+        "version": null,
+        "lastModified": "2025-04-11T23:35:32.637Z",
+        "lineCount": 569
+      },
+      {
+        "path": "agents/analysis/mysql-analyzer+optimizer.ts",
+        "isBackup": false,
+        "isVersioned": false,
+        "version": null,
+        "lastModified": "2025-04-09T19:49:56.931Z",
+        "lineCount": 1
+      }
+    ],
+    "mainFile": "agents/migration/mysql-analyzer+optimizer.ts",
+    "recommendedAction": "REVUE_RECOMMANDEE"
+  },
+  {
+    "agentName": "htaccess-router-analyzer",
+    "files": [
+      {
+        "path": "agents/migration/htaccess-router-analyzer.ts",
+        "isBackup": false,
+        "isVersioned": false,
+        "version": null,
+        "lastModified": "2025-04-12T18:54:49.492Z",
+        "lineCount": 1
+      },
+      {
+        "path": "agents/analysis/htaccess-router-analyzer.ts",
+        "isBackup": false,
+        "isVersioned": false,
+        "version": null,
+        "lastModified": "2025-04-17T02:46:56.931Z",
+        "lineCount": 340
+      }
+    ],
+    "mainFile": "agents/analysis/htaccess-router-analyzer.ts",
+    "recommendedAction": "REVUE_RECOMMANDEE"
+  },
+  {
+    "agentName": "type-converter",
+    "files": [
+      {
+        "path": "agents/migration/mysql-analyzer/core/type-converter.ts",
+        "isBackup": false,
+        "isVersioned": false,
+        "version": null,
+        "lastModified": "2025-04-11T23:11:57.009Z",
+        "lineCount": 313
+      },
+      {
+        "path": "agents/migration/mysql-analyzer/agents/type-converter.ts",
+        "isBackup": false,
+        "isVersioned": false,
+        "version": null,
+        "lastModified": "2025-04-11T23:35:32.669Z",
+        "lineCount": 571
+      }
+    ],
+    "mainFile": "agents/migration/mysql-analyzer/agents/type-converter.ts",
+    "recommendedAction": "REVUE_RECOMMANDEE"
+  },
+  {
+    "agentName": "relation-analyzer",
+    "files": [
+      {
+        "path": "agents/migration/mysql-analyzer/core/relation-analyzer.ts",
+        "isBackup": false,
+        "isVersioned": false,
+        "version": null,
+        "lastModified": "2025-04-11T23:11:57.009Z",
+        "lineCount": 383
+      },
+      {
+        "path": "agents/analysis/relation-analyzer.ts",
+        "isBackup": false,
+        "isVersioned": false,
+        "version": null,
+        "lastModified": "2025-04-12T15:37:48.531Z",
+        "lineCount": 843
+      }
+    ],
+    "mainFile": "agents/analysis/relation-analyzer.ts",
+    "recommendedAction": "REVUE_RECOMMANDEE"
+  },
+  {
+    "agentName": "prisma-generator",
+    "files": [
+      {
+        "path": "agents/migration/mysql-analyzer/core/prisma-generator.ts",
+        "isBackup": false,
+        "isVersioned": false,
+        "version": null,
+        "lastModified": "2025-04-11T23:11:57.016Z",
+        "lineCount": 345
+      },
+      {
+        "path": "agents/migration/mysql-analyzer/agents/prisma-generator.ts",
+        "isBackup": false,
+        "isVersioned": false,
+        "version": null,
+        "lastModified": "2025-04-11T23:35:32.669Z",
+        "lineCount": 543
+      }
+    ],
+    "mainFile": "agents/migration/mysql-analyzer/agents/prisma-generator.ts",
+    "recommendedAction": "REVUE_RECOMMANDEE"
+  }
+]

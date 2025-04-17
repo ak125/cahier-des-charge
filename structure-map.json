@@ -1,0 +1,151 @@
+{
+  "version": "1.0.0",
+  "updated": "2025-04-17",
+  "taxonomySchema": {
+    "layer": {
+      "description": "Couche architecturale dans MCP OS",
+      "values": ["orchestration", "coordination", "business", "shared", "unknown"]
+    },
+    "domain": {
+      "description": "Domaine fonctionnel",
+      "values": ["migration", "seo", "analysis", "quality", "monitoring", "dashboard", "core", "tools", "integration", "unknown"]
+    },
+    "status": {
+      "description": "État du fichier dans le cycle de vie",
+      "values": ["active", "developing", "testing", "stable", "deprecated", "legacy", "unknown"]
+    }
+  },
+  "defaultClassification": {
+    "layer": "unknown",
+    "domain": "unknown",
+    "status": "unknown"
+  },
+  "folderClassifications": [
+    {
+      "pattern": "apps/orchestration/**",
+      "classification": {
+        "layer": "orchestration"
+      }
+    },
+    {
+      "pattern": "packages/mcp-agents/core/**",
+      "classification": {
+        "layer": "coordination"
+      }
+    },
+    {
+      "pattern": "agents/migration/**",
+      "classification": {
+        "layer": "business",
+        "domain": "migration"
+      }
+    },
+    {
+      "pattern": "agents/analysis/**",
+      "classification": {
+        "layer": "business",
+        "domain": "analysis"
+      }
+    },
+    {
+      "pattern": "packages/mcp-agents/analyzers/**",
+      "classification": {
+        "layer": "business",
+        "domain": "analysis"
+      }
+    },
+    {
+      "pattern": "scripts/monitoring/**",
+      "classification": {
+        "layer": "orchestration",
+        "domain": "monitoring"
+      }
+    },
+    {
+      "pattern": "apps/dashboard/**",
+      "classification": {
+        "domain": "dashboard"
+      }
+    },
+    {
+      "pattern": "tools/**",
+      "classification": {
+        "domain": "tools"
+      }
+    },
+    {
+      "pattern": "legacy/**",
+      "classification": {
+        "status": "legacy"
+      }
+    }
+  ],
+  "fileClassifications": [
+    {
+      "pattern": "**/orchestrator.ts",
+      "classification": {
+        "layer": "orchestration",
+        "domain": "core"
+      }
+    },
+    {
+      "pattern": "**/agentRegistry.ts",
+      "classification": {
+        "layer": "coordination",
+        "domain": "core"
+      }
+    },
+    {
+      "pattern": "**/n8n.*.json",
+      "classification": {
+        "layer": "orchestration",
+        "domain": "integration"
+      }
+    },
+    {
+      "pattern": "**/*.backup.*",
+      "classification": {
+        "status": "deprecated"
+      }
+    },
+    {
+      "pattern": "**/*.bak.*",
+      "classification": {
+        "status": "deprecated"
+      }
+    },
+    {
+      "pattern": "**/*.v1.*",
+      "classification": {
+        "status": "legacy"
+      }
+    },
+    {
+      "pattern": "**/docker-compose*.yml",
+      "classification": {
+        "layer": "orchestration",
+        "domain": "integration"
+      }
+    },
+    {
+      "pattern": "**/*-dashboard.tsx",
+      "classification": {
+        "domain": "dashboard"
+      }
+    },
+    {
+      "pattern": "**/*.test.ts",
+      "classification": {
+        "status": "testing"
+      }
+    },
+    {
+      "pattern": "**/start_*.sh",
+      "classification": {
+        "layer": "orchestration",
+        "domain": "core",
+        "status": "active"
+      }
+    }
+  ]
+}

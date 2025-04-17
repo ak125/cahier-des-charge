@@ -1,0 +1,846 @@
+{
+  "totalAgents": 200,
+  "totalFiles": 254,
+  "backupFiles": 0,
+  "versionedFiles": 0,
+  "agentsWithTests": 0,
+  "highRedundancyAgents": [
+    {
+      "name": "qa-analyzer",
+      "files": [
+        "packages/mcp-agents/qa-analyzer/qa-analyzer.ts",
+        "packages/mcp-agents/analyzers/qa-analyzer/qa-analyzer.ts",
+        "packages/mcp-agents/analyzers/qa-analyzer/qa-analyzer/qa-analyzer.ts",
+        "agents/qa-analyzer.ts"
+      ],
+      "redundancyScore": 4.5,
+      "hasTest": false
+    },
+    {
+      "name": "caddyfile-generator",
+      "files": [
+        "packages/mcp-agents/generators/caddyfile-generator/caddyfile-generator.ts",
+        "packages/mcp-agents/generators/caddyfile-generator/caddyfile-generator/caddyfile-generator.ts",
+        "agents/migration/caddyfile-generator.ts",
+        "agents/migration/nginx-to-caddy/caddyfile-generator.ts"
+      ],
+      "redundancyScore": 4.5,
+      "hasTest": false
+    },
+    {
+      "name": "remix-generator",
+      "files": [
+        "packages/mcp-agents/remix-generator.ts",
+        "packages/mcp-agents/generators/remix-generator.ts",
+        "packages/mcp-agents/core/remix-generator.ts"
+      ],
+      "redundancyScore": 3.5,
+      "hasTest": false
+    },
+    {
+      "name": "php-analyzer",
+      "files": [
+        "packages/mcp-agents/php-analyzer.ts",
+        "packages/mcp-agents/analysis/php-analyzer.ts",
+        "agents/analysis/php-analyzer.ts"
+      ],
+      "redundancyScore": 3.5,
+      "hasTest": false
+    },
+    {
+      "name": "nestjs-generator",
+      "files": [
+        "packages/mcp-agents/nestjs-generator.ts",
+        "packages/mcp-agents/generators/nestjs-generator.ts",
+        "packages/mcp-agents/core/nestjs-generator.ts"
+      ],
+      "redundancyScore": 3.5,
+      "hasTest": false
+    },
+    {
+      "name": "index",
+      "files": [
+        "packages/mcp-agents/index.ts",
+        "packages/mcp-agents/types/index.ts",
+        "agents/index.ts"
+      ],
+      "redundancyScore": 3.5,
+      "hasTest": false
+    },
+    {
+      "name": "seo-checker-agent",
+      "files": [
+        "packages/mcp-agents/validators/seo-checker-agent.ts",
+        "packages/mcp-agents/validators/seo-checker/seo-checker-agent.ts",
+        "packages/mcp-agents/validators/seo-checker/seo-checker-agent/seo-checker-agent.ts"
+      ],
+      "redundancyScore": 3.5,
+      "hasTest": false
+    },
+    {
+      "name": "canonical-validator",
+      "files": [
+        "packages/mcp-agents/validators/canonical-validator/canonical-validator.ts",
+        "packages/mcp-agents/validators/canonical-validator/canonical-validator/canonical-validator.ts",
+        "agents/canonical-validator.ts"
+      ],
+      "redundancyScore": 3.5,
+      "hasTest": false
+    },
+    {
+      "name": "base-agent",
+      "files": [
+        "packages/mcp-agents/shared/base-agent.ts",
+        "packages/mcp-agents/core/base-agent.ts",
+        "packages/mcp-agents/core/interfaces/base-agent.ts"
+      ],
+      "redundancyScore": 3.5,
+      "hasTest": false
+    },
+    {
+      "name": "index",
+      "files": [
+        "packages/mcp-agents/qa-analyzer/index.ts",
+        "packages/mcp-agents/php-analyzer/index.ts",
+        "packages/mcp-agents/analyzers/index.ts"
+      ],
+      "redundancyScore": 3.5,
+      "hasTest": false
+    },
+    {
+      "name": "temporal-adapter",
+      "files": [
+        "packages/mcp-agents/orchestrators/three-layer/adapters/temporal-adapter.ts",
+        "packages/mcp-agents/orchestrators/implementations/temporal-adapter.ts",
+        "packages/mcp-agents/orchestrators/adapters/temporal-adapter.ts"
+      ],
+      "redundancyScore": 3.5,
+      "hasTest": false
+    },
+    {
+      "name": "orchestrator-bridge",
+      "files": [
+        "packages/mcp-agents/orchestrators/bridges/orchestrator-bridge.ts",
+        "packages/mcp-agents/orchestrators/bridges/orchestrator-bridge/orchestrator-bridge.ts",
+        "agents/integration/orchestrator-bridge.ts"
+      ],
+      "redundancyScore": 3.5,
+      "hasTest": false
+    },
+    {
+      "name": "php-analyzer-v2",
+      "files": [
+        "packages/mcp-agents/analyzers/php-analyzer/php-analyzer-v2.ts",
+        "packages/mcp-agents/analyzers/php-analyzer/php-analyzer-v2/php-analyzer-v2.ts",
+        "agents/analysis/php-analyzer-v2.ts"
+      ],
+      "redundancyScore": 3.5,
+      "hasTest": false
+    },
+    {
+      "name": "htaccess-parser",
+      "files": [
+        "agents/utils/htaccess-parser.ts",
+        "agents/migration/php-to-remix/htaccess-parser.ts",
+        "agents/analysis/config-parsers/htaccess-parser.ts"
+      ],
+      "redundancyScore": 3.5,
+      "hasTest": false
+    },
+    {
+      "name": "mysql-to-postgresql",
+      "files": [
+        "packages/mcp-agents/mysql-to-postgresql.ts",
+        "agents/migration/mysql-to-postgresql.ts"
+      ],
+      "redundancyScore": 2.5,
+      "hasTest": false
+    },
+    {
+      "name": "mcp-verifier",
+      "files": [
+        "packages/mcp-agents/mcp-verifier.ts",
+        "agents/mcp-verifier.ts"
+      ],
+      "redundancyScore": 2.5,
+      "hasTest": false
+    },
+    {
+      "name": "abstract-validator-agent",
+      "files": [
+        "packages/mcp-agents/validators/abstract-validator-agent.ts",
+        "packages/mcp-agents/core/abstract-validator-agent.ts"
+      ],
+      "redundancyScore": 2.5,
+      "hasTest": false
+    },
+    {
+      "name": "dev-checker",
+      "files": [
+        "packages/mcp-agents/validators/dev-checker/dev-checker.ts",
+        "packages/mcp-agents/validators/dev-checker/dev-checker/dev-checker.ts"
+      ],
+      "redundancyScore": 2.5,
+      "hasTest": false
+    },
+    {
+      "name": "logger",
+      "files": [
+        "packages/mcp-agents/utils/logger.ts",
+        "packages/mcp-agents/core/logging/logger.ts"
+      ],
+      "redundancyScore": 2.5,
+      "hasTest": false
+    },
+    {
+      "name": "types",
+      "files": [
+        "packages/mcp-agents/shared/types.ts",
+        "packages/mcp-agents/core/types.ts"
+      ],
+      "redundancyScore": 2.5,
+      "hasTest": false
+    },
+    {
+      "name": "seo-checker",
+      "files": [
+        "packages/mcp-agents/seo-checker/seo-checker.ts",
+        "packages/mcp-agents/core/seo/seo-checker.ts"
+      ],
+      "redundancyScore": 2.5,
+      "hasTest": false
+    },
+    {
+      "name": "index",
+      "files": [
+        "packages/mcp-agents/remix-generator/index.ts",
+        "packages/mcp-agents/generators/index.ts"
+      ],
+      "redundancyScore": 2.5,
+      "hasTest": false
+    },
+    {
+      "name": "index",
+      "files": [
+        "packages/mcp-agents/orchestrators/index.ts",
+        "packages/mcp-agents/migration-orchestrator/index.ts"
+      ],
+      "redundancyScore": 2.5,
+      "hasTest": false
+    },
+    {
+      "name": "bullmq-orchestrator",
+      "files": [
+        "packages/mcp-agents/orchestrators/bullmq/bullmq-orchestrator.ts",
+        "agents/bullmq-orchestrator.ts"
+      ],
+      "redundancyScore": 2.5,
+      "hasTest": false
+    },
+    {
+      "name": "abstract-generator-agent",
+      "files": [
+        "packages/mcp-agents/generators/abstract-generator-agent.ts",
+        "packages/mcp-agents/core/abstract-generator-agent.ts"
+      ],
+      "redundancyScore": 2.5,
+      "hasTest": false
+    },
+    {
+      "name": "seo-content-enhancer",
+      "files": [
+        "packages/mcp-agents/generators/content-generator/seo-content-enhancer.ts",
+        "packages/mcp-agents/generators/content-generator/seo-content-enhancer/seo-content-enhancer.ts"
+      ],
+      "redundancyScore": 2.5,
+      "hasTest": false
+    },
+    {
+      "name": "abstract-analyzer-agent",
+      "files": [
+        "packages/mcp-agents/core/abstract-analyzer-agent.ts",
+        "packages/mcp-agents/analyzers/abstract-analyzer-agent.ts"
+      ],
+      "redundancyScore": 2.5,
+      "hasTest": false
+    },
+    {
+      "name": "StructureAgent",
+      "files": [
+        "packages/mcp-agents/analyzers/structure-analyzer/StructureAgent.ts",
+        "packages/mcp-agents/analyzers/structure-analyzer/StructureAgent/StructureAgent.ts"
+      ],
+      "redundancyScore": 2.5,
+      "hasTest": false
+    },
+    {
+      "name": "php-analyzer-agent",
+      "files": [
+        "packages/mcp-agents/analyzers/php-analyzer/php-analyzer-agent.ts",
+        "agents/php-analyzer-agent.ts"
+      ],
+      "redundancyScore": 2.5,
+      "hasTest": false
+    },
+    {
+      "name": "DependencyAgent",
+      "files": [
+        "packages/mcp-agents/analyzers/dependency-analyzer/DependencyAgent.ts",
+        "packages/mcp-agents/analyzers/dependency-analyzer/DependencyAgent/DependencyAgent.ts"
+      ],
+      "redundancyScore": 2.5,
+      "hasTest": false
+    },
+    {
+      "name": "DataAgent",
+      "files": [
+        "packages/mcp-agents/analyzers/data-analyzer/DataAgent.ts",
+        "packages/mcp-agents/analyzers/data-analyzer/DataAgent/DataAgent.ts"
+      ],
+      "redundancyScore": 2.5,
+      "hasTest": false
+    },
+    {
+      "name": "nginx-config-parser",
+      "files": [
+        "agents/utils/nginx-config-parser.ts",
+        "agents/analysis/config-parsers/nginx-config-parser.ts"
+      ],
+      "redundancyScore": 2.5,
+      "hasTest": false
+    },
+    {
+      "name": "mysql-analyzer",
+      "files": [
+        "agents/migration/mysql-analyzer.ts",
+        "agents/migration/mysql-analyzer/mysql-analyzer.ts"
+      ],
+      "redundancyScore": 2.5,
+      "hasTest": false
+    },
+    {
+      "name": "mysql-analyzer+optimizer",
+      "files": [
+        "agents/migration/mysql-analyzer+optimizer.ts",
+        "agents/analysis/mysql-analyzer+optimizer.ts"
+      ],
+      "redundancyScore": 2.5,
+      "hasTest": false
+    },
+    {
+      "name": "htaccess-router-analyzer",
+      "files": [
+        "agents/migration/htaccess-router-analyzer.ts",
+        "agents/analysis/htaccess-router-analyzer.ts"
+      ],
+      "redundancyScore": 2.5,
+      "hasTest": false
+    },
+    {
+      "name": "type-converter",
+      "files": [
+        "agents/migration/mysql-analyzer/core/type-converter.ts",
+        "agents/migration/mysql-analyzer/agents/type-converter.ts"
+      ],
+      "redundancyScore": 2.5,
+      "hasTest": false
+    },
+    {
+      "name": "relation-analyzer",
+      "files": [
+        "agents/migration/mysql-analyzer/core/relation-analyzer.ts",
+        "agents/analysis/relation-analyzer.ts"
+      ],
+      "redundancyScore": 2.5,
+      "hasTest": false
+    },
+    {
+      "name": "prisma-generator",
+      "files": [
+        "agents/migration/mysql-analyzer/core/prisma-generator.ts",
+        "agents/migration/mysql-analyzer/agents/prisma-generator.ts"
+      ],
+      "redundancyScore": 2.5,
+      "hasTest": false
+    }
+  ],
+  "highSimilarityPairs": [
+    {
+      "file1": "packages/mcp-agents/validators/seo-checker/seo-checker-agent.ts",
+      "file2": "packages/mcp-agents/validators/seo-checker/seo-checker-agent/seo-checker-agent.ts",
+      "similarity": 113.72549019607843,
+      "agent1Name": "seo-checker-agent",
+      "agent2Name": "seo-checker-agent"
+    },
+    {
+      "file1": "packages/mcp-agents/validators/dev-checker/dev-checker.ts",
+      "file2": "packages/mcp-agents/validators/dev-checker/dev-checker/dev-checker.ts",
+      "similarity": 100,
+      "agent1Name": "dev-checker",
+      "agent2Name": "dev-checker"
+    },
+    {
+      "file1": "packages/mcp-agents/validators/dev-checker/dev-checker.ts",
+      "file2": "agents/dev-checker.ts",
+      "similarity": 100,
+      "agent1Name": "dev-checker",
+      "agent2Name": "dev-checker"
+    },
+    {
+      "file1": "packages/mcp-agents/validators/dev-checker/dev-checker/dev-checker.ts",
+      "file2": "agents/dev-checker.ts",
+      "similarity": 100,
+      "agent1Name": "dev-checker",
+      "agent2Name": "dev-checker"
+    },
+    {
+      "file1": "packages/mcp-agents/validators/canonical-validator/canonical-validator.ts",
+      "file2": "packages/mcp-agents/validators/canonical-validator/canonical-validator/canonical-validator.ts",
+      "similarity": 130.1255230125523,
+      "agent1Name": "canonical-validator",
+      "agent2Name": "canonical-validator"
+    },
+    {
+      "file1": "packages/mcp-agents/qa-analyzer/index.ts",
+      "file2": "packages/mcp-agents/analyzers/qa-analyzer/qa-analyzer.ts",
+      "similarity": 100,
+      "agent1Name": "index",
+      "agent2Name": "qa-analyzer"
+    },
+    {
+      "file1": "packages/mcp-agents/qa-analyzer/index.ts",
+      "file2": "packages/mcp-agents/analyzers/qa-analyzer/qa-analyzer/qa-analyzer.ts",
+      "similarity": 145.86894586894587,
+      "agent1Name": "index",
+      "agent2Name": "qa-analyzer"
+    },
+    {
+      "file1": "packages/mcp-agents/qa-analyzer/index.ts",
+      "file2": "agents/qa-analyzer.ts",
+      "similarity": 100,
+      "agent1Name": "index",
+      "agent2Name": "qa-analyzer"
+    },
+    {
+      "file1": "packages/mcp-agents/orchestrators/recovery/workflow-recovery.service.ts",
+      "file2": "packages/mcp-agents/orchestrators/persistence/workflow-recovery-service.ts",
+      "similarity": 100,
+      "agent1Name": "workflow-recovery.service",
+      "agent2Name": "workflow-recovery-service"
+    },
+    {
+      "file1": "packages/mcp-agents/orchestrators/recovery/workflow-recovery.service.ts",
+      "file2": "packages/mcp-agents/orchestrators/adapters/temporal-recovery-adapter.ts",
+      "similarity": 100,
+      "agent1Name": "workflow-recovery.service",
+      "agent2Name": "temporal-recovery-adapter"
+    },
+    {
+      "file1": "packages/mcp-agents/orchestrators/persistence/workflow-recovery-service.ts",
+      "file2": "packages/mcp-agents/orchestrators/adapters/temporal-recovery-adapter.ts",
+      "similarity": 100,
+      "agent1Name": "workflow-recovery-service",
+      "agent2Name": "temporal-recovery-adapter"
+    },
+    {
+      "file1": "packages/mcp-agents/orchestrators/bullmq/bullmq-orchestrator.ts",
+      "file2": "agents/bullmq-orchestrator.ts",
+      "similarity": 146.46153846153845,
+      "agent1Name": "bullmq-orchestrator",
+      "agent2Name": "bullmq-orchestrator"
+    },
+    {
+      "file1": "packages/mcp-agents/orchestrators/bridges/orchestrator-bridge.ts",
+      "file2": "packages/mcp-agents/orchestrators/bridges/orchestrator-bridge/orchestrator-bridge.ts",
+      "similarity": 152.43243243243242,
+      "agent1Name": "orchestrator-bridge",
+      "agent2Name": "orchestrator-bridge"
+    },
+    {
+      "file1": "packages/mcp-agents/orchestrators/bridges/orchestrator-bridge.ts",
+      "file2": "agents/integration/orchestrator-bridge.ts",
+      "similarity": 100,
+      "agent1Name": "orchestrator-bridge",
+      "agent2Name": "orchestrator-bridge"
+    },
+    {
+      "file1": "packages/mcp-agents/orchestrators/bridges/orchestrator-bridge/orchestrator-bridge.ts",
+      "file2": "agents/integration/orchestrator-bridge.ts",
+      "similarity": 152.43243243243242,
+      "agent1Name": "orchestrator-bridge",
+      "agent2Name": "orchestrator-bridge"
+    },
+    {
+      "file1": "packages/mcp-agents/migration-orchestrator/index.ts",
+      "file2": "agents/migration-orchestrator.ts",
+      "similarity": 100,
+      "agent1Name": "index",
+      "agent2Name": "migration-orchestrator"
+    },
+    {
+      "file1": "packages/mcp-agents/generators/content-generator/seo-content-enhancer.ts",
+      "file2": "packages/mcp-agents/generators/content-generator/seo-content-enhancer/seo-content-enhancer.ts",
+      "similarity": 144.96644295302013,
+      "agent1Name": "seo-content-enhancer",
+      "agent2Name": "seo-content-enhancer"
+    },
+    {
+      "file1": "packages/mcp-agents/generators/content-generator/seo-content-enhancer.ts",
+      "file2": "agents/seo-content-enhancer.ts",
+      "similarity": 100,
+      "agent1Name": "seo-content-enhancer",
+      "agent2Name": "seo-content-enhancer"
+    },
+    {
+      "file1": "packages/mcp-agents/generators/content-generator/seo-content-enhancer/seo-content-enhancer.ts",
+      "file2": "agents/seo-content-enhancer.ts",
+      "similarity": 144.74272930648772,
+      "agent1Name": "seo-content-enhancer",
+      "agent2Name": "seo-content-enhancer"
+    },
+    {
+      "file1": "packages/mcp-agents/generators/caddyfile-generator/caddyfile-generator.ts",
+      "file2": "packages/mcp-agents/generators/caddyfile-generator/caddyfile-generator/caddyfile-generator.ts",
+      "similarity": 120.6896551724138,
+      "agent1Name": "caddyfile-generator",
+      "agent2Name": "caddyfile-generator"
+    },
+    {
+      "file1": "packages/mcp-agents/generators/caddyfile-generator/caddyfile-generator.ts",
+      "file2": "agents/migration/caddyfile-generator.ts",
+      "similarity": 100,
+      "agent1Name": "caddyfile-generator",
+      "agent2Name": "caddyfile-generator"
+    },
+    {
+      "file1": "packages/mcp-agents/generators/caddyfile-generator/caddyfile-generator/caddyfile-generator.ts",
+      "file2": "agents/migration/caddyfile-generator.ts",
+      "similarity": 120,
+      "agent1Name": "caddyfile-generator",
+      "agent2Name": "caddyfile-generator"
+    },
+    {
+      "file1": "packages/mcp-agents/analyzers/structure-analyzer/StructureAgent.ts",
+      "file2": "packages/mcp-agents/analyzers/structure-analyzer/StructureAgent/StructureAgent.ts",
+      "similarity": 139.31623931623932,
+      "agent1Name": "StructureAgent",
+      "agent2Name": "StructureAgent"
+    },
+    {
+      "file1": "packages/mcp-agents/analyzers/structure-analyzer/StructureAgent.ts",
+      "file2": "agents/analysis/StructureAgent.ts",
+      "similarity": 100,
+      "agent1Name": "StructureAgent",
+      "agent2Name": "StructureAgent"
+    },
+    {
+      "file1": "packages/mcp-agents/analyzers/structure-analyzer/StructureAgent/StructureAgent.ts",
+      "file2": "agents/analysis/StructureAgent.ts",
+      "similarity": 139.31623931623932,
+      "agent1Name": "StructureAgent",
+      "agent2Name": "StructureAgent"
+    },
+    {
+      "file1": "packages/mcp-agents/analyzers/qa-analyzer/qa-analyzer.ts",
+      "file2": "packages/mcp-agents/analyzers/qa-analyzer/qa-analyzer/qa-analyzer.ts",
+      "similarity": 145.86894586894587,
+      "agent1Name": "qa-analyzer",
+      "agent2Name": "qa-analyzer"
+    },
+    {
+      "file1": "packages/mcp-agents/analyzers/qa-analyzer/qa-analyzer.ts",
+      "file2": "agents/qa-analyzer.ts",
+      "similarity": 100,
+      "agent1Name": "qa-analyzer",
+      "agent2Name": "qa-analyzer"
+    },
+    {
+      "file1": "packages/mcp-agents/analyzers/qa-analyzer/qa-analyzer/qa-analyzer.ts",
+      "file2": "agents/qa-analyzer.ts",
+      "similarity": 145.86894586894587,
+      "agent1Name": "qa-analyzer",
+      "agent2Name": "qa-analyzer"
+    },
+    {
+      "file1": "packages/mcp-agents/analyzers/php-analyzer/php-analyzer-v2.ts",
+      "file2": "packages/mcp-agents/analyzers/php-analyzer/php-analyzer-v2/php-analyzer-v2.ts",
+      "similarity": 133.21234119782216,
+      "agent1Name": "php-analyzer-v2",
+      "agent2Name": "php-analyzer-v2"
+    },
+    {
+      "file1": "packages/mcp-agents/analyzers/php-analyzer/php-analyzer-v2.ts",
+      "file2": "agents/analysis/php-analyzer-v2.ts",
+      "similarity": 100,
+      "agent1Name": "php-analyzer-v2",
+      "agent2Name": "php-analyzer-v2"
+    },
+    {
+      "file1": "packages/mcp-agents/analyzers/php-analyzer/php-analyzer-v2/php-analyzer-v2.ts",
+      "file2": "agents/analysis/php-analyzer-v2.ts",
+      "similarity": 133.21234119782216,
+      "agent1Name": "php-analyzer-v2",
+      "agent2Name": "php-analyzer-v2"
+    },
+    {
+      "file1": "packages/mcp-agents/analyzers/dependency-analyzer/DependencyAgent.ts",
+      "file2": "packages/mcp-agents/analyzers/dependency-analyzer/DependencyAgent/DependencyAgent.ts",
+      "similarity": 139.54802259887003,
+      "agent1Name": "DependencyAgent",
+      "agent2Name": "DependencyAgent"
+    },
+    {
+      "file1": "packages/mcp-agents/analyzers/dependency-analyzer/DependencyAgent.ts",
+      "file2": "agents/analysis/DependencyAgent.ts",
+      "similarity": 100,
+      "agent1Name": "DependencyAgent",
+      "agent2Name": "DependencyAgent"
+    },
+    {
+      "file1": "packages/mcp-agents/analyzers/dependency-analyzer/DependencyAgent/DependencyAgent.ts",
+      "file2": "agents/analysis/DependencyAgent.ts",
+      "similarity": 139.54802259887003,
+      "agent1Name": "DependencyAgent",
+      "agent2Name": "DependencyAgent"
+    },
+    {
+      "file1": "packages/mcp-agents/analyzers/data-analyzer/DataAgent.ts",
+      "file2": "packages/mcp-agents/analyzers/data-analyzer/DataAgent/DataAgent.ts",
+      "similarity": 136.51685393258427,
+      "agent1Name": "DataAgent",
+      "agent2Name": "DataAgent"
+    },
+    {
+      "file1": "packages/mcp-agents/analyzers/data-analyzer/DataAgent.ts",
+      "file2": "agents/analysis/DataAgent.ts",
+      "similarity": 100,
+      "agent1Name": "DataAgent",
+      "agent2Name": "DataAgent"
+    },
+    {
+      "file1": "packages/mcp-agents/analyzers/data-analyzer/DataAgent/DataAgent.ts",
+      "file2": "agents/analysis/DataAgent.ts",
+      "similarity": 136.51685393258427,
+      "agent1Name": "DataAgent",
+      "agent2Name": "DataAgent"
+    },
+    {
+      "file1": "agents/migration/php-sql-sync-mapper.ts",
+      "file2": "agents/migration/php-sql-mapper.ts",
+      "similarity": 100,
+      "agent1Name": "php-sql-sync-mapper",
+      "agent2Name": "php-sql-mapper"
+    },
+    {
+      "file1": "agents/migration/php-sql-sync-mapper.ts",
+      "file2": "agents/migration/inject-to-supabase.ts",
+      "similarity": 100,
+      "agent1Name": "php-sql-sync-mapper",
+      "agent2Name": "inject-to-supabase"
+    },
+    {
+      "file1": "agents/migration/php-sql-sync-mapper.ts",
+      "file2": "agents/core/selector-agent.ts",
+      "similarity": 100,
+      "agent1Name": "php-sql-sync-mapper",
+      "agent2Name": "selector-agent"
+    },
+    {
+      "file1": "agents/migration/php-sql-sync-mapper.ts",
+      "file2": "agents/core/mcp-integrator.ts",
+      "similarity": 100,
+      "agent1Name": "php-sql-sync-mapper",
+      "agent2Name": "mcp-integrator"
+    },
+    {
+      "file1": "agents/migration/php-sql-sync-mapper.ts",
+      "file2": "agents/analysis/php-discovery-engine.ts",
+      "similarity": 100,
+      "agent1Name": "php-sql-sync-mapper",
+      "agent2Name": "php-discovery-engine"
+    },
+    {
+      "file1": "agents/migration/php-sql-sync-mapper.ts",
+      "file2": "agents/analysis/dynamic_sql_extractor.ts",
+      "similarity": 100,
+      "agent1Name": "php-sql-sync-mapper",
+      "agent2Name": "dynamic_sql_extractor"
+    },
+    {
+      "file1": "agents/migration/php-sql-mapper.ts",
+      "file2": "agents/migration/inject-to-supabase.ts",
+      "similarity": 100,
+      "agent1Name": "php-sql-mapper",
+      "agent2Name": "inject-to-supabase"
+    },
+    {
+      "file1": "agents/migration/php-sql-mapper.ts",
+      "file2": "agents/core/selector-agent.ts",
+      "similarity": 100,
+      "agent1Name": "php-sql-mapper",
+      "agent2Name": "selector-agent"
+    },
+    {
+      "file1": "agents/migration/php-sql-mapper.ts",
+      "file2": "agents/core/mcp-integrator.ts",
+      "similarity": 100,
+      "agent1Name": "php-sql-mapper",
+      "agent2Name": "mcp-integrator"
+    },
+    {
+      "file1": "agents/migration/php-sql-mapper.ts",
+      "file2": "agents/analysis/php-discovery-engine.ts",
+      "similarity": 100,
+      "agent1Name": "php-sql-mapper",
+      "agent2Name": "php-discovery-engine"
+    },
+    {
+      "file1": "agents/migration/php-sql-mapper.ts",
+      "file2": "agents/analysis/dynamic_sql_extractor.ts",
+      "similarity": 100,
+      "agent1Name": "php-sql-mapper",
+      "agent2Name": "dynamic_sql_extractor"
+    },
+    {
+      "file1": "agents/migration/nginx-config-analyzer.ts",
+      "file2": "agents/migration/htaccess-router-analyzer.ts",
+      "similarity": 100,
+      "agent1Name": "nginx-config-analyzer",
+      "agent2Name": "htaccess-router-analyzer"
+    },
+    {
+      "file1": "agents/migration/nginx-config-analyzer.ts",
+      "file2": "agents/analysis/php-analyzer-v4.ts",
+      "similarity": 100,
+      "agent1Name": "nginx-config-analyzer",
+      "agent2Name": "php-analyzer-v4"
+    },
+    {
+      "file1": "agents/migration/nginx-config-analyzer.ts",
+      "file2": "agents/analysis/php-analyzer-v3.ts",
+      "similarity": 100,
+      "agent1Name": "nginx-config-analyzer",
+      "agent2Name": "php-analyzer-v3"
+    },
+    {
+      "file1": "agents/migration/nginx-config-analyzer.ts",
+      "file2": "agents/analysis/mysql-analyzer+optimizer.ts",
+      "similarity": 100,
+      "agent1Name": "nginx-config-analyzer",
+      "agent2Name": "mysql-analyzer+optimizer"
+    },
+    {
+      "file1": "agents/migration/inject-to-supabase.ts",
+      "file2": "agents/core/selector-agent.ts",
+      "similarity": 100,
+      "agent1Name": "inject-to-supabase",
+      "agent2Name": "selector-agent"
+    },
+    {
+      "file1": "agents/migration/inject-to-supabase.ts",
+      "file2": "agents/core/mcp-integrator.ts",
+      "similarity": 100,
+      "agent1Name": "inject-to-supabase",
+      "agent2Name": "mcp-integrator"
+    },
+    {
+      "file1": "agents/migration/inject-to-supabase.ts",
+      "file2": "agents/analysis/php-discovery-engine.ts",
+      "similarity": 100,
+      "agent1Name": "inject-to-supabase",
+      "agent2Name": "php-discovery-engine"
+    },
+    {
+      "file1": "agents/migration/inject-to-supabase.ts",
+      "file2": "agents/analysis/dynamic_sql_extractor.ts",
+      "similarity": 100,
+      "agent1Name": "inject-to-supabase",
+      "agent2Name": "dynamic_sql_extractor"
+    },
+    {
+      "file1": "agents/migration/htaccess-router-analyzer.ts",
+      "file2": "agents/analysis/php-analyzer-v4.ts",
+      "similarity": 100,
+      "agent1Name": "htaccess-router-analyzer",
+      "agent2Name": "php-analyzer-v4"
+    },
+    {
+      "file1": "agents/migration/htaccess-router-analyzer.ts",
+      "file2": "agents/analysis/php-analyzer-v3.ts",
+      "similarity": 100,
+      "agent1Name": "htaccess-router-analyzer",
+      "agent2Name": "php-analyzer-v3"
+    },
+    {
+      "file1": "agents/migration/htaccess-router-analyzer.ts",
+      "file2": "agents/analysis/mysql-analyzer+optimizer.ts",
+      "similarity": 100,
+      "agent1Name": "htaccess-router-analyzer",
+      "agent2Name": "mysql-analyzer+optimizer"
+    },
+    {
+      "file1": "agents/core/selector-agent.ts",
+      "file2": "agents/core/mcp-integrator.ts",
+      "similarity": 100,
+      "agent1Name": "selector-agent",
+      "agent2Name": "mcp-integrator"
+    },
+    {
+      "file1": "agents/core/selector-agent.ts",
+      "file2": "agents/analysis/php-discovery-engine.ts",
+      "similarity": 100,
+      "agent1Name": "selector-agent",
+      "agent2Name": "php-discovery-engine"
+    },
+    {
+      "file1": "agents/core/selector-agent.ts",
+      "file2": "agents/analysis/dynamic_sql_extractor.ts",
+      "similarity": 100,
+      "agent1Name": "selector-agent",
+      "agent2Name": "dynamic_sql_extractor"
+    },
+    {
+      "file1": "agents/core/mcp-integrator.ts",
+      "file2": "agents/analysis/php-discovery-engine.ts",
+      "similarity": 100,
+      "agent1Name": "mcp-integrator",
+      "agent2Name": "php-discovery-engine"
+    },
+    {
+      "file1": "agents/core/mcp-integrator.ts",
+      "file2": "agents/analysis/dynamic_sql_extractor.ts",
+      "similarity": 100,
+      "agent1Name": "mcp-integrator",
+      "agent2Name": "dynamic_sql_extractor"
+    },
+    {
+      "file1": "agents/analysis/php-discovery-engine.ts",
+      "file2": "agents/analysis/dynamic_sql_extractor.ts",
+      "similarity": 100,
+      "agent1Name": "php-discovery-engine",
+      "agent2Name": "dynamic_sql_extractor"
+    },
+    {
+      "file1": "agents/analysis/php-analyzer-v4.ts",
+      "file2": "agents/analysis/php-analyzer-v3.ts",
+      "similarity": 100,
+      "agent1Name": "php-analyzer-v4",
+      "agent2Name": "php-analyzer-v3"
+    },
+    {
+      "file1": "agents/analysis/php-analyzer-v4.ts",
+      "file2": "agents/analysis/mysql-analyzer+optimizer.ts",
+      "similarity": 100,
+      "agent1Name": "php-analyzer-v4",
+      "agent2Name": "mysql-analyzer+optimizer"
+    },
+    {
+      "file1": "agents/analysis/php-analyzer-v3.ts",
+      "file2": "agents/analysis/mysql-analyzer+optimizer.ts",
+      "similarity": 100,
+      "agent1Name": "php-analyzer-v3",
+      "agent2Name": "mysql-analyzer+optimizer"
+    }
+  ],
+  "versioningScore": 78
+}

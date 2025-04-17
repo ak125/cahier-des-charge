@@ -1,0 +1,28 @@
+{
+  "timestamp": "2025-04-16T23:56:37.028Z",
+  "score": 70,
+  "coverage": {
+    "total": 0,
+    "covered": 0,
+    "percentage": 0
+  },
+  "risks": [],
+  "criticalPaths": [],
+  "gaps": [
+    {
+      "area": "Couverture",
+      "description": "Faible couverture de la migration (<50%)",
+      "recommendation": "Établir un plan d'action pour prioriser les éléments à migrer"
+    }
+  ],
+  "schedule": {
+    "onTrack": true,
+    "currentPhase": "Analyse",
+    "nextMilestone": "Migration PHP → Remix",
+    "estimatedTimeToCompletion": 90
+  },
+  "recommendations": [
+    "CRITIQUE : Accélérer la couverture de migration qui est actuellement très faible",
+    "Établir un plan d'action pour prioriser les éléments à migrer"
+  ]
+}

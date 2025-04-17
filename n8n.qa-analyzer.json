@@ -250,6 +250,86 @@
         500
       ],
       "webhookId": "d5028e6d-5e5a-41a2-8db3-4cabe1b31695"
+    },
+    {
+      "parameters": {},
+      "id": "error-trigger",
+      "name": "Gestionnaire d'Erreur",
+      "type": "n8n-nodes-base.errorTrigger",
+      "position": [250, 900],
+      "webhookId": "error-handler-qa-analyzer"
+    },
+    {
+      "parameters": {
+        "functionCode": "// Formater l'erreur pour la notification et le log\nconst workflow = $workflow;\nconst error = $input.item.json.error;\nconst timestamp = new Date().toISOString();\nconst errorNodeId = $input.item.json.lastNodeExecuted;\n\n// Récupérer des informations supplémentaires sur le contexte d'analyse QA\nlet qaContext = {};\ntry {\n  // Essayer de récupérer les informations du contexte QA\n  if ($input.item.json.qaData) {\n    qaContext = {\n      fileCount: $input.item.json.qaData.totalFiles || 'inconnu',\n      reportPath: $input.item.json.qaData.reportPath || 'inconnu'\n    };\n  }\n} catch (e) {\n  // Ignorer les erreurs lors de la récupération du contexte\n  qaContext = { error: 'Impossible de récupérer le contexte' };\n}\n\nreturn {\n  json: {\n    workflow: {\n      id: workflow.id,\n      name: workflow.name\n    },\n    error: {\n      message: error.message || 'Erreur inconnue',\n      stack: error.stack,\n      timestamp,\n      lastNodeExecuted: errorNodeId\n    },\n    context: {\n      ...qaContext,\n      environment: process.env.NODE_ENV || 'development',\n      timestamp\n    }\n  }\n};"
+      },
+      "id": "format-error",
+      "name": "Formater Erreur",
+      "type": "n8n-nodes-base.function",
+      "position": [450, 900]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://hooks.slack.com/services/{{ $env.SLACK_WEBHOOK_ID }}",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "text",
+              "value": "🚨 *ERREUR CRITIQUE dans l'Analyseur QA*\n\n*Workflow:* {{ $json.workflow.name }}\n*Erreur:* {{ $json.error.message }}\n*Nœud:* {{ $json.error.lastNodeExecuted }}\n*Timestamp:* {{ $json.error.timestamp }}\n\nVeuillez vérifier les logs du système pour plus de détails."
+            },
+            {
+              "name": "attachments",
+              "value": "=[{\n  \"color\": \"danger\",\n  \"title\": \"Détails de l'erreur\",\n  \"text\": \"{{ $json.error.stack || 'Pas de trace d\\'erreur disponible' }}\"\n}]"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "error-slack",
+      "name": "Notification Slack Erreur",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [650, 820]
+    },
+    {
+      "parameters": {
+        "filePath": "/workspaces/cahier-des-charge/logs/qa_analyzer_errors.log",
+        "fileContent": "={{ '[' + $json.context.timestamp + '] Workflow: ' + $json.workflow.name + ' | Error: ' + $json.error.message + ' | Node: ' + $json.error.lastNodeExecuted + '\\n' + ($json.error.stack || '') + '\\n\\n' }}",
+        "options": {
+          "append": true,
+          "encoding": "utf8"
+        }
+      },
+      "id": "log-error",
+      "name": "Enregistrer Erreur",
+      "type": "n8n-nodes-base.writeFile",
+      "position": [650, 980]
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "resource": "issue",
+        "operation": "create",
+        "project": "={{ $env.JIRA_PROJECT_KEY }}",
+        "issueType": "Bug",
+        "summary": "Erreur critique dans l'Analyseur QA - {{ $json.error.message | slice(0, 80) }}",
+        "description": "Une erreur critique est survenue dans le workflow d'analyse QA.\n\n*Détails de l'erreur:*\n* *Message:* {{ $json.error.message }}\n* *Nœud:* {{ $json.error.lastNodeExecuted }}\n* *Horodatage:* {{ $json.error.timestamp }}\n\n*Stack trace:*\n{noformat}\n{{ $json.error.stack || 'Non disponible' }}\n{noformat}\n\nCette erreur empêche l'analyse QA de fonctionner correctement. Merci de la traiter en priorité.",
+        "additionalFields": {
+          "priority": {
+            "name": "High"
+          },
+          "labels": [
+            "qa-analyzer",
+            "error",
+            "automation-failure"
+          ]
+        }
+      },
+      "id": "create-error-ticket",
+      "name": "Créer Ticket JIRA",
+      "type": "n8n-nodes-base.jira",
+      "position": [850, 900]
     }
   ],
   "connections": {
@@ -379,6 +459,38 @@
           }
         ],
         []
+      ]
+    },
+    "Gestionnaire d'Erreur": {
+      "main": [
+        [
+          {
+            "node": "Formater Erreur",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Formater Erreur": {
+      "main": [
+        [
+          {
+            "node": "Notification Slack Erreur",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Enregistrer Erreur",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Créer Ticket JIRA",
+            "type": "main",
+            "index": 0
+          }
+        ]
       ]
     }
   },
