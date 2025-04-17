@@ -269,6 +269,51 @@
       "name": "Notifier Rapport Généré",
       "type": "n8n-nodes-base.telegram",
       "position": [2500, 300]
+    },
+    {
+      "parameters": {},
+      "id": "error-trigger",
+      "name": "Gestionnaire d'Erreur",
+      "type": "n8n-nodes-base.errorTrigger",
+      "position": [100, 600],
+      "webhookId": "error-handler-migration-validator"
+    },
+    {
+      "parameters": {
+        "functionCode": "// Formater l'erreur pour la notification et le log\nconst workflow = $workflow;\nconst error = $input.item.json.error;\nconst timestamp = new Date().toISOString();\nconst errorNodeId = $input.item.json.lastNodeExecuted;\n\nreturn {\n  json: {\n    workflow: {\n      id: workflow.id,\n      name: workflow.name\n    },\n    error: {\n      message: error.message || 'Erreur inconnue',\n      stack: error.stack,\n      timestamp,\n      lastNodeExecuted: errorNodeId\n    },\n    context: {\n      environment: process.env.NODE_ENV || 'development',\n      timestamp\n    }\n  }\n};"
+      },
+      "id": "format-error",
+      "name": "Formater Erreur",
+      "type": "n8n-nodes-base.function",
+      "position": [300, 600]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $env.NOTIFICATION_CHAT_ID }}",
+        "text": "🚨 *Erreur critique dans le workflow de migration*\n\n*Workflow:* {{ $json.workflow.name }}\n*Erreur:* {{ $json.error.message }}\n*Nœud:* {{ $json.error.lastNodeExecuted }}\n*Timestamp:* {{ $json.error.timestamp }}\n\nVeuillez vérifier les logs du système pour plus de détails.",
+        "additionalFields": {
+          "parseMode": "Markdown",
+          "disableNotification": false
+        }
+      },
+      "id": "error-notification",
+      "name": "Notification Erreur Critique",
+      "type": "n8n-nodes-base.telegram",
+      "position": [500, 600]
+    },
+    {
+      "parameters": {
+        "filePath": "/workspaces/cahier-des-charge/logs/migration_errors.log",
+        "fileContent": "={{ '[' + $json.context.timestamp + '] Workflow: ' + $json.workflow.name + ' | Error: ' + $json.error.message + ' | Node: ' + $json.error.lastNodeExecuted + '\\n' + ($json.error.stack || '') + '\\n\\n' }}",
+        "options": {
+          "append": true,
+          "encoding": "utf8"
+        }
+      },
+      "id": "log-error",
+      "name": "Enregistrer Erreur",
+      "type": "n8n-nodes-base.writeFile",
+      "position": [500, 750]
     }
   ],
   "connections": {
@@ -452,6 +497,33 @@
         [
           {
             "node": "Notifier Rapport Généré",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gestionnaire d'Erreur": {
+      "main": [
+        [
+          {
+            "node": "Formater Erreur",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Formater Erreur": {
+      "main": [
+        [
+          {
+            "node": "Notification Erreur Critique",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Enregistrer Erreur",
             "type": "main",
             "index": 0
           }

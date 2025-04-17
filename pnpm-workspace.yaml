@@ -5,3 +5,4 @@ packages:
   - 'monorepo/packages/*'
   - 'packages/*'
   - 'apps/*'
+  - 'agents'

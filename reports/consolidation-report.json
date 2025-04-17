@@ -1,0 +1,103 @@
+{
+  "date": "2025-04-17T21:15:19.454Z",
+  "totalAgentsConsolidated": 14,
+  "threshold": 3.5,
+  "layerStats": {
+    "business": 12,
+    "orchestration": 2
+  },
+  "typeStats": {
+    "analyzer": 3,
+    "generator": 3,
+    "agent": 3,
+    "validator": 2,
+    "orchestrator": 2,
+    "parser": 1
+  },
+  "plans": [
+    {
+      "agentName": "qa-analyzer",
+      "sourceOfTruth": "packages/mcp-agents/qa-analyzer/qa-analyzer.ts",
+      "destinationPath": "/workspaces/cahier-des-charge/src/business/analyzers/qa-analyzer/qa-analyzer.ts",
+      "archivedFiles": 3
+    },
+    {
+      "agentName": "caddyfile-generator",
+      "sourceOfTruth": "packages/mcp-agents/generators/caddyfile-generator/caddyfile-generator.ts",
+      "destinationPath": "/workspaces/cahier-des-charge/src/business/generators/caddyfile-generator/caddyfile-generator.ts",
+      "archivedFiles": 3
+    },
+    {
+      "agentName": "remix-generator",
+      "sourceOfTruth": "packages/mcp-agents/core/remix-generator.ts",
+      "destinationPath": "/workspaces/cahier-des-charge/src/business/generators/remix-generator/remix-generator.ts",
+      "archivedFiles": 2
+    },
+    {
+      "agentName": "php-analyzer",
+      "sourceOfTruth": "packages/mcp-agents/php-analyzer.ts",
+      "destinationPath": "/workspaces/cahier-des-charge/src/business/analyzers/php-analyzer/php-analyzer.ts",
+      "archivedFiles": 2
+    },
+    {
+      "agentName": "nestjs-generator",
+      "sourceOfTruth": "packages/mcp-agents/core/nestjs-generator.ts",
+      "destinationPath": "/workspaces/cahier-des-charge/src/business/generators/nestjs-generator/nestjs-generator.ts",
+      "archivedFiles": 2
+    },
+    {
+      "agentName": "index",
+      "sourceOfTruth": "packages/mcp-agents/index.ts",
+      "destinationPath": "/workspaces/cahier-des-charge/src/business/agents/index/index.ts",
+      "archivedFiles": 2
+    },
+    {
+      "agentName": "seo-checker-agent",
+      "sourceOfTruth": "packages/mcp-agents/validators/seo-checker-agent.ts",
+      "destinationPath": "/workspaces/cahier-des-charge/src/business/validators/seo-checker-agent/seo-checker-agent.ts",
+      "archivedFiles": 2
+    },
+    {
+      "agentName": "canonical-validator",
+      "sourceOfTruth": "packages/mcp-agents/validators/canonical-validator/canonical-validator.ts",
+      "destinationPath": "/workspaces/cahier-des-charge/src/business/validators/canonical-validator/canonical-validator.ts",
+      "archivedFiles": 2
+    },
+    {
+      "agentName": "base-agent",
+      "sourceOfTruth": "packages/mcp-agents/core/base-agent.ts",
+      "destinationPath": "/workspaces/cahier-des-charge/src/business/agents/base-agent/base-agent.ts",
+      "archivedFiles": 2
+    },
+    {
+      "agentName": "index",
+      "sourceOfTruth": "packages/mcp-agents/qa-analyzer/index.ts",
+      "destinationPath": "/workspaces/cahier-des-charge/src/business/agents/index/index.ts",
+      "archivedFiles": 2
+    },
+    {
+      "agentName": "temporal-adapter",
+      "sourceOfTruth": "packages/mcp-agents/orchestrators/three-layer/adapters/temporal-adapter.ts",
+      "destinationPath": "/workspaces/cahier-des-charge/src/orchestration/orchestrators/temporal-adapter/temporal-adapter.ts",
+      "archivedFiles": 2
+    },
+    {
+      "agentName": "orchestrator-bridge",
+      "sourceOfTruth": "packages/mcp-agents/orchestrators/bridges/orchestrator-bridge.ts",
+      "destinationPath": "/workspaces/cahier-des-charge/src/orchestration/orchestrators/orchestrator-bridge/orchestrator-bridge.ts",
+      "archivedFiles": 2
+    },
+    {
+      "agentName": "php-analyzer-v2",
+      "sourceOfTruth": "packages/mcp-agents/analyzers/php-analyzer/php-analyzer-v2.ts",
+      "destinationPath": "/workspaces/cahier-des-charge/src/business/analyzers/php-analyzer-v2/php-analyzer-v2.ts",
+      "archivedFiles": 2
+    },
+    {
+      "agentName": "htaccess-parser",
+      "sourceOfTruth": "agents/utils/htaccess-parser.ts",
+      "destinationPath": "/workspaces/cahier-des-charge/src/business/parsers/htaccess-parser/htaccess-parser.ts",
+      "archivedFiles": 2
+    }
+  ]
+}
