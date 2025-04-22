@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "CommonJS",
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "outDir": "/workspaces/cahier-des-charge/reports/ci-agents-20250419-090118/dist",
+    "resolveJsonModule": true
+  },
+  "include": [
+    "/workspaces/cahier-des-charge/reports/ci-agents-20250419-090118/*.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}

@@ -10,12 +10,12 @@ export class McpJobsService {
 
   async createJob(data: Prisma.McpJobCreateInput) {
     this.logger.log(`🆕 Création d'un nouveau job MCP: ${data.jobId}`);
-    return this.prisma.mcpJob.create({ data });
+    return this.prismaDoDotmcpJob.create({ data });
   }
 
   async updateJobStatus(jobId: string, status: string, result?: any) {
     this.logger.log(`🔄 Mise à jour du statut du job ${jobId} vers: ${status}`);
-    return this.prisma.mcpJob.update({
+    return this.prismaDoDotmcpJob.update({
       where: { jobId },
       data: {
         status,
@@ -26,20 +26,20 @@ export class McpJobsService {
   }
 
   async getJobById(jobId: string) {
-    return this.prisma.mcpJob.findUnique({
+    return this.prismaDoDotmcpJob.findUnique({
       where: { jobId },
     });
   }
 
   async getRecentJobs(limit = 20) {
-    return this.prisma.mcpJob.findMany({
+    return this.prismaDoDotmcpJob.findMany({
       orderBy: { updatedAt: 'desc' },
       take: limit,
     });
   }
 
   async getJobsByStatus(status: string, limit = 20) {
-    return this.prisma.mcpJob.findMany({
+    return this.prismaDoDotmcpJob.findMany({
       where: { status },
       orderBy: { updatedAt: 'desc' },
       take: limit,

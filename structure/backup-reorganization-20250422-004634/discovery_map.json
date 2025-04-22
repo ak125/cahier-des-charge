@@ -1,0 +1,197 @@
+[
+  {
+    "name": "index.php",
+    "path": "legacy/index.php",
+    "type": "php",
+    "priority": 100,
+    "dependencies": [],
+    "metadata": {
+      "routeType": "homepage",
+      "isCritical": true,
+      "hasDatabase": true,
+      "hasAuthentication": false
+    }
+  },
+  {
+    "name": "user.model.php",
+    "path": "legacy/models/user.model.php",
+    "type": "php",
+    "priority": 90,
+    "dependencies": [],
+    "metadata": {
+      "routeType": "model",
+      "isCritical": true,
+      "hasDatabase": true,
+      "hasAuthentication": true
+    }
+  },
+  {
+    "name": "product.model.php",
+    "path": "legacy/models/product.model.php",
+    "type": "php",
+    "priority": 85,
+    "dependencies": [],
+    "metadata": {
+      "routeType": "model",
+      "isCritical": true,
+      "hasDatabase": true,
+      "hasAuthentication": false
+    }
+  },
+  {
+    "name": "cart.model.php",
+    "path": "legacy/models/cart.model.php",
+    "type": "php",
+    "priority": 80,
+    "dependencies": ["product.model.php", "user.model.php"],
+    "metadata": {
+      "routeType": "model",
+      "isCritical": true,
+      "hasDatabase": true,
+      "hasAuthentication": true
+    }
+  },
+  {
+    "name": "login.php",
+    "path": "legacy/login.php",
+    "type": "php",
+    "priority": 95,
+    "dependencies": ["user.model.php"],
+    "metadata": {
+      "routeType": "auth",
+      "isCritical": true,
+      "hasDatabase": true,
+      "hasAuthentication": true
+    }
+  },
+  {
+    "name": "register.php",
+    "path": "legacy/register.php",
+    "type": "php",
+    "priority": 90,
+    "dependencies": ["user.model.php"],
+    "metadata": {
+      "routeType": "auth",
+      "isCritical": true,
+      "hasDatabase": true,
+      "hasAuthentication": true
+    }
+  },
+  {
+    "name": "profile.php",
+    "path": "legacy/profile.php",
+    "type": "php",
+    "priority": 85,
+    "dependencies": ["user.model.php"],
+    "metadata": {
+      "routeType": "auth",
+      "isCritical": true,
+      "hasDatabase": true,
+      "hasAuthentication": true
+    }
+  },
+  {
+    "name": "products.php",
+    "path": "legacy/products.php",
+    "type": "php",
+    "priority": 80,
+    "dependencies": ["product.model.php"],
+    "metadata": {
+      "routeType": "listing",
+      "isCritical": true,
+      "hasDatabase": true,
+      "hasAuthentication": false
+    }
+  },
+  {
+    "name": "product.php",
+    "path": "legacy/product.php",
+    "type": "php",
+    "priority": 75,
+    "dependencies": ["product.model.php", "cart.model.php"],
+    "metadata": {
+      "routeType": "detail",
+      "isCritical": true,
+      "hasDatabase": true,
+      "hasAuthentication": false
+    }
+  },
+  {
+    "name": "cart.php",
+    "path": "legacy/cart.php",
+    "type": "php",
+    "priority": 70,
+    "dependencies": ["cart.model.php", "product.model.php", "user.model.php"],
+    "metadata": {
+      "routeType": "cart",
+      "isCritical": true,
+      "hasDatabase": true,
+      "hasAuthentication": true
+    }
+  },
+  {
+    "name": "checkout.php",
+    "path": "legacy/checkout.php",
+    "type": "php",
+    "priority": 65,
+    "dependencies": ["cart.model.php", "user.model.php"],
+    "metadata": {
+      "routeType": "checkout",
+      "isCritical": true,
+      "hasDatabase": true,
+      "hasAuthentication": true
+    }
+  },
+  {
+    "name": "order.php",
+    "path": "legacy/order.php",
+    "type": "php",
+    "priority": 60,
+    "dependencies": ["user.model.php"],
+    "metadata": {
+      "routeType": "order",
+      "isCritical": true,
+      "hasDatabase": true,
+      "hasAuthentication": true
+    }
+  },
+  {
+    "name": "contact.php",
+    "path": "legacy/contact.php",
+    "type": "php",
+    "priority": 50,
+    "dependencies": [],
+    "metadata": {
+      "routeType": "form",
+      "isCritical": false,
+      "hasDatabase": true,
+      "hasAuthentication": false
+    }
+  },
+  {
+    "name": "about.php",
+    "path": "legacy/about.php",
+    "type": "php",
+    "priority": 40,
+    "dependencies": [],
+    "metadata": {
+      "routeType": "static",
+      "isCritical": false,
+      "hasDatabase": false,
+      "hasAuthentication": false
+    }
+  },
+  {
+    "name": "faq.php",
+    "path": "legacy/faq.php",
+    "type": "php",
+    "priority": 30,
+    "dependencies": [],
+    "metadata": {
+      "routeType": "static",
+      "isCritical": false,
+      "hasDatabase": false,
+      "hasAuthentication": false
+    }
+  }
+]

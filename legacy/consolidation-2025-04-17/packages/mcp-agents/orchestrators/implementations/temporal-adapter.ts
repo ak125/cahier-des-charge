@@ -4,7 +4,7 @@ import {
   OrchestrationAdapter, 
   ValidationResult, 
   OrchestratorCapabilities 
-} from '../three-layer/adapter-layer';
+} from '../ThreeLayer/AdapterLayer';
 import { 
   OrchestrationAbstraction,
   WorkflowDefinition, 
@@ -13,8 +13,8 @@ import {
   TaskOptions, 
   JobStatus, 
   EventCallback 
-} from '../three-layer/abstraction-layer';
-import { CheckpointManager, MigrationCheckpoint } from '../persistence/checkpoint-manager';
+} from '../ThreeLayer/AbstractionLayer';
+import { CheckpointManager, MigrationCheckpoint } from '../persistence/CheckpointManager';
 import { v4 as uuidv4 } from 'uuid';
 
 /**

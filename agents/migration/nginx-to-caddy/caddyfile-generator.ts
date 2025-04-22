@@ -1,1 +1,9 @@
-../../../src/business/generators/caddyfile-generator/caddyfile-generator.ts
+/**
+ * CaddyfileGenerator
+ * Agent export file
+ */
+
+import { CaddyfileGenerator } from './caddyfile-generator';
+
+export { CaddyfileGenerator };
+export default CaddyfileGenerator;

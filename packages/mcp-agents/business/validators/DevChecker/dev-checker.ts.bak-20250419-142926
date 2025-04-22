@@ -1,0 +1,696 @@
+/**
+ * DevChecker - Agent MCP pour business (validator)
+ * 
+ * Migration automatique vers l'architecture MCP OS en 3 couches
+ * Date: 2025-04-18T00:11:24.605Z
+ */
+
+import { ValidatorAgent } from '../../../core/interfaces/validator';
+import { BaseAgent } from '../../../core/interfaces/base-agent';
+import { BusinessAgent } from '../../../core/interfaces/business';
+import { execSync } from 'child_process';
+import fs from 'fs';
+import path from 'path';
+
+/**
+ * Configuration pour DevChecker
+ */
+export interface DevCheckerConfig {
+  // Propriétés de configuration
+  projectRoot?: string;
+  tsConfigPath?: string;
+  remixAppDirectory?: string;
+  reportOutputPath?: string;
+  autoFix?: boolean;
+  logLevel?: 'debug' | 'info' | 'warn' | 'error';
+}
+
+/**
+ * DevChecker - Agent de validation pour environnements de développement
+ * Détecte et corrige les problèmes courants dans les projets Remix et TypeScript
+ */
+export class DevChecker implements BaseAgent, BusinessAgent, ValidatorAgent {
+  id = 'dev-checker';
+  name = 'Development Validator';
+  type = 'validator';
+  version = '1.0.0';
+  
+  private validationResults: {
+    validationDate: string;
+    valid: boolean;
+    errors: Array<{type: string; file: string; message: string; fixApplied?: boolean}>;
+    warnings: Array<{type: string; file: string; message: string; fixApplied?: boolean}>;
+    fixesApplied: number;
+    totalIssues: number;
+  };
+  
+  constructor(private config: DevCheckerConfig) {
+    // Initialisation avec valeurs par défaut
+    this.config = {
+      projectRoot: process.cwd(),
+      tsConfigPath: path.join(process.cwd(), 'tsconfig.json'),
+      remixAppDirectory: path.join(process.cwd(), 'app'),
+      reportOutputPath: path.join(process.cwd(), 'reports'),
+      autoFix: false,
+      logLevel: 'info',
+      ...config
+    };
+    
+    // Initialiser les résultats de validation
+    this.validationResults = {
+      validationDate: new Date().toISOString(),
+      valid: true,
+      errors: [],
+      warnings: [],
+      fixesApplied: 0,
+      totalIssues: 0
+    };
+  }
+  
+  /**
+   * Initialise l'agent avec des options spécifiques
+   */
+  async initialize(options?: Record<string, any>): Promise<void> {
+    if (options) {
+      this.config = { ...this.config, ...options };
+    }
+    
+    // Vérification des chemins et création des répertoires si nécessaire
+    if (this.config.reportOutputPath) {
+      fs.mkdirSync(this.config.reportOutputPath, { recursive: true });
+    }
+    
+    this.log('info', `DevChecker initialisé avec la configuration suivante: ${JSON.stringify(this.config)}`);
+  }
+  
+  /**
+   * Indique si l'agent est prêt à être utilisé
+   */
+  isReady(): boolean {
+    // Vérifier que les chemins essentiels existent
+    const tsConfigExists = this.config.tsConfigPath && fs.existsSync(this.config.tsConfigPath);
+    const projectRootExists = this.config.projectRoot && fs.existsSync(this.config.projectRoot);
+    
+    return tsConfigExists && projectRootExists;
+  }
+  
+  /**
+   * Arrête et nettoie l'agent
+   */
+  async shutdown(): Promise<void> {
+    this.log('info', 'DevChecker arrêté');
+  }
+  
+  /**
+   * Récupère les métadonnées de l'agent
+   */
+  getMetadata(): Record<string, any> {
+    return {
+      id: this.id,
+      name: this.name,
+      type: this.type,
+      version: this.version,
+      description: 'Validateur de qualité de code pour environnement de développement'
+    };
+  }
+  
+  /**
+   * Récupère l'état actuel de l'agent business
+   */
+  async getState(): Promise<Record<string, any>> {
+    return {
+      status: 'active',
+      timestamp: new Date().toISOString(),
+      validationResults: this.validationResults
+    };
+  }
+  
+  /**
+   * Méthode principale pour exécuter les validations
+   */
+  async run(): Promise<any> {
+    try {
+      this.log('info', 'Démarrage de la validation de développement...');
+      
+      // Valider les imports avec alias
+      const aliasResults = await this.validateAliasImports();
+      if (!aliasResults.valid) {
+        this.validationResults.valid = false;
+        this.validationResults.errors.push(...aliasResults.errors);
+        this.validationResults.warnings.push(...aliasResults.warnings);
+        this.validationResults.totalIssues += aliasResults.errors.length + aliasResults.warnings.length;
+      }
+      
+      // Valider les routes Remix
+      if (this.config.remixAppDirectory && fs.existsSync(this.config.remixAppDirectory)) {
+        const remixResults = await this.validateRemixRoutes();
+        if (!remixResults.valid) {
+          this.validationResults.valid = false;
+          this.validationResults.errors.push(...remixResults.errors);
+          this.validationResults.warnings.push(...remixResults.warnings);
+          this.validationResults.totalIssues += remixResults.errors.length + remixResults.warnings.length;
+        }
+      } else {
+        this.log('info', 'Répertoire Remix non trouvé, validation des routes ignorée');
+      }
+      
+      // Générer un rapport détaillé
+      await this.generateDetailedReport();
+      
+      return this.validationResults;
+    } catch (error) {
+      this.log('error', `Erreur lors de l'exécution de la validation: ${error.message || error}`);
+      throw error;
+    }
+  }
+  
+  /**
+   * Valide les imports avec alias dans le projet
+   */
+  private async validateAliasImports(): Promise<any> {
+    const results = {
+      valid: true,
+      errors: [],
+      warnings: [],
+      fixes: []
+    };
+    
+    try {
+      this.log('info', 'Validation des imports avec alias...');
+      
+      // Vérifier que le fichier tsconfig.json existe
+      if (!this.hasValidTsConfigPath()) {
+        results.valid = false;
+        results.errors.push({
+          type: 'tsconfig-missing',
+          file: 'tsconfig.json',
+          message: 'Fichier tsconfig.json non trouvé'
+        });
+        return results;
+      }
+      
+      // Lire le contenu du fichier tsconfig.json pour obtenir les alias
+      const tsConfigContent = JSON.parse(fs.readFileSync(this.config.tsConfigPath, 'utf8'));
+      const paths = tsConfigContent.compilerOptions?.paths || {};
+      
+      // S'il n'y a pas d'alias définis, on retourne immédiatement
+      if (Object.keys(paths).length === 0) {
+        this.log('info', 'Aucun alias trouvé dans tsconfig.json');
+        return results;
+      }
+      
+      // Trouver tous les fichiers TypeScript et JavaScript dans le projet
+      const allFiles = this.findSourceFiles();
+      
+      // Analyser chaque fichier pour détecter les imports problématiques
+      for (const file of allFiles) {
+        const content = fs.readFileSync(file, 'utf8');
+        const importLines = this.extractImportLines(content);
+        
+        for (const importLine of importLines) {
+          // Vérifier si l'import utilise un alias et s'il est valide
+          if (!this.isValidImport(importLine, paths)) {
+            results.valid = false;
+            results.errors.push({
+              type: 'invalid-alias-import',
+              file,
+              message: `Import invalide: ${importLine}`
+            });
+            
+            // Générer la correction
+            const fixedImport = this.fixImportAlias(importLine, paths, file);
+            if (fixedImport && fixedImport !== importLine) {
+              results.fixes.push({
+                file,
+                originalImport: importLine,
+                fixedImport
+              });
+              
+              // Appliquer la correction si autoFix est activé
+              if (this.config.autoFix) {
+                const newContent = content.replace(importLine, fixedImport);
+                fs.writeFileSync(file, newContent, 'utf8');
+                this.validationResults.fixesApplied++;
+                results.errors[results.errors.length - 1].fixApplied = true;
+              }
+            }
+          }
+        }
+      }
+      
+      return results;
+    } catch (error) {
+      this.log('error', `Erreur lors de la validation des imports avec alias: ${error.message || error}`);
+      results.valid = false;
+      results.errors.push({
+        type: 'validation-error',
+        file: 'N/A',
+        message: `Erreur de validation: ${error.message || error}`
+      });
+      return results;
+    }
+  }
+  
+  /**
+   * Vérifie si le chemin du tsconfig est valide
+   */
+  private hasValidTsConfigPath(): boolean {
+    try {
+      return this.config.tsConfigPath && fs.existsSync(this.config.tsConfigPath);
+    } catch (error) {
+      return false;
+    }
+  }
+  
+  /**
+   * Vérifie si une ligne d'import est valide par rapport aux alias définis
+   */
+  private isValidImport(importLine: string, paths: Record<string, string[]>): boolean {
+    try {
+      const importMatch = importLine.match(/from ['"]([^'"]+)['"]/);
+      if (!importMatch) return true; // Pas une ligne d'import
+      
+      const importPath = importMatch[1];
+      
+      // Si l'import ne commence pas par un alias, on le considère valide
+      const aliasPrefix = Object.keys(paths).find(alias => {
+        const aliasName = alias.replace(/\/\*$/, '');
+        return importPath.startsWith(aliasName);
+      });
+      
+      if (!aliasPrefix) return true;
+      
+      // Vérifier que l'alias est correctement utilisé
+      const aliasTarget = paths[aliasPrefix][0].replace(/\/\*$/, '');
+      const relativePath = path.join(this.config.projectRoot, aliasTarget);
+      
+      return fs.existsSync(relativePath);
+    } catch (error) {
+      this.log('error', `Erreur lors de la vérification d'un import: ${error.message || error}`);
+      return false;
+    }
+  }
+  
+  /**
+   * Corrige un import avec alias incorrect
+   */
+  private fixImportAlias(importLine: string, paths: Record<string, string[]>, currentFile: string): string {
+    const importMatch = importLine.match(/from ['"]([^'"]+)['"]/);
+    if (!importMatch) return importLine;
+    
+    const importPath = importMatch[1];
+    
+    // Trouver l'alias utilisé
+    const aliasPrefix = Object.keys(paths).find(alias => {
+      const aliasName = alias.replace(/\/\*$/, '');
+      return importPath.startsWith(aliasName);
+    });
+    
+    if (!aliasPrefix) return importLine;
+    
+    // Déterminer le chemin relatif correct
+    const aliasName = aliasPrefix.replace(/\/\*$/, '');
+    const aliasTarget = paths[aliasPrefix][0].replace(/\/\*$/, '');
+    const importRest = importPath.substring(aliasName.length);
+    
+    // Construire le chemin absolu de la cible de l'import
+    const targetAbsolutePath = path.join(this.config.projectRoot, aliasTarget, importRest);
+    
+    // Si le chemin absolu n'existe pas, essayer de trouver une alternative
+    if (!fs.existsSync(targetAbsolutePath)) {
+      for (const ext of ['.ts', '.tsx', '.js', '.jsx']) {
+        if (fs.existsSync(targetAbsolutePath + ext)) {
+          // On a trouvé le fichier avec une extension
+          break;
+        }
+      }
+      
+      // Chercher un index
+      for (const ext of ['.ts', '.tsx', '.js', '.jsx']) {
+        if (fs.existsSync(path.join(targetAbsolutePath, `index${ext}`))) {
+          // On a trouvé un fichier index
+          break;
+        }
+      }
+    }
+    
+    // Calculer le chemin relatif depuis le fichier courant
+    const currentDir = path.dirname(currentFile);
+    let relativePathToTarget = path.relative(currentDir, targetAbsolutePath);
+    
+    // Assurer que le chemin commence par ./ ou ../
+    if (!relativePathToTarget.startsWith('.')) {
+      relativePathToTarget = `./${relativePathToTarget}`;
+    }
+    
+    // Remplacer les backslashes par des forward slashes pour la compatibilité
+    relativePathToTarget = relativePathToTarget.replace(/\\/g, '/');
+    
+    // Créer la nouvelle ligne d'import
+    return importLine.replace(importPath, relativePathToTarget);
+  }
+  
+  /**
+   * Valide les routes Remix dans le projet
+   */
+  private async validateRemixRoutes(): Promise<any> {
+    const results = {
+      valid: true,
+      errors: [],
+      warnings: [],
+      fixes: []
+    };
+    
+    try {
+      this.log('info', 'Validation des routes Remix...');
+      
+      if (!this.config.remixAppDirectory || !fs.existsSync(this.config.remixAppDirectory)) {
+        results.warnings.push({
+          type: 'remix-dir-missing',
+          file: this.config.remixAppDirectory || 'app',
+          message: 'Répertoire Remix non trouvé'
+        });
+        return results;
+      }
+      
+      // Trouver tous les fichiers de route dans le répertoire routes de Remix
+      const routesDir = path.join(this.config.remixAppDirectory, 'routes');
+      if (!fs.existsSync(routesDir)) {
+        results.warnings.push({
+          type: 'routes-dir-missing',
+          file: routesDir,
+          message: 'Répertoire routes non trouvé dans l\'application Remix'
+        });
+        return results;
+      }
+      
+      const routeFiles = this.findFilesRecursively(routesDir);
+      
+      // Analyser chaque fichier de route pour les problèmes courants
+      for (const routeFile of routeFiles) {
+        const issueDetails = await this.validateRemixRoute(routeFile);
+        
+        if (issueDetails) {
+          results.valid = false;
+          
+          // Différencier les erreurs des avertissements
+          if (issueDetails.severity === 'error') {
+            results.errors.push({
+              type: issueDetails.type,
+              file: routeFile,
+              message: issueDetails.message
+            });
+          } else {
+            results.warnings.push({
+              type: issueDetails.type,
+              file: routeFile,
+              message: issueDetails.message
+            });
+          }
+          
+          // Appliquer la correction si autoFix est activé
+          if (this.config.autoFix && issueDetails.fix) {
+            const success = await this.fixRemixRoute(routeFile, issueDetails.type, issueDetails.fix);
+            
+            if (success) {
+              this.validationResults.fixesApplied++;
+              if (issueDetails.severity === 'error') {
+                results.errors[results.errors.length - 1].fixApplied = true;
+              } else {
+                results.warnings[results.warnings.length - 1].fixApplied = true;
+              }
+            }
+          }
+        }
+      }
+      
+      return results;
+    } catch (error) {
+      this.log('error', `Erreur lors de la validation des routes Remix: ${error.message || error}`);
+      results.valid = false;
+      results.errors.push({
+        type: 'validation-error',
+        file: 'N/A',
+        message: `Erreur de validation: ${error.message || error}`
+      });
+      return results;
+    }
+  }
+  
+  /**
+   * Valide un fichier de route Remix spécifique
+   */
+  private async validateRemixRoute(routeFile: string): Promise<any | null> {
+    try {
+      const content = fs.readFileSync(routeFile, 'utf8');
+      const fileName = path.basename(routeFile);
+      
+      // Vérifier que le fichier exporte un composant par défaut
+      if (!content.includes('export default') && !content.includes('export { default }')) {
+        return {
+          type: 'missing-default-export',
+          severity: 'error',
+          message: 'Le fichier de route ne contient pas d\'export par défaut',
+          fix: { type: 'add-default-export' }
+        };
+      }
+      
+      // Vérifier la convention de nommage des fichiers de route
+      if (!fileName.match(/^[a-z0-9-_.]+\.[jt]sx?$/)) {
+        return {
+          type: 'invalid-route-name',
+          severity: 'warning',
+          message: 'Le nom du fichier de route ne respecte pas les conventions Remix',
+          fix: { type: 'rename-route-file' }
+        };
+      }
+      
+      return null; // Pas de problème détecté
+    } catch (error) {
+      this.log('error', `Erreur lors de la validation de la route ${routeFile}: ${error.message || error}`);
+      return null;
+    }
+  }
+  
+  /**
+   * Applique une correction à un fichier de route Remix
+   */
+  private async fixRemixRoute(routeFile: string, issueType: string, fix: any): Promise<boolean> {
+    try {
+      switch (issueType) {
+        case 'missing-default-export': {
+          // Ajouter un export par défaut
+          const content = fs.readFileSync(routeFile, 'utf8');
+          
+          if (content.includes('function Route')) {
+            // Si une fonction Route existe mais n'est pas exportée
+            const newContent = content + '\n\nexport default Route;\n';
+            fs.writeFileSync(routeFile, newContent, 'utf8');
+            return true;
+          } else if (content.includes('const Route')) {
+            // Si une constante Route existe mais n'est pas exportée
+            const newContent = content + '\n\nexport default Route;\n';
+            fs.writeFileSync(routeFile, newContent, 'utf8');
+            return true;
+          } else {
+            // Créer un composant par défaut
+            const newContent = content + `
+/**
+ * Composant de route généré automatiquement
+ */
+export default function Route() {
+  return (
+    <div>
+      <h1>Route générée</h1>
+      <p>Cette route a été générée automatiquement par DevChecker.</p>
+    </div>
+  );
+}
+`;
+            fs.writeFileSync(routeFile, newContent, 'utf8');
+            return true;
+          }
+        }
+        
+        case 'invalid-route-name': {
+          // Renommer le fichier selon les conventions Remix
+          const dir = path.dirname(routeFile);
+          const oldName = path.basename(routeFile);
+          const extension = path.extname(routeFile);
+          const baseName = path.basename(routeFile, extension);
+          
+          // Convertir en kebab-case
+          const newBaseName = baseName
+            .replace(/([a-z0-9])([A-Z])/g, '$1-$2')
+            .replace(/([A-Z])([A-Z][a-z])/g, '$1-$2')
+            .toLowerCase();
+          
+          const newName = `${newBaseName}${extension}`;
+          const newPath = path.join(dir, newName);
+          
+          if (oldName !== newName && !fs.existsSync(newPath)) {
+            fs.renameSync(routeFile, newPath);
+            return true;
+          }
+          return false;
+        }
+        
+        default:
+          return false;
+      }
+    } catch (error) {
+      this.log('error', `Erreur lors de la correction de la route ${routeFile}: ${error.message || error}`);
+      return false;
+    }
+  }
+  
+  /**
+   * Génère un rapport détaillé des problèmes trouvés
+   */
+  private async generateDetailedReport(): Promise<void> {
+    try {
+      if (!this.config.reportOutputPath) {
+        this.log('warn', 'Pas de chemin de sortie pour le rapport, génération ignorée');
+        return;
+      }
+      
+      const reportPath = path.join(this.config.reportOutputPath, 'dev-checker-report.html');
+      
+      let htmlContent = `<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rapport de validation DevChecker</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 1200px; margin: 0 auto; padding: 20px; }
+    h1, h2, h3 { color: #333; }
+    .summary { background-color: #f5f5f5; padding: 15px; border-radius: 5px; margin-bottom: 20px; }
+    .valid { color: green; }
+    .invalid { color: red; }
+    .issue { margin-bottom: 10px; padding: 10px; border-left: 4px solid #ddd; }
+    .error { border-color: #ff5252; background-color: #ffebee; }
+    .warning { border-color: #ffab40; background-color: #fff8e1; }
+    .fixed { border-left: 4px solid #4caf50; }
+    .file { font-family: monospace; margin-top: 5px; color: #666; }
+    .count { font-weight: bold; }
+  </style>
+</head>
+<body>
+  <h1>Rapport de validation DevChecker</h1>
+  
+  <div class="summary">
+    <h2>Résumé</h2>
+    <p>Date: ${this.validationResults.validationDate}</p>
+    <p>Statut: <span class="${this.validationResults.valid ? 'valid' : 'invalid'}">${this.validationResults.valid ? 'Valide' : 'Problèmes détectés'}</span></p>
+    <p>Nombre d'erreurs: <span class="count">${this.validationResults.errors.length}</span></p>
+    <p>Nombre d'avertissements: <span class="count">${this.validationResults.warnings.length}</span></p>
+    <p>Corrections appliquées: <span class="count">${this.validationResults.fixesApplied}</span></p>
+  </div>`;
+      
+      // Section erreurs
+      if (this.validationResults.errors.length > 0) {
+        htmlContent += `<h2>Erreurs</h2>`;
+        
+        for (const error of this.validationResults.errors) {
+          htmlContent += `
+  <div class="issue error ${error.fixApplied ? 'fixed' : ''}">
+    <h3>${error.type}</h3>
+    <p>${error.message}</p>
+    <div class="file">${error.file}</div>
+    ${error.fixApplied ? '<p><strong>✓ Corrigé automatiquement</strong></p>' : ''}
+  </div>`;
+        }
+      }
+      
+      // Section avertissements
+      if (this.validationResults.warnings.length > 0) {
+        htmlContent += `<h2>Avertissements</h2>`;
+        
+        for (const warning of this.validationResults.warnings) {
+          htmlContent += `
+  <div class="issue warning ${warning.fixApplied ? 'fixed' : ''}">
+    <h3>${warning.type}</h3>
+    <p>${warning.message}</p>
+    <div class="file">${warning.file}</div>
+    ${warning.fixApplied ? '<p><strong>✓ Corrigé automatiquement</strong></p>' : ''}
+  </div>`;
+        }
+      }
+      
+      // Si aucun problème n'est trouvé
+      if (this.validationResults.errors.length === 0 && this.validationResults.warnings.length === 0) {
+        htmlContent += `
+  <div class="issue">
+    <h3>Aucun problème détecté</h3>
+    <p>Félicitations ! Aucun problème n'a été trouvé dans votre code.</p>
+  </div>`;
+      }
+      
+      htmlContent += `
+</body>
+</html>`;
+      
+      fs.writeFileSync(reportPath, htmlContent, 'utf8');
+      this.log('info', `Rapport généré: ${reportPath}`);
+    } catch (error) {
+      this.log('error', `Erreur lors de la génération du rapport: ${error.message || error}`);
+    }
+  }
+  
+  /**
+   * Trouve récursivement les fichiers dans un répertoire
+   */
+  private findFilesRecursively(directory: string, extension?: string): string[] {
+    const results: string[] = [];
+    
+    const files = fs.readdirSync(directory);
+    
+    for (const file of files) {
+      const fullPath = path.join(directory, file);
+      const stat = fs.statSync(fullPath);
+      
+      if (stat.isDirectory()) {
+        results.push(...this.findFilesRecursively(fullPath, extension));
+      } else if (!extension || fullPath.endsWith(extension)) {
+        results.push(fullPath);
+      }
+    }
+    
+    return results;
+  }
+  
+  /**
+   * Trouve tous les fichiers source TypeScript/JavaScript dans le projet
+   */
+  private findSourceFiles(): string[] {
+    return this.findFilesRecursively(this.config.projectRoot, '.ts')
+      .concat(this.findFilesRecursively(this.config.projectRoot, '.tsx'))
+      .concat(this.findFilesRecursively(this.config.projectRoot, '.js'))
+      .concat(this.findFilesRecursively(this.config.projectRoot, '.jsx'))
+      .filter(file => !file.includes('node_modules'));
+  }
+  
+  /**
+   * Extrait les lignes d'import d'un fichier
+   */
+  private extractImportLines(content: string): string[] {
+    const importRegex = /import\s+(?:.+\s+from\s+)?['"][^'"]+['"]/g;
+    return content.match(importRegex) || [];
+  }
+  
+  /**
+   * Fonction utilitaire pour la journalisation
+   */
+  private log(level: 'debug' | 'info' | 'warn' | 'error', message: string): void {
+    const logLevels = { debug: 0, info: 1, warn: 2, error: 3 };
+    const configLevel = this.config.logLevel || 'info';
+    
+    if (logLevels[level] >= logLevels[configLevel]) {
+      const timestamp = new Date().toISOString();
+      console[level === 'debug' ? 'log' : level](`[${timestamp}] [${level.toUpperCase()}] ${message}`);
+    }
+  }
+}
+
+export default DevChecker;

@@ -1,5 +1,5 @@
 import { Trigger, customEvent } from "@trigger.dev/sdk";
-import { Github, GithubWorkflow } from "@trigger.dev/github";
+import { Github, GithubWorkflow } from "@trigger.devDoDoDoDoDoDotgithub";
 import { Client as TemporalClient } from "@temporalio/client";
 import Redis from "ioredis";
 
@@ -16,16 +16,16 @@ const getRedisClient = () => {
 };
 
 // Configuration GitHub
-const github = new Github({
-  id: "github-mcp-integration",
-  token: process.env.GITHUB_TOKEN || "your-github-token",
+constDoDoDoDoDoDotgithub = new Github({
+  id: DoDoDoDoDoDotgithubDoDotmcp-integration",
+  token: process.env.GITHUB_TOKEN || "yourDoDoDoDoDoDotgithub-token",
 });
 
 // Définition du workflow Trigger.dev
-export const githubToMcpTrigger = new Trigger({
-  id: "github-php-to-remix-migration",
+export constDoDoDoDoDoDotgithubToMcpTrigger = new Trigger({
+  id: DoDoDoDoDoDotgithub-PhpToRemix-migration",
   name: "GitHub PHP to Remix Migration",
-  on: github.events.repo.push,
+  on:DoDoDoDoDoDotgithub.events.repo.push,
   run: async (event, ctx) => {
     // Filtrer pour ne prendre en compte que les commits sur la branche principale
     if (event.payload.ref !== "refs/heads/main" && event.payload.ref !== "refs/heads/master") {
@@ -131,7 +131,7 @@ export const githubToMcpTrigger = new Trigger({
 export const ciTrigger = new Trigger({
   id: "ci-migration-verification",
   name: "CI Migration Verification",
-  on: github.events.pullRequest.opened,
+  on:DoDoDoDoDoDotgithub.events.pullRequest.opened,
   run: async (event, ctx) => {
     // Vérifier si c'est une PR de migration
     const prTitle = event.payload.pull_request.title.toLowerCase();
@@ -143,12 +143,12 @@ export const ciTrigger = new Trigger({
     }
 
     // Récupérer les fichiers modifiés dans la PR
-    const changedFiles = await github
+    const changedFiles = awaitDoDoDoDoDoDotgithub
       .withClient({
         owner: event.payload.repository.owner.login,
         repo: event.payload.repository.name,
         headers: {
-          accept: "application/vnd.github.v3+json",
+          accept: "application/vndDoDoDoDoDoDotgithub.v3+json",
         },
       })
       .request("GET /repos/{owner}/{repo}/pulls/{pull_number}/files", {
@@ -231,7 +231,7 @@ export const migrationValidationTrigger = new Trigger({
 
     try {
       // Créer un commentaire sur la PR avec les détails de validation
-      await github.withClient({
+      awaitDoDoDoDoDoDotgithub.withClient({
         owner: repository.owner,
         repo: repository.name,
       }).request("POST /repos/{owner}/{repo}/issues/{issue_number}/comments", {

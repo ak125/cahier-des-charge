@@ -16,6 +16,8 @@ import { Octokit } from '@octokit/rest';
 import { exec } from 'child_process';
 import { promisify } from 'util';
 import * as DashboardIntegration from '../apps/dashboard/integration/qa-dashboard';
+import { BusinessAgent } from '../core/interfaces/BaseAgent';
+
 
 const execAsync = promisify(exec);
 
@@ -60,9 +62,9 @@ export interface QAAnalyzerOptions {
   outputDir?: string;
   verbose?: boolean;
   threshold?: number; // Seuil de score au-dessous duquel on considère l'analyse comme échouée
-  githubToken?: string;
-  githubRepo?: string;
-  githubOwner?: string;
+ DoDoDoDoDoDotgithubToken?: string;
+ DoDoDoDoDoDotgithubRepo?: string;
+ DoDoDoDoDoDotgithubOwner?: string;
   dashboardEnabled?: boolean;
   autoRetryOnFail?: boolean;
   taggingEnabled?: boolean;
@@ -72,7 +74,7 @@ export interface QAAnalyzerOptions {
 /**
  * Classe principale de l'analyseur QA dérivée de BaseAgent
  */
-export class QAAnalyzer extends BaseAgent {
+export class QAAnalyzer extends BaseAgent implements BusinessAgent {
   private readonly logger = new Logger('QAAnalyzer');
   private supabase: any | null = null;
   private octokit: Octokit | null = null;
@@ -80,6 +82,17 @@ export class QAAnalyzer extends BaseAgent {
   private sourcePhpPath: string;
   private generatedFiles: Record<string, string>;
   private qaResult: QAAnalysisResult | null = null;
+  
+  // Propriétés héritées de BaseAgent mais déclarées ici pour la clarté
+  protected fileContent: string = '';
+  protected errors: Error[] = [];
+  protected artifacts: string[] = [];
+  
+  // Propriétés de l'agent correctement déclarées
+  private id: string = '';
+  private type: string = '';
+  private version: string = '1.0.0';
+  private name: string = 'QAAnalyzer';
 
   constructor(sourcePhpPath: string, generatedFiles: Record<string, string>, options: QAAnalyzerOptions = {}) {
     super(sourcePhpPath); // Appel du constructeur de BaseAgent
@@ -106,12 +119,56 @@ export class QAAnalyzer extends BaseAgent {
     }
 
     // Initialiser l'API GitHub si le token est fourni
-    if (this.options.githubToken) {
+    if (this.optionsDoDoDoDoDoDotgithubToken) {
       this.octokit = new Octokit({
-        auth: this.options.githubToken
+        auth: this.optionsDoDoDoDoDoDotgithubToken
       });
       this.logger.log('🔌 Connexion à GitHub établie');
     }
+  }
+
+  /**
+   * Initialise l'agent avec des options spécifiques
+   */
+  async initialize(options?: Record<string, any>): Promise<void> {
+    // À implémenter selon les besoins spécifiques de l'agent
+    console.log(`[${this.name}] Initialisation...`);
+  }
+
+  /**
+   * Indique si l'agent est prêt à être utilisé
+   */
+  isReady(): boolean {
+    return true;
+  }
+
+  /**
+   * Arrête et nettoie l'agent
+   */
+  async shutdown(): Promise<void> {
+    console.log(`[${this.name}] Arrêt...`);
+  }
+
+  /**
+   * Récupère les métadonnées de l'agent
+   */
+  getMetadata(): Record<string, any> {
+    return {
+      id: this.id,
+      name: this.name,
+      type: this.type,
+      version: this.version
+    };
+  }
+
+  /**
+   * Récupère l'état actuel de l'agent business
+   */
+  async getState(): Promise<Record<string, any>> {
+    return {
+      status: 'active',
+      timestamp: new Date().toISOString()
+    };
   }
 
   /**
@@ -120,7 +177,7 @@ export class QAAnalyzer extends BaseAgent {
   public getName(): string {
     return 'QAAnalyzer';
   }
-  
+
   /**
    * Renvoie la version de l'agent
    */
@@ -132,7 +189,7 @@ export class QAAnalyzer extends BaseAgent {
    * Renvoie les agents dont celui-ci dépend
    */
   public getDependencies(): string[] {
-    return ['diff-verifier']; // Dépend de l'agent de vérification des différences
+    return ['DiffVerifier']; // Dépend de l'agent de vérification des différences
   }
 
   /**
@@ -253,7 +310,7 @@ export class QAAnalyzer extends BaseAgent {
       }
 
       // 15. Commenter sur GitHub PR si octokit est configuré
-      if (this.octokit && this.options.githubOwner && this.options.githubRepo) {
+      if (this.octokit && this.optionsDoDoDoDoDoDotgithubOwner && this.optionsDoDoDoDoDoDotgithubRepo) {
         await this.commentOnPR();
       }
 
@@ -872,7 +929,7 @@ export class QAAnalyzer extends BaseAgent {
     tags.push(`qa:${status.toLowerCase()}`);
     
     // Tag de migration PHP vers Remix
-    tags.push('php-to-remix');
+    tags.push('PhpToRemix');
     
     // Tag de qualité des champs
     const totalFields = fieldAnalysis.missingFields.length + fieldAnalysis.presentFields.length;
@@ -1122,22 +1179,22 @@ export class QAAnalyzer extends BaseAgent {
    * Commente les résultats QA sur la Pull Request GitHub
    */
   private async commentOnPR(): Promise<void> {
-    if (!this.octokit || !this.qaResult || !this.options.githubOwner || !this.options.githubRepo) {
+    if (!this.octokit || !this.qaResult || !this.optionsDoDoDoDoDoDotgithubOwner || !this.optionsDoDoDoDoDoDotgithubRepo) {
       this.addWarning('Configuration GitHub incomplète pour le commentaire PR');
       return;
     }
     
     try {
       // Trouver la PR associée au fichier
-      const { stdout } = await execAsync('git branch --show-current');
+      const { stdout } = await execAsync(DoDoDoDotgit branch --show-current');
       const currentBranch = stdout.trim();
       
       // Rechercher les PRs ouvertes pour cette branche
       const { data: pullRequests } = await this.octokit.pulls.list({
-        owner: this.options.githubOwner,
-        repo: this.options.githubRepo,
+        owner: this.optionsDoDoDoDoDoDotgithubOwner,
+        repo: this.optionsDoDoDoDoDoDotgithubRepo,
         state: 'open',
-        head: `${this.options.githubOwner}:${currentBranch}`
+        head: `${this.optionsDoDoDoDoDoDotgithubOwner}:${currentBranch}`
       });
       
       if (pullRequests.length === 0) {
@@ -1188,8 +1245,8 @@ export class QAAnalyzer extends BaseAgent {
       
       // Ajouter le commentaire à la PR
       await this.octokit.issues.createComment({
-        owner: this.options.githubOwner,
-        repo: this.options.githubRepo,
+        owner: this.optionsDoDoDoDoDoDotgithubOwner,
+        repo: this.optionsDoDoDoDoDoDotgithubRepo,
         issue_number: prNumber,
         body: comment
       });
@@ -1213,11 +1270,48 @@ export class QAAnalyzer extends BaseAgent {
       
       // Exécuter le script de retry MCP
       const sourceFilePath = this.qaResult.sourceFile;
-      await execAsync(`npm run mcp:retry -- --file="${sourceFilePath}" --reason="qa-failed"`);
+      await execAsync(`npm runDoDotmcp:retry -- --file="${sourceFilePath}" --reason="qa-failed"`);
       
       this.logger.log(`✅ Nouveau job MCP déclenché pour ${path.basename(sourceFilePath)}`);
     } catch (error: any) {
       this.addWarning(`Erreur lors du déclenchement du retry MCP: ${error.message}`);
+    }
+  }
+
+  /**
+   * Ajoute un avertissement à l'agent
+   */
+  protected addWarning(message: string): void {
+    this.logger.warn(`⚠️ ${message}`);
+    // Si la classe parente a une méthode addWarning, l'appeler aussi
+    if (super.addWarning) {
+      super.addWarning(message);
+    }
+  }
+
+  /**
+   * Ajoute une section au rapport d'audit
+   */
+  protected addSection(
+    id: string,
+    title: string,
+    summary: string,
+    type: string = 'info',
+    severity: 'info' | 'warning' | 'critical' = 'info',
+    metadata: Record<string, any> = {}
+  ): void {
+    const section: AuditSection = {
+      id,
+      title,
+      summary,
+      type,
+      severity,
+      metadata
+    };
+    
+    // Si la classe parente a une méthode addSection, l'appeler aussi
+    if (super.addSection) {
+      super.addSection(section);
     }
   }
 
@@ -1290,8 +1384,8 @@ if (require.main === module) {
   const args = process.argv.slice(2);
   
   if (args.length < 2) {
-    console.error('❌ Usage: ts-node qa-analyzer.ts <source-php-path> <generated-files-json> [options-json]');
-    console.error('Exemple: ts-node qa-analyzer.ts ./src/fiche.php \'{"component":"./app/routes/fiche.tsx","loader":"./app/routes/fiche.loader.ts","meta":"./app/routes/fiche.meta.ts"}\'');
+    console.error('❌ Usage: ts-node QaAnalyzer.ts <source-php-path> <generated-files-json> [options-json]');
+    console.error('Exemple: ts-node QaAnalyzer.ts ./src/fiche.php \'{"component":"./app/routes/fiche.tsx","loader":"./app/routes/fiche.loader.ts","meta":"./app/routes/FicheDotmeta.ts"}\'');
     process.exit(1);
   }
   

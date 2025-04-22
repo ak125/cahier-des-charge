@@ -1,0 +1,9 @@
+/**
+ * class
+ * Agent export file
+ */
+
+import { class } from './abstract-validator-agent';
+
+export { class };
+export default class;

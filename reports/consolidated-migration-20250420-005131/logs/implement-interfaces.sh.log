@@ -1,0 +1,877 @@
+[0;34mScript d'implémentation des interfaces pour les agents MCP[0m
+============================================================
+[0;34mRecherche des fichiers agents...[0m
+[0;32mTrouvé 215 fichiers agents.[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/htaccess-router/htaccess-router-analyzer.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/abstract-analyzer/abstract-analyzer-agent.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/base/base-agent.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/monitoring-check/monitoring-check.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/agent-business/agent-business.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/status-writer/status-writer.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/agent-structure/agent-structure.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/table-cartographer/table-cartographer.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/nginx-config-parser/nginx-config-parser.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/helpers/helpers.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/devops-preview/devops-preview.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/businessagent/businessagent.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/data-analyzer/data-analyzer-v2.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/php-router-audit/php-router-audit.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/agent-communication/agent-communication.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/pipeline-strategy-auditor/pipeline-strategy-auditor.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/adapt-agents/adapt-agents.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/nginx-config/nginx-config-analyzer.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/parser/parser.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/debt/debt-analyzer.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/type-auditor/type-auditor.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/prisma/prisma-analyzer.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/pr-creator/pr-creator.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/schema/schema-analyzer.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/schema/schema.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/mysql/mysql-analyzer.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/monorepo/monorepo-analyzer.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/qa/qa-analyzer.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/seo-mcp-controller/seo-mcp-controller.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/dependencyagent/dependencyagent.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/dev-integrator/dev-integrator.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/coordinator/coordinator-agent.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/htaccess-route/htaccess-route-analyzer.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/prisma-to-zod/prisma-to-zod.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/dependency-analyzer/dependency-analyzer-v2.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/abstract-processor/abstract-processor-agent.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/index.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/sql-prisma-migration-planner/sql-prisma-migration-planner.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/file-manager/file-manager.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/mcp-verifier/mcp-verifier.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/abstract/abstract-analyzer.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/abstract/abstract-agent.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/mysql-to-pg/mysql-to-pg.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/agent-registry/agent-registry.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/layered-agent-auditor/layered-agent-auditor.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/sql-debt-audit/sql-debt-audit.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/agent8-optimizer/agent8-optimizer.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/dev-linter/dev-linter.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/type-mapper/type-mapper.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/interfaces/interfaces.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/remediator/remediator.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/auto-pr/auto-pr-agent.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/agent-version-auditor/agent-version-auditor.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/ci-tester/ci-tester.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/discovery/discovery-agent.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/baseagent/baseagent.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/dataagent/dataagent.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/debt-detector/debt-detector.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/php-analyzer/php-analyzer-agent.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/php-analyzer/php-analyzer-v2.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/php-analyzer/php-analyzer-v3.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/php-analyzer/php-analyzer-v4.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/mysql-analyzer+optimizer/mysql-analyzer+optimizer.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/prisma-to-dto/prisma-to-dto.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/qa-confirmer/qa-confirmer.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/sql-analysis-runner/sql-analysis-runner.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/data-verifier/data-verifier.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/seo-ci-tester/seo-ci-tester.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/structure-analyzer/structure-analyzer-v2.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/DataAgent/DataAgent.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/DependencyAgent/DependencyAgent.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/php/php-analyzer.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/image-optimizer/image-optimizer.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/sql-analyzer+prisma-builder/sql-analyzer+prisma-builder.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/agent-quality/agent-quality.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/metrics-collector/metrics-collector.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/seo-redirect-mapper/seo-redirect-mapper.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/consolidator/consolidator.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/diff-verifier/diff-verifier.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/logger/logger.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/validate-agents/validate-agents.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/semantic-table-mapper/semantic-table-mapper.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/qa-analyzer/qa-analyzer-v2.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/agent-audit/agent-audit.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/php-analyzer.worker/php-analyzer.worker.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/qualityagent/qualityagent.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/mcp-verifier.worker/mcp-verifier.worker.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/relational-normalizer/relational-normalizer.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/progressive-migration/progressive-migration-agent.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/type-converter/type-converter.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/migration-strategist/migration-strategist.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/system-integration-bridge/system-integration-bridge.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/db-connector/db-connector.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/seo-audit-runner/seo-audit-runner.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/type-audit/type-audit-agent.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/structureagent/structureagent.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/analyze-security-risks/analyze-security-risks.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/base-analyzer/base-analyzer-agent.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/relation/relation-analyzer.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/mcp-manifest-manager/mcp-manifest-manager.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/htaccess-parser/htaccess-parser.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/agents/agents.ts[0m
+  Layer: business, Type: analyzer
+  [0;33m! Interfaces manquantes: BaseAgent, BusinessAgent, AnalyzerAgent[0m
+  [0;32m✓ Interfaces ajoutées: BaseAgent, BusinessAgent, AnalyzerAgent[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/agent-donnees/agent-donnees.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/StructureAgent/StructureAgent.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/validators/abstract-validator/abstract-validator-agent.ts[0m
+  Layer: business, Type: validator
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/validators/seo-checker-canonical/seo-checker-canonical.ts[0m
+  Layer: business, Type: validator
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/validators/postgresql/postgresql-validator.ts[0m
+  Layer: business, Type: validator
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/validators/typescript-structure/typescript-structure-validator.ts[0m
+  Layer: business, Type: validator
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/validators/index.ts[0m
+  Layer: business, Type: validator
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/validators/abstract/abstract-validator.ts[0m
+  Layer: business, Type: validator
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/validators/canonical/canonical-validator.ts[0m
+  Layer: business, Type: validator
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/validators/seo-checker/seo-checker.ts[0m
+  Layer: business, Type: validator
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/validators/seo-checker/seo-checker-agent.ts[0m
+  Layer: business, Type: validator
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/validators/base-validator/base-validator-agent.ts[0m
+  Layer: business, Type: validator
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/migration-orchestrator/index.ts[0m
+  Layer: business, Type: orchestrator
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/types/index.ts[0m
+  Layer: business, Type: unknown
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/core/index.ts[0m
+  Layer: business, Type: unknown
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/core/interfaces/index.ts[0m
+  Layer: business, Type: unknown
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/shared/index.ts[0m
+  Layer: business, Type: unknown
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/business/analyzers/sql-analyzer/index.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/business/analyzers/php-analyzer/index.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/business/analyzers/htaccess-router-analyzer/index.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/business/analyzers/index/index.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/business/analyzers/qa-analyzer/index.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/business/validators/canonical-validator/index.ts[0m
+  Layer: business, Type: validator
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/business/validators/seo-checker/index.ts[0m
+  Layer: business, Type: validator
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/business/core/table-classifier/index.ts[0m
+  Layer: business, Type: unknown
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/business/core/BaseAgent/index.ts[0m
+  Layer: business, Type: unknown
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/business/core/classifier/index.ts[0m
+  Layer: business, Type: unknown
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/business/integrators/metrics-service/index.ts[0m
+  Layer: business, Type: unknown
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/business/integrators/notification-service/index.ts[0m
+  Layer: business, Type: unknown
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/notifier/index.ts[0m
+  Layer: business, Type: unknown
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/BusinessAgent/index.ts[0m
+  Layer: business, Type: unknown
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/canonical-sync-agent/index.ts[0m
+  Layer: business, Type: unknown
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/SupabaseOptimizationTracker/index.ts[0m
+  Layer: business, Type: unknown
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/QualityAgent/index.ts[0m
+  Layer: business, Type: unknown
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/php-discovery-engine/index.ts[0m
+  Layer: business, Type: unknown
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/business/generators/prisma-generator/index.ts[0m
+  Layer: business, Type: generator
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/business/generators/nestjs-generator/index.ts[0m
+  Layer: business, Type: generator
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/business/generators/remix-generator/index.ts[0m
+  Layer: business, Type: generator
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/business/generators/component-generator/index.ts[0m
+  Layer: business, Type: generator
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/business/orchestrators/coordinator-agent/index.ts[0m
+  Layer: business, Type: orchestrator
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/business/orchestrators/bullmq-orchestrator/index.ts[0m
+  Layer: business, Type: orchestrator
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/php-analyzer.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/php-analyzer/index.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/remix-generator/index.ts[0m
+  Layer: business, Type: generator
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/generators/seo-meta.generator/seo-meta.generator.ts[0m
+  Layer: business, Type: generator
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/generators/generate_prisma_model/generate_prisma_model.ts[0m
+  Layer: business, Type: generator
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/generators/remix-route/remix-route-generator.ts[0m
+  Layer: business, Type: generator
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/generators/prisma-migration/prisma-migration-generator.ts[0m
+  Layer: business, Type: generator
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/generators/react-component/react-component-generator.ts[0m
+  Layer: business, Type: generator
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/generators/nestjs/nestjs-generator.ts[0m
+  Layer: business, Type: generator
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/generators/abstract-generator/abstract-generator-agent.ts[0m
+  Layer: business, Type: generator
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/generators/meta/meta-generator.ts[0m
+  Layer: business, Type: generator
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/generators/prisma/prisma-generator.ts[0m
+  Layer: business, Type: generator
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/generators/migration-report/migration-report-generator.ts[0m
+  Layer: business, Type: generator
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/generators/abstract/abstract-generator.ts[0m
+  Layer: business, Type: generator
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/generators/caddy/caddy-generator.ts[0m
+  Layer: business, Type: generator
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/generators/component/component-generator.ts[0m
+  Layer: business, Type: generator
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/generators/dev/dev-generator.ts[0m
+  Layer: business, Type: generator
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/generators/seo-content-enhancer/seo-content-enhancer.ts[0m
+  Layer: business, Type: generator
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/generators/remix/remix-generator.ts[0m
+  Layer: business, Type: generator
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/generators/base-generator/base-generator-agent.ts[0m
+  Layer: business, Type: generator
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/generators/prisma-smart/prisma-smart-generator.ts[0m
+  Layer: business, Type: generator
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/generators/generate-migration-plan/generate-migration-plan.ts[0m
+  Layer: business, Type: generator
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/generators/caddyfile/caddyfile-generator.ts[0m
+  Layer: business, Type: generator
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/base-orchestrator/base-orchestrator-agent.ts[0m
+  Layer: business, Type: orchestrator
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/orchestrator/orchestrator.ts[0m
+  Layer: business, Type: orchestrator
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/n8n-connector/n8n-connector.ts[0m
+  Layer: business, Type: orchestrator
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/temporal-adapter/temporal-adapter.ts[0m
+  Layer: business, Type: orchestrator
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/temporal-retry-adapter/temporal-retry-adapter.ts[0m
+  Layer: business, Type: orchestrator
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/prometheus-exporter/prometheus-exporter.ts[0m
+  Layer: business, Type: orchestrator
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/system-monitor/system-monitor.ts[0m
+  Layer: business, Type: monitor
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/TemporalConnector/TemporalConnector.ts[0m
+  Layer: business, Type: orchestrator
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/orchestrator-bridge/orchestrator-bridge.ts[0m
+  Layer: business, Type: orchestrator
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/bullmq-connector/bullmq-connector.ts[0m
+  Layer: business, Type: orchestrator
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/bullmq/bullmq-orchestrator.ts[0m
+  Layer: business, Type: orchestrator
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/database-service/database-service.ts[0m
+  Layer: business, Type: orchestrator
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/index.ts[0m
+  Layer: business, Type: orchestrator
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/abstract/abstract-orchestrator.ts[0m
+  Layer: business, Type: orchestrator
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/temporal-connector/temporal-connector.ts[0m
+  Layer: business, Type: orchestrator
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/migration/migration-orchestrator.ts[0m
+  Layer: business, Type: orchestrator
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/priority-scheduler/priority-scheduler.ts[0m
+  Layer: business, Type: orchestrator
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/migration-coordinator/migration-coordinator.ts[0m
+  Layer: business, Type: orchestrator
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/enhanced-temporal-adapter/enhanced-temporal-adapter.ts[0m
+  Layer: business, Type: orchestrator
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/abstract-orchestrator/abstract-orchestrator-agent.ts[0m
+  Layer: business, Type: orchestrator
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/server/server.ts[0m
+  Layer: business, Type: orchestrator
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/temporal-orchestration/temporal-orchestration.ts[0m
+  Layer: business, Type: orchestrator
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/checkpoint-manager/checkpoint-manager.ts[0m
+  Layer: business, Type: orchestrator
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/advanced-retry-strategy/advanced-retry-strategy.ts[0m
+  Layer: business, Type: orchestrator
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/three-layer-architecture/three-layer-architecture.ts[0m
+  Layer: business, Type: orchestrator
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/alert-notifier/alert-notifier.ts[0m
+  Layer: business, Type: orchestrator
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/agent/agent-orchestrator.ts[0m
+  Layer: business, Type: orchestrator
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/agents/optimization/SupabaseOptimizationTracker.ts[0m
+  Layer: business, Type: unknown
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/agents/core/BaseAgent.ts[0m
+  Layer: orchestration, Type: unknown
+  [0;33m! Interfaces manquantes: OrchestrationAgent[0m
+  [0;32m✓ Interfaces ajoutées: OrchestrationAgent[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/agents/integration/metrics-service.ts[0m
+  Layer: coordination, Type: unknown
+  [0;33m! Interfaces manquantes: CoordinationAgent[0m
+  [0;32m✓ Interfaces ajoutées: CoordinationAgent[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/agents/integration/notification-service.ts[0m
+  Layer: coordination, Type: unknown
+  [0;33m! Interfaces manquantes: CoordinationAgent[0m
+  [0;32m✓ Interfaces ajoutées: CoordinationAgent[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/agents/integration/orchestrator-bridge.ts[0m
+  Layer: coordination, Type: orchestrator
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/agents/index.ts[0m
+  Layer: business, Type: unknown
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/agents/migration/php-to-remix/htaccess-parser.ts[0m
+  Layer: business, Type: parser
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/agents/migration/php-to-remix/canonical-sync-agent.ts[0m
+  Layer: business, Type: unknown
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/agents/migration/htaccess-router-analyzer.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/agents/migration/BusinessAgent.ts[0m
+  Layer: business, Type: unknown
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/agents/migration/mysql-analyzer/core/classifier.ts[0m
+  Layer: business, Type: analyzer
+  [0;33m! Interfaces manquantes: AnalyzerAgent[0m
+  [0;32m✓ Interfaces ajoutées: AnalyzerAgent[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/agents/migration/mysql-analyzer/core/table-classifier.ts[0m
+  Layer: business, Type: analyzer
+  [0;33m! Interfaces manquantes: AnalyzerAgent[0m
+  [0;32m✓ Interfaces ajoutées: AnalyzerAgent[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/agents/migration/mysql-analyzer/core/prisma-generator.ts[0m
+  Layer: business, Type: analyzer
+  [0;33m! Interfaces manquantes: AnalyzerAgent[0m
+  [0;32m✓ Interfaces ajoutées: AnalyzerAgent[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/agents/migration/mysql-analyzer/models/schema.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/agents/migration/mysql-analyzer/agents/prisma-generator.ts[0m
+  Layer: business, Type: analyzer
+  [0;33m! Interfaces manquantes: AnalyzerAgent[0m
+  [0;32m✓ Interfaces ajoutées: AnalyzerAgent[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/agents/migration/component-generator.ts[0m
+  Layer: business, Type: generator
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/agents/quality/QualityAgent.ts[0m
+  Layer: business, Type: unknown
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/agents/notifier.ts[0m
+  Layer: business, Type: unknown
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/agents/analysis/htaccess-router-analyzer.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/agents/analysis/config-parsers/htaccess-parser.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/agents/analysis/php-analyzer.ts[0m
+  Layer: business, Type: analyzer
+  [0;32m✓ Aucune interface manquante[0m
+
+[0;33mTraitement de /workspaces/cahier-des-charge/agents/analysis/php-discovery-engine.ts[0m
+  Layer: business, Type: analyzer
+  [0;33m! Interfaces manquantes: AnalyzerAgent[0m
+  [0;32m✓ Interfaces ajoutées: AnalyzerAgent[0m
+
+[0;32mTerminé ! Rapport généré: /workspaces/cahier-des-charge/reports/migration/interface-implementation-results-2025-04-20-00-51-36.md[0m
+[0;34m9 fichiers mis à jour.[0m
+[0;33m206 fichiers déjà conformes.[0m

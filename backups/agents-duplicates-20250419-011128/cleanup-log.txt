@@ -1,0 +1,5 @@
+2025-04-19 01:11:28 - 📁 Répertoire de sauvegarde créé: /workspaces/cahier-des-charge/backups/agents-duplicates-20250419-011128
+2025-04-19 01:11:28 - 📝 Fichier de log créé: /workspaces/cahier-des-charge/backups/agents-duplicates-20250419-011128/cleanup-log.txt
+2025-04-19 01:11:28 - ✅ Répertoire principal des agents trouvé: /workspaces/cahier-des-charge/packages/mcp-agents
+2025-04-19 01:11:28 - 🔍 Recherche des agents TypeScript...
+2025-04-19 01:11:29 - 📊 191 agents principaux identifiés

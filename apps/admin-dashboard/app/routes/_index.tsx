@@ -27,14 +27,14 @@ export const loader = async () => {
 
   // Liste des agents et leur statut
   const agents = [
-    { name: 'php-analyzer', status: 'ready', lastRun: '2025-04-15T14:30:00Z', jobsCompleted: 45 },
-    { name: 'remix-generator', status: 'ready', lastRun: '2025-04-15T15:45:00Z', jobsCompleted: 45 },
-    { name: 'seo-checker', status: 'busy', lastRun: '2025-04-15T16:10:00Z', jobsCompleted: 40 },
+    { name: 'PhpAnalyzer', status: 'ready', lastRun: '2025-04-15T14:30:00Z', jobsCompleted: 45 },
+    { name: 'RemixGenerator', status: 'ready', lastRun: '2025-04-15T15:45:00Z', jobsCompleted: 45 },
+    { name: 'SeoChecker', status: 'busy', lastRun: '2025-04-15T16:10:00Z', jobsCompleted: 40 },
     { name: 'sql-mapper', status: 'ready', lastRun: '2025-04-14T11:20:00Z', jobsCompleted: 15 },
-    { name: 'htaccess-router', status: 'ready', lastRun: '2025-04-13T09:15:00Z', jobsCompleted: 30 },
-    { name: 'qa-analyzer', status: 'error', lastRun: '2025-04-16T08:05:00Z', jobsCompleted: 42, error: 'Timeout lors de l\'analyse du formulaire de contact' },
+    { name: 'HtaccessRouter', status: 'ready', lastRun: '2025-04-13T09:15:00Z', jobsCompleted: 30 },
+    { name: 'QaAnalyzer', status: 'error', lastRun: '2025-04-16T08:05:00Z', jobsCompleted: 42, error: 'Timeout lors de l\'analyse du formulaire de contact' },
     { name: 'status-tracker', status: 'ready', lastRun: '2025-04-16T10:00:00Z', jobsCompleted: 120 },
-    { name: 'migration-orchestrator', status: 'ready', lastRun: '2025-04-16T10:00:00Z', jobsCompleted: 45 },
+    { name: 'MigrationOrchestrator', status: 'ready', lastRun: '2025-04-16T10:00:00Z', jobsCompleted: 45 },
   ];
 
   // Dernières migrations

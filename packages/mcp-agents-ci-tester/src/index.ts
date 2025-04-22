@@ -25,7 +25,7 @@ export async function runCITester(options: CITesterOptions = {}): Promise<CIRepo
     }
     
     // Chemins de sortie des fichiers
-    const outputWorkflowPath = path.join(outputPath, config.outputWorkflowPath || '.github/workflows/ci-migration.yml');
+    const outputWorkflowPath = path.join(outputPath, config.outputWorkflowPath || 'DoDoDoDoDoDotgithub/workflows/ci-migration.yml');
     const outputReportPath = path.join(outputPath, config.outputReportPath || 'reports/ci_check_report.md');
     const outputLastRunPath = path.join(outputPath, config.outputLastRunPath || 'reports/ci_last_run.json');
     
@@ -145,7 +145,7 @@ export async function runCITester(options: CITesterOptions = {}): Promise<CIRepo
     if (options.localTest) {
       logs.push('🧪 Exécution de tests CI locaux...');
       // Cette partie est implémentée dans local-validator.ts
-      logs.push('ℹ️ Utilisez plutôt la commande `npx @fafa/mcp-agents-ci-tester local` pour une interface interactive');
+      logs.push('ℹ️ Utilisez plutôt la commande `npx @fafaDoDotmcp-agents-ci-tester local` pour une interface interactive');
     }
     
     // Générer le rapport
@@ -213,7 +213,7 @@ async function loadConfig(configPath?: string): Promise<CITesterConfig> {
   // Configuration par défaut
   const defaultConfig: CITesterConfig = {
     rootDir: process.cwd(),
-    outputWorkflowPath: '.github/workflows/ci-migration.yml',
+    outputWorkflowPath: 'DoDoDoDoDoDotgithub/workflows/ci-migration.yml',
     outputReportPath: 'reports/ci_check_report.md',
     outputLastRunPath: 'reports/ci_last_run.json',
     workspacePackages: []

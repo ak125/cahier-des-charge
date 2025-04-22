@@ -1,0 +1,21 @@
+0000000000000000000000000000000000000000 8730d0afa85c6f7db2672f64d4afc03d5892f7b9 root <root@ef4b03d2-6812-42ef-be8f-1d069d65caef.m1k4x3cq3poebda54cltipn05g.ax.internal.cloudapp.net> 1743958434 +0000	clone: from https://github.com/ak125/cahier-des-charge
+8730d0afa85c6f7db2672f64d4afc03d5892f7b9 1f357cd8d6efc358de3b5b18957ee4cba8bf0423 auto pieces equipement <automecanik.seo@gmail.com> 1744029565 +0000	commit: pipeline
+1f357cd8d6efc358de3b5b18957ee4cba8bf0423 1f357cd8d6efc358de3b5b18957ee4cba8bf0423 auto pieces equipement <automecanik.seo@gmail.com> 1744029698 +0000	checkout: moving from main to php
+1f357cd8d6efc358de3b5b18957ee4cba8bf0423 1f357cd8d6efc358de3b5b18957ee4cba8bf0423 auto pieces equipement <automecanik.seo@gmail.com> 1744060885 +0000	checkout: moving from php to strategie
+1f357cd8d6efc358de3b5b18957ee4cba8bf0423 1d433d95330923f7a3591e6ce8b4f578383afba0 auto pieces equipement <automecanik.seo@gmail.com> 1744149273 +0000	commit: strategie
+1d433d95330923f7a3591e6ce8b4f578383afba0 1d433d95330923f7a3591e6ce8b4f578383afba0 auto pieces equipement <automecanik.seo@gmail.com> 1744150402 +0000	checkout: moving from strategie to pipeline
+1d433d95330923f7a3591e6ce8b4f578383afba0 ef4cb7018852aca19d13bd8d3378df96df7aa503 auto pieces equipement <automecanik.seo@gmail.com> 1744207446 +0000	commit: ielene
+ef4cb7018852aca19d13bd8d3378df96df7aa503 1f357cd8d6efc358de3b5b18957ee4cba8bf0423 auto pieces equipement <automecanik.seo@gmail.com> 1744227007 +0000	checkout: moving from pipeline to php
+1f357cd8d6efc358de3b5b18957ee4cba8bf0423 195414bc24c04867afbae54d78d14502b2d2a63b auto pieces equipement <automecanik.seo@gmail.com> 1744410908 +0000	commit: php
+195414bc24c04867afbae54d78d14502b2d2a63b 195414bc24c04867afbae54d78d14502b2d2a63b auto pieces equipement <automecanik.seo@gmail.com> 1744411392 +0000	checkout: moving from php to mysql
+195414bc24c04867afbae54d78d14502b2d2a63b ab45da1f7fef8cbcf58e92b70aa0e3d1e275d11e auto pieces equipement <automecanik.seo@gmail.com> 1744479989 +0000	commit: mcp mysql vers supabase
+ab45da1f7fef8cbcf58e92b70aa0e3d1e275d11e ab45da1f7fef8cbcf58e92b70aa0e3d1e275d11e auto pieces equipement <automecanik.seo@gmail.com> 1744480213 +0000	checkout: moving from mysql to htaccess
+ab45da1f7fef8cbcf58e92b70aa0e3d1e275d11e d896ac4db66154db015828f3f2edf02f70d96def auto pieces equipement <automecanik.seo@gmail.com> 1744504370 +0000	commit: htaccess
+d896ac4db66154db015828f3f2edf02f70d96def d896ac4db66154db015828f3f2edf02f70d96def auto pieces equipement <automecanik.seo@gmail.com> 1744504609 +0000	checkout: moving from htaccess to NestJS-Remix
+d896ac4db66154db015828f3f2edf02f70d96def 72546ec39fc35183e4dbc49bc8287a90d26b423a auto pieces equipement <automecanik.seo@gmail.com> 1744657034 +0000	commit: app
+72546ec39fc35183e4dbc49bc8287a90d26b423a 72546ec39fc35183e4dbc49bc8287a90d26b423a auto pieces equipement <automecanik.seo@gmail.com> 1744657145 +0000	checkout: moving from NestJS-Remix to APP
+72546ec39fc35183e4dbc49bc8287a90d26b423a f5fc8b13a4f004faf8535e6056865fa7f1277578 auto pieces equipement <automecanik.seo@gmail.com> 1744843949 +0000	commit: 3 couches
+f5fc8b13a4f004faf8535e6056865fa7f1277578 f5fc8b13a4f004faf8535e6056865fa7f1277578 auto pieces equipement <automecanik.seo@gmail.com> 1744844048 +0000	checkout: moving from APP to v3
+f5fc8b13a4f004faf8535e6056865fa7f1277578 65643ca010f637c2339d615a1b9aefda6f9c5a9f auto pieces equipement <automecanik.seo@gmail.com> 1744930916 +0000	commit: 3 couches
+65643ca010f637c2339d615a1b9aefda6f9c5a9f 65643ca010f637c2339d615a1b9aefda6f9c5a9f auto pieces equipement <automecanik.seo@gmail.com> 1744931002 +0000	checkout: moving from v3 to A∞
+65643ca010f637c2339d615a1b9aefda6f9c5a9f 65643ca010f637c2339d615a1b9aefda6f9c5a9f auto pieces equipement <automecanik.seo@gmail.com> 1744932062 +0000	checkout: moving from A∞ to v3

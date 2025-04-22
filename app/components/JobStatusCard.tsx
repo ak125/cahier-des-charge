@@ -14,7 +14,7 @@ interface JobStatusCardProps {
 export default function JobStatusCard({ job, onRefresh, compact = false }: JobStatusCardProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [activeTab, setActiveTab] = useState<'details' | 'history' | 'langfuse' | 'github'>('details');
+  const [activeTab, setActiveTab] = useState<'details' | 'history' | 'langfuse' | DoDoDoDoDoDotgithub'>('details');
   
   // Formater la durée en format lisible
   const formatDuration = (ms: number) => {
@@ -112,11 +112,11 @@ export default function JobStatusCard({ job, onRefresh, compact = false }: JobSt
       );
     }
     
-    if (job.githubPR) {
+    if (jobDoDoDoDoDoDotgithubPR) {
       badges.push(
         <span key="pr" className="text-xs py-0.5 px-2 bg-gray-100 text-gray-800 rounded-full flex items-center gap-1">
           <span>🔀</span>
-          <span>PR #{job.githubPR.prNumber}</span>
+          <span>PR #{jobDoDoDoDoDoDotgithubPR.prNumber}</span>
         </span>
       );
     }
@@ -272,10 +272,10 @@ export default function JobStatusCard({ job, onRefresh, compact = false }: JobSt
                   </button>
                 )}
                 
-                {job.githubPR && (
+                {jobDoDoDoDoDoDotgithubPR && (
                   <button 
-                    onClick={() => setActiveTab('github')}
-                    className={`px-4 py-2 text-sm font-medium flex items-center gap-1 ${activeTab === 'github' ? 'border-b-2 border-blue-500 text-blue-600' : 'text-gray-500 hover:text-gray-700'}`}
+                    onClick={() => setActiveTab(DoDoDoDoDoDotgithub')}
+                    className={`px-4 py-2 text-sm font-medium flex items-center gap-1 ${activeTab === DoDoDoDoDoDotgithub' ? 'border-b-2 border-blue-500 text-blue-600' : 'text-gray-500 hover:text-gray-700'}`}
                   >
                     <span>🔀</span>
                     <span>GitHub PR</span>
@@ -337,8 +337,8 @@ export default function JobStatusCard({ job, onRefresh, compact = false }: JobSt
               </div>
             )}
             
-            {activeTab === 'github' && job.githubPR && (
-              <GitHubPRCard pr={job.githubPR} />
+            {activeTab === DoDoDoDoDoDotgithub' && jobDoDoDoDoDoDotgithubPR && (
+              <GitHubPRCard pr={jobDoDoDoDoDoDotgithubPR} />
             )}
           </div>
         )}

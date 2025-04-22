@@ -1,0 +1,253 @@
+🔄 Synchronisation des agents MCP...
+📝 Log: /workspaces/cahier-des-charge/sync-agents-20250420-002538.log
+🔍 Recherche des fichiers dupliqués...
+📊 124 fichiers dupliqués trouvés
+⚙️ Traitement de: /workspaces/cahier-des-charge/apps/mcp-server/agents/php-analyzer.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/apps/mcp-server/agents/component-generator.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/apps/mcp-server-php/src/agents/php-analyzer-v2.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/src/business/analyzers/php-analyzer/index.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/src/business/analyzers/php-analyzer/php-analyzer.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/src/business/analyzers/qa-analyzer/index.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/src/business/analyzers/qa-analyzer/qa-analyzer.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/src/business/analyzers/php-analyzer-v2/index.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/src/business/analyzers/php-analyzer-v2/php-analyzer-v2.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/optimization/agent8-optimizer.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/optimization/SupabaseOptimizationTracker.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/devops-preview.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/php-analyzer-agent.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/auto-pr-agent.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/utils/caddy-generator.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/utils/nginx-config-parser.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/utils/htaccess-parser.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/seo-audit-runner.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/seo-mcp-controller.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/migration-orchestrator.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/ci-tester.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/core/BaseAgent.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/core/agent-orchestrator.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/core/mcp-integrator.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/core/selector-agent.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/core/coordinator-agent.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/integration/metrics-service.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/integration/notification-service.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/dev-integrator.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/bullmq-orchestrator.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/orchestrator.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/meta-generator.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/pipeline-strategy-auditor.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/migration/nginx-config-analyzer.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/migration/sql-analysis-runner.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/migration/prisma-smart-generator.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/migration/php-sql-sync-mapper.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/migration/nginx-to-caddy/caddyfile-generator.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/migration/php-to-remix/remix-route-generator.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/migration/php-to-remix/dev-generator.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/migration/php-to-remix/htaccess-route-analyzer.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/migration/php-to-remix/php-router-audit.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/migration/php-to-remix/seo-meta.generator.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/migration/php-to-remix/canonical-sync-agent.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/migration/php-to-remix/seo-checker-canonical.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/migration/inject-to-supabase.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/migration/php-sql-mapper.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/migration/htaccess-router-analyzer.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/migration/data-verifier.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/migration/type-audit-agent.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/migration/generate-migration-plan.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/migration/mysql-to-postgresql.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/migration/sql-prisma-migration-planner.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/migration/consolidator.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/migration/BusinessAgent.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/migration/mysql-analyzer.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/migration/mysql-analyzer/utils/helpers.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/migration/mysql-analyzer/core/schema-analyzer.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/migration/mysql-analyzer/core/classifier.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/migration/mysql-analyzer/core/relation-analyzer.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/migration/mysql-analyzer/core/table-classifier.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/migration/mysql-analyzer/core/debt-analyzer.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/migration/mysql-analyzer/core/type-converter.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/migration/mysql-analyzer/core/prisma-generator.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/migration/mysql-analyzer/core/parser.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/migration/mysql-analyzer/mysql-analyzer.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/migration/mysql-analyzer/agents/type-converter.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/migration/mysql-analyzer/agents/prisma-generator.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/migration/mysql-analyzer/agents/migration-strategist.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/migration/mysql-analyzer/agents/type-auditor.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/migration/mysql-analyzer/agents/debt-detector.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/migration/mysql-analyzer/agents/relational-normalizer.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/migration/prisma-migration-generator.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/migration/agent-business.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/migration/sql-analyzer+prisma-builder.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/migration/postgresql-validator.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/migration/component-generator.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/migration/qa-confirmer.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/migration/progressive-migration-agent.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/migration/remediator.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/migration/caddyfile-generator.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/migration/mysql-to-pg.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/migration/mysql-analyzer+optimizer.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/discovery/discovery-agent.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/discovery/audit-selector.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/quality/QualityAgent.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/quality/analyze-security-risks.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/quality/agent-quality.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/quality/sql-debt-audit.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/seo-checker-agent.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/tools/agent-version-auditor.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/notifier.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/pr-creator.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/status-writer.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/mcp-manifest-manager.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/diff-verifier.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/seo-redirect-mapper.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/workers/mcp-verifier.worker.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/workers/php-analyzer.worker.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/mcp-verifier.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/analysis/agent-audit.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/analysis/DependencyAgent.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/analysis/DataAgent.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/analysis/agent-donnees.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/analysis/type-mapper.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/analysis/htaccess-router-analyzer.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/analysis/relation-analyzer.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/analysis/StructureAgent.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/analysis/config-parsers/nginx-config-parser.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/analysis/table-cartographer.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/analysis/generate_prisma_model.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/analysis/semantic-table-mapper.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/analysis/agent-structure.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/analysis/php-analyzer.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/analysis/php-analyzer-v3.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/analysis/php-discovery-engine.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/analysis/mysql-analyzer+optimizer.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/analysis/dynamic_sql_extractor.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/analysis/php-analyzer-v4.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/seo-content-enhancer.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/dev-linter.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/monitoring-check.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/dev-checker.ts
+  ⚠️ Version principale introuvable: 
+⚙️ Traitement de: /workspaces/cahier-des-charge/agents/canonical-validator.ts
+  ⚠️ Version principale introuvable: 
+✅ Synchronisation terminée

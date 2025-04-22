@@ -47,7 +47,7 @@ const defaultAgentsConfig: DashboardConfig = {
   // Sources de données pour ce dashboard
   dataSources: [
     {
-      id: 'agent-registry',
+      id: 'AgentRegistry',
       name: 'Agent Registry',
       url: '/api/agents/registry',
       refreshInterval: 30
@@ -114,14 +114,14 @@ const defaultAgentsConfig: DashboardConfig = {
               name: 'Agents actifs',
               value: 0,
               status: 'success',
-              dataSourceId: 'agent-registry'
+              dataSourceId: 'AgentRegistry'
             },
             {
               id: 'disabled-agents',
               name: 'Agents désactivés',
               value: 0,
               status: 'warning',
-              dataSourceId: 'agent-registry'
+              dataSourceId: 'AgentRegistry'
             },
             {
               id: 'failed-agents',

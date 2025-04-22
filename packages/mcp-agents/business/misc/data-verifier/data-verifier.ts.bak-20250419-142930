@@ -1,0 +1,393 @@
+/**
+ * data-verifier - Agent MCP pour business (unknown)
+ * 
+ * Migration automatique vers l'architecture MCP OS en 3 couches
+ * Date: 2025-04-18T00:11:24.606Z
+ */
+
+import { UnknownAgent } from '@workspaces/cahier-des-charge/src/core/interfaces/business';
+import { BaseAgent } from '@workspaces/cahier-des-charge/src/core/interfaces/base-agent';
+import * as fs from 'fs';
+import * as mysql from 'mysql2/promise';
+import { Pool } from 'pg';
+import { program } from 'commander';
+import * as crypto from 'crypto';
+import { BusinessAgent } from '../../core/interfaces/base-agent';
+
+
+/**
+ * Configuration pour data-verifier
+ */
+export interface data-verifierConfig {
+  // TODO: Ajouter les propriétés de configuration spécifiques à l'agent
+}
+
+/**
+ * data-verifier - Agent d'analyse et de traitement métier
+ */
+export class data-verifier implements BaseAgent, BusinessAgent, BaseAgent, BusinessAgent, UnknownAgent {
+  id = 'data-verifier';
+  name = 'data-verifier';
+  type = 'unknown';
+  version = '1.0.0';
+  
+  constructor(private config: data-verifierConfig) {
+    // Initialisation
+  }
+  
+  /**
+   * Initialise l'agent avec des options spécifiques
+   */
+  async initialize(options?: Record<string, any>): Promise<void> {
+    // TODO: Implémenter l'initialisation
+  }
+  
+  /**
+   * Indique si l'agent est prêt à être utilisé
+   */
+  isReady(): boolean {
+    return true; // TODO: Implémenter la vérification d'état
+  }
+  
+  /**
+   * Arrête et nettoie l'agent
+   */
+  async shutdown(): Promise<void> {
+    // TODO: Implémenter la fermeture propre
+  }
+  
+  /**
+   * Récupère les métadonnées de l'agent
+   */
+  getMetadata(): Record<string, any> {
+    return {
+      id: this.id,
+      name: this.name,
+      type: this.type,
+      version: this.version
+    };
+  }
+  
+  // TODO: Implémenter les méthodes spécifiques de l'interface UnknownAgent
+  
+  /**
+   * main
+   */
+  main() {
+    // TODO: Migrer l'implémentation existante
+  }
+  
+  /**
+   * if
+   */
+  if() {
+    // TODO: Migrer l'implémentation existante
+  }
+  
+  /**
+   * if
+   */
+  if() {
+    // TODO: Migrer l'implémentation existante
+  }
+  
+  /**
+   * if
+   */
+  if() {
+    // TODO: Migrer l'implémentation existante
+  }
+  
+  /**
+   * for
+   */
+  for() {
+    // TODO: Migrer l'implémentation existante
+  }
+  
+  /**
+   * if
+   */
+  if() {
+    // TODO: Migrer l'implémentation existante
+  }
+  
+  /**
+   * if
+   */
+  if() {
+    // TODO: Migrer l'implémentation existante
+  }
+  
+  /**
+   * if
+   */
+  if() {
+    // TODO: Migrer l'implémentation existante
+  }
+  
+  /**
+   * parseInt
+   */
+  parseInt() {
+    // TODO: Migrer l'implémentation existante
+  }
+  
+  /**
+   * if
+   */
+  if() {
+    // TODO: Migrer l'implémentation existante
+  }
+  
+  /**
+   * if
+   */
+  if() {
+    // TODO: Migrer l'implémentation existante
+  }
+  
+  /**
+   * if
+   */
+  if() {
+    // TODO: Migrer l'implémentation existante
+  }
+  
+  /**
+   * if
+   */
+  if() {
+    // TODO: Migrer l'implémentation existante
+  }
+  
+  /**
+   * for
+   */
+  for() {
+    // TODO: Migrer l'implémentation existante
+  }
+  
+  /**
+   * if
+   */
+  if() {
+    // TODO: Migrer l'implémentation existante
+  }
+  
+  /**
+   * if
+   */
+  if() {
+    // TODO: Migrer l'implémentation existante
+  }
+  
+  /**
+   * if
+   */
+  if() {
+    // TODO: Migrer l'implémentation existante
+  }
+  
+  /**
+   * if
+   */
+  if() {
+    // TODO: Migrer l'implémentation existante
+  }
+  
+  /**
+   * if
+   */
+  if() {
+    // TODO: Migrer l'implémentation existante
+  }
+  
+  /**
+   * catch
+   */
+  catch() {
+    // TODO: Migrer l'implémentation existante
+  }
+  
+  /**
+   * if
+   */
+  if() {
+    // TODO: Migrer l'implémentation existante
+  }
+  
+  /**
+   * if
+   */
+  if() {
+    // TODO: Migrer l'implémentation existante
+  }
+  
+  /**
+   * for
+   */
+  for() {
+    // TODO: Migrer l'implémentation existante
+  }
+  
+  /**
+   * if
+   */
+  if() {
+    // TODO: Migrer l'implémentation existante
+  }
+  
+  /**
+   * catch
+   */
+  catch() {
+    // TODO: Migrer l'implémentation existante
+  }
+  
+  /**
+   * normalizeValues
+   */
+  normalizeValues() {
+    // TODO: Migrer l'implémentation existante
+  }
+  
+  /**
+   * if
+   */
+  if() {
+    // TODO: Migrer l'implémentation existante
+  }
+  
+  /**
+   * replace
+   */
+  replace() {
+    // TODO: Migrer l'implémentation existante
+  }
+  
+  /**
+   * if
+   */
+  if() {
+    // TODO: Migrer l'implémentation existante
+  }
+  
+  /**
+   * if
+   */
+  if() {
+    // TODO: Migrer l'implémentation existante
+  }
+  
+  /**
+   * if
+   */
+  if() {
+    // TODO: Migrer l'implémentation existante
+  }
+  
+  /**
+   * compareValues
+   */
+  compareValues() {
+    // TODO: Migrer l'implémentation existante
+  }
+  
+  /**
+   * if
+   */
+  if() {
+    // TODO: Migrer l'implémentation existante
+  }
+  
+  /**
+   * if
+   */
+  if() {
+    // TODO: Migrer l'implémentation existante
+  }
+  
+  /**
+   * if
+   */
+  if() {
+    // TODO: Migrer l'implémentation existante
+  }
+  
+  /**
+   * if
+   */
+  if() {
+    // TODO: Migrer l'implémentation existante
+  }
+  
+  /**
+   * if
+   */
+  if() {
+    // TODO: Migrer l'implémentation existante
+  }
+  
+  /**
+   * if
+   */
+  if() {
+    // TODO: Migrer l'implémentation existante
+  }
+  
+  /**
+   * if
+   */
+  if() {
+    // TODO: Migrer l'implémentation existante
+  }
+  
+  /**
+   * toISOString
+   */
+  toISOString() {
+    // TODO: Migrer l'implémentation existante
+  }
+  
+  /**
+   * if
+   */
+  if() {
+    // TODO: Migrer l'implémentation existante
+  }
+  
+  /**
+   * calculateHash
+   */
+  calculateHash() {
+    // TODO: Migrer l'implémentation existante
+  }
+
+  id: string = '';
+  name: string = '';
+  type: string = '';
+  version: string = '1.0.0';
+
+  /**
+   * Récupère l'état actuel de l'agent business
+   */
+  async getState(): Promise<Record<string, any>> {
+    return {
+      status: 'active',
+      timestamp: new Date().toISOString()
+    };
+  }
+
+  id: string = '';
+  name: string = '';
+  type: string = '';
+  version: string = '1.0.0';
+
+  id: string = '';
+  name: string = '';
+  type: string = '';
+  version: string = '1.0.0';
+}
+
+export default data-verifier;

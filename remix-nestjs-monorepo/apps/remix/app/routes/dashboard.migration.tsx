@@ -75,8 +75,8 @@ function getStatusColor(status: string): string {
 // Loader pour récupérer les données du backlog
 export const loader: LoaderFunction = async () => {
   try {
-    // Chemin absolu vers le fichier backlog.mcp.json
-    const backlogPath = path.resolve(process.cwd(), '../../backlog.mcp.json');
+    // Chemin absolu vers le fichier backlogDoDotmcp.json
+    const backlogPath = path.resolve(process.cwd(), '../../backlogDoDotmcp.json');
     
     // Lecture du fichier backlog
     const backlogData = await fs.readFile(backlogPath, 'utf8');
@@ -317,7 +317,7 @@ export default function MigrationDashboard() {
                       <button 
                         className="text-indigo-600 hover:text-indigo-900 mr-2"
                         onClick={() => {
-                          window.open(`/terminal?command=pnpm mcp migrate ${fileName}`, '_blank');
+                          window.open(`/terminal?command=pnpmDoDotmcp migrate ${fileName}`, '_blank');
                         }}
                       >
                         Migrer
@@ -325,7 +325,7 @@ export default function MigrationDashboard() {
                       <button 
                         className="text-green-600 hover:text-green-900"
                         onClick={() => {
-                          window.open(`/terminal?command=pnpm mcp dry-run ${fileName}`, '_blank');
+                          window.open(`/terminal?command=pnpmDoDotmcp dry-run ${fileName}`, '_blank');
                         }}
                       >
                         Simuler

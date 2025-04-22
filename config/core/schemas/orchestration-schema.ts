@@ -3,8 +3,8 @@
  */
 import { z } from 'zod';
 
-// Schéma pour la configuration n8n
-const n8nConfigSchema = z.object({
+// Schéma pour la configurationDotn8N
+constDotn8NConfigSchema = z.object({
   baseUrl: z.string().url(),
   apiKey: z.string().optional(),
   webhookPath: z.string().default('/webhook/'),
@@ -71,7 +71,7 @@ const traceabilitySchema = z.object({
 
 // Schéma complet pour la configuration d'orchestration
 export const orchestrationConfigSchema = z.object({
-  n8n: n8nConfigSchema,
+ Dotn8N:Dotn8NConfigSchema,
   bullMQ: bullMQConfigSchema,
   shellScripts: shellScriptsConfigSchema,
   circuitBreaker: circuitBreakerSchema,
@@ -82,7 +82,7 @@ export type OrchestrationConfig = z.infer<typeof orchestrationConfigSchema>;
 
 // Valeurs par défaut pour les tests et l'initialisation
 export const defaultOrchestrationConfig: Partial<OrchestrationConfig> = {
-  n8n: {
+ Dotn8N: {
     baseUrl: 'http://localhost:5678',
     webhookPath: '/webhook/',
     workflows: {}

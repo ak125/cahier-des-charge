@@ -1,0 +1,941 @@
+{
+  "generatedAt": "2025-04-20 00:25:06",
+  "totalAgents": 233,
+  "duplicateAgents": 124,
+  "legacyAgents": 0,
+  "movedAgents": 215,
+  "mainAgents": {
+    "agent-quality": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/agent-quality/agent-quality.ts",
+      "type": "analyzer"
+    },
+    "seo-audit-runner": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/seo-audit-runner/seo-audit-runner.ts",
+      "type": "analyzer"
+    },
+    "orchestration-connector": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/orchestration-connector/orchestration-connector.ts",
+      "type": "orchestrator"
+    },
+    "analyzers": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/business/analyzers/index.ts",
+      "type": "analyzer"
+    },
+    "mcp-integrator": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/business/orchestrators/mcp-integrator/index.ts",
+      "type": "orchestrator"
+    },
+    "seo-metadata-schema": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/seo-metadata-schema/seo-metadata-schema.ts",
+      "type": "analyzer"
+    },
+    "component-generator": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/generators/component/component-generator.ts",
+      "type": "generator"
+    },
+    "remediator": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/remediator/remediator.ts",
+      "type": "analyzer"
+    },
+    "prisma-smart-generator": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/generators/prisma-smart/prisma-smart-generator.ts",
+      "type": "generator"
+    },
+    "analyze-security-risks": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/analyze-security-risks/analyze-security-risks.ts",
+      "type": "analyzer"
+    },
+    "base-agent": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/base/base-agent.ts",
+      "type": "analyzer"
+    },
+    "seo-checker": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/validators/seo-checker/seo-checker.ts",
+      "type": "validator"
+    },
+    "mcp-verifier": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/mcp-verifier/mcp-verifier.ts",
+      "type": "analyzer"
+    },
+    "dev-generator": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/generators/dev/dev-generator.ts",
+      "type": "generator"
+    },
+    "data-verifier": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/data-verifier/data-verifier.ts",
+      "type": "analyzer"
+    },
+    "data-analyzer": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/data-analyzer/index.ts",
+      "type": "analyzer"
+    },
+    "bullmq-connector": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/bullmq-connector/bullmq-connector.ts",
+      "type": "orchestrator"
+    },
+    "test-writer": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/test-writer/test-writer.ts",
+      "type": "analyzer"
+    },
+    "system-monitor": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/system-monitor/system-monitor.ts",
+      "type": "orchestrator"
+    },
+    "qualityagent": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/qualityagent/qualityagent.ts",
+      "type": "analyzer"
+    },
+    "QualityAgent": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/business/misc/QualityAgent/index.ts",
+      "type": "analyzer"
+    },
+    "consolidator": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/consolidator/consolidator.ts",
+      "type": "analyzer"
+    },
+    "agent-structure": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/agent-structure/agent-structure.ts",
+      "type": "analyzer"
+    },
+    "seo-redirect-mapper": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/seo-redirect-mapper/seo-redirect-mapper.ts",
+      "type": "analyzer"
+    },
+    "php-discovery-engine": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/business/misc/php-discovery-engine/index.ts",
+      "type": "analyzer"
+    },
+    "monitoring": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/monitoring/index.ts",
+      "type": "orchestrator"
+    },
+    "temporal-retry-adapter": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/temporal-retry-adapter/temporal-retry-adapter.ts",
+      "type": "orchestrator"
+    },
+    "types": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/types/types.ts",
+      "type": "analyzer"
+    },
+    "abstract-orchestrator-agent": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/abstract-orchestrator/abstract-orchestrator-agent.ts",
+      "type": "orchestrator"
+    },
+    "coordinator-agent": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/coordinator/coordinator-agent.ts",
+      "type": "analyzer"
+    },
+    "data-analyzer-v2": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/data-analyzer/data-analyzer-v2.ts",
+      "type": "analyzer"
+    },
+    "php-sql-mapper": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/business/misc/php-sql-mapper/index.ts",
+      "type": "analyzer"
+    },
+    "BusinessAgent": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/business/misc/BusinessAgent/index.ts",
+      "type": "analyzer"
+    },
+    "businessagent": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/businessagent/businessagent.ts",
+      "type": "analyzer"
+    },
+    "agents": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/agents/agents.ts",
+      "type": "analyzer"
+    },
+    "three-layer": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/three-layer/index.ts",
+      "type": "orchestrator"
+    },
+    "dev-checker": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/validators/dev-checker/dev-checker.ts",
+      "type": "validator"
+    },
+    "prisma-to-dto": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/prisma-to-dto/prisma-to-dto.ts",
+      "type": "analyzer"
+    },
+    "orchestrator-agent": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/orchestrator/orchestrator-agent.ts",
+      "type": "orchestrator"
+    },
+    "mysql-to-pg": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/mysql-to-pg/mysql-to-pg.ts",
+      "type": "analyzer"
+    },
+    "temporal-orchestration": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/temporal-orchestration/temporal-orchestration.ts",
+      "type": "orchestrator"
+    },
+    "mcp-agent": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/mcp/mcp-agent.ts",
+      "type": "analyzer"
+    },
+    "case_conflicts_backup_20250419_183942": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/business/misc/case_conflicts_backup_20250419_183942/index.ts",
+      "type": "analyzer"
+    },
+    "register-agents": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/register-agents/register-agents.ts",
+      "type": "analyzer"
+    },
+    "OrchestrationConnector": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/OrchestrationConnector/OrchestrationConnector.ts",
+      "type": "orchestrator"
+    },
+    "orchestrator-bridge": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/orchestrator-bridge/orchestrator-bridge.ts",
+      "type": "orchestrator"
+    },
+    "php-analyzer.worker": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/php-analyzer.worker/php-analyzer.worker.ts",
+      "type": "analyzer"
+    },
+    "abstract-validator-agent": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/validators/abstract-validator/abstract-validator-agent.ts",
+      "type": "validator"
+    },
+    "notification-service": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/business/integrators/notification-service/index.ts",
+      "type": "analyzer"
+    },
+    "meta-generator": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/generators/meta/meta-generator.ts",
+      "type": "generator"
+    },
+    "seo-ci-tester": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/seo-ci-tester/seo-ci-tester.ts",
+      "type": "analyzer"
+    },
+    "case_conflicts_backup_20250419_183941": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/business/misc/case_conflicts_backup_20250419_183941/index.ts",
+      "type": "analyzer"
+    },
+    "generators": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/generators/index.ts",
+      "type": "generator"
+    },
+    "bullmq": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/bullmq/index.ts",
+      "type": "orchestrator"
+    },
+    "abstract-orchestrator": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/abstract/abstract-orchestrator.ts",
+      "type": "orchestrator"
+    },
+    "agent-donnees": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/agent-donnees/agent-donnees.ts",
+      "type": "analyzer"
+    },
+    "workflow-recovery-service": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/workflow-recovery-service/workflow-recovery-service.ts",
+      "type": "orchestrator"
+    },
+    "alert-notifier": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/alert-notifier/alert-notifier.ts",
+      "type": "orchestrator"
+    },
+    "orchestrators": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/index.ts",
+      "type": "orchestrator"
+    },
+    "seo-mcp-controller": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/seo-mcp-controller/seo-mcp-controller.ts",
+      "type": "analyzer"
+    },
+    "reporting": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/reporting/index.ts",
+      "type": "orchestrator"
+    },
+    "validator-agent": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/validators/validator/validator-agent.ts",
+      "type": "validator"
+    },
+    "bullmq-orchestrator": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/bullmq/bullmq-orchestrator.ts",
+      "type": "orchestrator"
+    },
+    "php-analyzer": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/php/php-analyzer.ts",
+      "type": "analyzer"
+    },
+    "seo-meta.generator": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/generators/seo-meta.generator/seo-meta.generator.ts",
+      "type": "generator"
+    },
+    "index": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/business/analyzers/index/index.ts",
+      "type": "analyzer"
+    },
+    "structure-analyzer": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/structure-analyzer/index.ts",
+      "type": "analyzer"
+    },
+    "status-writer": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/status-writer/status-writer.ts",
+      "type": "analyzer"
+    },
+    "nginx-config-analyzer": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/nginx-config/nginx-config-analyzer.ts",
+      "type": "analyzer"
+    },
+    "seo-checker-canonical": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/validators/seo-checker-canonical/seo-checker-canonical.ts",
+      "type": "validator"
+    },
+    "monitoring-check": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/monitoring-check/monitoring-check.ts",
+      "type": "analyzer"
+    },
+    "core": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/core/index.ts",
+      "type": "analyzer"
+    },
+    "typescript-structure-validator": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/validators/typescript-structure/typescript-structure-validator.ts",
+      "type": "validator"
+    },
+    "orchestrator": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/orchestrator/orchestrator.ts",
+      "type": "orchestrator"
+    },
+    "interfaces": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/interfaces/interfaces.ts",
+      "type": "analyzer"
+    },
+    "dev-linter": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/dev-linter/dev-linter.ts",
+      "type": "analyzer"
+    },
+    "baseagent": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/baseagent/baseagent.ts",
+      "type": "analyzer"
+    },
+    "prisma-generator": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/generators/prisma/prisma-generator.ts",
+      "type": "generator"
+    },
+    "caddy-generator": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/generators/caddy/caddy-generator.ts",
+      "type": "generator"
+    },
+    "agent-business": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/agent-business/agent-business.ts",
+      "type": "analyzer"
+    },
+    "sql-analyzer+prisma-builder": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/sql-analyzer+prisma-builder/sql-analyzer+prisma-builder.ts",
+      "type": "analyzer"
+    },
+    "validators": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/validators/index.ts",
+      "type": "validator"
+    },
+    "sql-prisma-migration-planner": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/sql-prisma-migration-planner/sql-prisma-migration-planner.ts",
+      "type": "analyzer"
+    },
+    "pr-creator": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/pr-creator/pr-creator.ts",
+      "type": "analyzer"
+    },
+    "mysql-to-postgresql": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/mysql-to-postgresql/mysql-to-postgresql.ts",
+      "type": "analyzer"
+    },
+    "prometheus-exporter": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/prometheus-exporter/prometheus-exporter.ts",
+      "type": "orchestrator"
+    },
+    "sql-debt-audit": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/sql-debt-audit/sql-debt-audit.ts",
+      "type": "analyzer"
+    },
+    "devops-preview": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/devops-preview/devops-preview.ts",
+      "type": "analyzer"
+    },
+    "shared": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/shared/index.ts",
+      "type": "analyzer"
+    },
+    "migration-report-generator": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/generators/migration-report/migration-report-generator.ts",
+      "type": "generator"
+    },
+    "php-analyzer-v3": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/php-analyzer/php-analyzer-v3.ts",
+      "type": "analyzer"
+    },
+    "business-layer": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/business-layer/business-layer.ts",
+      "type": "orchestrator"
+    },
+    "inject-to-supabase": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/business/misc/inject-to-supabase/index.ts",
+      "type": "analyzer"
+    },
+    "schema-analyzer": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/schema/schema-analyzer.ts",
+      "type": "analyzer"
+    },
+    "php-analyzer-v2": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/php-analyzer/php-analyzer-v2.ts",
+      "type": "analyzer"
+    },
+    "mysql-analyzer+optimizer": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/mysql-analyzer+optimizer/mysql-analyzer+optimizer.ts",
+      "type": "analyzer"
+    },
+    "adapters": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/three-layer/adapters/index.ts",
+      "type": "orchestrator"
+    },
+    "dependencyagent": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/dependencyagent/dependencyagent.ts",
+      "type": "analyzer"
+    },
+    "php-analyzer-v4": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/php-analyzer/php-analyzer-v4.ts",
+      "type": "analyzer"
+    },
+    "DependencyAgent": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/DependencyAgent/DependencyAgent.ts",
+      "type": "analyzer"
+    },
+    "seo-checker-agent": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/validators/seo-checker/seo-checker-agent.ts",
+      "type": "validator"
+    },
+    "abstraction-layer": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/abstraction-layer/abstraction-layer.ts",
+      "type": "orchestrator"
+    },
+    "type-audit-agent": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/type-audit/type-audit-agent.ts",
+      "type": "analyzer"
+    },
+    "prisma-analyzer": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/prisma/prisma-analyzer.ts",
+      "type": "analyzer"
+    },
+    "coordination-layer": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/coordination-layer/coordination-layer.ts",
+      "type": "orchestrator"
+    },
+    "TemporalConnector": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/TemporalConnector/TemporalConnector.ts",
+      "type": "orchestrator"
+    },
+    "enhanced-temporal-adapter": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/enhanced-temporal-adapter/enhanced-temporal-adapter.ts",
+      "type": "orchestrator"
+    },
+    "dev-integrator": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/dev-integrator/dev-integrator.ts",
+      "type": "analyzer"
+    },
+    "n8n-connector": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/n8n-connector/n8n-connector.ts",
+      "type": "orchestrator"
+    },
+    "agent-orchestrator": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/agent/agent-orchestrator.ts",
+      "type": "orchestrator"
+    },
+    "agent-version-auditor": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/agent-version-auditor/agent-version-auditor.ts",
+      "type": "analyzer"
+    },
+    "htaccess-route-analyzer": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/htaccess-route/htaccess-route-analyzer.ts",
+      "type": "analyzer"
+    },
+    "qa-analyzer": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/qa/qa-analyzer.ts",
+      "type": "analyzer"
+    },
+    "php-analyzer-agent": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/php-analyzer/php-analyzer-agent.ts",
+      "type": "analyzer"
+    },
+    "system-integration-bridge": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/system-integration-bridge/system-integration-bridge.ts",
+      "type": "analyzer"
+    },
+    "workflow-recovery.service": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/workflow-recovery.service/workflow-recovery.service.ts",
+      "type": "orchestrator"
+    },
+    "fiche.meta": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/fiche.meta/fiche.meta.ts",
+      "type": "analyzer"
+    },
+    "seo-content-enhancer": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/generators/seo-content-enhancer/seo-content-enhancer.ts",
+      "type": "generator"
+    },
+    "generate-migration-plan": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/generators/generate-migration-plan/generate-migration-plan.ts",
+      "type": "generator"
+    },
+    "agent-controller": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/agent-controller/agent-controller.ts",
+      "type": "analyzer"
+    },
+    "base-analyzer-agent": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/base-analyzer/base-analyzer-agent.ts",
+      "type": "analyzer"
+    },
+    "selector-agent": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/business/orchestrators/selector-agent/index.ts",
+      "type": "orchestrator"
+    },
+    "base-orchestrator-agent": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/base-orchestrator/base-orchestrator-agent.ts",
+      "type": "orchestrator"
+    },
+    "schema": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/schema/schema.ts",
+      "type": "analyzer"
+    },
+    "caddyfile-generator": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/generators/caddyfile/caddyfile-generator.ts",
+      "type": "generator"
+    },
+    "generator-agent": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/generators/generator/generator-agent.ts",
+      "type": "generator"
+    },
+    "audit-selector": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/business/misc/audit-selector/index.ts",
+      "type": "analyzer"
+    },
+    "discovery-agent": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/discovery/discovery-agent.ts",
+      "type": "analyzer"
+    },
+    "content-generator": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/generators/content-generator/index.ts",
+      "type": "generator"
+    },
+    "canonical-validator": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/validators/canonical/canonical-validator.ts",
+      "type": "validator"
+    },
+    "dataagent": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/dataagent/dataagent.ts",
+      "type": "analyzer"
+    },
+    "DataAgent": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/DataAgent/DataAgent.ts",
+      "type": "analyzer"
+    },
+    "checkpoint-manager": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/checkpoint-manager/checkpoint-manager.ts",
+      "type": "orchestrator"
+    },
+    "sql-analysis-runner": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/sql-analysis-runner/sql-analysis-runner.ts",
+      "type": "analyzer"
+    },
+    "persistence": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/persistence/index.ts",
+      "type": "orchestrator"
+    },
+    "agent-audit": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/agent-audit/agent-audit.ts",
+      "type": "analyzer"
+    },
+    "nginx-config-parser": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/nginx-config-parser/nginx-config-parser.ts",
+      "type": "analyzer"
+    },
+    "relational-normalizer": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/relational-normalizer/relational-normalizer.ts",
+      "type": "analyzer"
+    },
+    "prisma-migration-generator": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/generators/prisma-migration/prisma-migration-generator.ts",
+      "type": "generator"
+    },
+    "dependency-analyzer-v2": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/dependency-analyzer/dependency-analyzer-v2.ts",
+      "type": "analyzer"
+    },
+    "utils": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/utils/index.ts",
+      "type": "analyzer"
+    },
+    "abstract-processor-agent": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/abstract-processor/abstract-processor-agent.ts",
+      "type": "analyzer"
+    },
+    "helpers": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/helpers/helpers.ts",
+      "type": "analyzer"
+    },
+    "temporal-connector": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/temporal-connector/temporal-connector.ts",
+      "type": "orchestrator"
+    },
+    "htaccess-parser": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/htaccess-parser/htaccess-parser.ts",
+      "type": "analyzer"
+    },
+    "type-converter": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/type-converter/type-converter.ts",
+      "type": "analyzer"
+    },
+    "migration-strategist": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/migration-strategist/migration-strategist.ts",
+      "type": "analyzer"
+    },
+    "ci-tester": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/ci-tester/ci-tester.ts",
+      "type": "analyzer"
+    },
+    "validate-agents": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/validate-agents/validate-agents.ts",
+      "type": "analyzer"
+    },
+    "metrics-service": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/business/integrators/metrics-service/index.ts",
+      "type": "analyzer"
+    },
+    "qa-analyzer-v2": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/qa-analyzer/qa-analyzer-v2.ts",
+      "type": "analyzer"
+    },
+    "metrics": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/core/metrics/index.ts",
+      "type": "analyzer"
+    },
+    "logging": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/core/logging/index.ts",
+      "type": "analyzer"
+    },
+    "parser": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/parser/parser.ts",
+      "type": "analyzer"
+    },
+    "type-auditor": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/type-auditor/type-auditor.ts",
+      "type": "analyzer"
+    },
+    "semantic-table-mapper": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/semantic-table-mapper/semantic-table-mapper.ts",
+      "type": "analyzer"
+    },
+    "SupabaseOptimizationTracker": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/business/misc/SupabaseOptimizationTracker/index.ts",
+      "type": "analyzer"
+    },
+    "debt-analyzer": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/debt/debt-analyzer.ts",
+      "type": "analyzer"
+    },
+    "abstract-validator": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/validators/abstract/abstract-validator.ts",
+      "type": "validator"
+    },
+    "sql-analyzer": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/business/analyzers/sql-analyzer/index.ts",
+      "type": "analyzer"
+    },
+    "abstract-analyzer-agent": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/abstract-analyzer/abstract-analyzer-agent.ts",
+      "type": "analyzer"
+    },
+    "abstract-generator-agent": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/generators/abstract-generator/abstract-generator-agent.ts",
+      "type": "generator"
+    },
+    "canonical-sync-agent": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/business/misc/canonical-sync-agent/index.ts",
+      "type": "analyzer"
+    },
+    "dynamic_sql_extractor": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/business/misc/dynamic_sql_extractor/index.ts",
+      "type": "analyzer"
+    },
+    "migration-validator": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/validators/migration/migration-validator.ts",
+      "type": "validator"
+    },
+    "pipeline-strategy-auditor": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/pipeline-strategy-auditor/pipeline-strategy-auditor.ts",
+      "type": "analyzer"
+    },
+    "classifier": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/business/core/classifier/index.ts",
+      "type": "analyzer"
+    },
+    "abstract-generator": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/generators/abstract/abstract-generator.ts",
+      "type": "generator"
+    },
+    "advanced-retry-strategy": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/advanced-retry-strategy/advanced-retry-strategy.ts",
+      "type": "orchestrator"
+    },
+    "structure-analyzer-v2": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/structure-analyzer/structure-analyzer-v2.ts",
+      "type": "analyzer"
+    },
+    "diff-verifier": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/diff-verifier/diff-verifier.ts",
+      "type": "analyzer"
+    },
+    "migration-orchestrator": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/migration/migration-orchestrator.ts",
+      "type": "orchestrator"
+    },
+    "seo": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/core/seo/index.ts",
+      "type": "analyzer"
+    },
+    "remix-generator": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/generators/remix/remix-generator.ts",
+      "type": "generator"
+    },
+    "server": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/server/server.ts",
+      "type": "orchestrator"
+    },
+    "migration-coordinator": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/migration-coordinator/migration-coordinator.ts",
+      "type": "orchestrator"
+    },
+    "abstract-analyzer": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/abstract/abstract-analyzer.ts",
+      "type": "analyzer"
+    },
+    "auto-pr-agent": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/auto-pr/auto-pr-agent.ts",
+      "type": "analyzer"
+    },
+    "layered-agent-auditor": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/layered-agent-auditor/layered-agent-auditor.ts",
+      "type": "analyzer"
+    },
+    "processors": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/processors/index.ts",
+      "type": "analyzer"
+    },
+    "base-generator-agent": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/generators/base-generator/base-generator-agent.ts",
+      "type": "generator"
+    },
+    "agent-registry": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/agent-registry/agent-registry.ts",
+      "type": "analyzer"
+    },
+    "prisma-to-zod": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/prisma-to-zod/prisma-to-zod.ts",
+      "type": "analyzer"
+    },
+    "php-router-audit": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/php-router-audit/php-router-audit.ts",
+      "type": "analyzer"
+    },
+    "debt-detector": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/debt-detector/debt-detector.ts",
+      "type": "analyzer"
+    },
+    "generate_prisma_model": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/generators/generate_prisma_model/generate_prisma_model.ts",
+      "type": "generator"
+    },
+    "metrics-collector": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/metrics-collector/metrics-collector.ts",
+      "type": "analyzer"
+    },
+    "base-validator-agent": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/validators/base-validator/base-validator-agent.ts",
+      "type": "validator"
+    },
+    "file-manager": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/file-manager/file-manager.ts",
+      "type": "analyzer"
+    },
+    "progressive-migration-agent": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/progressive-migration/progressive-migration-agent.ts",
+      "type": "analyzer"
+    },
+    "qa.schema": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/qa.schema/qa.schema.ts",
+      "type": "analyzer"
+    },
+    "table-classifier": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/business/core/table-classifier/index.ts",
+      "type": "analyzer"
+    },
+    "scheduler": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/scheduler/index.ts",
+      "type": "orchestrator"
+    },
+    "database-service": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/database-service/database-service.ts",
+      "type": "orchestrator"
+    },
+    "BaseAgent": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/business/core/BaseAgent/index.ts",
+      "type": "analyzer"
+    },
+    "adapter-layer": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/adapter-layer/adapter-layer.ts",
+      "type": "orchestrator"
+    },
+    "implementations": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/three-layer/implementations/index.ts",
+      "type": "orchestrator"
+    },
+    "agent8-optimizer": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/agent8-optimizer/agent8-optimizer.ts",
+      "type": "analyzer"
+    },
+    "php-sql-sync-mapper": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/business/misc/php-sql-sync-mapper/index.ts",
+      "type": "analyzer"
+    },
+    "notifier": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/business/misc/notifier/index.ts",
+      "type": "analyzer"
+    },
+    "three-layer-architecture": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/three-layer-architecture/three-layer-architecture.ts",
+      "type": "orchestrator"
+    },
+    "dependency-analyzer": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/dependency-analyzer/index.ts",
+      "type": "analyzer"
+    },
+    "resilience": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/resilience/index.ts",
+      "type": "orchestrator"
+    },
+    "mcp-agents": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/index.ts",
+      "type": "analyzer"
+    },
+    "htaccess-router-analyzer": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/htaccess-router/htaccess-router-analyzer.ts",
+      "type": "analyzer"
+    },
+    "abstract-agent": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/abstract/abstract-agent.ts",
+      "type": "analyzer"
+    },
+    "business": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/business/index.ts",
+      "type": "analyzer"
+    },
+    "react-component-generator": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/generators/react-component/react-component-generator.ts",
+      "type": "generator"
+    },
+    "relation-analyzer": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/relation/relation-analyzer.ts",
+      "type": "analyzer"
+    },
+    "db-connector": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/db-connector/db-connector.ts",
+      "type": "analyzer"
+    },
+    "logger": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/logger/logger.ts",
+      "type": "analyzer"
+    },
+    "type-mapper": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/type-mapper/type-mapper.ts",
+      "type": "analyzer"
+    },
+    "agent-abstract-migration.test": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/agent-abstract-migration.test/agent-abstract-migration.test.ts",
+      "type": "analyzer"
+    },
+    "nestjs-generator": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/generators/nestjs/nestjs-generator.ts",
+      "type": "generator"
+    },
+    "agent-communication": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/agent-communication/agent-communication.ts",
+      "type": "analyzer"
+    },
+    "remix-route-generator": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/generators/remix-route/remix-route-generator.ts",
+      "type": "generator"
+    },
+    "priority-scheduler": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/priority-scheduler/priority-scheduler.ts",
+      "type": "orchestrator"
+    },
+    "qa-confirmer": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/qa-confirmer/qa-confirmer.ts",
+      "type": "analyzer"
+    },
+    "mcp-verifier.worker": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/mcp-verifier.worker/mcp-verifier.worker.ts",
+      "type": "analyzer"
+    },
+    "table-cartographer": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/table-cartographer/table-cartographer.ts",
+      "type": "analyzer"
+    },
+    "adapt-agents": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/adapt-agents/adapt-agents.ts",
+      "type": "analyzer"
+    },
+    "mysql-analyzer": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/mysql/mysql-analyzer.ts",
+      "type": "analyzer"
+    },
+    "bridges": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/bridges/index.ts",
+      "type": "orchestrator"
+    },
+    "temporal-adapter": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/temporal-adapter/temporal-adapter.ts",
+      "type": "orchestrator"
+    },
+    "mcp-manifest-manager": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/mcp-manifest-manager/mcp-manifest-manager.ts",
+      "type": "analyzer"
+    },
+    "image-optimizer": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/image-optimizer/image-optimizer.ts",
+      "type": "analyzer"
+    },
+    "postgresql-validator": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/validators/postgresql/postgresql-validator.ts",
+      "type": "validator"
+    },
+    "temporal": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/temporal/index.ts",
+      "type": "orchestrator"
+    },
+    "temporal-recovery-adapter": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/temporal-recovery-adapter/temporal-recovery-adapter.ts",
+      "type": "orchestrator"
+    },
+    "monorepo-analyzer": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/monorepo/monorepo-analyzer.ts",
+      "type": "analyzer"
+    },
+    "analyzer-agent": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/analyzer/analyzer-agent.ts",
+      "type": "analyzer"
+    },
+    "structureagent": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/structureagent/structureagent.ts",
+      "type": "analyzer"
+    },
+    "StructureAgent": {
+      "path": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/StructureAgent/StructureAgent.ts",
+      "type": "analyzer"
+    }
+  }
+}

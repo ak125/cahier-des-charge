@@ -3,7 +3,7 @@
  * Ce fichier exporte tous les agents d'analyse disponibles dans le package
  */
 
-export * from './base-analyzer-agent';
+export * from './BaseAnalyzer-agent';
 
 // Exporter ici les implémentations spécifiques d'agents d'analyse
-// Exemple: export * from './php-analyzer';
+// Exemple: export * from './PhpAnalyzer';

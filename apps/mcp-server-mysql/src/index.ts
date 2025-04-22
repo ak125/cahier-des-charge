@@ -714,7 +714,7 @@ async function main() {
   const args = process.argv.slice(2);
   
   if (args.length < 1) {
-    console.error('Usage: npx mysql-analyzer <connection-string> [working-directory]');
+    console.error('Usage: npx MysqlAnalyzer <connection-string> [working-directory]');
     process.exit(1);
   }
   

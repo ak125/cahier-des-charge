@@ -258,7 +258,7 @@ export class PrismaSeoRepository implements ISeoRepository {
   }
 
   async createJob(data: { jobId: string; status: string; filePath: string | null; result: any }): Promise<any> {
-    return this.prisma.mcpJob.create({
+    return this.prismaDoDotmcpJob.create({
       data,
     });
   }

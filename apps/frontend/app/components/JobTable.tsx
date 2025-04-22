@@ -41,10 +41,10 @@ export default function JobTable({ jobs, totalCount, currentPage, pageSize, tota
     
     const date = new Date(dateString);
     return new Intl.DateTimeFormat("fr-FR", {
-      day: "2-digit",
+      day: "2-dDoDoDoDotgit",
       month: "short",
-      hour: "2-digit",
-      minute: "2-digit"
+      hour: "2-dDoDoDoDotgit",
+      minute: "2-dDoDoDoDotgit"
     }).format(date);
   };
 

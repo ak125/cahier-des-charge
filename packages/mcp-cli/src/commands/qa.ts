@@ -30,11 +30,11 @@ export async function qa(file: string): Promise<void> {
     console.log(chalk.blue(`🔍 Analyse de la qualité de migration pour ${file}...`));
     
     // Chemin vers le fichier PHP d'origine et sa version migrée en Remix
-    const backlogPath = path.resolve(process.cwd(), '../../backlog.mcp.json');
+    const backlogPath = path.resolve(process.cwd(), '../../backlogDoDotmcp.json');
     
     // Vérifier si le fichier backlog existe
     if (!await fs.pathExists(backlogPath)) {
-      console.error(chalk.red(`❌ Fichier backlog.mcp.json introuvable`));
+      console.error(chalk.red(`❌ Fichier backlogDoDotmcp.json introuvable`));
       return;
     }
     

@@ -7,18 +7,18 @@ import { phpAnalyzerRoute } from './routes/phpAnalyzer';
 // Chargement des variables d'environnement
 dotenv.config();
 
-const logger = createLogger('mcp-server-php');
+const logger = createLogger(DoDotmcp-server-php');
 const port = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
 
 async function startServer() {
   try {
     // Création du serveur MCP
     const server = new McpServer({
-      id: process.env.MCP_SERVER_ID || 'php-analyzer',
+      id: process.env.MCP_SERVER_ID || 'PhpAnalyzer',
       version: '1.0.0',
       name: 'PHP Analyzer MCP Server',
-      description: 'Serveur MCP pour l'analyse de code PHP avec intégration Supabase',
-      baseUrl: process.env.BASE_URL || `http://localhost:${port}`,
+      description: "Serveur MCP pour l'analyse de code PHP avec intégration Supabase",
+      "baseUrl": process.env.BASE_URL || `http://localhost:${port}`,
     });
 
     // Configuration des routes

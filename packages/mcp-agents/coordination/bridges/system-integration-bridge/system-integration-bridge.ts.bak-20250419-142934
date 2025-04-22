@@ -1,0 +1,311 @@
+/**
+ * SystemIntegrationBridge
+ * 
+ * Agent de la couche coordination permettant l'intégration entre différents systèmes
+ * dans l'architecture MCP OS en 3 couches
+ * 
+ * Cet agent sert de pont entre les services internes et externes, facilitant
+ * les échanges de données et les appels d'API.
+ */
+
+import { BridgeAgent, ConnectionConfig, TransferResult } from '../../../../../src/core/interfaces/coordination';
+import * as fs from 'fs-extra';
+import * as path from 'path';
+import { BaseAgent, CoordinationAgent } from '../../core/interfaces/base-agent';
+
+
+/**
+ * Options de configuration pour une connexion
+ */
+interface SystemConnectionOptions {
+  timeout?: number;
+  retryAttempts?: number;
+  retryDelay?: number;
+  headers?: Record<string, string>;
+  authType?: 'basic' | 'bearer' | 'oauth' | 'apiKey' | 'none';
+}
+
+/**
+ * Configuration des systèmes source et destination
+ */
+interface BridgeConfiguration {
+  source: ConnectionConfig;
+  destination: ConnectionConfig;
+  options?: SystemConnectionOptions;
+}
+
+/**
+ * Agent de pont pour l'intégration de systèmes
+ */
+export class SystemIntegrationBridge implements BaseAgent, CoordinationAgent, BaseAgent, CoordinationAgent, BridgeAgent {
+  id: string = 'system-integration-bridge';
+  name: string = 'System Integration Bridge';
+  type: string = 'bridge';
+  version: string = '1.0.0';
+  
+  private configurations: Map<string, BridgeConfiguration> = new Map();
+  private activeConnections: Map<string, boolean> = new Map();
+  private ready: boolean = false;
+
+  /**
+   * Initialise l'agent avec des options
+   */
+  async initialize(options?: Record<string, any>): Promise<void> {
+    console.log('Initialisation du System Integration Bridge...');
+    
+    // Appliquer les options de configuration
+    if (options?.defaultConfigurations) {
+      for (const [id, config] of Object.entries(options.defaultConfigurations)) {
+        this.configurations.set(id, config as BridgeConfiguration);
+      }
+    }
+    
+    this.ready = true;
+    console.log(`System Integration Bridge initialisé avec ${this.configurations.size} configurations prédéfinies.`);
+  }
+
+  /**
+   * Vérifie si l'agent est prêt à être utilisé
+   */
+  isReady(): boolean {
+    return this.ready;
+  }
+
+  /**
+   * Arrête et nettoie l'agent
+   */
+  async shutdown(): Promise<void> {
+    console.log('Fermeture du System Integration Bridge...');
+    
+    // Fermer toutes les connexions actives
+    const connectionIds = Array.from(this.activeConnections.keys());
+    for (const id of connectionIds) {
+      if (this.activeConnections.get(id)) {
+        await this.disconnect(id);
+      }
+    }
+    
+    this.activeConnections.clear();
+    this.ready = false;
+    console.log('System Integration Bridge arrêté.');
+  }
+
+  /**
+   * Récupère les métadonnées de l'agent
+   */
+  getMetadata(): Record<string, any> {
+    return {
+      id: this.id,
+      name: this.name,
+      type: this.type,
+      version: this.version,
+      capabilities: ['system-integration', 'data-transfer', 'api-bridging'],
+      status: this.isReady() ? 'ready' : 'not-ready',
+      connections: {
+        configured: this.configurations.size,
+        active: Array.from(this.activeConnections.entries())
+          .filter(([_, active]) => active)
+          .length
+      }
+    };
+  }
+
+  /**
+   * Vérifie l'état de la connexion
+   */
+  async checkConnection(connectionId?: string): Promise<boolean> {
+    if (connectionId) {
+      return this.activeConnections.get(connectionId) || false;
+    }
+    
+    // Si aucun ID n'est fourni, vérifier si au moins une connexion est active
+    return Array.from(this.activeConnections.values()).some(active => active);
+  }
+
+  /**
+   * Établit une connexion entre deux systèmes
+   */
+  async connect(config: ConnectionConfig): Promise<boolean> {
+    if (!this.isReady()) {
+      throw new Error('Le bridge n\'est pas initialisé.');
+    }
+
+    const connectionId = config.id;
+    
+    // Vérifier si une configuration existe déjà pour cette connexion
+    if (!this.configurations.has(connectionId)) {
+      // Si aucune configuration n'existe, utiliser celle fournie
+      console.log(`Configuration pour ${connectionId} non trouvée, création d'une nouvelle...`);
+      
+      // Vérifier que la configuration est complète pour créer un bridge
+      if (!config.options?.source || !config.options?.destination) {
+        throw new Error('Les informations de source et destination sont requises pour la connexion.');
+      }
+      
+      this.configurations.set(connectionId, {
+        source: config.options.source as ConnectionConfig,
+        destination: config.options.destination as ConnectionConfig,
+        options: config.options.bridgeOptions as SystemConnectionOptions
+      });
+    }
+    
+    console.log(`Connexion au système ${connectionId}...`);
+    
+    try {
+      // Ici, implémentation de la connexion aux deux systèmes
+      // Cela pourrait être des appels API, des connexions DB, etc.
+      
+      // Simuler un délai de connexion
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      // Marquer la connexion comme active
+      this.activeConnections.set(connectionId, true);
+      console.log(`Connexion établie avec succès pour ${connectionId}`);
+      
+      return true;
+    } catch (error) {
+      console.error(`Erreur lors de la connexion à ${connectionId}:`, error);
+      this.activeConnections.set(connectionId, false);
+      return false;
+    }
+  }
+
+  /**
+   * Ferme la connexion pour un ID donné
+   */
+  async disconnect(connectionId: string): Promise<boolean> {
+    if (!this.activeConnections.has(connectionId) || !this.activeConnections.get(connectionId)) {
+      console.log(`Aucune connexion active pour ${connectionId}`);
+      return true;
+    }
+    
+    console.log(`Fermeture de la connexion ${connectionId}...`);
+    
+    try {
+      // Ici, implémentation de la déconnexion
+      // Cela pourrait être la fermeture d'une connexion DB, etc.
+      
+      // Simuler un délai de déconnexion
+      await new Promise(resolve => setTimeout(resolve, 300));
+      
+      this.activeConnections.set(connectionId, false);
+      console.log(`Connexion ${connectionId} fermée avec succès`);
+      
+      return true;
+    } catch (error) {
+      console.error(`Erreur lors de la fermeture de la connexion ${connectionId}:`, error);
+      return false;
+    }
+  }
+
+  /**
+   * Transfère des données d'un système à un autre
+   */
+  async transfer(data: any, options?: Record<string, any>): Promise<TransferResult> {
+    const connectionId = options?.connectionId;
+    
+    if (!connectionId) {
+      throw new Error('ID de connexion requis pour le transfert.');
+    }
+    
+    if (!this.activeConnections.get(connectionId)) {
+      throw new Error(`La connexion ${connectionId} n'est pas active.`);
+    }
+    
+    console.log(`Transfert de données via la connexion ${connectionId}...`);
+    
+    try {
+      const config = this.configurations.get(connectionId);
+      if (!config) {
+        throw new Error(`Configuration non trouvée pour ${connectionId}`);
+      }
+      
+      // Adapter les données pour le système de destination
+      // Ceci est une simulation - dans un cas réel, vous transformeriez les données
+      // selon les besoins des systèmes source et destination
+      const adaptedData = this._adaptDataFormat(data, options?.sourceFormat, options?.targetFormat);
+      
+      // Envoyer les données au système de destination
+      // Simulation d'un délai de transfert
+      await new Promise(resolve => setTimeout(resolve, 700));
+      
+      console.log(`Données transférées avec succès via ${connectionId}`);
+      
+      return {
+        success: true,
+        transferredCount: Array.isArray(data) ? data.length : 1,
+        timestamp: new Date().toISOString()
+      };
+    } catch (error) {
+      console.error(`Erreur lors du transfert via ${connectionId}:`, error);
+      
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Erreur inconnue',
+        timestamp: new Date().toISOString()
+      };
+    }
+  }
+
+  /**
+   * Récupère l'état des connexions
+   */
+  async getConnectionStatus(): Promise<Record<string, any>> {
+    const statuses: Record<string, any> = {};
+    
+    for (const [id, active] of this.activeConnections.entries()) {
+      const config = this.configurations.get(id);
+      
+      statuses[id] = {
+        active,
+        source: config?.source.type,
+        destination: config?.destination.type,
+        lastActivity: active ? new Date().toISOString() : undefined
+      };
+    }
+    
+    return statuses;
+  }
+
+  /**
+   * Méthode privée pour adapter les données entre différents formats
+   */
+  private _adaptDataFormat(data: any, sourceFormat?: string, targetFormat?: string): any {
+    // Cette méthode serait bien plus complexe dans un cas réel
+    // Ici c'est une simple simulation
+    
+    if (!sourceFormat || !targetFormat || sourceFormat === targetFormat) {
+      return data;
+    }
+    
+    console.log(`Conversion des données de ${sourceFormat} vers ${targetFormat}`);
+    
+    if (sourceFormat === 'json' && targetFormat === 'xml') {
+      // Conversion simulée JSON vers XML
+      return `<data>${JSON.stringify(data)}</data>`;
+    } else if (sourceFormat === 'xml' && targetFormat === 'json') {
+      // Conversion simulée XML vers JSON
+      return { data: data.replace(/<\/?data>/g, '') };
+    }
+    
+    // Par défaut, retourner les données inchangées
+    return data;
+  }
+
+  id: string = '';
+  name: string = '';
+  type: string = '';
+  version: string = '1.0.0';
+
+  id: string = '';
+  name: string = '';
+  type: string = '';
+  version: string = '1.0.0';
+
+  id: string = '';
+  name: string = '';
+  type: string = '';
+  version: string = '1.0.0';
+}
+
+export default SystemIntegrationBridge;

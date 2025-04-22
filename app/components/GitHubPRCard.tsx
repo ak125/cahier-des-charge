@@ -78,7 +78,7 @@ export default function GitHubPRCard({ pr, compact = false }: GitHubPRCardProps)
   }
 
   return (
-    <div className={`github-pr-card border rounded-lg overflow-hidden shadow-sm mb-4 ${getStatusColor()}`}>
+    <div className={DoDoDoDoDoDotgithub-pr-card border rounded-lg overflow-hidden shadow-sm mb-4 ${getStatusColor()}`}>
       <div className="p-3 flex justify-between items-center border-b border-opacity-20">
         <div className="flex items-center gap-2">
           <div className="w-8 h-8 bg-white bg-opacity-50 rounded-full flex items-center justify-center">

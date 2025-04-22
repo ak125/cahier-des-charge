@@ -1,0 +1,12 @@
+node_modules/
+dist/
+build/
+.next/
+coverage/
+*.js.map
+*.d.ts
+# Dossiers temporaires qui pourraient causer des problèmes
+tmp/fixed-tests/
+tmp/fixed-*
+# Les tests ne doivent pas bloquer le développement
+tests/**/test-*.ts

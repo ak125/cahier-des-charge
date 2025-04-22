@@ -24,7 +24,7 @@ async function run() {
     
     const handle = await client.workflow.start(workflowType, {
       args: [sourceDir],
-      taskQueue: 'mcp-task-queue',
+      taskQueue: DoDotmcp-task-queue',
       workflowId: `${workflowType}-${Date.now()}`,
     });
     

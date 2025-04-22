@@ -4,7 +4,7 @@
  */
 
 // Importer la fonction principale du serveur MCP
-import { main } from './mcp-server';
+import { main } from '.DoDotmcp-server';
 
 // Exécuter la fonction principale
 main().catch(error => {

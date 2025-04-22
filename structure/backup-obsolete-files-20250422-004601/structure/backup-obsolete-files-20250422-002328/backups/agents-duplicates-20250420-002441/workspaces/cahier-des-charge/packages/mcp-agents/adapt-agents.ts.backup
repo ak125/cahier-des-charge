@@ -1,0 +1,788 @@
+/**
+ * Script d'adaptation automatique des agents MCP
+ * Ce script analyse les agents et les adapte pour qu'ils respectent l'interface McpAgent
+ */
+
+import { AgentValidator } from './validate-agents';
+import * as fs from 'fs';
+import * as path from 'path';
+import { getAllAgentIds } from './business';
+
+// Interface pour les modifications à apporter
+interface AgentModification {
+  agentId: string;
+  path: string;
+  changes: {
+    addImports: string[];
+    addProperties: string[];
+    addMethods: string[];
+    wrapClass: boolean;
+  };
+}
+
+class AgentAdapter implements BaseAgent, BusinessAgent {
+  private validator: AgentValidator;
+  
+  constructor() {
+    this.validator = new AgentValidator();
+  }
+  
+  // Analyser un agent et déterminer les modifications nécessaires
+  async analyzeAgent(agentId: string, agentPath: string): Promise<AgentModification> {
+    const validationReport = await this.validator.validateAgent(agentId, agentPath);
+    
+    const modification: AgentModification = {
+      agentId,
+      path: agentPath,
+      changes: {
+        addImports: [],
+        addProperties: [],
+        addMethods: [],
+        wrapClass: false
+      }
+    };
+    
+    // Si l'agent est valide, aucune modification n'est nécessaire
+    if (validationReport.isValid) {
+      return modification;
+    }
+    
+    // Déterminer les imports à ajouter
+    if (validationReport.missingProperties.includes('events')) {
+      modification.changes.addImports.push("import { EventEmitter } from 'events';");
+    }
+    
+    if (validationReport.missingProperties.length > 0 || validationReport.missingMethods.length > 0) {
+      modification.changes.addImports.push("import { McpAgent, AgentMetadata, AgentStatus, AgentContext, AgentResult, AgentEvent, AgentConfig } from '../../core/interfaces';");
+    }
+    
+    // Déterminer les propriétés à ajouter
+    if (validationReport.missingProperties.includes('metadata')) {
+      modification.changes.addProperties.push(`
+  readonly metadata: AgentMetadata = {
+    id: '${agentId}',
+    type: '${this.determineAgentType(agentId)}',
+    name: '${this.formatAgentName(agentId)}',
+    version: '1.0.0',
+    description: 'Agent ${this.formatAgentName(agentId)}'
+  };`);
+    }
+    
+    if (validationReport.missingProperties.includes('status')) {
+      modification.changes.addProperties.push(`
+  status: AgentStatus = 'ready';`);
+    }
+    
+    if (validationReport.missingProperties.includes('events')) {
+      modification.changes.addProperties.push(`
+  readonly events = new EventEmitter();`);
+    }
+    
+    // Déterminer les méthodes à ajouter
+    if (validationReport.missingMethods.includes('initialize')) {
+      modification.changes.addMethods.push(`
+  async initialize(): Promise<void> {
+    this.status = 'ready';
+    this.events.emit(AgentEvent.STATUS_CHANGED, this.status);
+  }`);
+    }
+    
+    if (validationReport.missingMethods.includes('validate')) {
+      modification.changes.addMethods.push(`
+  async validate(context: AgentContext): Promise<boolean> {
+    return !!context && !!context.jobId;
+  }`);
+    }
+    
+    if (validationReport.missingMethods.includes('stop')) {
+      modification.changes.addMethods.push(`
+  async stop(): Promise<void> {
+    this.status = 'stopped';
+    this.events.emit(AgentEvent.STATUS_CHANGED, this.status);
+  }`);
+    }
+    
+    if (validationReport.missingMethods.includes('getStatus')) {
+      modification.changes.addMethods.push(`
+  async getStatus(): Promise<{ status: AgentStatus, details?: any }> {
+    return { status: this.status };
+  }`);
+    }
+    
+    // Si l'agent a trop d'erreurs, suggérer un wrapper complet
+    if (validationReport.errors.length > 2 || 
+        (validationReport.missingProperties.length > 2 && validationReport.missingMethods.length > 2)) {
+      modification.changes.wrapClass = true;
+    }
+    
+    return modification;
+  }
+  
+  // Adapter un agent en fonction des modifications déterminées
+  async adaptAgent(modification: AgentModification): Promise<boolean> {
+    const indexPath = path.join(modification.path, 'index.ts');
+    
+    if (!fs.existsSync(indexPath)) {
+      console.error(`Erreur: Fichier index.ts introuvable dans ${modification.path}`);
+      return false;
+    }
+    
+    // Lire le contenu du fichier
+    let content = fs.readFileSync(indexPath, 'utf-8');
+    
+    // Si aucun changement n'est nécessaire, retourner
+    if (modification.changes.addImports.length === 0 &&
+        modification.changes.addProperties.length === 0 &&
+        modification.changes.addMethods.length === 0 &&
+        !modification.changes.wrapClass) {
+      return true;
+    }
+    
+    // Créer une sauvegarde du fichier original
+    const backupPath = `${indexPath}.backup`;
+    fs.writeFileSync(backupPath, content);
+    
+    // Si un wrapper complet est nécessaire
+    if (modification.changes.wrapClass) {
+      // Trouver le nom de la classe d'origine (approximatif)
+      const classMatch = content.match(/export\s+class\s+(\w+)/);
+      if (!classMatch) {
+        console.error(`Erreur: Impossible de trouver la classe à wrapper dans ${indexPath}`);
+        return false;
+      }
+      
+      const originalClassName = classMatch[1];
+      const adapterClassName = `${originalClassName}McpAdapter`;
+      
+      // Créer le contenu du nouveau fichier
+      const newContent = `${modification.changes.addImports.join('\n')}
+${content}
+
+/**
+ * Adaptateur pour rendre ${originalClassName} compatible avec l'interface McpAgent
+ */
+export class ${adapterClassName} implements McpAgent {
+  private originalAgent: ${originalClassName};
+${modification.changes.addProperties.join('')}
+  
+  constructor(config?: AgentConfig) {
+    this.originalAgent = new ${originalClassName}();
+  }
+${modification.changes.addMethods.join('')}
+  
+  async execute(context: AgentContext): Promise<AgentResult> {
+    this.status = 'busy';
+    this.events.emit(AgentEvent.STATUS_CHANGED, this.status);
+    this.events.emit(AgentEvent.STARTED, { context });
+    
+    try {
+      // Appel à la méthode execute de l'agent d'origine
+      const originalResult = await this.originalAgent.execute(context);
+      
+      this.status = 'ready';
+      this.events.emit(AgentEvent.STATUS_CHANGED, this.status);
+      
+      // Adapter le résultat au format AgentResult
+      const result: AgentResult = {
+        success: true,
+        data: originalResult,
+        metrics: {
+          duration: 0,
+          startTime: Date.now(),
+          endTime: Date.now()
+        }
+      };
+      
+      this.events.emit(AgentEvent.COMPLETED, result);
+      
+      return result;
+    } catch (error) {
+      this.status = 'error';
+      this.events.emit(AgentEvent.STATUS_CHANGED, this.status);
+      
+      const errorResult: AgentResult = {
+        success: false,
+        error: error instanceof Error ? error : new Error(String(error)),
+        metrics: {
+          duration: 0,
+          startTime: Date.now(),
+          endTime: Date.now()
+        }
+      };
+      
+      this.events.emit(AgentEvent.FAILED, errorResult);
+      
+      return errorResult;
+    }
+  }
+}
+
+// Export par défaut de l'adaptateur pour compatibilité
+export default ${adapterClassName};
+`;
+      
+      fs.writeFileSync(indexPath, newContent);
+      console.log(`Agent ${modification.agentId} adapté par wrapping avec ${adapterClassName}`);
+      
+    } else {
+      // Appliquer les modifications une à une
+      
+      // Ajouter les imports
+      if (modification.changes.addImports.length > 0) {
+        content = `${modification.changes.addImports.join('\n')}\n${content}`;
+      }
+      
+      // Trouver la classe dans le fichier
+      const classMatch = content.match(/export\s+class\s+(\w+)([^{]*){/);
+      if (!classMatch) {
+        console.error(`Erreur: Impossible de trouver la classe à adapter dans ${indexPath}`);
+        return false;
+      }
+      
+      // Ajouter "implements McpAgent" si ce n'est pas déjà le cas
+      if (!classMatch[2].includes('implements McpAgent')) {
+        content = content.replace(
+          `export class ${classMatch[1]}${classMatch[2]}{`,
+          `export class ${classMatch[1]}${classMatch[2]} implements McpAgent {`
+        );
+      }
+      
+      // Ajouter les propriétés
+      if (modification.changes.addProperties.length > 0) {
+        const classStartPos = content.indexOf('{', content.indexOf(`export class ${classMatch[1]}`)) + 1;
+        content = content.slice(0, classStartPos) + 
+                 modification.changes.addProperties.join('') + 
+                 content.slice(classStartPos);
+      }
+      
+      // Ajouter les méthodes à la fin de la classe
+      if (modification.changes.addMethods.length > 0) {
+        // Trouver la fin de la classe
+        const classEndPos = this.findClassEnd(content, classMatch[1]);
+        if (classEndPos === -1) {
+          console.error(`Erreur: Impossible de trouver la fin de la classe ${classMatch[1]} dans ${indexPath}`);
+          return false;
+        }
+        
+        content = content.slice(0, classEndPos) + 
+                 modification.changes.addMethods.join('') + 
+                 content.slice(classEndPos);
+      }
+      
+      // Écrire le contenu mis à jour
+      fs.writeFileSync(indexPath, content);
+      console.log(`Agent ${modification.agentId} adapté avec des modifications directes`);
+    }
+    
+    return true;
+  }
+  
+  // Adapter tous les agents
+  async adaptAllAgents(): Promise<number> {
+    // Filtrer pour ne traiter que l'agent htaccess-router-analyzer
+    const agentIds = ['htaccess-router-analyzer'];
+    let adaptedCount = 0;
+    
+    for (const agentId of agentIds) {
+      // Déterminer le chemin de l'agent en fonction de son ID
+      let agentPath = '';
+      
+      if (agentId.includes('analyzer')) {
+        agentPath = path.resolve(__dirname, 'business/analyzers', agentId);
+      } else if (agentId.includes('generator')) {
+        agentPath = path.resolve(__dirname, 'business/generators', agentId);
+      } else if (agentId.includes('validator') || agentId === 'seo-checker' || agentId === 'canonical-validator') {
+        agentPath = path.resolve(__dirname, 'business/validators', agentId);
+      } else if (agentId.includes('orchestrator') || agentId.includes('agent')) {
+        agentPath = path.resolve(__dirname, 'business/orchestrators', agentId);
+      }
+      
+      if (!agentPath || !fs.existsSync(agentPath)) {
+        console.error(`Erreur: Chemin introuvable pour l'agent ${agentId}`);
+        continue;
+      }
+      
+      // Analyser l'agent pour déterminer les modifications nécessaires
+      const modification = await this.analyzeAgent(agentId, agentPath);
+      
+      // Adapter l'agent
+      const success = await this.adaptAgent(modification);
+      if (success) {
+        adaptedCount++;
+      }
+    }
+    
+    return adaptedCount;
+  }
+  
+  // Méthodes utilitaires
+  private determineAgentType(agentId: string): string {
+    if (agentId.includes('analyzer')) {
+      return 'analyzer';
+    } else if (agentId.includes('generator')) {
+      return 'generator';
+    } else if (agentId.includes('validator') || agentId === 'seo-checker' || agentId === 'canonical-validator') {
+      return 'validator';
+    } else if (agentId.includes('orchestrator')) {
+      return 'orchestrator';
+    } else {
+      return 'unknown';
+    }
+  }
+  
+  private formatAgentName(agentId: string): string {
+    return agentId
+      .split('-')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
+  }
+  
+  private findClassEnd(content: string, className: string): number {
+    const classStart = content.indexOf(`export class ${className}`);
+    if (classStart === -1) {
+      return -1;
+    }
+    
+    // Trouver l'accolade ouvrante de la classe
+    const openBracePos = content.indexOf('{', classStart);
+    if (openBracePos === -1) {
+      return -1;
+    }
+    
+    // Parcourir le contenu pour trouver l'accolade fermante correspondante
+    let braceCount = 1;
+    let pos = openBracePos + 1;
+    
+    while (pos < content.length && braceCount > 0) {
+      if (content[pos] === '{') {
+        braceCount++;
+      } else if (content[pos] === '}') {
+        braceCount--;
+      }
+      pos++;
+    }
+    
+    // Si braceCount est 0, nous avons trouvé l'accolade fermante de la classe
+    return braceCount === 0 ? pos - 1 : -1;
+  }
+}
+
+// Fonction principale
+async function main() {
+  console.log('Adaptation des agents MCP...');
+  
+  const adapter = new AgentAdapter();
+  const adaptedCount = await adapter.adaptAllAgents();
+  
+  console.log(`\n✅ ${adaptedCount} agents adaptés avec succès`);
+  
+  return 0;
+}
+
+// Exécuter si appelé directement
+if (require.main === module) {
+  main().then(
+    code => process.exit(code)
+  ).catch(error => {
+    console.error('Erreur inattendue:', error);
+    process.exit(1);
+  });
+}
+
+// Exporter pour utilisation dans d'autres scripts
+export { AgentAdapter };
+
+
+
+
+
+
+
+
+import { BaseAgent } from '@workspaces/cahier-des-charge/src/core/interfaces/base-agent';
+import { BusinessAgent } from '@workspaces/cahier-des-charge/src/core/interfaces/business';
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

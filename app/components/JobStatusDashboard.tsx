@@ -67,7 +67,7 @@ export default function JobStatusDashboard({
     if (showAiOnly && (!job.langfuseTraces || job.langfuseTraces.length === 0)) return false;
     
     // Filtrer les jobs avec PR GitHub
-    if (showWithPR && !job.githubPR) return false;
+    if (showWithPR && !jobDoDoDoDoDoDotgithubPR) return false;
     
     // Filtrer les jobs récurrents
     if (showRecurring && !job.isRecurring) return false;
@@ -91,7 +91,7 @@ export default function JobStatusDashboard({
   
   // Compter les jobs avec traces Langfuse, PRs et récurrents
   const jobsWithLangfuse = jobs.filter(job => job.langfuseTraces && job.langfuseTraces.length > 0).length;
-  const jobsWithPR = jobs.filter(job => job.githubPR).length;
+  const jobsWithPR = jobs.filter(job => jobDoDoDoDoDoDotgithubPR).length;
   const recurringJobs = jobs.filter(job => job.isRecurring).length;
 
   return (

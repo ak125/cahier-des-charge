@@ -1,0 +1,99 @@
+# Rapport des tests d'agents MCP corrigés - 4/18/2025, 9:48:18 AM
+
+## Résumé
+
+### DataAgent (/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/data-analyzer/DataAgent)
+
+- ❌ Test échoué
+```
+Sortie: 
+Erreur: ❌ ÉCHEC: Cannot find module '/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/data-analyzer/DataAgent'
+Require stack:
+- /workspaces/cahier-des-charge/tmp/test-DataAgent-2025-04-18T09-48-18-922Z.js
+Error: Cannot find module '/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/data-analyzer/DataAgent'
+Require stack:
+- /workspaces/cahier-des-charge/tmp/test-DataAgent-2025-04-18T09-48-18-922Z.js
+    at Module._resolveFilename (node:internal/modules/cjs/loader:1212:15)
+    at Module._load (node:internal/modules/cjs/loader:1043:27)
+    at Module.require (node:internal/modules/cjs/loader:1298:19)
+    at require (node:internal/modules/helpers:182:18)
+    at Object.<anonymous> (/workspaces/cahier-des-charge/tmp/test-DataAgent-2025-04-18T09-48-18-922Z.js:7:22)
+    at Module._compile (node:internal/modules/cjs/loader:1529:14)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1613:10)
+    at Module.load (node:internal/modules/cjs/loader:1275:32)
+    at Module._load (node:internal/modules/cjs/loader:1096:12)
+    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:164:12) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    '/workspaces/cahier-des-charge/tmp/test-DataAgent-2025-04-18T09-48-18-922Z.js'
+  ]
+}
+
+
+```
+
+### AbstractAnalyzer (/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/abstract-analyzer)
+
+- ❌ Test échoué
+```
+Sortie: 
+Erreur: ❌ ÉCHEC: Cannot find module '/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/abstract-analyzer'
+Require stack:
+- /workspaces/cahier-des-charge/tmp/test-AbstractAnalyzer-2025-04-18T09-48-19-036Z.js
+Error: Cannot find module '/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/abstract-analyzer'
+Require stack:
+- /workspaces/cahier-des-charge/tmp/test-AbstractAnalyzer-2025-04-18T09-48-19-036Z.js
+    at Module._resolveFilename (node:internal/modules/cjs/loader:1212:15)
+    at Module._load (node:internal/modules/cjs/loader:1043:27)
+    at Module.require (node:internal/modules/cjs/loader:1298:19)
+    at require (node:internal/modules/helpers:182:18)
+    at Object.<anonymous> (/workspaces/cahier-des-charge/tmp/test-AbstractAnalyzer-2025-04-18T09-48-19-036Z.js:7:22)
+    at Module._compile (node:internal/modules/cjs/loader:1529:14)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1613:10)
+    at Module.load (node:internal/modules/cjs/loader:1275:32)
+    at Module._load (node:internal/modules/cjs/loader:1096:12)
+    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:164:12) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    '/workspaces/cahier-des-charge/tmp/test-AbstractAnalyzer-2025-04-18T09-48-19-036Z.js'
+  ]
+}
+
+
+```
+
+### BaseAnalyzerAgent (/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/base-analyzer-agent)
+
+- ❌ Test échoué
+```
+Sortie: 
+Erreur: ❌ ÉCHEC: Cannot find module '/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/base-analyzer-agent'
+Require stack:
+- /workspaces/cahier-des-charge/tmp/test-BaseAnalyzerAgent-2025-04-18T09-48-19-066Z.js
+Error: Cannot find module '/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/base-analyzer-agent'
+Require stack:
+- /workspaces/cahier-des-charge/tmp/test-BaseAnalyzerAgent-2025-04-18T09-48-19-066Z.js
+    at Module._resolveFilename (node:internal/modules/cjs/loader:1212:15)
+    at Module._load (node:internal/modules/cjs/loader:1043:27)
+    at Module.require (node:internal/modules/cjs/loader:1298:19)
+    at require (node:internal/modules/helpers:182:18)
+    at Object.<anonymous> (/workspaces/cahier-des-charge/tmp/test-BaseAnalyzerAgent-2025-04-18T09-48-19-066Z.js:7:22)
+    at Module._compile (node:internal/modules/cjs/loader:1529:14)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1613:10)
+    at Module.load (node:internal/modules/cjs/loader:1275:32)
+    at Module._load (node:internal/modules/cjs/loader:1096:12)
+    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:164:12) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    '/workspaces/cahier-des-charge/tmp/test-BaseAnalyzerAgent-2025-04-18T09-48-19-066Z.js'
+  ]
+}
+
+
+```
+
+## Statistiques
+
+- Tests réussis : 0
+- Tests échoués : 3
+- Total : 3

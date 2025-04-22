@@ -1,6 +1,6 @@
 // Stub implementation for Model Context Protocol Server
 import express, { Request, Response, Router } from 'express';
-import { mcpCore, MCPAgent } from '@model-context-protocol/core';
+import {DoDotmcpCore, MCPAgent } from '@model-context-protocol/core';
 
 /**
  * Options de configuration pour le serveur MCP
@@ -22,7 +22,7 @@ export class MCPServer {
   constructor(options?: MCPServerOptions) {
     this.app = express();
     this.port = options?.port || 3333;
-    this.basePath = options?.basePath || '/api/mcp';
+    this.basePath = options?.basePath || '/apiDoDotmcp';
     
     // Configuration de base
     this.app.use(express.json({ limit: '50mb' }));
@@ -50,7 +50,7 @@ export class MCPServer {
     router.get('/info', (req: Request, res: Response) => {
       res.json({
         name: 'Model Context Protocol Server',
-        version: mcpCore.version,
+        version:DoDotmcpCore.version,
         status: 'running'
       });
     });
@@ -94,7 +94,7 @@ export class MCPServer {
    * Enregistre un nouvel agent dans le serveur MCP
    */
   registerAgent(agentName: string, agent: MCPAgent): void {
-    mcpCore.registerAgent(agentName, agent);
+   DoDotmcpCore.registerAgent(agentName, agent);
     console.log(`Agent ${agentName} enregistré dans le serveur MCP`);
   }
 

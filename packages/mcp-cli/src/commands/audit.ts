@@ -22,11 +22,11 @@ interface Backlog {
 
 export async function audit(statusFilter?: string): Promise<void> {
   try {
-    // Vérifier si le fichier backlog.mcp.json existe
-    const backlogPath = path.resolve(process.cwd(), 'backlog.mcp.json');
+    // Vérifier si le fichier backlogDoDotmcp.json existe
+    const backlogPath = path.resolve(process.cwd(), 'backlogDoDotmcp.json');
     
     if (!await fs.pathExists(backlogPath)) {
-      console.error(chalk.red(`❌ Fichier backlog.mcp.json introuvable. Exécutez d'abord la commande de génération de backlog.`));
+      console.error(chalk.red(`❌ Fichier backlogDoDotmcp.json introuvable. Exécutez d'abord la commande de génération de backlog.`));
       return;
     }
     

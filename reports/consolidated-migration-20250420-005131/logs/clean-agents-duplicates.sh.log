@@ -1,0 +1,525 @@
+🧹 Nettoyage des agents MCP dupliqués...
+
+📁 Répertoire de sauvegarde créé: /workspaces/cahier-des-charge/backups/agents-duplicates-20250420-005131
+📝 Fichier de log créé: /workspaces/cahier-des-charge/backups/agents-duplicates-20250420-005131/cleanup-log.txt
+✅ Répertoire principal des agents trouvé: /workspaces/cahier-des-charge/packages/mcp-agents
+🔍 Recherche des agents TypeScript...
+📊 233 agents principaux identifiés
+🔍 Recherche dans: /workspaces/cahier-des-charge/agents
+  ↪ 116 fichiers trouvés
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/analysis/DataAgent.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/data-analyzer/DataAgent/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/analysis/DependencyAgent.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/dependency-analyzer/DependencyAgent/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/analysis/StructureAgent.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/structure-analyzer/StructureAgent/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/analysis/agent-audit.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/orchestration/misc/agent-audit/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/analysis/agent-donnees.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/agent-donnees/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/analysis/agent-structure.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/agent-structure/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/analysis/config-parsers/nginx-config-parser.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/business/parsers/nginx-config-parser/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/analysis/dynamic_sql_extractor.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/dynamic_sql_extractor/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/analysis/generate_prisma_model.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/business/generators/generate_prisma_model/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/analysis/htaccess-router-analyzer.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/business/analyzers/htaccess-router-analyzer/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/analysis/mysql-analyzer+optimizer.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/business/analyzers/mysql-analyzer+optimizer/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/analysis/php-analyzer-v3.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/business/analyzers/php-analyzer-v3/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/analysis/php-analyzer-v4.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/business/analyzers/php-analyzer-v4/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/analysis/php-analyzer.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/php-analyzer/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/analysis/php-discovery-engine.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/php-discovery-engine/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/analysis/relation-analyzer.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/business/analyzers/relation-analyzer/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/analysis/semantic-table-mapper.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/semantic-table-mapper/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/analysis/table-cartographer.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/table-cartographer/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/analysis/type-mapper.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/type-mapper/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/auto-pr-agent.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/auto-pr-agent/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/bullmq-orchestrator.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/orchestration/orchestrators/bullmq-orchestrator/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/canonical-validator.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/validators/canonical-validator/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/ci-tester.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/ci-tester/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/core/BaseAgent.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/business/core/BaseAgent/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/core/agent-orchestrator.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/orchestration/orchestrators/agent-orchestrator/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/core/coordinator-agent.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/orchestration/misc/coordinator-agent/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/core/mcp-integrator.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/business/orchestrators/mcp-integrator/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/core/selector-agent.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/business/orchestrators/selector-agent/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/dev-checker.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/business/validators/dev-checker/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/dev-integrator.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/dev-integrator/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/dev-linter.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/dev-linter/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/devops-preview.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/devops-preview/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/diff-verifier.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/diff-verifier/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/discovery/audit-selector.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/audit-selector/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/discovery/discovery-agent.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/discovery-agent/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/integration/metrics-service.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/business/integrators/metrics-service/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/integration/notification-service.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/business/integrators/notification-service/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/mcp-manifest-manager.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/mcp-manifest-manager/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/mcp-verifier.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/mcp-verifier/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/meta-generator.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/business/generators/meta-generator/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/migration-orchestrator.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/orchestration/orchestrators/migration-orchestrator/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/migration/BusinessAgent.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/BusinessAgent/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/migration/agent-business.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/agent-business/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/migration/caddyfile-generator.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/orchestration/misc/caddyfile-generator/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/migration/component-generator.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/business/generators/component-generator/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/migration/consolidator.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/consolidator/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/migration/data-verifier.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/data-verifier/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/migration/generate-migration-plan.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/business/generators/generate-migration-plan/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/migration/htaccess-router-analyzer.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/business/analyzers/htaccess-router-analyzer/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/migration/inject-to-supabase.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/inject-to-supabase/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/migration/mysql-analyzer+optimizer.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/business/analyzers/mysql-analyzer+optimizer/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/migration/mysql-analyzer.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/business/analyzers/mysql-analyzer/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/migration/mysql-analyzer/agents/debt-detector.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/debt-detector/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/migration/mysql-analyzer/agents/migration-strategist.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/migration-strategist/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/migration/mysql-analyzer/agents/prisma-generator.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/business/generators/prisma-generator/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/migration/mysql-analyzer/agents/relational-normalizer.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/relational-normalizer/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/migration/mysql-analyzer/agents/type-auditor.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/type-auditor/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/migration/mysql-analyzer/agents/type-converter.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/type-converter/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/migration/mysql-analyzer/core/classifier.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/business/core/classifier/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/migration/mysql-analyzer/core/debt-analyzer.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/business/analyzers/debt-analyzer/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/migration/mysql-analyzer/core/parser.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/business/parsers/parser/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/migration/mysql-analyzer/core/prisma-generator.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/business/generators/prisma-generator/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/migration/mysql-analyzer/core/relation-analyzer.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/business/analyzers/relation-analyzer/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/migration/mysql-analyzer/core/schema-analyzer.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/business/analyzers/schema-analyzer/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/migration/mysql-analyzer/core/table-classifier.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/business/core/table-classifier/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/migration/mysql-analyzer/core/type-converter.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/type-converter/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/migration/mysql-analyzer/models/schema.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/schema/schema.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/migration/mysql-analyzer/mysql-analyzer.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/business/analyzers/mysql-analyzer/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/migration/mysql-analyzer/utils/helpers.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/helpers/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/migration/mysql-to-pg.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/mysql-to-pg/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/migration/mysql-to-postgresql.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/mysql-to-postgresql/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/migration/nginx-config-analyzer.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/business/analyzers/nginx-config-analyzer/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/migration/nginx-to-caddy/caddyfile-generator.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/orchestration/misc/caddyfile-generator/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/migration/php-sql-mapper.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/php-sql-mapper/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/migration/php-sql-sync-mapper.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/php-sql-sync-mapper/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/migration/php-to-remix/canonical-sync-agent.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/canonical-sync-agent/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/migration/php-to-remix/dev-generator.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/business/generators/dev-generator/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/migration/php-to-remix/htaccess-route-analyzer.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/business/analyzers/htaccess-route-analyzer/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/migration/php-to-remix/php-router-audit.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/php-router-audit/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/migration/php-to-remix/remix-route-generator.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/business/generators/remix-route-generator/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/migration/php-to-remix/seo-checker-canonical.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/business/validators/seo-checker-canonical/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/migration/php-to-remix/seo-meta.generator.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/business/generators/seo-meta.generator/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/migration/postgresql-validator.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/business/validators/postgresql-validator/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/migration/prisma-migration-generator.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/business/generators/prisma-migration-generator/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/migration/prisma-smart-generator.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/business/generators/prisma-smart-generator/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/migration/progressive-migration-agent.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/progressive-migration-agent/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/migration/qa-confirmer.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/qa-confirmer/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/migration/remediator.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/remediator/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/migration/sql-analysis-runner.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/orchestration/misc/sql-analysis-runner/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/migration/sql-analyzer+prisma-builder.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/business/analyzers/sql-analyzer+prisma-builder/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/migration/sql-prisma-migration-planner.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/sql-prisma-migration-planner/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/migration/type-audit-agent.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/type-audit-agent/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/monitoring-check.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/orchestration/monitors/monitoring-check/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/notifier.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/notifier/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/optimization/SupabaseOptimizationTracker.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/SupabaseOptimizationTracker/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/optimization/agent8-optimizer.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/orchestration/misc/agent8-optimizer/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/orchestrator.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/orchestration/orchestrators/orchestrator/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/php-analyzer-agent.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/orchestration/misc/php-analyzer-agent/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/pipeline-strategy-auditor.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/pipeline-strategy-auditor/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/pr-creator.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/pr-creator/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/quality/QualityAgent.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/QualityAgent/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/quality/agent-quality.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/agent-quality/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/quality/analyze-security-risks.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/business/analyzers/analyze-security-risks/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/quality/sql-debt-audit.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/sql-debt-audit/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/seo-audit-runner.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/seo-audit-runner/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/seo-checker-agent.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/validators/seo-checker/seo-checker-agent/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/seo-content-enhancer.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/generators/content-generator/seo-content-enhancer/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/seo-mcp-controller.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/seo-mcp-controller/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/seo-redirect-mapper.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/seo-redirect-mapper/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/status-writer.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/orchestration/misc/status-writer/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/tools/agent-version-auditor.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/agent-version-auditor/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/utils/caddy-generator.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/business/generators/caddy-generator/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/utils/htaccess-parser.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/business/parsers/htaccess-parser/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/utils/nginx-config-parser.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/business/parsers/nginx-config-parser/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/workers/mcp-verifier.worker.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/orchestration/misc/mcp-verifier.worker/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/agents/workers/php-analyzer.worker.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/orchestration/misc/php-analyzer.worker/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔍 Recherche dans: /workspaces/cahier-des-charge/cahier-des-charge/agents
+  ↪ 9 fichiers trouvés
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/cahier-des-charge/agents/coordinator-agent.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/orchestration/misc/coordinator-agent/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/cahier-des-charge/agents/dynamic_sql_extractor.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/dynamic_sql_extractor/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/cahier-des-charge/agents/htaccess-router-analyzer.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/business/analyzers/htaccess-router-analyzer/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/cahier-des-charge/agents/mcp-integrator.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/business/orchestrators/mcp-integrator/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/cahier-des-charge/agents/mysql-analyzer+optimizer.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/business/analyzers/mysql-analyzer+optimizer/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/cahier-des-charge/agents/php-discovery-engine.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/php-discovery-engine/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/cahier-des-charge/agents/php-sql-mapper.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/php-sql-mapper/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/cahier-des-charge/agents/php-sql-sync-mapper.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/php-sql-sync-mapper/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+🔄 Doublon trouvé: /workspaces/cahier-des-charge/cahier-des-charge/agents/selector-agent.ts
+  ↪ Version principale: /workspaces/cahier-des-charge/packages/mcp-agents/business/orchestrators/selector-agent/index.ts
+sed: -e expression #1, char 7: unknown option to `s'
+  ↪ Remplacé par la version principale avec notice
+📝 Création d'un manifeste des agents...
+✅ Manifeste des agents créé: /workspaces/cahier-des-charge/backups/agents-duplicates-20250420-005131/agent-manifest.json
+🔄 Script de synchronisation créé: /workspaces/cahier-des-charge/sync-mcp-agents.sh
+
+📊 Résumé du nettoyage:
+  - 233 agents principaux identifiés
+  - 125 doublons remplacés par leurs versions principales
+  - 0 versions legacy marquées comme obsolètes
+
+✅ Nettoyage terminé avec succès!
+📂 Toutes les versions originales ont été sauvegardées dans: /workspaces/cahier-des-charge/backups/agents-duplicates-20250420-005131
+📝 Pour synchroniser les agents à l'avenir, utilisez: /workspaces/cahier-des-charge/sync-mcp-agents.sh
+
+Il est recommandé de vérifier les imports dans votre code pour vous assurer qu'ils pointent vers les bonnes versions des agents.

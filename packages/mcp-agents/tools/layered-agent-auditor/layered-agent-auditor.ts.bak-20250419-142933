@@ -1,0 +1,495 @@
+/**
+ * Layered Agent Auditor
+ * 
+ * Outil d'audit pour vérifier les versions des agents dans l'architecture MCP OS en 3 couches
+ * Détecte les doublons, les conflits de version et les incohérences d'implémentation
+ * 
+ * Date: 2025-04-18
+ */
+
+import * as fs from 'fs-extra';
+import * as path from 'path';
+// Import glob correctement en utilisant la bonne API pour v11+
+import { glob } from 'glob';
+import { promisify } from 'util';
+
+// Au lieu d'importer directement depuis l'ancien chemin qui cause une erreur
+// On va déclarer l'interface qu'on en attend et préparer une fonction pour la charger dynamiquement si nécessaire
+interface AgentRegistryManager {
+  registerAgent: (agent: any) => Promise<string>;
+  getAgentById: (id: string) => Promise<any>;
+  getAllAgents: () => Promise<any[]>;
+}
+
+// Fonction qui charge le registry si disponible ou retourne un registry mock
+function getAgentRegistry(): AgentRegistryManager {
+  try {
+    // On essaie de charger dynamiquement si disponible
+    return require('../../../agentRegistry').agentRegistryManager;
+  } catch (e) {
+    console.warn('Agent Registry non disponible, utilisation d\'un registry mock');
+    // Retourner une implémentation mock si le module n'est pas trouvé
+    return {
+      registerAgent: async () => '',
+      getAgentById: async () => null,
+      getAllAgents: async () => []
+    };
+  }
+}
+
+// Glob v11+ est déjà basé sur des promesses, pas besoin de le promisifier
+// Création d'une fonction d'assistance pour rendre le code compatible
+async function globAsync(pattern: string, options?: any): Promise<string[]> {
+  try {
+    // glob v11+ retourne déjà une promesse
+    return await glob(pattern, options || {});
+  } catch (err) {
+    console.error(`Erreur avec glob: ${err}`);
+    return [];
+  }
+}
+
+// Types pour l'audit
+interface AgentInfo {
+  id: string;
+  name: string;
+  layer: 'orchestration' | 'coordination' | 'business' | 'unknown';
+  type: string;
+  version: string;
+  path: string;
+  implements: {
+    baseAgent: boolean;
+    layerInterface: boolean;
+    typeInterface: boolean;
+  };
+  exports: {
+    default: boolean;
+    named: boolean;
+  };
+}
+
+interface AuditResult {
+  date: string;
+  totalAgents: number;
+  byLayer: Record<string, number>;
+  byType: Record<string, number>;
+  duplicateIds: Array<{
+    id: string;
+    paths: string[];
+  }>;
+  missingInterfaces: Array<{
+    path: string;
+    missingInterfaces: string[];
+  }>;
+  versionConflicts: Array<{
+    id: string;
+    versions: Array<{
+      version: string;
+      path: string;
+    }>;
+  }>;
+  summary: {
+    errors: number;
+    warnings: number;
+    suggestions: number;
+  };
+}
+
+/**
+ * Auditeur d'agents pour l'architecture en 3 couches
+ */
+export class LayeredAgentAuditor {
+  private readonly baseDir: string;
+  private readonly packagesDir: string;
+  
+  constructor(baseDir?: string) {
+    this.baseDir = baseDir || process.cwd();
+    this.packagesDir = path.join(this.baseDir, 'packages', 'mcp-agents');
+  }
+  
+  /**
+   * Exécute un audit complet des agents
+   */
+  public async audit(): Promise<AuditResult> {
+    console.log('Démarrage de l\'audit des agents en architecture 3 couches...');
+    
+    const layers = ['orchestration', 'coordination', 'business'];
+    const agents: AgentInfo[] = [];
+    
+    // 1. Collecter tous les agents dans la structure en couches
+    for (const layer of layers) {
+      const layerPath = path.join(this.packagesDir, layer);
+      if (!await fs.pathExists(layerPath)) continue;
+      
+      const typeDirs = await fs.readdir(layerPath);
+      
+      for (const typeDir of typeDirs) {
+        const typePath = path.join(layerPath, typeDir);
+        if (!(await fs.stat(typePath)).isDirectory()) continue;
+        
+        const agentDirs = await fs.readdir(typePath);
+        
+        for (const agentDir of agentDirs) {
+          const agentPath = path.join(typePath, agentDir);
+          if (!(await fs.stat(agentPath)).isDirectory()) continue;
+          
+          const agentFiles = await globAsync('*.ts', { cwd: agentPath, ignore: ['*.test.ts', '*.spec.ts'] });
+          
+          for (const agentFile of agentFiles) {
+            const fullPath = path.join(agentPath, agentFile);
+            const agentInfo = await this.extractAgentInfo(fullPath, layer);
+            if (agentInfo) {
+              agents.push(agentInfo);
+            }
+          }
+        }
+      }
+    }
+    
+    // 2. Vérifier aussi les anciens agents pour détection de doublons
+    const legacyAgents = await this.scanLegacyAgents();
+    agents.push(...legacyAgents);
+    
+    // 3. Analyser les résultats
+    const result: AuditResult = {
+      date: new Date().toISOString(),
+      totalAgents: agents.length,
+      byLayer: {},
+      byType: {},
+      duplicateIds: [],
+      missingInterfaces: [],
+      versionConflicts: [],
+      summary: {
+        errors: 0,
+        warnings: 0,
+        suggestions: 0
+      }
+    };
+    
+    // Compter par couche
+    for (const agent of agents) {
+      if (!result.byLayer[agent.layer]) {
+        result.byLayer[agent.layer] = 0;
+      }
+      result.byLayer[agent.layer]++;
+      
+      if (!result.byType[agent.type]) {
+        result.byType[agent.type] = 0;
+      }
+      result.byType[agent.type]++;
+    }
+    
+    // Détecter les doublons par ID
+    const agentsByIds = new Map<string, AgentInfo[]>();
+    for (const agent of agents) {
+      if (!agentsByIds.has(agent.id)) {
+        agentsByIds.set(agent.id, []);
+      }
+      agentsByIds.get(agent.id)!.push(agent);
+    }
+    
+    for (const [id, duplicates] of agentsByIds.entries()) {
+      if (duplicates.length > 1) {
+        result.duplicateIds.push({
+          id,
+          paths: duplicates.map(d => d.path)
+        });
+        result.summary.errors += duplicates.length - 1;
+      }
+      
+      // Vérifier les conflits de version
+      const versions = new Map<string, string[]>();
+      for (const agent of duplicates) {
+        if (!versions.has(agent.version)) {
+          versions.set(agent.version, []);
+        }
+        versions.get(agent.version)!.push(agent.path);
+      }
+      
+      if (versions.size > 1) {
+        result.versionConflicts.push({
+          id,
+          versions: Array.from(versions.entries()).map(([version, paths]) => ({
+            version,
+            path: paths[0]
+          }))
+        });
+        result.summary.errors += versions.size - 1;
+      }
+    }
+    
+    // Vérifier l'implémentation des interfaces
+    for (const agent of agents) {
+      const missingInterfaces = [];
+      
+      if (!agent.implements.baseAgent) {
+        missingInterfaces.push('BaseAgent');
+      }
+      
+      if (!agent.implements.layerInterface) {
+        const layerInterface = 
+          agent.layer === 'orchestration' ? 'OrchestrationAgent' :
+          agent.layer === 'coordination' ? 'CoordinationAgent' :
+          agent.layer === 'business' ? 'BusinessAgent' : '';
+          
+        if (layerInterface) {
+          missingInterfaces.push(layerInterface);
+        }
+      }
+      
+      if (!agent.implements.typeInterface) {
+        const typeInterface = 
+          agent.type === 'orchestrator' ? 'OrchestratorAgent' :
+          agent.type === 'scheduler' ? 'SchedulerAgent' :
+          agent.type === 'monitor' ? 'MonitorAgent' :
+          agent.type === 'bridge' ? 'BridgeAgent' :
+          agent.type === 'adapter' ? 'AdapterAgent' :
+          agent.type === 'registry' ? 'RegistryAgent' :
+          agent.type === 'analyzer' ? 'AnalyzerAgent' :
+          agent.type === 'generator' ? 'GeneratorAgent' :
+          agent.type === 'validator' ? 'ValidatorAgent' :
+          agent.type === 'parser' ? 'ParserAgent' : '';
+          
+        if (typeInterface) {
+          missingInterfaces.push(typeInterface);
+        }
+      }
+      
+      if (missingInterfaces.length > 0) {
+        result.missingInterfaces.push({
+          path: agent.path,
+          missingInterfaces
+        });
+        result.summary.warnings += missingInterfaces.length;
+      }
+    }
+    
+    return result;
+  }
+  
+  /**
+   * Extrait les informations d'un agent à partir de son fichier source
+   */
+  private async extractAgentInfo(filePath: string, layer: string): Promise<AgentInfo | null> {
+    try {
+      const content = await fs.readFile(filePath, 'utf-8');
+      
+      // Extraire l'ID de l'agent
+      const idMatch = content.match(/id\s*=\s*['"](.*?)['"]/);
+      // Extraire le nom de la classe
+      const classMatch = content.match(/export\s+class\s+(\w+)/);
+      // Extraire la version
+      const versionMatch = content.match(/version\s*=\s*['"](.*?)['"]/);
+      // Extraire le type
+      const typeMatch = content.match(/type\s*=\s*['"](.*?)['"]/);
+      
+      if (!classMatch) {
+        return null; // Pas une classe d'agent
+      }
+      
+      const id = idMatch ? idMatch[1] : path.basename(filePath, path.extname(filePath));
+      const name = classMatch[1];
+      const version = versionMatch ? versionMatch[1] : '1.0.0';
+      const type = typeMatch ? typeMatch[1] : this.inferTypeFromDirectory(filePath);
+      
+      // Vérifier les interfaces implémentées
+      const implementsBaseAgent = content.includes('implements BaseAgent') || content.includes('extends BaseAgent');
+      const implementsLayerInterface = 
+        content.includes(`implements ${ 
+          layer === 'orchestration' ? 'Orchestration' : 
+          layer === 'coordination' ? 'Coordination' : 
+          layer === 'business' ? 'Business' : ''
+        }Agent`);
+      const implementsTypeInterface = content.includes(`implements ${type.charAt(0).toUpperCase() + type.slice(1)}Agent`);
+      
+      // Vérifier les exports
+      const hasDefaultExport = content.includes('export default') || content.includes('export { ');
+      const hasNamedExport = content.includes(`export class ${name}`);
+      
+      return {
+        id,
+        name,
+        layer: layer as 'orchestration' | 'coordination' | 'business' | 'unknown',
+        type,
+        version,
+        path: filePath,
+        implements: {
+          baseAgent: implementsBaseAgent,
+          layerInterface: implementsLayerInterface,
+          typeInterface: implementsTypeInterface
+        },
+        exports: {
+          default: hasDefaultExport,
+          named: hasNamedExport
+        }
+      };
+    } catch (err) {
+      console.error(`Erreur lors de l'extraction des informations de ${filePath}:`, err);
+      return null;
+    }
+  }
+  
+  /**
+   * Infère le type d'agent à partir de son chemin
+   */
+  private inferTypeFromDirectory(filePath: string): string {
+    const parts = filePath.split(path.sep);
+    const index = parts.findIndex(part => 
+      ['orchestrators', 'schedulers', 'monitors', 'bridges', 'adapters', 'registries', 
+       'analyzers', 'generators', 'validators', 'parsers'].includes(part)
+    );
+    
+    if (index >= 0) {
+      const dirName = parts[index];
+      // Enlever le 's' final pour obtenir le type d'agent
+      return dirName.endsWith('s') ? dirName.substring(0, dirName.length - 1) : dirName;
+    }
+    
+    return 'unknown';
+  }
+  
+  /**
+   * Scanne les anciens agents pour les inclure dans l'audit
+   */
+  private async scanLegacyAgents(): Promise<AgentInfo[]> {
+    const legacyAgents: AgentInfo[] = [];
+    const agentsDir = path.join(this.baseDir, 'agents');
+    
+    if (!await fs.pathExists(agentsDir)) {
+      return [];
+    }
+    
+    const agentFiles = await globAsync('**/*.ts', { 
+      cwd: agentsDir,
+      ignore: ['**/*.test.ts', '**/*.spec.ts', '**/node_modules/**']
+    });
+    
+    for (const relPath of agentFiles) {
+      const filePath = path.join(agentsDir, relPath);
+      
+      // Déterminer la couche en fonction du contenu
+      let layer: 'orchestration' | 'coordination' | 'business' | 'unknown' = 'unknown';
+      const content = await fs.readFile(filePath, 'utf-8');
+      
+      if (
+        content.includes('Orchestrator') || 
+        content.includes('Workflow') || 
+        content.includes('Scheduler') || 
+        content.includes('Monitor')
+      ) {
+        layer = 'orchestration';
+      } else if (
+        content.includes('Bridge') ||
+        content.includes('Adapter') ||
+        content.includes('Registry') ||
+        content.includes('Connector')
+      ) {
+        layer = 'coordination';
+      } else if (
+        content.includes('Analyzer') ||
+        content.includes('Generator') ||
+        content.includes('Validator') ||
+        content.includes('Parser')
+      ) {
+        layer = 'business';
+      }
+      
+      const agentInfo = await this.extractAgentInfo(filePath, layer);
+      if (agentInfo) {
+        legacyAgents.push(agentInfo);
+      }
+    }
+    
+    return legacyAgents;
+  }
+  
+  /**
+   * Génère un rapport de l'audit au format Markdown
+   */
+  public generateMarkdownReport(result: AuditResult): string {
+    const report = `# Rapport d'audit des agents MCP OS
+
+Date de l'audit: ${new Date(result.date).toLocaleString()}
+
+## Résumé
+
+- **Total des agents**: ${result.totalAgents}
+- **Par couche**:
+${Object.entries(result.byLayer)
+  .map(([layer, count]) => `  - ${layer}: ${count}`)
+  .join('\n')}
+- **Par type**:
+${Object.entries(result.byType)
+  .map(([type, count]) => `  - ${type}: ${count}`)
+  .join('\n')}
+
+## Problèmes détectés
+
+### Erreurs (${result.summary.errors})
+
+${result.duplicateIds.length > 0 
+  ? `#### IDs dupliqués (${result.duplicateIds.length})\n\n${
+    result.duplicateIds.map(dup => `- **${dup.id}** se trouve dans:\n${
+      dup.paths.map(p => `  - \`${p}\``).join('\n')
+    }`).join('\n\n')
+  }`
+  : '- Aucun ID dupliqué détecté'}
+
+${result.versionConflicts.length > 0
+  ? `#### Conflits de version (${result.versionConflicts.length})\n\n${
+    result.versionConflicts.map(conflict => `- **${conflict.id}** a plusieurs versions:\n${
+      conflict.versions.map(v => `  - v${v.version} dans \`${v.path}\``).join('\n')
+    }`).join('\n\n')
+  }`
+  : '- Aucun conflit de version détecté'}
+
+### Avertissements (${result.summary.warnings})
+
+${result.missingInterfaces.length > 0
+  ? `#### Interfaces manquantes (${result.missingInterfaces.length})\n\n${
+    result.missingInterfaces.map(issue => `- \`${path.relative(this.baseDir, issue.path)}\` devrait implémenter:\n${
+      issue.missingInterfaces.map(i => `  - ${i}`).join('\n')
+    }`).join('\n\n')
+  }`
+  : '- Tous les agents implémentent correctement les interfaces requises'}
+
+## Recommandations
+
+${result.summary.errors > 0 || result.summary.warnings > 0
+  ? `1. Résoudre les IDs dupliqués en renommant les agents ou en fusionnant leur fonctionnalité
+2. Standardiser les versions pour les agents identiques
+3. Implémenter les interfaces manquantes pour assurer la conformité à l'architecture`
+  : 'La structure des agents est en bonne santé et conforme à l\'architecture en 3 couches.'}
+
+`;
+    
+    return report;
+  }
+  
+  /**
+   * Exécute l'audit et génère un rapport
+   */
+  public async auditAndGenerateReport(outputPath?: string): Promise<string> {
+    const result = await this.audit();
+    const report = this.generateMarkdownReport(result);
+    
+    if (outputPath) {
+      await fs.writeFile(outputPath, report);
+      console.log(`Rapport d'audit écrit dans ${outputPath}`);
+    }
+    
+    return report;
+  }
+}
+
+/**
+ * Point d'entrée pour exécution directe
+ */
+if (require.main === module) {
+  const auditor = new LayeredAgentAuditor();
+  auditor.auditAndGenerateReport(path.join(process.cwd(), 'agent-audit-report.md'))
+    .then(() => console.log('Audit terminé avec succès'))
+    .catch(err => console.error('Erreur lors de l\'audit:', err));
+}
+
+export default LayeredAgentAuditor;

@@ -1,0 +1,27 @@
+2025-04-20 23:40:03 - 🔍 Vérification des scripts essentiels...
+2025-04-20 23:40:03 - ✓ Script disponible: clean-agents-duplicates.sh
+2025-04-20 23:40:03 - ✓ Script disponible: sync-mcp-agents.sh
+2025-04-20 23:40:03 - ✓ Script disponible: integrate-orphan-agents.sh
+2025-04-20 23:40:03 - ✅ Tous les scripts essentiels sont disponibles
+2025-04-20 23:40:03 - 🔄 Synchronisation des agents...
+2025-04-20 23:40:18 - ✅ Synchronisation réussie
+2025-04-20 23:40:18 - 📝 Création d'une configuration TypeScript temporaire...
+2025-04-20 23:40:18 - ✅ Configuration TypeScript temporaire créée: /workspaces/cahier-des-charge/reports/ci-agents-20250420-234003/tsconfig.test.json
+2025-04-20 23:40:18 - 🧪 Test de l'agent htaccess-router-analyzer...
+2025-04-20 23:40:18 - ⚠️ Fichier d'implémentation non trouvé à l'emplacement principal, recherche alternative...
+2025-04-20 23:40:18 - ❌ Fichier d'implémentation de l'agent htaccess-router-analyzer non trouvé
+2025-04-20 23:40:18 - 🔨 Vérification de la compilation TypeScript...
+2025-04-20 23:40:18 - ⚠️ Aucun fichier TypeScript trouvé pour la compilation dans le chemin spécifié
+2025-04-20 23:40:18 - Agent trouvé à: /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/HtaccessRouteAnalyzerAgent/index.ts
+2025-04-20 23:40:20 - ❌ Échec de la compilation TypeScript, voir /workspaces/cahier-des-charge/reports/ci-agents-20250420-234003/tsc.log
+packages/mcp-agents/analyzers/HtaccessRouteAnalyzerAgent/HtaccessRouteAnalyzerAgent.ts(6,39): error TS2307: Cannot find module './htaccess-route-analyzer' or its corresponding type declarations.
+packages/mcp-agents/analyzers/HtaccessRouteAnalyzerAgent/HtaccessRouteAnalyzerAgent.ts(7,31): error TS2307: Cannot find module '../../core/interfaces' or its corresponding type declarations.
+packages/mcp-agents/analyzers/HtaccessRouteAnalyzerAgent/index.ts(6,10): error TS2724: '"./HtaccessRouteAnalyzerAgent"' has no exported member named 'HtaccessRouteAnalyzerAgent'. Did you mean 'HtaccessRouteAnalyzer'?
+2025-04-20 23:40:20 - 📊 Vérification de la structure du projet...
+2025-04-20 23:40:21 - Structure des agents:
+2025-04-20 23:40:21 - - Analyzers: 0
+2025-04-20 23:40:21 - - Generators: 0
+2025-04-20 23:40:21 - - Validators: 0
+2025-04-20 23:40:21 - - Misc: 0
+2025-04-20 23:40:21 - ❌ Le pipeline CI a rencontré des problèmes. Veuillez consulter les logs pour plus de détails.
+2025-04-20 23:40:21 - 📝 Rapport d'échec créé: /workspaces/cahier-des-charge/reports/ci-agents-20250420-234003/failure-report.md

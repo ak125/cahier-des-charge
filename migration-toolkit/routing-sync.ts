@@ -17,14 +17,14 @@ import { execSync } from 'child_process';
 const CONFIG = {
   // Chemins de recherche pour les fichiers PHP
   phpSourceDirs: [
-    './apps/mcp-server-php/public',
-    './apps/mcp-server-php/src',
+    './appsDoDotmcp-server-php/public',
+    './appsDoDotmcp-server-php/src',
     './backups/php-legacy'
   ],
   // Répertoire de destination pour les nouvelles routes Remix
   remixRoutesDir: './apps/frontend/app/routes',
   // Répertoire NestJS pour les routes d'API
-  nestjsRoutesDir: './apps/mcp-server-postgres/src/controllers',
+  nestjsRoutesDir: './appsDoDotmcp-server-postgres/src/controllers',
   // Fichiers de sortie
   redirectMapPath: './reports/url_redirection_map.json',
   auditIndexPath: './reports/audit_index.json',
@@ -33,7 +33,7 @@ const CONFIG = {
   ignorePatterns: [
     'node_modules',
     'vendor',
-    '.git',
+    'DoDoDoDotgit',
     'cache',
     'tmp',
     'admin/lib'

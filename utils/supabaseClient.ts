@@ -39,11 +39,11 @@ export const supabase = createClient<Database>(
 export async function checkSupabaseConnection(): Promise<boolean> {
   try {
     const { error } = await supabase.from('mcp_events').select('id').limit(1);
-    
+
     if (error) {
       throw new Error(`Erreur de connexion à Supabase: ${error.message}`);
     }
-    
+
     return true;
   } catch (error) {
     console.error('Erreur lors de la vérification de la connexion à Supabase:', error);

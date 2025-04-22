@@ -1,0 +1,66 @@
+2025-04-19 02:47:34 - 📁 Répertoire de sauvegarde créé: /workspaces/cahier-des-charge/backups/orphan-agents-20250419-024734
+2025-04-19 02:47:34 - 🔄 Intégration de: /workspaces/cahier-des-charge/agents/analysis/dynamic_sql_extractor.ts
+2025-04-19 02:47:34 -   ↪ Vers: /workspaces/cahier-des-charge/packages/mcp-agents/business/analyzers/dynamic_sql_extractor/index.ts
+2025-04-19 02:47:34 -   ✅ Agent intégré avec succès
+2025-04-19 02:47:34 - 🔄 Intégration de: /workspaces/cahier-des-charge/agents/analysis/php-discovery-engine.ts
+2025-04-19 02:47:34 -   ↪ Vers: /workspaces/cahier-des-charge/packages/mcp-agents/business/analyzers/php-discovery-engine/index.ts
+2025-04-19 02:47:34 -   ✅ Agent intégré avec succès
+2025-04-19 02:47:34 - 🔄 Intégration de: /workspaces/cahier-des-charge/agents/core/BaseAgent.ts
+2025-04-19 02:47:34 -   ↪ Vers: /workspaces/cahier-des-charge/packages/mcp-agents/business/core/BaseAgent/index.ts
+2025-04-19 02:47:34 -   ✅ Agent intégré avec succès
+2025-04-19 02:47:34 - 🔄 Intégration de: /workspaces/cahier-des-charge/agents/discovery/audit-selector.ts
+2025-04-19 02:47:34 -   ↪ Vers: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/audit-selector/index.ts
+2025-04-19 02:47:34 -   ✅ Agent intégré avec succès
+2025-04-19 02:47:34 - 🔄 Intégration de: /workspaces/cahier-des-charge/agents/integration/metrics-service.ts
+2025-04-19 02:47:34 -   ↪ Vers: /workspaces/cahier-des-charge/packages/mcp-agents/business/integrators/metrics-service/index.ts
+2025-04-19 02:47:34 -   ✅ Agent intégré avec succès
+2025-04-19 02:47:34 - 🔄 Intégration de: /workspaces/cahier-des-charge/agents/integration/notification-service.ts
+2025-04-19 02:47:34 -   ↪ Vers: /workspaces/cahier-des-charge/packages/mcp-agents/business/integrators/notification-service/index.ts
+2025-04-19 02:47:34 -   ✅ Agent intégré avec succès
+2025-04-19 02:47:34 - 🔄 Intégration de: /workspaces/cahier-des-charge/agents/notifier.ts
+2025-04-19 02:47:34 -   ↪ Vers: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/notifier/index.ts
+2025-04-19 02:47:34 -   ✅ Agent intégré avec succès
+2025-04-19 02:47:34 - 🔄 Intégration de: /workspaces/cahier-des-charge/agents/migration/php-sql-mapper.ts
+2025-04-19 02:47:34 -   ↪ Vers: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/php-sql-mapper/index.ts
+2025-04-19 02:47:34 -   ✅ Agent intégré avec succès
+2025-04-19 02:47:34 - 🔄 Intégration de: /workspaces/cahier-des-charge/agents/migration/php-sql-sync-mapper.ts
+2025-04-19 02:47:34 -   ↪ Vers: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/php-sql-sync-mapper/index.ts
+2025-04-19 02:47:34 -   ✅ Agent intégré avec succès
+2025-04-19 02:47:34 - 🔄 Intégration de: /workspaces/cahier-des-charge/agents/migration/BusinessAgent.ts
+2025-04-19 02:47:34 -   ↪ Vers: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/BusinessAgent/index.ts
+2025-04-19 02:47:34 -   ✅ Agent intégré avec succès
+2025-04-19 02:47:34 - 🔄 Intégration de: /workspaces/cahier-des-charge/agents/migration/php-to-remix/canonical-sync-agent.ts
+2025-04-19 02:47:34 -   ↪ Vers: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/canonical-sync-agent/index.ts
+2025-04-19 02:47:35 -   ✅ Agent intégré avec succès
+2025-04-19 02:47:35 - 🔄 Intégration de: /workspaces/cahier-des-charge/agents/migration/inject-to-supabase.ts
+2025-04-19 02:47:35 -   ↪ Vers: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/inject-to-supabase/index.ts
+2025-04-19 02:47:35 -   ✅ Agent intégré avec succès
+2025-04-19 02:47:35 - 🔄 Intégration de: /workspaces/cahier-des-charge/agents/migration/mysql-analyzer/core/classifier.ts
+2025-04-19 02:47:35 -   ↪ Vers: /workspaces/cahier-des-charge/packages/mcp-agents/business/core/classifier/index.ts
+2025-04-19 02:47:35 -   ✅ Agent intégré avec succès
+2025-04-19 02:47:35 - 🔄 Intégration de: /workspaces/cahier-des-charge/agents/migration/mysql-analyzer/core/table-classifier.ts
+2025-04-19 02:47:35 -   ↪ Vers: /workspaces/cahier-des-charge/packages/mcp-agents/business/core/table-classifier/index.ts
+2025-04-19 02:47:35 -   ✅ Agent intégré avec succès
+2025-04-19 02:47:35 - 🔄 Intégration de: /workspaces/cahier-des-charge/agents/optimization/SupabaseOptimizationTracker.ts
+2025-04-19 02:47:35 -   ↪ Vers: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/SupabaseOptimizationTracker/index.ts
+2025-04-19 02:47:35 -   ✅ Agent intégré avec succès
+2025-04-19 02:47:35 - 🔄 Intégration de: /workspaces/cahier-des-charge/agents/quality/QualityAgent.ts
+2025-04-19 02:47:35 -   ↪ Vers: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/QualityAgent/index.ts
+2025-04-19 02:47:35 -   ✅ Agent intégré avec succès
+2025-04-19 02:47:35 - 🔄 Intégration de: /workspaces/cahier-des-charge/cahier-des-charge/agents/php-sql-mapper.ts
+2025-04-19 02:47:35 -   ↪ Vers: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/php-sql-mapper/index.ts
+2025-04-19 02:47:35 -   ✅ Agent intégré avec succès
+2025-04-19 02:47:35 - 🔄 Intégration de: /workspaces/cahier-des-charge/cahier-des-charge/agents/php-sql-sync-mapper.ts
+2025-04-19 02:47:35 -   ↪ Vers: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/php-sql-sync-mapper/index.ts
+2025-04-19 02:47:35 -   ✅ Agent intégré avec succès
+2025-04-19 02:47:35 - 🔄 Intégration de: /workspaces/cahier-des-charge/cahier-des-charge/agents/php-discovery-engine.ts
+2025-04-19 02:47:35 -   ↪ Vers: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/php-discovery-engine/index.ts
+2025-04-19 02:47:35 -   ✅ Agent intégré avec succès
+2025-04-19 02:47:35 - 🔄 Intégration de: /workspaces/cahier-des-charge/cahier-des-charge/agents/dynamic_sql_extractor.ts
+2025-04-19 02:47:35 -   ↪ Vers: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/dynamic_sql_extractor/index.ts
+2025-04-19 02:47:35 -   ✅ Agent intégré avec succès
+2025-04-19 02:47:35 - 📝 Fichier de mapping créé: /workspaces/cahier-des-charge/agent-import-mapping.json
+2025-04-19 02:47:35 - 🔄 Script de mise à jour des imports créé: /workspaces/cahier-des-charge/update-agent-imports.sh
+2025-04-19 02:47:35 - ✅ Intégration des agents orphelins terminée avec succès!
+2025-04-19 02:47:35 - 📂 Toutes les versions originales ont été sauvegardées dans: /workspaces/cahier-des-charge/backups/orphan-agents-20250419-024734
+2025-04-19 02:47:35 - 📝 Pour mettre à jour les imports, utilisez: /workspaces/cahier-des-charge/update-agent-imports.sh

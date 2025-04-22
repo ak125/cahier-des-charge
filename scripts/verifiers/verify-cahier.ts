@@ -23,7 +23,7 @@ interface Config {
     allowInlineJS: boolean;
     requireAuditMd: boolean;
   };
-  github: {
+ DoDoDoDoDoDotgithub: {
     owner: string;
     repo: string;
     branch: string;

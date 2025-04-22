@@ -60,9 +60,9 @@ export interface QAAnalyzerOptions {
   outputDir?: string;
   verbose?: boolean;
   threshold?: number; // Seuil de score au-dessous duquel on considère l'analyse comme échouée
-  githubToken?: string;
-  githubRepo?: string;
-  githubOwner?: string;
+ DoDoDoDoDoDotgithubToken?: string;
+ DoDoDoDoDoDotgithubRepo?: string;
+ DoDoDoDoDoDotgithubOwner?: string;
   dashboardEnabled?: boolean;
   autoRetryOnFail?: boolean;
   taggingEnabled?: boolean;
@@ -106,9 +106,9 @@ export class QAAnalyzer extends BaseAgent {
     }
 
     // Initialiser l'API GitHub si le token est fourni
-    if (this.options.githubToken) {
+    if (this.optionsDoDoDoDoDoDotgithubToken) {
       this.octokit = new Octokit({
-        auth: this.options.githubToken
+        auth: this.optionsDoDoDoDoDoDotgithubToken
       });
       this.logger.log('🔌 Connexion à GitHub établie');
     }
@@ -132,7 +132,7 @@ export class QAAnalyzer extends BaseAgent {
    * Renvoie les agents dont celui-ci dépend
    */
   public getDependencies(): string[] {
-    return ['diff-verifier']; // Dépend de l'agent de vérification des différences
+    return ['DiffVerifier']; // Dépend de l'agent de vérification des différences
   }
 
   /**
@@ -253,7 +253,7 @@ export class QAAnalyzer extends BaseAgent {
       }
 
       // 15. Commenter sur GitHub PR si octokit est configuré
-      if (this.octokit && this.options.githubOwner && this.options.githubRepo) {
+      if (this.octokit && this.optionsDoDoDoDoDoDotgithubOwner && this.optionsDoDoDoDoDoDotgithubRepo) {
         await this.commentOnPR();
       }
 
@@ -872,7 +872,7 @@ export class QAAnalyzer extends BaseAgent {
     tags.push(`qa:${status.toLowerCase()}`);
     
     // Tag de migration PHP vers Remix
-    tags.push('php-to-remix');
+    tags.push('PhpToRemix');
     
     // Tag de qualité des champs
     const totalFields = fieldAnalysis.missingFields.length + fieldAnalysis.presentFields.length;
@@ -1122,22 +1122,22 @@ export class QAAnalyzer extends BaseAgent {
    * Commente les résultats QA sur la Pull Request GitHub
    */
   private async commentOnPR(): Promise<void> {
-    if (!this.octokit || !this.qaResult || !this.options.githubOwner || !this.options.githubRepo) {
+    if (!this.octokit || !this.qaResult || !this.optionsDoDoDoDoDoDotgithubOwner || !this.optionsDoDoDoDoDoDotgithubRepo) {
       this.addWarning('Configuration GitHub incomplète pour le commentaire PR');
       return;
     }
     
     try {
       // Trouver la PR associée au fichier
-      const { stdout } = await execAsync('git branch --show-current');
+      const { stdout } = await execAsync(DoDoDoDotgit branch --show-current');
       const currentBranch = stdout.trim();
       
       // Rechercher les PRs ouvertes pour cette branche
       const { data: pullRequests } = await this.octokit.pulls.list({
-        owner: this.options.githubOwner,
-        repo: this.options.githubRepo,
+        owner: this.optionsDoDoDoDoDoDotgithubOwner,
+        repo: this.optionsDoDoDoDoDoDotgithubRepo,
         state: 'open',
-        head: `${this.options.githubOwner}:${currentBranch}`
+        head: `${this.optionsDoDoDoDoDoDotgithubOwner}:${currentBranch}`
       });
       
       if (pullRequests.length === 0) {
@@ -1188,8 +1188,8 @@ export class QAAnalyzer extends BaseAgent {
       
       // Ajouter le commentaire à la PR
       await this.octokit.issues.createComment({
-        owner: this.options.githubOwner,
-        repo: this.options.githubRepo,
+        owner: this.optionsDoDoDoDoDoDotgithubOwner,
+        repo: this.optionsDoDoDoDoDoDotgithubRepo,
         issue_number: prNumber,
         body: comment
       });
@@ -1213,7 +1213,7 @@ export class QAAnalyzer extends BaseAgent {
       
       // Exécuter le script de retry MCP
       const sourceFilePath = this.qaResult.sourceFile;
-      await execAsync(`npm run mcp:retry -- --file="${sourceFilePath}" --reason="qa-failed"`);
+      await execAsync(`npm runDoDotmcp:retry -- --file="${sourceFilePath}" --reason="qa-failed"`);
       
       this.logger.log(`✅ Nouveau job MCP déclenché pour ${path.basename(sourceFilePath)}`);
     } catch (error: any) {
@@ -1291,7 +1291,7 @@ if (require.main === module) {
   
   if (args.length < 2) {
     console.error('❌ Usage: ts-node qa-analyzer.ts <source-php-path> <generated-files-json> [options-json]');
-    console.error('Exemple: ts-node qa-analyzer.ts ./src/fiche.php \'{"component":"./app/routes/fiche.tsx","loader":"./app/routes/fiche.loader.ts","meta":"./app/routes/fiche.meta.ts"}\'');
+    console.error('Exemple: ts-node qa-analyzer.ts ./src/fiche.php \'{"component":"./app/routes/fiche.tsx","loader":"./app/routes/fiche.loader.ts","meta":"./app/routes/FicheDotmeta.ts"}\'');
     process.exit(1);
   }
   

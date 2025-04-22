@@ -1,0 +1,26 @@
+#!/bin/bash
+
+# Hook pre-commit pour vérifier TypeScript et ESLint
+echo "🔍 Vérification du code avant commit..."
+
+# Stocker les fichiers TypeScript modifiés
+FILES=$(git diff --cached --name-only --diff-filter=ACMRTUXB | grep "\.tsx\?$")
+
+if [ -n "$FILES" ]; then
+  echo "⌛ Vérification des types TypeScript sur les fichiers modifiés..."
+  npx tsc --noEmit 
+  if [ $? -ne 0 ]; then
+    echo "❌ Erreur: La vérification des types TypeScript a échoué. Commit annulé."
+    exit 1
+  fi
+  
+  echo "⌛ Vérification des règles ESLint sur les fichiers modifiés..."
+  npx eslint $FILES
+  if [ $? -ne 0 ]; then
+    echo "❌ Erreur: La validation ESLint a échoué. Commit annulé."
+    exit 1
+  fi
+fi
+
+echo "✅ Validation réussie"
+exit 0

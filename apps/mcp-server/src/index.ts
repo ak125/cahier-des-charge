@@ -9,7 +9,7 @@ import { Agent, AgentContext, AgentResponse } from './types/agent';
 
 // Configuration
 const config = JSON.parse(
-  fs.readFileSync(path.resolve(__dirname, '../../../config/mcp-server-config.json'), 'utf8')
+  fs.readFileSync(path.resolve(__dirname, '../../../configDoDotmcp-server-config.json'), 'utf8')
 );
 
 const app = express();

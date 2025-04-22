@@ -628,3 +628,310 @@ else
     *) log_error "Option non reconnue: $1" && echo "Utilisez --help pour afficher l'aide" && exit 1 ;;
   esac
 fi
+
+#!/bin/bash
+
+# Script pour organiser les fichiers du projet en une structure plus logique
+# Date de création: $(date +"%Y-%m-%d %H:%M:%S")
+
+# Variables
+DRY_RUN=true
+BACKUP_DIR="./structure/backup-reorganization-$(date +"%Y%m%d-%H%M%S")"
+
+# Couleurs pour l'affichage
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[0;33m'
+BLUE='\033[0;34m'
+NC='\033[0m' # No Color
+
+# Traitement des arguments
+while [[ $# -gt 0 ]]; do
+  case $1 in
+    --execute)
+      DRY_RUN=false
+      shift
+      ;;
+    --help|-h)
+      echo -e "${BLUE}Utilisation:${NC} $0 [options]"
+      echo ""
+      echo "Options:"
+      echo "  --execute    Exécuter réellement les déplacements (par défaut: dry-run)"
+      echo "  --help, -h   Afficher cette aide"
+      exit 0
+      ;;
+    *)
+      echo -e "${RED}Option inconnue:${NC} $1"
+      exit 1
+      ;;
+  esac
+done
+
+# Afficher le mode d'exécution
+if [ "$DRY_RUN" = true ]; then
+  echo -e "${YELLOW}🔍 Mode simulation (dry-run): aucun déplacement ne sera effectué${NC}"
+  echo -e "   Utilisez ${GREEN}--execute${NC} pour effectuer réellement les déplacements"
+else
+  echo -e "${GREEN}⚙️ Mode d'exécution: les fichiers vont être réorganisés${NC}"
+  # Création du répertoire de backup au cas où
+  mkdir -p "$BACKUP_DIR"
+  echo -e "${BLUE}📁 Une sauvegarde sera créée dans: ${BACKUP_DIR}${NC}"
+fi
+
+# Fonction pour créer un répertoire si nécessaire
+create_directory() {
+  local dir=$1
+  if [ "$DRY_RUN" = false ]; then
+    mkdir -p "$dir"
+    echo -e "${GREEN}📁 Créé: ${dir}${NC}"
+  else
+    echo -e "${BLUE}📁 Serait créé: ${dir}${NC}"
+  fi
+}
+
+# Fonction pour déplacer un fichier
+move_file() {
+  local source=$1
+  local destination=$2
+  
+  if [ ! -f "$source" ]; then
+    echo -e "${YELLOW}❓ Fichier source introuvable: ${source}${NC}"
+    return
+  fi
+  
+  # Créer le répertoire de destination si nécessaire
+  local dest_dir=$(dirname "$destination")
+  create_directory "$dest_dir"
+  
+  if [ "$DRY_RUN" = false ]; then
+    # Backup du fichier
+    local backup_dir=$(dirname "${BACKUP_DIR}/${source}")
+    mkdir -p "$backup_dir"
+    cp "$source" "${BACKUP_DIR}/${source}"
+    
+    # Déplacer le fichier
+    mv "$source" "$destination"
+    echo -e "${GREEN}🚚 Déplacé: ${source} → ${destination}${NC}"
+  else
+    echo -e "${BLUE}🚚 Serait déplacé: ${source} → ${destination}${NC}"
+  fi
+}
+
+# Fonction pour fusionner des fichiers
+merge_files() {
+  local dest_file=$1
+  shift
+  local source_files=("$@")
+  
+  if [ ${#source_files[@]} -eq 0 ]; then
+    echo -e "${YELLOW}⚠️ Aucun fichier source spécifié pour la fusion${NC}"
+    return
+  fi
+  
+  # Vérifier si tous les fichiers sources existent
+  local all_exist=true
+  for file in "${source_files[@]}"; do
+    if [ ! -f "$file" ]; then
+      echo -e "${YELLOW}❓ Fichier source pour fusion introuvable: ${file}${NC}"
+      all_exist=false
+    fi
+  done
+  
+  if [ "$all_exist" = false ]; then
+    echo -e "${YELLOW}⚠️ Certains fichiers sources n'existent pas, fusion annulée${NC}"
+    return
+  fi
+  
+  # Créer le répertoire de destination si nécessaire
+  local dest_dir=$(dirname "$dest_file")
+  create_directory "$dest_dir"
+  
+  if [ "$DRY_RUN" = false ]; then
+    # En-tête du fichier fusionné
+    echo "/**" > "$dest_file"
+    echo " * Fichier fusionné automatiquement par organize-project.sh" >> "$dest_file"
+    echo " * Date: $(date +"%Y-%m-%d %H:%M:%S")" >> "$dest_file"
+    echo " * " >> "$dest_file"
+    echo " * Fichiers sources :" >> "$dest_file"
+    
+    # Fusionner les fichiers
+    for file in "${source_files[@]}"; do
+      # Backup du fichier source
+      local backup_dir=$(dirname "${BACKUP_DIR}/${file}")
+      mkdir -p "$backup_dir"
+      cp "$file" "${BACKUP_DIR}/${file}"
+      
+      # Ajouter le nom du fichier source à l'en-tête
+      echo " * - ${file}" >> "$dest_file"
+      
+      # Ajouter une séparation
+      echo -e "\n// ============================================================" >> "$dest_file"
+      echo "// Contenu de ${file}" >> "$dest_file"
+      echo -e "// ============================================================\n" >> "$dest_file"
+      
+      # Ajouter le contenu du fichier
+      cat "$file" >> "$dest_file"
+      echo -e "\n" >> "$dest_file"
+      
+      # Supprimer le fichier source
+      rm "$file"
+      echo -e "${GREEN}🔄 Fusionné: ${file} dans ${dest_file}${NC}"
+    done
+    
+    echo " */" >> "$dest_file"
+    echo -e "${GREEN}✅ Fusion terminée: ${dest_file}${NC}"
+  else
+    echo -e "${BLUE}🔄 Seraient fusionnés dans ${dest_file}:${NC}"
+    for file in "${source_files[@]}"; do
+      echo -e "${BLUE}   - ${file}${NC}"
+    done
+  fi
+}
+
+# Création des dossiers principaux
+echo -e "${BLUE}🔍 Création des dossiers principaux...${NC}"
+
+create_directory "business"
+create_directory "coordination"
+create_directory "shared"
+create_directory "orchestration"
+
+# Création des sous-dossiers
+echo -e "${BLUE}🔍 Création des sous-dossiers...${NC}"
+
+# Sous-dossiers pour business
+create_directory "business/migration"
+create_directory "business/seo"
+create_directory "business/database"
+create_directory "business/agents"
+
+# Sous-dossiers pour coordination
+create_directory "coordination/migration"
+create_directory "coordination/interfaces"
+create_directory "coordination/validation"
+
+# Sous-dossiers pour shared
+create_directory "shared/types"
+create_directory "shared/config"
+create_directory "shared/utils"
+create_directory "shared/documentation"
+
+# Sous-dossiers pour orchestration
+create_directory "orchestration/core"
+create_directory "orchestration/docker"
+create_directory "orchestration/scripts"
+create_directory "orchestration/workflows"
+
+# Organisation des fichiers à la racine
+echo -e "${BLUE}🔍 Organisation des fichiers à la racine...${NC}"
+
+# Docker et orchestration
+move_file "docker-compose.yml" "orchestration/docker/docker-compose.yml"
+move_file "docker-compose.bullmq.yml" "orchestration/docker/docker-compose.bullmq.yml"
+move_file "docker-compose.dev.yml" "orchestration/docker/docker-compose.dev.yml"
+move_file "docker-compose.mcp.yml" "orchestration/docker/docker-compose.mcp.yml"
+move_file "docker-compose.n8n.yml" "orchestration/docker/docker-compose.n8n.yml"
+move_file "Dockerfile" "orchestration/docker/Dockerfile"
+move_file "Dockerfile.nestjs" "orchestration/docker/Dockerfile.nestjs"
+move_file "Dockerfile.remix" "orchestration/docker/Dockerfile.remix"
+move_file "Dockerfile.supabase" "orchestration/docker/Dockerfile.supabase"
+move_file "Dockerfile.temporal-worker" "orchestration/docker/Dockerfile.temporal-worker"
+
+# Scripts d'orchestration
+move_file "analyze-htaccess.sh" "orchestration/scripts/analyze-htaccess.sh"
+move_file "check-methods-implementation.sh" "orchestration/scripts/check-methods-implementation.sh"
+move_file "ci-validate.sh" "orchestration/scripts/ci-validate.sh"
+move_file "clean-agents-duplicates.sh" "orchestration/scripts/clean-agents-duplicates.sh"
+move_file "cleanup-legacy-agents.sh" "orchestration/scripts/cleanup-legacy-agents.sh"
+move_file "configure-missed-urls-alerts.sh" "orchestration/scripts/configure-missed-urls-alerts.sh"
+move_file "consolidate-migration.sh" "orchestration/scripts/consolidate-migration.sh"
+move_file "docs-routes-mappings.sh" "orchestration/scripts/docs-routes-mappings.sh"
+move_file "emergency-typescript-fix.sh" "orchestration/scripts/emergency-typescript-fix.sh"
+move_file "finalize-migration-cleanup.sh" "orchestration/scripts/finalize-migration-cleanup.sh"
+move_file "fix-agent-errors.sh" "orchestration/scripts/fix-agent-errors.sh"
+move_file "fix-all-agents.sh" "orchestration/scripts/fix-all-agents.sh"
+move_file "fix-eslint-installation.sh" "orchestration/scripts/fix-eslint-installation.sh"
+move_file "fix-htaccess-agent.sh" "orchestration/scripts/fix-htaccess-agent.sh"
+move_file "fix-persistent-errors.sh" "orchestration/scripts/fix-persistent-errors.sh"
+move_file "fix-tsconfig-includes.sh" "orchestration/scripts/fix-tsconfig-includes.sh"
+move_file "generate-agents-documentation.sh" "orchestration/scripts/generate-agents-documentation.sh"
+move_file "implement-all-interfaces.sh" "orchestration/scripts/implement-all-interfaces.sh"
+move_file "implement-interfaces.sh" "orchestration/scripts/implement-interfaces.sh"
+move_file "implement-missing-methods.sh" "orchestration/scripts/implement-missing-methods.sh"
+move_file "improve-agent-tests.sh" "orchestration/scripts/improve-agent-tests.sh"
+move_file "install-dependencies.sh" "orchestration/scripts/install-dependencies.sh"
+move_file "install-missing-dependencies.sh" "orchestration/scripts/install-missing-dependencies.sh"
+move_file "integrate-orphan-agents.sh" "orchestration/scripts/integrate-orphan-agents.sh"
+move_file "migrate-agents.sh" "orchestration/scripts/migrate-agents.sh"
+move_file "n8n-setup.sh" "orchestration/scripts/n8n-setup.sh"
+
+# Workflows n8n
+move_file "n8n.diff-verifier.json" "orchestration/workflows/n8n.diff-verifier.json"
+move_file "n8n.migration-orchestrator.json" "orchestration/workflows/n8n.migration-orchestrator.json"
+move_file "n8n.migration.json" "orchestration/workflows/n8n.migration.json"
+move_file "n8n.monitoring.json" "orchestration/workflows/n8n.monitoring.json"
+move_file "n8n.monorepo-analyzer.json" "orchestration/workflows/n8n.monorepo-analyzer.json"
+move_file "n8n.pipeline.clean.json" "orchestration/workflows/n8n.pipeline.clean.json"
+move_file "n8n.pipeline.json" "orchestration/workflows/n8n.pipeline.json"
+
+# Business - Agents et implémentations
+move_file "adapt-agents.ts" "business/agents/adapt-agents.ts"
+move_file "agent-interface-validator.ts" "coordination/interfaces/agent-interface-validator.ts"
+move_file "implement-interfaces-agent.ts" "coordination/interfaces/implement-interfaces-agent.ts"
+move_file "implement-interfaces.ts" "coordination/interfaces/implement-interfaces.ts"
+move_file "detect-agent-methods.ts" "business/agents/detect-agent-methods.ts"
+move_file "fix-agent-typescript-errors.ts" "business/agents/fix-agent-typescript-errors.ts"
+move_file "generate-agent-manifest.ts" "business/agents/generate-agent-manifest.ts"
+
+# Configuration et manifestes
+move_file "agent-import-mapping.json" "shared/config/agent-import-mapping.json"
+move_file "agent-manifest.json" "shared/config/agent-manifest.json"
+move_file "MCPManifest.json" "shared/config/MCPManifest.json"
+move_file "migration-config.json" "shared/config/migration-config.json"
+move_file "backlog.json" "shared/config/backlog.json"
+move_file "backlog.mcp.json" "shared/config/backlog.mcp.json"
+move_file "biome.json" "shared/config/biome.json"
+move_file "discovery_map.json" "shared/config/discovery_map.json"
+
+# Business - Migration et SQL
+move_file "migration_checklist.sql" "business/database/migration_checklist.sql"
+move_file "analyse_sql_recommandations.sql" "business/database/analyse_sql_recommandations.sql"
+move_file "mcp-routes.ts" "business/migration/mcp-routes.ts"
+move_file "index.ts" "business/migration/index.ts"
+
+# Rapports et documentation
+move_file "agent-migration-report-20250418-175114.md" "shared/documentation/agent-migration-report-20250418-175114.md"
+move_file "agent-migration-report-20250418-175257.md" "shared/documentation/agent-migration-report-20250418-175257.md"
+move_file "agent-statistics-report.md" "shared/documentation/agent-statistics-report.md"
+move_file "complete-migration-verification-20250420-015853.md" "shared/documentation/complete-migration-verification-20250420-015853.md"
+move_file "ARCHITECTURE.md" "shared/documentation/ARCHITECTURE.md"
+move_file "migration-report.json" "shared/documentation/migration-report.json"
+move_file "migration-results-2025-04-10T22-42-27-339Z.json" "shared/documentation/migration-results-2025-04-10T22-42-27-339Z.json"
+move_file "migration-results-2025-04-10T23-01-27-662Z.json" "shared/documentation/migration-results-2025-04-10T23-01-27-662Z.json"
+move_file "migration-results-2025-04-10T23-02-53-998Z.json" "shared/documentation/migration-results-2025-04-10T23-02-53-998Z.json"
+
+# Dashboard
+move_file "dashboard-architecture.tsx" "business/dashboard/dashboard-architecture.tsx"
+move_file "dashboard-prisma-migration.tsx" "business/dashboard/dashboard-prisma-migration.tsx"
+move_file "dashboard-quality-scores.tsx" "business/dashboard/dashboard-quality-scores.tsx"
+move_file "dashboard-seo-migration.tsx" "business/dashboard/dashboard-seo-migration.tsx"
+move_file "dashboard.html" "business/dashboard/dashboard.html"
+
+# Fusionner les fichiers similaires
+echo -e "${BLUE}🔍 Fusion des fichiers similaires...${NC}"
+
+# Fusionner les fichiers de listes
+merge_files "shared/documentation/clickable_lists.txt" "clickable_file_list.txt" "clickable_list.txt"
+
+# Fin du script
+if [ "$DRY_RUN" = true ]; then
+  echo -e "${YELLOW}✨ Simulation terminée. Aucune modification n'a été effectuée.${NC}"
+  echo -e "   Pour effectuer réellement les déplacements, utilisez: $0 --execute"
+else
+  echo -e "${GREEN}✨ Réorganisation terminée! Les fichiers ont été déplacés vers leurs nouveaux emplacements.${NC}"
+  echo -e "   Une sauvegarde a été créée dans: ${BACKUP_DIR}"
+  
+  # Afficher la nouvelle structure
+  echo -e "${BLUE}📊 Nouvelle structure du projet:${NC}"
+  find . -type d -not -path "*/node_modules/*" -not -path "*/dist/*" -not -path "*/.git*" | sort | sed -e "s/[^-][^\/]*\// |  /g" -e "s/|\([^ ]\)/| - \1/"
+fi

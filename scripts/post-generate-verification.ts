@@ -96,7 +96,7 @@ async function directVerification(filePrefix: string): Promise<void> {
     console.log('🔍 Exécution de la vérification directe...');
     
     // Exécuter la commande de vérification
-    execSync(`pnpm mcp-verify ${filePrefix} --generate-report --add-tags --type-check`, {
+    execSync(`pnpmDoDotmcp-verify ${filePrefix} --generate-report --add-tags --type-check`, {
       stdio: 'inherit'
     });
     

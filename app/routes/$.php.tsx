@@ -1,6 +1,6 @@
 /**
  * Route Remix pour gérer toutes les anciennes routes PHP
- * Agit comme un filet de sécurité et permet de gérer les anciennes URLs 
+ * DoDoDoDotgit comme un filet de sécurité et permet de gérer les anciennes URLs 
  * qui n'ont pas été explicitement mappées
  */
 
@@ -185,7 +185,7 @@ export default function LegacyPhpPage() {
         
         <div className="legacy-page-help">
           <h3>Besoin d'aide?</h3>
-          <p>Si vous pensez qu'il s'agit d'une erreur ou si vous cherchez un contenu spécifique, n'hésitez pas à nous contacter.</p>
+          <p>Si vous pensez qu'il s'DoDoDoDotgit d'une erreur ou si vous cherchez un contenu spécifique, n'hésitez pas à nous contacter.</p>
           <Link to="/contact" className="contact-link">
             Contactez-nous
           </Link>

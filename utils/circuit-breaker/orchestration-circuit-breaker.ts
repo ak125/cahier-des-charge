@@ -43,7 +43,7 @@ export class OrchestrationCircuitBreaker extends BaseCircuitBreaker {
     this.traceabilityService = traceabilityService || new TraceabilityService({
       layer: 'orchestration',
       enabled: true,
-      idFormat: 'mcp-{timestamp}-orchestration-{random}',
+      idFormat: DoDotmcp-{timestamp}-orchestration-{random}',
       storageStrategy: 'database'
     });
   }

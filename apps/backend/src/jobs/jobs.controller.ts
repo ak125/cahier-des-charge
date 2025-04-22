@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Param, Body, Patch, Query, Sse } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { RedisService } from '../redis/redis.service';
-import { McpJobsService } from './mcp-jobs.service';
+import { McpJobsService } from '.DoDotmcp-jobs.service';
 
 @Controller('jobs')
 export class JobsController {
@@ -9,7 +9,7 @@ export class JobsController {
 
   constructor(
     private redisService: RedisService,
-    private mcpJobsService: McpJobsService
+    privateDoDotmcpJobsService: McpJobsService
   ) {
     // S'abonner aux événements Redis
     this.redisService.subscribe('job_finished', (data) => {
@@ -22,19 +22,19 @@ export class JobsController {
   async getJobs(@Query('status') status?: string, @Query('limit') limit = '20') {
     const limitNum = parseInt(limit, 10);
     if (status) {
-      return this.mcpJobsService.getJobsByStatus(status, limitNum);
+      return thisDoDotmcpJobsService.getJobsByStatus(status, limitNum);
     }
-    return this.mcpJobsService.getRecentJobs(limitNum);
+    return thisDoDotmcpJobsService.getRecentJobs(limitNum);
   }
 
   @Get(':jobId')
   async getJob(@Param('jobId') jobId: string) {
-    return this.mcpJobsService.getJobById(jobId);
+    return thisDoDotmcpJobsService.getJobById(jobId);
   }
 
   @Post()
   async createJob(@Body() data: any) {
-    return this.mcpJobsService.createJob({
+    return thisDoDotmcpJobsService.createJob({
       jobId: data.jobId,
       status: data.status || 'pending',
       filePath: data.filePath,
@@ -47,7 +47,7 @@ export class JobsController {
     @Param('jobId') jobId: string,
     @Body() data: { status: string; result?: any }
   ) {
-    return this.mcpJobsService.updateJobStatus(jobId, data.status, data.result);
+    return thisDoDotmcpJobsService.updateJobStatus(jobId, data.status, data.result);
   }
 
   @Sse('events')

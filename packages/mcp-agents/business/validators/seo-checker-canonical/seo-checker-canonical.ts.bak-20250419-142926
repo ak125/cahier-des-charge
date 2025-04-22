@@ -1,0 +1,158 @@
+/**
+ * SeoCheckerCanonical - Agent MCP pour business (validator)
+ * 
+ * Migration automatique vers l'architecture MCP OS en 3 couches
+ * Date: 2025-04-18T00:11:24.606Z
+ */
+
+import { ValidatorAgent } from '../../../../core/interfaces/business';
+import { BaseAgent } from '../../../../core/interfaces/base-agent';
+import { BusinessAgent } from '../../../../core/interfaces/business-agent';
+import { MCPContext } from '../../../../core/mcp-context';
+import fs from 'fs';
+import path from 'path';
+
+/**
+ * Configuration pour SeoCheckerCanonical
+ */
+export interface SeoCheckerCanonicalConfig {
+  rulesPath?: string;
+  reportPath?: string;
+  threshold?: number;
+}
+
+/**
+ * SeoCheckerCanonical - Agent d'analyse et de traitement métier
+ */
+export class SeoCheckerCanonical implements BaseAgent, BusinessAgent, ValidatorAgent {
+  id = 'seo-checker-canonical';
+  name = 'SeoCheckerCanonical';
+  type = 'validator';
+  version = '1.0.0';
+  
+  private rules: any[] = [];
+  
+  constructor(private config: SeoCheckerCanonicalConfig) {
+    // Initialisation
+  }
+  
+  /**
+   * Initialise l'agent avec des options spécifiques
+   */
+  async initialize(options?: Record<string, any>): Promise<void> {
+    if (this.config.rulesPath && fs.existsSync(this.config.rulesPath)) {
+      try {
+        const rulesData = fs.readFileSync(this.config.rulesPath, 'utf8');
+        this.rules = JSON.parse(rulesData);
+      } catch (error) {
+        console.error('Erreur lors du chargement des règles:', error);
+      }
+    }
+  }
+  
+  /**
+   * Indique si l'agent est prêt à être utilisé
+   */
+  isReady(): boolean {
+    return true;
+  }
+  
+  /**
+   * Arrête et nettoie l'agent
+   */
+  async shutdown(): Promise<void> {
+    // Libérer les ressources
+  }
+  
+  /**
+   * Récupère les métadonnées de l'agent
+   */
+  getMetadata(): Record<string, any> {
+    return {
+      id: this.id,
+      name: this.name,
+      type: this.type,
+      version: this.version,
+      capabilities: ['seo', 'canonical', 'validation']
+    };
+  }
+  
+  /**
+   * Valide les canonicals des URLs
+   */
+  async validateCanonicals(urls: string[], context?: MCPContext): Promise<any> {
+    const results = [];
+    
+    for (const url of urls) {
+      results.push({
+        url,
+        hasCanonical: true, // à implémenter avec une vérification réelle
+        canonicalUrl: url,
+        isValid: true
+      });
+    }
+    
+    return results;
+  }
+  
+  /**
+   * Vérifie les règles SEO sur une page
+   */
+  async checkSEORules(pageContent: string, url: string, context?: MCPContext): Promise<any> {
+    const results = {
+      url,
+      passed: true,
+      issues: [],
+      recommendations: []
+    };
+    
+    // Vérifier les règles SEO (canonicals, metas, etc.)
+    
+    return results;
+  }
+  
+  /**
+   * Génère un rapport de validation
+   */
+  async generateReport(data: any, context?: MCPContext): Promise<any> {
+    const report = {
+      timestamp: new Date().toISOString(),
+      agent: this.getMetadata(),
+      data,
+      summary: {
+        total: 0,
+        passed: 0,
+        failed: 0
+      }
+    };
+    
+    // Sauvegarder le rapport si nécessaire
+    if (this.config.reportPath) {
+      try {
+        const reportJson = JSON.stringify(report, null, 2);
+        fs.writeFileSync(this.config.reportPath, reportJson, 'utf8');
+      } catch (error) {
+        console.error('Erreur lors de la sauvegarde du rapport:', error);
+      }
+    }
+    
+    return report;
+  }
+  
+  /**
+   * Méthode principale pour exécuter le validateur
+   */
+  async execute(input: any, context?: MCPContext): Promise<any> {
+    if (Array.isArray(input) && input.every(item => typeof item === 'string')) {
+      return this.validateCanonicals(input, context);
+    }
+    
+    if (typeof input === 'object' && input.url && input.content) {
+      return this.checkSEORules(input.content, input.url, context);
+    }
+    
+    throw new Error('Format d\'entrée non supporté');
+  }
+}
+
+export default SeoCheckerCanonical;

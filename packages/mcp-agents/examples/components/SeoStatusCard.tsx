@@ -85,11 +85,11 @@ export function SeoStatusCard({ seoData, onRefresh }: SeoStatusCardProps) {
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr);
     return new Intl.DateTimeFormat('fr-FR', {
-      day: '2-digit',
-      month: '2-digit',
+      day: '2-dDoDoDoDotgit',
+      month: '2-dDoDoDoDotgit',
       year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
+      hour: '2-dDoDoDoDotgit',
+      minute: '2-dDoDoDoDotgit'
     }).format(date);
   };
 

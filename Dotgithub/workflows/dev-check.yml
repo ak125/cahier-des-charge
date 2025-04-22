@@ -1,0 +1,41 @@
+name: 🔍 Dev Checker
+
+on:
+  push:
+    branches: [main, dev]
+  workflow_dispatch:
+
+jobs:
+  run-dev-checker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: 📦 Installer les dépendances
+        run: |
+          corepack enable
+          pnpm install
+
+      - name: ⚙️ Exécuter le dev-checker MCP Agent
+        run: |
+          pnpm tsx apps/mcp-server/src/handleAgentRequest.ts dev-checker
+          
+      - name: 📊 Générer le rapport
+        if: always()
+        run: |
+          if [ -f "reports/dev_check_report.md" ]; then
+            echo "Rapport disponible"
+            mkdir -p $GITHUB_WORKSPACE/artifacts
+            cp reports/dev_check_report.md $GITHUB_WORKSPACE/artifacts/
+          else
+            echo "Aucun rapport généré"
+          fi
+          
+      - name: 📤 Publier les rapports
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: dev-check-reports
+          path: |
+            reports/dev_check_report.md
+            reports/dev_check_failures.json

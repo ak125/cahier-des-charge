@@ -12,7 +12,7 @@ interface Workflow {
   id: string;
   name: string;
   status: 'active' | 'inactive' | 'failed' | 'paused';
-  type: 'n8n' | 'bullmq' | 'shell' | 'temporal';
+  type: Dotn8N' | 'bullmq' | 'shell' | 'temporal';
   executionCount: number;
   successRate: number;
   lastExecution?: Date;
@@ -129,7 +129,7 @@ const orchestrationDashboardConfig: DashboardConfig = {
       name: 'Type de workflow',
       options: [
         { value: 'all', label: 'Tous les types' },
-        { value: 'n8n', label: 'n8n' },
+        { value: Dotn8N', label: Dotn8N' },
         { value: 'bullmq', label: 'BullMQ' },
         { value: 'shell', label: 'Scripts Shell' },
         { value: 'temporal', label: 'Temporal' }
@@ -262,8 +262,8 @@ const orchestrationDashboardConfig: DashboardConfig = {
               status: 'success'
             },
             {
-              id: 'n8n-health',
-              name: 'n8n',
+              id: Dotn8N-health',
+              name: Dotn8N',
               value: 'Opérationnel',
               status: 'success'
             },
@@ -280,7 +280,7 @@ const orchestrationDashboardConfig: DashboardConfig = {
               status: 'warning'
             },
             {
-              id: 'mcp-health',
+              id: DoDotmcp-health',
               name: 'MCP',
               value: 'Opérationnel',
               status: 'success'

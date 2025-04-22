@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "CommonJS",
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "outDir": "/workspaces/cahier-des-charge/reports/ci-agents-20250419-232215/dist",
+    "resolveJsonModule": true
+  },
+  "include": [
+    "/workspaces/cahier-des-charge/packages/mcp-agents/business/analyzers/htaccess-router-analyzer/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}

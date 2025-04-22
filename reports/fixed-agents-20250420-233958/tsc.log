@@ -1,0 +1,36 @@
+packages/mcp-agents/analyzers/MysqlAnalyzer+optimizerAgent/index.ts(6,23): error TS1005: ',' expected.
+packages/mcp-agents/analyzers/MysqlAnalyzer+optimizerAgent/index.ts(6,39): error TS1128: Declaration or statement expected.
+packages/mcp-agents/analyzers/MysqlAnalyzer+optimizerAgent/index.ts(6,41): error TS1434: Unexpected keyword or identifier.
+packages/mcp-agents/analyzers/MysqlAnalyzer+optimizerAgent/index.ts(9,16): error TS1005: ',' expected.
+packages/mcp-agents/analyzers/MysqlAnalyzer+optimizerAgent/index.ts(10,1): error TS1109: Expression expected.
+packages/mcp-agents/analyzers/PhpAnalyzer.workerAgent/index.ts(6,21): error TS1005: ',' expected.
+packages/mcp-agents/analyzers/PhpAnalyzer.workerAgent/index.ts(9,14): error TS1005: ',' expected.
+packages/mcp-agents/analyzers/SqlAnalyzer+prismaBuilderAgent/index.ts(6,21): error TS1005: ',' expected.
+packages/mcp-agents/analyzers/SqlAnalyzer+prismaBuilderAgent/index.ts(6,41): error TS1128: Declaration or statement expected.
+packages/mcp-agents/analyzers/SqlAnalyzer+prismaBuilderAgent/index.ts(6,43): error TS1434: Unexpected keyword or identifier.
+packages/mcp-agents/analyzers/SqlAnalyzer+prismaBuilderAgent/index.ts(9,14): error TS1005: ',' expected.
+packages/mcp-agents/analyzers/SqlAnalyzer+prismaBuilderAgent/index.ts(10,1): error TS1109: Expression expected.
+packages/mcp-agents/analyzers/data-analyzer/index.ts(6,14): error TS1005: ',' expected.
+packages/mcp-agents/analyzers/data-analyzer/index.ts(6,27): error TS1128: Declaration or statement expected.
+packages/mcp-agents/analyzers/data-analyzer/index.ts(6,29): error TS1434: Unexpected keyword or identifier.
+packages/mcp-agents/analyzers/data-analyzer/index.ts(9,7): error TS1005: ',' expected.
+packages/mcp-agents/analyzers/data-analyzer/index.ts(10,1): error TS1109: Expression expected.
+packages/mcp-agents/analyzers/dependency-analyzer/index.ts(6,20): error TS1005: ',' expected.
+packages/mcp-agents/analyzers/dependency-analyzer/index.ts(6,33): error TS1128: Declaration or statement expected.
+packages/mcp-agents/analyzers/dependency-analyzer/index.ts(6,35): error TS1434: Unexpected keyword or identifier.
+packages/mcp-agents/analyzers/dependency-analyzer/index.ts(9,13): error TS1005: ',' expected.
+packages/mcp-agents/analyzers/dependency-analyzer/index.ts(10,1): error TS1109: Expression expected.
+packages/mcp-agents/analyzers/qa-analyzer/index.ts(6,12): error TS1005: ',' expected.
+packages/mcp-agents/analyzers/qa-analyzer/index.ts(6,25): error TS1128: Declaration or statement expected.
+packages/mcp-agents/analyzers/qa-analyzer/index.ts(6,27): error TS1434: Unexpected keyword or identifier.
+packages/mcp-agents/analyzers/qa-analyzer/index.ts(9,5): error TS1005: ',' expected.
+packages/mcp-agents/analyzers/qa-analyzer/index.ts(10,1): error TS1109: Expression expected.
+packages/mcp-agents/analyzers/structure-analyzer/index.ts(6,19): error TS1005: ',' expected.
+packages/mcp-agents/analyzers/structure-analyzer/index.ts(6,32): error TS1128: Declaration or statement expected.
+packages/mcp-agents/analyzers/structure-analyzer/index.ts(6,34): error TS1434: Unexpected keyword or identifier.
+packages/mcp-agents/analyzers/structure-analyzer/index.ts(9,12): error TS1005: ',' expected.
+packages/mcp-agents/analyzers/structure-analyzer/index.ts(10,1): error TS1109: Expression expected.
+packages/mcp-agents/generators/SeoMeta.generatorAgent/index.ts(6,17): error TS1005: ',' expected.
+packages/mcp-agents/generators/SeoMeta.generatorAgent/index.ts(9,10): error TS1005: ',' expected.
+packages/mcp-agents/orchestrators/McpVerifier.workerAgent/index.ts(6,21): error TS1005: ',' expected.
+packages/mcp-agents/orchestrators/McpVerifier.workerAgent/index.ts(9,14): error TS1005: ',' expected.

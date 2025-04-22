@@ -1,0 +1,209 @@
+/**
+ * mysql-analyzer - Agent MCP pour business (analyzer)
+ * 
+ * Migration automatique vers l'architecture MCP OS en 3 couches
+ * Date: 2025-04-18T00:11:24.606Z
+ */
+
+import { AnalyzerAgent } from '../../../core/interfaces/analyzer';
+import { BaseAgent } from '../../../core/interfaces/base-agent';
+import { BusinessAgent } from '../../../core/interfaces/business';
+import * as fs from 'fs';
+import * as path from 'path';
+import * as zlib from 'zlib';
+import { program } from 'commander';
+import { SQLParser } from './core/parser';
+import { TypeConverter } from './core/type-converter';
+import { TableClassifier } from './core/classifier';
+import { RelationAnalyzer } from './core/relation-analyzer';
+import { DebtAnalyzer } from './core/debt-analyzer';
+import { SchemaAnalyzer } from './core/schema-analyzer';
+import { PrismaGenerator } from './core/prisma-generator';
+import { saveToJson, saveToMarkdown, validateSchema, printColoredMessage } from './utils/helpers';
+import { MySQLSchema, DebtIssue } from './models/schema';
+
+
+/**
+ * Configuration pour MySQLAnalyzer
+ */
+export interface MySQLAnalyzerConfig {
+  inputFile?: string;
+  outputDir?: string;
+  validateOutput?: boolean;
+  generatePrisma?: boolean;
+  // Autres propriétés de configuration
+}
+
+/**
+ * MySQLAnalyzer - Agent d'analyse et de traitement métier
+ */
+export class MySQLAnalyzer implements BaseAgent, BusinessAgent, AnalyzerAgent {
+  readonly id = 'mysql-analyzer';
+  readonly name = 'MySQL Analyzer';
+  readonly type = 'analyzer';
+  readonly version = '1.0.0';
+  
+  constructor(private config: MySQLAnalyzerConfig) {
+    // Initialisation
+  }
+  
+  /**
+   * Initialise l'agent avec des options spécifiques
+   */
+  async initialize(options?: Record<string, any>): Promise<void> {
+    console.log('Initialisation de l\'agent MySQL Analyzer...');
+    // Initialisation spécifique
+  }
+  
+  /**
+   * Indique si l'agent est prêt à être utilisé
+   */
+  isReady(): boolean {
+    return true; // TODO: Implémenter la vérification d'état
+  }
+  
+  /**
+   * Arrête et nettoie l'agent
+   */
+  async shutdown(): Promise<void> {
+    console.log('Fermeture de l\'agent MySQL Analyzer...');
+    // Nettoyage des ressources
+  }
+  
+  /**
+   * Récupère les métadonnées de l'agent
+   */
+  getMetadata(): Record<string, any> {
+    return {
+      id: this.id,
+      name: this.name,
+      type: this.type,
+      version: this.version
+    };
+  }
+  
+  /**
+   * Analyse un schéma SQL MySQL
+   */
+  async analyzeSchema(sqlContent: string): Promise<MySQLSchema> {
+    try {
+      console.log('Analyse du schéma MySQL...');
+      // TODO: Implémenter l'analyse du schéma
+      return {} as MySQLSchema;
+    } catch (error) {
+      console.error('Erreur lors de l\'analyse du schéma:', error);
+      throw error;
+    }
+  }
+  
+  /**
+   * Lit un fichier SQL depuis le système de fichiers
+   */
+  async readSqlFile(filePath: string): Promise<string> {
+    try {
+      console.log(`Lecture du fichier SQL: ${filePath}`);
+      const fileContent = await fs.promises.readFile(filePath, 'utf8');
+      return fileContent;
+    } catch (error) {
+      console.error(`Erreur lors de la lecture du fichier ${filePath}:`, error);
+      throw error;
+    }
+  }
+  
+  /**
+   * Enregistre les résultats d'analyse
+   */
+  async saveResults(schema: MySQLSchema, outputPath: string): Promise<void> {
+    try {
+      console.log(`Enregistrement des résultats dans ${outputPath}`);
+      await saveToJson(schema, path.join(outputPath, 'schema-analysis.json'));
+      // Autres opérations d'enregistrement
+    } catch (error) {
+      console.error('Erreur lors de l\'enregistrement des résultats:', error);
+      throw error;
+    }
+  }
+  
+  /**
+   * Génère un rapport d'analyse détaillé
+   */
+  async generateAnalysisReport(schema: MySQLSchema, outputPath: string): Promise<void> {
+    try {
+      console.log('Génération du rapport d\'analyse...');
+      
+      // Analyse des relations
+      const relationAnalyzer = new RelationAnalyzer();
+      const relations = relationAnalyzer.analyzeRelations(schema);
+      
+      // Analyse de la dette technique
+      const debtAnalyzer = new DebtAnalyzer();
+      const debtIssues = debtAnalyzer.analyzeDebt(schema);
+      
+      // Génération du rapport Markdown
+      const reportContent = this.formatReportContent(schema, relations, debtIssues);
+      await saveToMarkdown(reportContent, path.join(outputPath, 'analysis-report.md'));
+      
+      console.log('Rapport d\'analyse généré avec succès');
+    } catch (error) {
+      console.error('Erreur lors de la génération du rapport d\'analyse:', error);
+      throw error;
+    }
+  }
+  
+  /**
+   * Formate le contenu du rapport
+   */
+  private formatReportContent(schema: MySQLSchema, relations: any[], debtIssues: DebtIssue[]): string {
+    // TODO: Implémentation formatage du rapport
+    return '# Rapport d\'analyse MySQL\n\n## À implémenter';
+  }
+
+  /**
+   * Récupère l'état actuel de l'agent business
+   */
+  async getState(): Promise<Record<string, any>> {
+    return {
+      status: 'active',
+      timestamp: new Date().toISOString()
+    };
+  }
+
+  /**
+   * Execute l'agent avec les paramètres spécifiés
+   */
+  async execute(params: any): Promise<any> {
+    try {
+      console.log('Exécution de l\'agent MySQL Analyzer...');
+      const { inputFile, outputDir } = params;
+      
+      if (!inputFile) {
+        throw new Error('Fichier SQL d\'entrée non spécifié');
+      }
+      
+      const sqlContent = await this.readSqlFile(inputFile);
+      const schema = await this.analyzeSchema(sqlContent);
+      
+      const outputPath = outputDir || './output';
+      if (!fs.existsSync(outputPath)) {
+        fs.mkdirSync(outputPath, { recursive: true });
+      }
+      
+      await this.saveResults(schema, outputPath);
+      await this.generateAnalysisReport(schema, outputPath);
+      
+      return {
+        success: true,
+        outputPath,
+        schema
+      };
+    } catch (error) {
+      console.error('Erreur lors de l\'exécution:', error);
+      return {
+        success: false,
+        error: error.message
+      };
+    }
+  }
+}
+
+export default MySQLAnalyzer;

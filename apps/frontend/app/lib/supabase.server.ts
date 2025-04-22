@@ -21,8 +21,8 @@ export interface McpJob {
 }
 
 // Schema de la table Supabase
-export const mcpJobsTableSchema = `
-CREATE TABLE mcp_jobs (
+export constDoDotmcpJobsTableSchema = `
+CREATE TABLEDoDotmcp_jobs (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   filename TEXT NOT NULL,
   original_path TEXT NOT NULL,
@@ -38,9 +38,9 @@ CREATE TABLE mcp_jobs (
 );
 
 -- Index pour améliorer les performances des requêtes fréquentes
-CREATE INDEX mcp_jobs_status_idx ON mcp_jobs (status);
-CREATE INDEX mcp_jobs_priority_idx ON mcp_jobs (priority DESC);
-CREATE INDEX mcp_jobs_filename_idx ON mcp_jobs (filename);
+CREATE INDEXDoDotmcp_jobs_status_idx ONDoDotmcp_jobs (status);
+CREATE INDEXDoDotmcp_jobs_priority_idx ONDoDotmcp_jobs (priority DESC);
+CREATE INDEXDoDotmcp_jobs_filename_idx ONDoDotmcp_jobs (filename);
 
 -- Fonction pour mettre à jour le champ updated_at automatiquement
 CREATE OR REPLACE FUNCTION update_updated_at()
@@ -53,7 +53,7 @@ $$ LANGUAGE plpgsql;
 
 -- Trigger pour mettre à jour updated_at automatiquement
 CREATE TRIGGER set_updated_at
-BEFORE UPDATE ON mcp_jobs
+BEFORE UPDATE ONDoDotmcp_jobs
 FOR EACH ROW
 EXECUTE PROCEDURE update_updated_at();
 `;
@@ -71,7 +71,7 @@ const supabase = createClient(supabaseUrl || '', supabaseKey || '');
 /**
  * API pour interagir avec Supabase pour les jobs MCP
  */
-export const mcpSupabaseApi = {
+export constDoDotmcpSupabaseApi = {
   /**
    * Récupère tous les jobs MCP avec filtre optionnel
    */
@@ -79,7 +79,7 @@ export const mcpSupabaseApi = {
     const { status, search, limit = 50, offset = 0 } = filters || {};
 
     let query = supabase
-      .from('mcp_jobs')
+      .from(DoDotmcp_jobs')
       .select('*')
       .order('priority', { ascending: false })
       .order('updated_at', { ascending: false });
@@ -110,7 +110,7 @@ export const mcpSupabaseApi = {
   async getJob(idOrFilename: string) {
     // Essayez d'abord par ID
     let { data, error } = await supabase
-      .from('mcp_jobs')
+      .from(DoDotmcp_jobs')
       .select('*')
       .eq('id', idOrFilename)
       .single();
@@ -118,7 +118,7 @@ export const mcpSupabaseApi = {
     // Si rien n'est trouvé, essayez par nom de fichier
     if (!data && !error) {
       ({ data, error } = await supabase
-        .from('mcp_jobs')
+        .from(DoDotmcp_jobs')
         .select('*')
         .eq('filename', idOrFilename)
         .single());
@@ -137,7 +137,7 @@ export const mcpSupabaseApi = {
    */
   async updateJobStatus(jobId: string, status: McpJobStatus, details?: { error_message?: string }) {
     const { data, error } = await supabase
-      .from('mcp_jobs')
+      .from(DoDotmcp_jobs')
       .update({
         status,
         updated_at: new Date().toISOString(),
@@ -163,7 +163,7 @@ export const mcpSupabaseApi = {
     const now = new Date().toISOString();
     
     const { data, error } = await supabase
-      .from('mcp_jobs')
+      .from(DoDotmcp_jobs')
       .upsert({
         filename: job.filename,
         status: job.status || 'pending',
@@ -195,7 +195,7 @@ export const mcpSupabaseApi = {
    */
   async completeJob(jobId: string, details?: { paths?: Record<string, string> }) {
     const { data, error } = await supabase
-      .from('mcp_jobs')
+      .from(DoDotmcp_jobs')
       .update({
         status: 'done',
         updated_at: new Date().toISOString(),

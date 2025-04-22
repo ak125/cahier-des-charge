@@ -70,7 +70,7 @@ export const action: ActionFunction = async ({ request }) => {
     if (!fs.access(jobsPath).catch(() => false)) {
       // Si le fichier n'existe pas encore ou n'est pas accessible
       // On crée un job minimal avec les informations disponibles
-      const queue = new Queue('mcp-jobs', { connection: redisClient });
+      const queue = new Queue(DoDotmcp-jobs', { connection: redisClient });
       
       await queue.add(
         statusData.files[filename].agent,
@@ -99,7 +99,7 @@ export const action: ActionFunction = async ({ request }) => {
     
     if (!jobInfo) {
       // Si on ne trouve pas le job, on crée un job minimal
-      const queue = new Queue('mcp-jobs', { connection: redisClient });
+      const queue = new Queue(DoDotmcp-jobs', { connection: redisClient });
       
       await queue.add(
         statusData.files[filename].agent,
@@ -115,7 +115,7 @@ export const action: ActionFunction = async ({ request }) => {
       );
     } else {
       // Utiliser les infos du job précédent pour créer un nouveau job
-      const queue = new Queue('mcp-jobs', { connection: redisClient });
+      const queue = new Queue(DoDotmcp-jobs', { connection: redisClient });
       
       await queue.add(
         jobInfo.name,

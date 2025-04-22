@@ -1,0 +1,59 @@
+[core]
+	repositoryformatversion = 0
+	filemode = true
+	bare = false
+	logallrefupdates = true
+[remote "origin"]
+	url = https://github.com/ak125/cahier-des-charge
+	fetch = +refs/heads/*:refs/remotes/origin/*
+[branch "main"]
+	remote = origin
+	merge = refs/heads/main
+	vscode-merge-base = origin/main
+[lfs]
+	repositoryformatversion = 0
+[branch "php"]
+	github-pr-base-branch = "ak125#cahier-des-charge#main"
+	vscode-merge-base = origin/main
+	vscode-merge-base = origin/main
+	remote = origin
+	merge = refs/heads/php
+[branch "strategie"]
+	vscode-merge-base = origin/main
+	remote = origin
+	merge = refs/heads/strategie
+[branch "pipeline"]
+	github-pr-base-branch = "ak125#cahier-des-charge#strategie"
+	vscode-merge-base = origin/strategie
+	vscode-merge-base = origin/strategie
+	remote = origin
+	merge = refs/heads/pipeline
+[branch "mysql"]
+	github-pr-base-branch = "ak125#cahier-des-charge#php"
+	vscode-merge-base = origin/php
+	vscode-merge-base = origin/php
+	remote = origin
+	merge = refs/heads/mysql
+[branch "htaccess"]
+	github-pr-base-branch = "ak125#cahier-des-charge#mysql"
+	vscode-merge-base = origin/mysql
+	vscode-merge-base = origin/mysql
+	remote = origin
+	merge = refs/heads/htaccess
+[branch "NestJS-Remix"]
+	github-pr-base-branch = "ak125#cahier-des-charge#htaccess"
+	vscode-merge-base = origin/htaccess
+	vscode-merge-base = origin/htaccess
+	remote = origin
+	merge = refs/heads/NestJS-Remix
+[branch "APP"]
+	github-pr-base-branch = "ak125#cahier-des-charge#NestJS-Remix"
+	vscode-merge-base = origin/NestJS-Remix
+	remote = origin
+	merge = refs/heads/APP
+[branch "v3"]
+	github-pr-base-branch = "ak125#cahier-des-charge#APP"
+	vscode-merge-base = origin/APP
+	remote = origin
+	merge = refs/heads/v3
+	github-pr-owner-number = "ak125#cahier-des-charge#6"

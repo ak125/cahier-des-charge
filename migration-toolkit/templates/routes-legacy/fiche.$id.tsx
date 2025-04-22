@@ -71,10 +71,10 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
         nom: tag.nom
       })),
       metadonnees: {
-        title: fiche.metadonnees?.title || fiche.titre,
-        description: fiche.metadonnees?.description || fiche.description || "",
-        keywords: fiche.metadonnees?.keywords || "",
-        canonical: fiche.metadonnees?.canonical || `/fiche/${fiche.id}`
+        title: FicheDotmetadonnees?.title || fiche.titre,
+        description: FicheDotmetadonnees?.description || fiche.description || "",
+        keywords: FicheDotmetadonnees?.keywords || "",
+        canonical: FicheDotmetadonnees?.canonical || `/fiche/${fiche.id}`
       }
     };
 
@@ -94,10 +94,10 @@ export default function FichePage() {
     <>
       {/* Balises SEO */}
       <SeoTags 
-        title={fiche.metadonnees.title}
-        description={fiche.metadonnees.description}
-        keywords={fiche.metadonnees.keywords}
-        canonicalUrl={fiche.metadonnees.canonical}
+        title={FicheDotmetadonnees.title}
+        description={FicheDotmetadonnees.description}
+        keywords={FicheDotmetadonnees.keywords}
+        canonicalUrl={FicheDotmetadonnees.canonical}
       />
       
       <PageContainer>

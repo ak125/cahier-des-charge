@@ -1,0 +1,58 @@
+[2025-04-20 00:51:31] [INFO] ======================================================================
+[2025-04-20 00:51:31] [INFO] Début de la consolidation de la migration vers l'architecture à trois couches
+[2025-04-20 00:51:31] [INFO] Date: 2025-04-20 00:51:31
+[2025-04-20 00:51:31] [INFO] Répertoire de travail: /workspaces/cahier-des-charge
+[2025-04-20 00:51:31] [INFO] Répertoire des rapports: /workspaces/cahier-des-charge/reports/consolidated-migration-20250420-005131
+[2025-04-20 00:51:31] [INFO] ======================================================================
+[2025-04-20 00:51:31] [STEP] ÉTAPE 1: Nettoyage des doublons d'agents
+[2025-04-20 00:51:31] [STEP] Exécution de /workspaces/cahier-des-charge/clean-agents-duplicates.sh: Nettoyer les agents dupliqués et organiser selon l'architecture à trois couches
+[2025-04-20 00:51:31] [INFO] Logs détaillés dans: /workspaces/cahier-des-charge/reports/consolidated-migration-20250420-005131/logs/clean-agents-duplicates.sh.log
+[2025-04-20 00:51:36] [SUCCESS] /workspaces/cahier-des-charge/clean-agents-duplicates.sh exécuté avec succès.
+[2025-04-20 00:51:36] [SUCCESS] Nettoyage des doublons d'agents réussi.
+[2025-04-20 00:51:36] [STEP] Vérification de l'état de la migration après l'étape: Nettoyage des doublons
+[2025-04-20 00:51:36] [INFO] Nombre d'erreurs TypeScript: 0
+0
+[2025-04-20 00:51:36] [SUCCESS] Aucune erreur TypeScript après l'étape 'Nettoyage des doublons'.
+[2025-04-20 00:51:36] [STEP] ÉTAPE 2: Implémentation des interfaces requises
+[2025-04-20 00:51:36] [STEP] Exécution de /workspaces/cahier-des-charge/implement-interfaces.sh: Implémenter les interfaces nécessaires pour l'architecture à trois couches
+[2025-04-20 00:51:36] [INFO] Logs détaillés dans: /workspaces/cahier-des-charge/reports/consolidated-migration-20250420-005131/logs/implement-interfaces.sh.log
+[2025-04-20 00:51:45] [SUCCESS] /workspaces/cahier-des-charge/implement-interfaces.sh exécuté avec succès.
+[2025-04-20 00:51:45] [SUCCESS] Implémentation des interfaces réussie.
+[2025-04-20 00:51:45] [STEP] Vérification de l'état de la migration après l'étape: Implémentation des interfaces
+[2025-04-20 00:51:45] [INFO] Nombre d'erreurs TypeScript: 0
+0
+[2025-04-20 00:51:45] [SUCCESS] Aucune erreur TypeScript après l'étape 'Implémentation des interfaces'.
+[2025-04-20 00:51:45] [STEP] ÉTAPE 3: Correction des méthodes manquantes
+[2025-04-20 00:51:45] [STEP] Exécution de /workspaces/cahier-des-charge/fix-all-agents.sh: Corriger les méthodes manquantes dans les agents
+[2025-04-20 00:51:45] [INFO] Logs détaillés dans: /workspaces/cahier-des-charge/reports/consolidated-migration-20250420-005131/logs/fix-all-agents.sh.log
+[2025-04-20 00:52:52] [SUCCESS] /workspaces/cahier-des-charge/fix-all-agents.sh exécuté avec succès.
+[2025-04-20 00:52:52] [SUCCESS] Correction des méthodes manquantes réussie.
+[2025-04-20 00:52:52] [STEP] Vérification de l'état de la migration après l'étape: Correction des méthodes
+[2025-04-20 00:52:52] [INFO] Nombre d'erreurs TypeScript: 0
+0
+[2025-04-20 00:52:52] [SUCCESS] Aucune erreur TypeScript après l'étape 'Correction des méthodes'.
+[2025-04-20 00:52:52] [STEP] ÉTAPE 4: Exécution des tests
+[2025-04-20 00:52:52] [STEP] Exécution de /workspaces/cahier-des-charge/run-agents-adapted-tests.sh: Exécuter les tests adaptés pour les agents migrés
+[2025-04-20 00:52:52] [INFO] Logs détaillés dans: /workspaces/cahier-des-charge/reports/consolidated-migration-20250420-005131/logs/run-agents-adapted-tests.sh.log
+[2025-04-20 00:58:40] [SUCCESS] /workspaces/cahier-des-charge/run-agents-adapted-tests.sh exécuté avec succès.
+[2025-04-20 00:58:40] [SUCCESS] Tests des agents réussis.
+[2025-04-20 00:58:40] [STEP] Vérification de l'état de la migration après l'étape: Tests des agents
+[2025-04-20 00:58:40] [INFO] Nombre d'erreurs TypeScript: 2601
+[2025-04-20 00:58:40] [WARNING] Des erreurs TypeScript persistent après l'étape 'Tests des agents'.
+[2025-04-20 00:58:40] [WARNING]   | tests/agents/test-base-analyzer.ts(1,29): error TS2614: Module '"../../packages/mcp-agents/analyzers/base-analyzer-agent"' has no exported member 'AnalysisResult'. Did you mean to use 'import AnalysisResult from "../../packages/mcp-agents/analyzers/base-analyzer-agent"' instead?
+[2025-04-20 00:58:40] [WARNING]   | tests/agents/test-base-analyzer.ts(1,45): error TS2614: Module '"../../packages/mcp-agents/analyzers/base-analyzer-agent"' has no exported member 'AnalyzerAgentConfig'. Did you mean to use 'import AnalyzerAgentConfig from "../../packages/mcp-agents/analyzers/base-analyzer-agent"' instead?
+[2025-04-20 00:58:40] [WARNING]   | tests/agents/test-base-analyzer.ts(5,32): error TS2315: Type 'BaseAnalyzerAgent' is not generic.
+[2025-04-20 00:58:40] [WARNING]   | tests/agents/test-base-analyzer.ts(48,17): error TS2339: Property 'execute' does not exist on type 'TestBaseAnalyzer'.
+[2025-04-20 00:58:40] [WARNING]   | tests/agents/test-base-analyzer.ts(52,17): error TS2339: Property 'execute' does not exist on type 'TestBaseAnalyzer'.
+[2025-04-20 00:58:40] [STEP] ÉTAPE 5: Génération du manifeste final
+[2025-04-20 00:58:40] [STEP] Exécution de /workspaces/cahier-des-charge/generate-agent-manifest.ts: Générer le manifeste final des agents
+[2025-04-20 00:58:40] [INFO] Logs détaillés dans: /workspaces/cahier-des-charge/reports/consolidated-migration-20250420-005131/logs/generate-agent-manifest.ts.log
+[2025-04-20 00:58:40] [ERROR] Le script /workspaces/cahier-des-charge/generate-agent-manifest.ts n'existe pas ou n'est pas exécutable.
+[2025-04-20 00:58:40] [WARNING] Échec lors de la génération du manifeste. La migration continue, mais vérifiez les logs.
+[2025-04-20 00:58:40] [STEP] ÉTAPE 6: Production du rapport unifié
+[2025-04-20 00:58:40] [INFO] Génération du rapport unifié...
+[2025-04-20 00:58:40] [SUCCESS] Rapport unifié généré avec succès : /workspaces/cahier-des-charge/reports/consolidated-migration-20250420-005131/summary.md
+[2025-04-20 00:58:40] [INFO] ======================================================================
+[2025-04-20 00:58:40] [INFO] Migration consolidée terminée avec succès.
+[2025-04-20 00:58:40] [INFO] Consultez le rapport complet : /workspaces/cahier-des-charge/reports/consolidated-migration-20250420-005131/summary.md
+[2025-04-20 00:58:40] [INFO] ======================================================================

@@ -1,0 +1,4 @@
+packages/mcp-agents/business/analyzers/htaccess-router-analyzer/htaccess-router-analyzer.ts(214,27): error TS2307: Cannot find module '@workspaces/cahier-des-charge/src/core/interfaces/base-agent' or its corresponding type declarations.
+packages/mcp-agents/business/analyzers/htaccess-router-analyzer/htaccess-router-analyzer.ts(215,46): error TS2307: Cannot find module '@workspaces/cahier-des-charge/src/core/interfaces/business' or its corresponding type declarations.
+packages/mcp-agents/business/analyzers/htaccess-router-analyzer/index.ts(41,27): error TS2307: Cannot find module '@workspaces/cahier-des-charge/src/core/interfaces/base-agent' or its corresponding type declarations.
+packages/mcp-agents/business/analyzers/htaccess-router-analyzer/index.ts(42,46): error TS2307: Cannot find module '@workspaces/cahier-des-charge/src/core/interfaces/business' or its corresponding type declarations.

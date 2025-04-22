@@ -17,7 +17,7 @@ async function run() {
     const worker = await Worker.create({
       workflowsPath: require.resolve('./workflows'),
       activities,
-      taskQueue: 'mcp-task-queue',
+      taskQueue: DoDotmcp-task-queue',
       connection,
     });
 

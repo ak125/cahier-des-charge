@@ -1,4 +1,4 @@
-import { BaseMcpAgent, AgentContext, AgentResult } from '../shared/base-agent';
+import { BaseMcpAgent, AgentContext, AgentResult } from '../shared/BaseAgent';
 import * as fs from 'fs/promises';
 import * as path from 'path';
 

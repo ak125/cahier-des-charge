@@ -1,4 +1,4 @@
-// apps/mcp-server/utils/file-processor.ts
+// appsDoDotmcp-server/utils/file-processor.ts
 
 import fs from 'fs';
 import { Transform, Readable, pipeline } from 'stream';

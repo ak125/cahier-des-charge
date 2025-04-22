@@ -1,0 +1,543 @@
+/**
+ * Htaccess Router Analyzer Agent
+ * 
+ * Cet agent analyse les fichiers .htaccess pour identifier les routes,
+ * redirections et règles de réécriture, et génère des recommandations SEO.
+ * 
+ * @version 1.0.0
+ */
+
+import { EventEmitter } from 'events';
+import { McpAgent, AgentMetadata, AgentStatus, AgentContext, AgentResult, AgentEvent, AgentConfig } from '../../../core/interfaces';
+import * as fs from 'fs';
+import * as path from 'path';
+
+// Types pour l'analyseur Htaccess
+interface HtaccessParserResult {
+  rules: any[];
+  directives: any[];
+}
+
+interface RouteAnalysisResult {
+  url: string;
+  type: 'redirect' | 'rewrite' | 'proxy' | 'forbidden' | 'other';
+  target?: string;
+  statusCode?: number;
+  seoScore?: number;
+  issues?: string[];
+}
+
+/**
+ * Configuration spécifique pour l'analyseur Htaccess
+ */
+interface HtaccessAnalyzerConfig extends AgentConfig {
+  includeCommonPhp?: boolean;
+  generateSeoReport?: boolean;
+  seoThreshold?: number;
+}
+
+/**
+ * Classe utilitaire pour analyser les fichiers htaccess
+ * (Implémentation simplifiée - à remplacer par une vraie implémentation)
+ */
+class HtaccessParser {
+  parse(content: string): HtaccessParserResult {
+    // Implémentation temporaire
+    return {
+      rules: [],
+      directives: []
+    };
+  }
+  
+  extractRedirects(parseResult: HtaccessParserResult): Record<string, any> {
+    // Implémentation temporaire
+    return {};
+  }
+  
+  extractRewriteRules(parseResult: HtaccessParserResult): any[] {
+    // Implémentation temporaire
+    return [];
+  }
+  
+  normalizePattern(pattern: string): string {
+    return pattern.replace(/\s+/g, '');
+  }
+}
+
+/**
+ * Classe utilitaire pour analyser le SEO des routes
+ * (Implémentation simplifiée - à remplacer par une vraie implémentation)
+ */
+class SEOChecker {
+  constructor(private config: {threshold: number}) {}
+  
+  async analyzeRoute(url: string, config: any): Promise<{ score: number, issues: string[] }> {
+    // Implémentation temporaire
+    return {
+      score: Math.floor(Math.random() * 100),
+      issues: []
+    };
+  }
+}
+
+/**
+ * Implémentation de l'agent d'analyse Htaccess
+ */
+export class HtaccessRouterAnalyzer implements McpAgent {
+  readonly metadata: AgentMetadata = {
+    id: 'htaccess-router-analyzer',
+    type: 'analyzer',
+    name: 'Htaccess Router Analyzer',
+    version: '1.0.0',
+    description: 'Agent d\'analyse des fichiers .htaccess pour routes et SEO'
+  };
+  
+  status: AgentStatus = 'ready';
+  readonly events = new EventEmitter();
+  config: HtaccessAnalyzerConfig = {
+    maxRetries: 3,
+    timeout: 30000,
+    logLevel: 'info',
+    includeCommonPhp: true,
+    generateSeoReport: true,
+    seoThreshold: 70
+  };
+  
+  private parser: HtaccessParser;
+  private seoChecker: SEOChecker | null = null;
+  
+  constructor() {
+    this.parser = new HtaccessParser();
+    
+    // Initialiser le SEO Checker si l'option est activée
+    if (this.config.generateSeoReport) {
+      this.seoChecker = new SEOChecker({
+        threshold: this.config.seoThreshold || 70
+      });
+    }
+  }
+  
+  /**
+   * Initialise l'agent
+   */
+  async initialize(): Promise<void> {
+    this.status = 'ready';
+    this.events.emit(AgentEvent.STATUS_CHANGED, this.status);
+  }
+  
+  /**
+   * Méthode principale d'analyse
+   */
+  async execute(context: AgentContext): Promise<AgentResult> {
+    this.status = 'busy';
+    this.events.emit(AgentEvent.STATUS_CHANGED, this.status);
+    this.events.emit(AgentEvent.STARTED, { context });
+    
+    try {
+      const htaccessFiles = context.sourceFiles || [];
+      
+      if (htaccessFiles.length === 0) {
+        throw new Error('Aucun fichier .htaccess fourni pour analyse');
+      }
+      
+      const outputDir = path.join(context.workspaceRoot || '.', 'output', 'htaccess-analysis');
+      
+      // Créer le répertoire de sortie s'il n'existe pas
+      if (!fs.existsSync(outputDir)) {
+        fs.mkdirSync(outputDir, { recursive: true });
+      }
+      
+      const results = [];
+      
+      for (const htaccessPath of htaccessFiles) {
+        // Vérifier l'existence du fichier
+        if (!fs.existsSync(htaccessPath)) {
+          console.warn(`Le fichier .htaccess n'existe pas: ${htaccessPath}`);
+          continue;
+        }
+        
+        console.log(`Analyse du fichier .htaccess: ${htaccessPath}`);
+        
+        const htaccessContent = fs.readFileSync(htaccessPath, 'utf8');
+        
+        // Analyser le fichier .htaccess
+        const parseResult = this.parser.parse(htaccessContent);
+        
+        // Extraire les redirections et les réécritures
+        const redirects = this.parser.extractRedirects(parseResult);
+        const rewrites = this.parser.extractRewriteRules(parseResult);
+        
+        // Générer la carte des routes
+        const routeMap = this.generateRouteMap(redirects, rewrites);
+        
+        // Sauvegarder les résultats
+        this.saveResults(path.basename(htaccessPath), redirects, routeMap, outputDir);
+        
+        // Générer un rapport SEO si demandé
+        let seoReport = null;
+        if (this.config.generateSeoReport && this.seoChecker) {
+          seoReport = await this.generateSEOReport(routeMap, outputDir);
+        }
+        
+        results.push({
+          file: htaccessPath,
+          redirects,
+          rewrites,
+          routeMap,
+          seoReport
+        });
+      }
+      
+      const result: AgentResult = {
+        success: true,
+        data: {
+          results,
+          outputDirectory: outputDir
+        },
+        metrics: {
+          duration: 100,
+          startTime: Date.now() - 100,
+          endTime: Date.now()
+        }
+      };
+      
+      this.status = 'ready';
+      this.events.emit(AgentEvent.STATUS_CHANGED, this.status);
+      this.events.emit(AgentEvent.COMPLETED, result);
+      
+      return result;
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      console.error('Erreur dans HtaccessRouterAnalyzer:', errorMessage);
+      
+      this.status = 'error';
+      this.events.emit(AgentEvent.STATUS_CHANGED, this.status);
+      
+      const errorResult: AgentResult = {
+        success: false,
+        error: error instanceof Error ? error : new Error(String(error)),
+        metrics: {
+          duration: 0,
+          startTime: Date.now(),
+          endTime: Date.now()
+        }
+      };
+      
+      this.events.emit(AgentEvent.FAILED, errorResult);
+      
+      return errorResult;
+    }
+  }
+  
+  /**
+   * Valide le contexte avant l'exécution
+   */
+  async validate(context: AgentContext): Promise<boolean> {
+    return !!context && !!context.jobId && Array.isArray(context.sourceFiles) && context.sourceFiles.length > 0;
+  }
+  
+  /**
+   * Arrête l'agent
+   */
+  async stop(): Promise<void> {
+    this.status = 'stopped';
+    this.events.emit(AgentEvent.STATUS_CHANGED, this.status);
+  }
+  
+  /**
+   * Récupère le statut actuel de l'agent
+   */
+  async getStatus(): Promise<{ status: AgentStatus, details?: any }> {
+    return { status: this.status };
+  }
+  
+  /**
+   * Vérifie l'état de santé de l'agent
+   */
+  async healthCheck(): Promise<boolean> {
+    return this.status === 'ready' || this.status === 'busy';
+  }
+  
+  /**
+   * Récupère les métriques de l'agent
+   */
+  async getMetrics(): Promise<Record<string, any>> {
+    return {
+      status: this.status,
+      uptime: process.uptime(),
+      memoryUsage: process.memoryUsage().heapUsed / 1024 / 1024, // MB
+      // Métriques spécifiques à l'analyseur Htaccess
+      analyzedFiles: 0,
+      redirectsDetected: 0,
+      rewritesDetected: 0,
+      seoIssuesFound: 0
+    };
+  }
+  
+  /**
+   * Génère une carte des routes à partir des redirections et réécritures
+   */
+  private generateRouteMap(redirects: Record<string, any>, rewrites: any[]): Record<string, any> {
+    const routeMap: Record<string, any> = {};
+
+    // Ajouter les redirections à la carte des routes
+    Object.entries(redirects).forEach(([url, config]) => {
+      routeMap[url] = {
+        type: 'redirect',
+        target: config.target,
+        statusCode: config.statusCode || 301,
+        source: 'htaccess'
+      };
+    });
+
+    // Ajouter les réécritures à la carte des routes
+    rewrites.forEach(rule => {
+      if (rule.source && rule.target) {
+        const sourcePattern = this.parser.normalizePattern(rule.source);
+        routeMap[sourcePattern] = {
+          type: 'rewrite',
+          target: rule.target,
+          conditions: rule.conditions,
+          flags: rule.flags,
+          source: 'htaccess'
+        };
+      }
+    });
+
+    // Ajouter les routes PHP courantes si l'option est activée
+    if (this.config.includeCommonPhp) {
+      this.addCommonPhpRoutes(routeMap);
+    }
+
+    return routeMap;
+  }
+
+  /**
+   * Ajoute les routes PHP courantes à la carte des routes
+   */
+  private addCommonPhpRoutes(routeMap: Record<string, any>): void {
+    // Liste non exhaustive des routes PHP courantes
+    const commonRoutes = [
+      '/index.php',
+      '/contact.php',
+      '/about.php',
+      '/login.php',
+      '/register.php',
+      '/profile.php',
+      '/admin.php',
+      '/search.php',
+      '/products.php',
+      '/cart.php',
+      '/checkout.php'
+    ];
+
+    commonRoutes.forEach(route => {
+      // N'ajouter que si la route n'existe pas déjà
+      if (!routeMap[route]) {
+        routeMap[route] = {
+          type: 'page',
+          source: 'common'
+        };
+      }
+    });
+  }
+
+  /**
+   * Sauvegarde les résultats de l'analyse
+   */
+  private saveResults(
+    fileName: string, 
+    redirects: Record<string, any>, 
+    routeMap: Record<string, any>, 
+    outputDir: string
+  ): void {
+    const filePrefix = fileName.replace('.htaccess', '');
+    
+    // Sauvegarder les redirections
+    fs.writeFileSync(
+      path.join(outputDir, `${filePrefix}_redirects.json`),
+      JSON.stringify(redirects, null, 2),
+      'utf8'
+    );
+    
+    // Sauvegarder la carte des routes
+    fs.writeFileSync(
+      path.join(outputDir, `${filePrefix}_route_map.json`),
+      JSON.stringify(routeMap, null, 2),
+      'utf8'
+    );
+    
+    // Générer un fichier de configuration pour Remix
+    const remixConfig = this.generateRemixConfig(routeMap);
+    fs.writeFileSync(
+      path.join(outputDir, `${filePrefix}_remix_routes.json`),
+      JSON.stringify(remixConfig, null, 2),
+      'utf8'
+    );
+
+    console.log(`Résultats sauvegardés dans le répertoire: ${outputDir}`);
+  }
+
+  /**
+   * Génère un fichier de configuration pour les routes Remix
+   */
+  private generateRemixConfig(routeMap: Record<string, any>): Record<string, any> {
+    const remixRoutes: Record<string, any> = {};
+    
+    Object.entries(routeMap).forEach(([url, config]) => {
+      // Convertir l'URL en format compatible avec Remix
+      const remixPath = url
+        .replace(/^\/?/, '/') // Assurer que l'URL commence par /
+        .replace(/\/$/, '') // Supprimer le / final
+        .replace(/\.php$/, '') // Supprimer l'extension .php
+        .replace(/\/index$/, '/') // Transformer /index en /
+        .replace(/\*/g, '$1'); // Remplacer les * par $1
+      
+      // Créer la configuration de route
+      if (config.type === 'redirect') {
+        remixRoutes[remixPath] = {
+          redirect: config.target,
+          status: config.statusCode || 301
+        };
+      } else if (config.type === 'rewrite') {
+        remixRoutes[remixPath] = {
+          file: `routes${remixPath}.tsx`,
+          // Pour les routes dynamiques, on pourrait ajouter ici la logique
+        };
+      } else {
+        remixRoutes[remixPath] = {
+          file: `routes${remixPath}.tsx`
+        };
+      }
+    });
+    
+    return remixRoutes;
+  }
+
+  /**
+   * Génère un rapport SEO pour les routes identifiées
+   */
+  private async generateSEOReport(
+    routeMap: Record<string, any>, 
+    outputDir: string
+  ): Promise<any> {
+    if (!this.seoChecker) return null;
+
+    console.log("Génération du rapport SEO...");
+    
+    const results: RouteAnalysisResult[] = [];
+    
+    // Analyser chaque route pour le SEO
+    for (const [url, config] of Object.entries(routeMap)) {
+      try {
+        // Ignorer certains types de routes pour l'analyse SEO
+        if (config.type === 'forbidden' || url.includes('admin')) {
+          continue;
+        }
+        
+        const seoResult = await this.seoChecker.analyzeRoute(url, config);
+        
+        results.push({
+          url,
+          type: config.type,
+          target: config.target,
+          statusCode: config.statusCode,
+          seoScore: seoResult.score,
+          issues: seoResult.issues
+        });
+      } catch (error) {
+        console.error(`Erreur lors de l'analyse SEO pour ${url}:`, error);
+      }
+    }
+    
+    // Calculer le score SEO global
+    const totalScore = results.reduce((sum, result) => sum + (result.seoScore || 0), 0);
+    const avgScore = results.length > 0 ? totalScore / results.length : 0;
+    
+    // Générer le rapport final
+    const seoReport = {
+      timestamp: new Date().toISOString(),
+      globalScore: avgScore,
+      totalRoutes: results.length,
+      results: results.sort((a, b) => (a.seoScore || 0) - (b.seoScore || 0)), // Tri par score croissant
+      summary: {
+        highPriorityIssues: results.filter(r => (r.seoScore || 0) < 50).length,
+        mediumPriorityIssues: results.filter(r => (r.seoScore || 0) >= 50 && (r.seoScore || 0) < 70).length,
+        lowPriorityIssues: results.filter(r => (r.seoScore || 0) >= 70 && (r.seoScore || 0) < 90).length,
+        goodScore: results.filter(r => (r.seoScore || 0) >= 90).length
+      }
+    };
+    
+    // Sauvegarder le rapport SEO
+    fs.writeFileSync(
+      path.join(outputDir, 'seo_report.json'),
+      JSON.stringify(seoReport, null, 2),
+      'utf8'
+    );
+    
+    // Générer un rapport SEO au format Markdown
+    this.generateSEOMarkdownReport(seoReport, outputDir);
+    
+    console.log("Rapport SEO généré avec succès");
+    
+    return seoReport;
+  }
+
+  /**
+   * Génère un rapport SEO au format Markdown
+   */
+  private generateSEOMarkdownReport(seoReport: any, outputDir: string): void {
+    let markdown = `# Rapport d'analyse SEO des routes\n\n`;
+    markdown += `Date: ${new Date().toLocaleDateString()}\n\n`;
+    
+    markdown += `## Résumé\n\n`;
+    markdown += `- Score global: ${seoReport.globalScore.toFixed(2)} / 100\n`;
+    markdown += `- Nombre total de routes: ${seoReport.totalRoutes}\n`;
+    markdown += `- Problèmes prioritaires: ${seoReport.summary.highPriorityIssues}\n`;
+    markdown += `- Problèmes moyens: ${seoReport.summary.mediumPriorityIssues}\n`;
+    markdown += `- Problèmes mineurs: ${seoReport.summary.lowPriorityIssues}\n`;
+    markdown += `- Routes optimisées: ${seoReport.summary.goodScore}\n\n`;
+    
+    markdown += `## Routes à optimiser en priorité\n\n`;
+    
+    // Afficher les 10 routes avec le score le plus bas
+    const priorityRoutes = seoReport.results.filter((r: RouteAnalysisResult) => (r.seoScore || 0) < 50).slice(0, 10);
+    
+    if (priorityRoutes.length > 0) {
+      priorityRoutes.forEach((route: RouteAnalysisResult) => {
+        markdown += `### ${route.url} (Score: ${route.seoScore})\n`;
+        markdown += `- Type: ${route.type}\n`;
+        if (route.target) markdown += `- Cible: ${route.target}\n`;
+        if (route.statusCode) markdown += `- Code HTTP: ${route.statusCode}\n`;
+        
+        if (route.issues && route.issues.length > 0) {
+          markdown += `- Problèmes identifiés:\n`;
+          route.issues.forEach((issue: string) => {
+            markdown += `  - ${issue}\n`;
+          });
+        }
+        
+        markdown += `\n`;
+      });
+    } else {
+      markdown += `Aucune route prioritaire n'a été identifiée.\n\n`;
+    }
+    
+    markdown += `## Recommandations générales\n\n`;
+    markdown += `1. Vérifier que toutes les redirections importantes utilisent des codes 301 (permanentes)\n`;
+    markdown += `2. Éviter les chaînes de redirections (redirections en cascade)\n`;
+    markdown += `3. S'assurer que les redirections préservent les paramètres d'URL importants\n`;
+    markdown += `4. Mettre à jour la sitemap.xml après chaque modification des redirections\n`;
+    markdown += `5. Vérifier régulièrement dans Google Search Console les erreurs liées aux redirections\n`;
+    
+    // Sauvegarder le rapport Markdown
+    fs.writeFileSync(
+      path.join(outputDir, 'seo_routes.audit.md'),
+      markdown,
+      'utf8'
+    );
+  }
+}
+
+// Exporter une instance par défaut
+export default new HtaccessRouterAnalyzer();

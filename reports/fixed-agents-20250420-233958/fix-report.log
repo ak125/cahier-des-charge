@@ -1,0 +1,106 @@
+2025-04-20 23:39:58 - 🔍 Recherche des agents problématiques...
+2025-04-20 23:39:58 - Vérification de l'agent: data-analyzer-v2 dans /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/data-analyzer
+2025-04-20 23:39:58 - ✅ L'agent data-analyzer-v2 semble correctement implémenté
+2025-04-20 23:39:58 - Vérification de l'agent: BusinessAgent dans /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/BusinessAgent
+2025-04-20 23:39:58 - ⚠️ L'agent BusinessAgent ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-20 23:39:58 -    - metadata: 0, events: 0, initialize: 0
+2025-04-20 23:39:58 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-20 23:39:58 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/BusinessAgent/BusinessAgent.ts.bak-20250420-233958
+2025-04-20 23:39:58 - Nom de classe détecté: BusinessAgent
+2025-04-20 23:39:58 - ✅ Agent BusinessAgent corrigé
+2025-04-20 23:39:58 - Vérification de l'agent: NotifierAgent dans /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/NotifierAgent
+2025-04-20 23:39:58 - ⚠️ L'agent NotifierAgent ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-20 23:39:58 -    - metadata: 0, events: 6, initialize: 2
+2025-04-20 23:39:58 -    - execute: 0, validate: 0, stop: 2, getStatus: 0
+2025-04-20 23:39:58 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/NotifierAgent/NotifierAgent.ts.bak-20250420-233958
+2025-04-20 23:39:58 - Nom de classe détecté: MCPNotifier
+2025-04-20 23:39:58 - Création du fichier index.ts pour exporter l'agent...
+2025-04-20 23:39:58 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/NotifierAgent/index.ts
+2025-04-20 23:39:58 - ✅ Agent NotifierAgent corrigé
+2025-04-20 23:39:58 - Vérification de l'agent: SupabaseOptimizationTracker dans /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/SupabaseOptimizationTracker
+2025-04-20 23:39:58 - ⚠️ L'agent SupabaseOptimizationTracker ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-20 23:39:58 -    - metadata: 0, events: 0, initialize: 0
+2025-04-20 23:39:58 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-20 23:39:58 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/SupabaseOptimizationTracker/SupabaseOptimizationTracker.ts.bak-20250420-233958
+2025-04-20 23:39:58 - Nom de classe détecté: SupabaseOptimizationTracker
+2025-04-20 23:39:58 - ✅ Agent SupabaseOptimizationTracker corrigé
+2025-04-20 23:39:58 - Vérification de l'agent: dependency-analyzer-v2 dans /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/dependency-analyzer
+2025-04-20 23:39:58 - ✅ L'agent dependency-analyzer-v2 semble correctement implémenté
+2025-04-20 23:39:58 - Vérification de l'agent: QualityAgent dans /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/QualityAgent
+2025-04-20 23:39:58 - ⚠️ L'agent QualityAgent ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-20 23:39:58 -    - metadata: 0, events: 0, initialize: 0
+2025-04-20 23:39:58 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-20 23:39:58 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/QualityAgent/QualityAgent.ts.bak-20250420-233958
+2025-04-20 23:39:58 - Nom de classe détecté: QualityAgent
+2025-04-20 23:39:58 - ✅ Agent QualityAgent corrigé
+2025-04-20 23:39:58 - Vérification de l'agent: ComponentGeneratorAgent dans /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/ComponentGeneratorAgent
+2025-04-20 23:39:58 - ✅ L'agent ComponentGeneratorAgent semble correctement implémenté
+2025-04-20 23:39:58 - Vérification de l'agent: ClassifierAgent dans /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/ClassifierAgent
+2025-04-20 23:39:58 - ⚠️ L'agent ClassifierAgent ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-20 23:39:58 -    - metadata: 0, events: 0, initialize: 0
+2025-04-20 23:39:58 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-20 23:39:58 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/ClassifierAgent/ClassifierAgent.ts.bak-20250420-233958
+2025-04-20 23:39:58 - Nom de classe détecté: TableClassifier
+2025-04-20 23:39:58 - Création du fichier index.ts pour exporter l'agent...
+2025-04-20 23:39:58 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/ClassifierAgent/index.ts
+2025-04-20 23:39:58 - ✅ Agent ClassifierAgent corrigé
+2025-04-20 23:39:58 - Vérification de l'agent: structure-analyzer-v2 dans /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/structure-analyzer
+2025-04-20 23:39:58 - ✅ L'agent structure-analyzer-v2 semble correctement implémenté
+2025-04-20 23:39:58 - Vérification de l'agent: PrismaGeneratorAgent dans /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/PrismaGeneratorAgent
+2025-04-20 23:39:59 - ✅ L'agent PrismaGeneratorAgent semble correctement implémenté
+2025-04-20 23:39:59 - Vérification de l'agent: BaseAgent dans /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/BaseAgent
+2025-04-20 23:39:59 - ✅ L'agent BaseAgent semble correctement implémenté
+2025-04-20 23:39:59 - Vérification de l'agent: qa-analyzer-v2 dans /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/qa-analyzer
+2025-04-20 23:39:59 - ✅ L'agent qa-analyzer-v2 semble correctement implémenté
+2025-04-20 23:39:59 - Vérification de l'agent: TableClassifierAgent dans /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/TableClassifierAgent
+2025-04-20 23:39:59 - ⚠️ L'agent TableClassifierAgent ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-20 23:39:59 -    - metadata: 1, events: 0, initialize: 0
+2025-04-20 23:39:59 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-20 23:39:59 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/TableClassifierAgent/TableClassifierAgent.ts.bak-20250420-233959
+2025-04-20 23:39:59 - Nom de classe détecté: TableClassifier
+2025-04-20 23:39:59 - ✅ Agent TableClassifierAgent corrigé
+2025-04-20 23:39:59 - Vérification de l'agent: agents dans /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/agents
+2025-04-20 23:39:59 - ✅ L'agent agents semble correctement implémenté
+2025-04-20 23:39:59 - Vérification de l'agent: NotificationServiceAgent dans /workspaces/cahier-des-charge/packages/mcp-agents/misc/NotificationServiceAgent
+2025-04-20 23:39:59 - ⚠️ L'agent NotificationServiceAgent ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-20 23:39:59 -    - metadata: 14, events: 0, initialize: 0
+2025-04-20 23:39:59 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-20 23:39:59 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/misc/NotificationServiceAgent/NotificationServiceAgent.ts.bak-20250420-233959
+2025-04-20 23:39:59 - Nom de classe détecté: NotificationService
+2025-04-20 23:39:59 - Création du fichier index.ts pour exporter l'agent...
+2025-04-20 23:39:59 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/misc/NotificationServiceAgent/index.ts
+2025-04-20 23:39:59 - ✅ Agent NotificationServiceAgent corrigé
+2025-04-20 23:39:59 - Vérification de l'agent: CanonicalSyncAgent dans /workspaces/cahier-des-charge/packages/mcp-agents/misc/CanonicalSyncAgent
+2025-04-20 23:39:59 - ⚠️ L'agent CanonicalSyncAgent ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-20 23:39:59 -    - metadata: 0, events: 0, initialize: 0
+2025-04-20 23:39:59 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-20 23:39:59 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/misc/CanonicalSyncAgent/CanonicalSyncAgent.ts.bak-20250420-233959
+2025-04-20 23:39:59 - Nom de classe détecté: CanonicalSyncAgent
+2025-04-20 23:39:59 - Création du fichier index.ts pour exporter l'agent...
+2025-04-20 23:39:59 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/misc/CanonicalSyncAgent/index.ts
+2025-04-20 23:39:59 - ✅ Agent CanonicalSyncAgent corrigé
+2025-04-20 23:39:59 - Vérification de l'agent: MetricsServiceAgent dans /workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/MetricsServiceAgent
+2025-04-20 23:39:59 - ⚠️ L'agent MetricsServiceAgent ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-20 23:39:59 -    - metadata: 0, events: 0, initialize: 0
+2025-04-20 23:39:59 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-20 23:39:59 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/MetricsServiceAgent/MetricsServiceAgent.ts.bak-20250420-233959
+2025-04-20 23:39:59 - Nom de classe détecté: MetricsService
+2025-04-20 23:39:59 - ✅ Agent MetricsServiceAgent corrigé
+2025-04-20 23:39:59 - 🎉 Correction terminée. 9 agents ont été corrigés.
+2025-04-20 23:39:59 - Vérification de la compilation TypeScript...
+2025-04-20 23:40:03 - ⚠️ Certains problèmes de compilation TypeScript persistent, voir /workspaces/cahier-des-charge/reports/fixed-agents-20250420-233958/tsc.log
+packages/mcp-agents/analyzers/MysqlAnalyzer+optimizerAgent/index.ts(6,23): error TS1005: ',' expected.
+packages/mcp-agents/analyzers/MysqlAnalyzer+optimizerAgent/index.ts(6,39): error TS1128: Declaration or statement expected.
+packages/mcp-agents/analyzers/MysqlAnalyzer+optimizerAgent/index.ts(6,41): error TS1434: Unexpected keyword or identifier.
+packages/mcp-agents/analyzers/MysqlAnalyzer+optimizerAgent/index.ts(9,16): error TS1005: ',' expected.
+packages/mcp-agents/analyzers/MysqlAnalyzer+optimizerAgent/index.ts(10,1): error TS1109: Expression expected.
+packages/mcp-agents/analyzers/PhpAnalyzer.workerAgent/index.ts(6,21): error TS1005: ',' expected.
+packages/mcp-agents/analyzers/PhpAnalyzer.workerAgent/index.ts(9,14): error TS1005: ',' expected.
+packages/mcp-agents/analyzers/SqlAnalyzer+prismaBuilderAgent/index.ts(6,21): error TS1005: ',' expected.
+packages/mcp-agents/analyzers/SqlAnalyzer+prismaBuilderAgent/index.ts(6,41): error TS1128: Declaration or statement expected.
+packages/mcp-agents/analyzers/SqlAnalyzer+prismaBuilderAgent/index.ts(6,43): error TS1434: Unexpected keyword or identifier.
+2025-04-20 23:40:03 - Exécution du script CI pour vérifier l'état des agents...
+2025-04-20 23:40:21 - ⚠️ Le script CI a rencontré des problèmes, voir /workspaces/cahier-des-charge/reports/fixed-agents-20250420-233958/ci.log
+2025-04-20 23:40:21 - Mise à jour des imports d'agents...
+2025-04-20 23:41:37 - ✅ Imports mis à jour avec succès
+2025-04-20 23:41:37 - ✅ Script terminé. Consultez le rapport détaillé dans /workspaces/cahier-des-charge/reports/fixed-agents-20250420-233958/fix-report.log

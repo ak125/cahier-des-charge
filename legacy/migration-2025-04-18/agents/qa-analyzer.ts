@@ -1,0 +1,1 @@
+../src/business/analyzers/qa-analyzer/qa-analyzer.ts

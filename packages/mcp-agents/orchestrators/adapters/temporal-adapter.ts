@@ -1,1 +1,0 @@
-../../../../src/orchestration/orchestrators/temporal-adapter/temporal-adapter.ts

@@ -70,7 +70,7 @@ export async function sendTeamsNotification(
           "@type": "OpenUri",
           "name": "Voir le Projet",
           "targets": [
-            { "os": "default", "uri": "https://github.com/votre-organisation/votre-projet" }
+            { "os": "default", "uri": "https:/DoDoDoDoDoDotgithub.com/votre-organisation/votre-projet" }
           ]
         }
       ]

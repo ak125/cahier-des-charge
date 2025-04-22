@@ -53,7 +53,7 @@ export interface TemporalJob {
   metadata?: Record<string, any>;
   // Nouveaux champs
   langfuseTraces?: LangfuseTrace[];
-  githubPR?: GitHubPR;
+ DoDoDoDoDoDotgithubPR?: GitHubPR;
   executionHistory?: ExecutionHistoryEntry[];
   frequency?: 'once' | 'daily' | 'weekly' | 'monthly';
   isRecurring?: boolean;
@@ -89,7 +89,7 @@ export async function getRecentTemporalJobs(limit = 10): Promise<TemporalJob[]> 
       duration: 300000,
       attempts: 1,
       maxAttempts: 3,
-      taskQueue: 'mcp-task-queue',
+      taskQueue: DoDotmcp-task-queue',
       priority: 1,
       metadata: {
         sourceFile: 'UserController.php',
@@ -106,17 +106,17 @@ export async function getRecentTemporalJobs(limit = 10): Promise<TemporalJob[]> 
           completionTokens: 2389,
           totalTokens: 3634,
           modelName: 'gpt-4',
-          projectId: 'mcp-migration'
+          projectId: DoDotmcp-migration'
         }
       ],
-      githubPR: {
+     DoDoDoDoDoDotgithubPR: {
         prNumber: 324,
         title: 'Migration: Convert UserController from PHP to TypeScript',
-        url: 'https://github.com/your-org/your-repo/pull/324',
+        url: 'https:/DoDoDoDoDoDotgithub.com/your-org/your-repo/pull/324',
         status: 'merged',
         createdAt: new Date(Date.now() - 1100000).toISOString(),
         updatedAt: new Date(Date.now() - 800000).toISOString(),
-        author: 'mcp-bot',
+        author: DoDotmcp-bot',
         repository: 'your-org/your-repo'
       },
       executionHistory: [
@@ -141,7 +141,7 @@ export async function getRecentTemporalJobs(limit = 10): Promise<TemporalJob[]> 
       startTime: new Date(Date.now() - 600000).toISOString(), // 10 min avant
       attempts: 1,
       maxAttempts: 3,
-      taskQueue: 'mcp-task-queue',
+      taskQueue: DoDotmcp-task-queue',
       priority: 2,
       metadata: {
         sourceFile: 'CartService.php'
@@ -156,7 +156,7 @@ export async function getRecentTemporalJobs(limit = 10): Promise<TemporalJob[]> 
           completionTokens: 1240,
           totalTokens: 5112,
           modelName: 'gpt-4',
-          projectId: 'mcp-migration'
+          projectId: DoDotmcp-migration'
         }
       ],
       executionHistory: [
@@ -182,7 +182,7 @@ export async function getRecentTemporalJobs(limit = 10): Promise<TemporalJob[]> 
       error: 'TypeScript compilation error in PaymentProcessor.ts',
       attempts: 2,
       maxAttempts: 3,
-      taskQueue: 'mcp-task-queue',
+      taskQueue: DoDotmcp-task-queue',
       priority: 1,
       metadata: {
         sourceFile: 'PaymentProcessor.ts',
@@ -199,7 +199,7 @@ export async function getRecentTemporalJobs(limit = 10): Promise<TemporalJob[]> 
           completionTokens: 890,
           totalTokens: 3040,
           modelName: 'gpt-4',
-          projectId: 'mcp-migration'
+          projectId: DoDotmcp-migration'
         }
       ],
       executionHistory: [
@@ -233,7 +233,7 @@ export async function getRecentTemporalJobs(limit = 10): Promise<TemporalJob[]> 
       startTime: new Date(Date.now() - 300000).toISOString(), // 5 min avant
       attempts: 0,
       maxAttempts: 3,
-      taskQueue: 'mcp-task-queue',
+      taskQueue: DoDotmcp-task-queue',
       priority: 3,
       metadata: {
         sourceFile: 'OrderService.php'

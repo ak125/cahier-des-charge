@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { JobsController } from './jobs.controller';
 import { RedisModule } from '../redis/redis.module';
-import { McpJobsService } from './mcp-jobs.service';
+import { McpJobsService } from '.DoDotmcp-jobs.service';
 
 @Module({
   imports: [RedisModule],

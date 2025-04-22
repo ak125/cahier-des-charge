@@ -1,0 +1,239 @@
+packages/mcp-agents/types/index.ts(127,3): error TS1434: Unexpected keyword or identifier.
+packages/mcp-agents/types/index.ts(127,28): error TS1109: Expression expected.
+packages/mcp-agents/types/index.ts(127,50): error TS1005: ';' expected.
+packages/mcp-agents/types/index.ts(127,64): error TS1109: Expression expected.
+packages/mcp-agents/types/index.ts(129,12): error TS1005: ',' expected.
+packages/mcp-agents/types/index.ts(129,52): error TS1005: ',' expected.
+packages/mcp-agents/types/index.ts(135,12): error TS1005: ';' expected.
+packages/mcp-agents/types/index.ts(135,14): error TS1434: Unexpected keyword or identifier.
+packages/mcp-agents/types/index.ts(142,3): error TS1434: Unexpected keyword or identifier.
+packages/mcp-agents/types/index.ts(142,19): error TS1005: ';' expected.
+packages/mcp-agents/types/index.ts(142,33): error TS1109: Expression expected.
+packages/mcp-agents/types/index.ts(143,12): error TS1005: ',' expected.
+packages/mcp-agents/types/index.ts(143,43): error TS1005: ',' expected.
+packages/mcp-agents/types/index.ts(149,16): error TS1005: ';' expected.
+packages/mcp-agents/types/index.ts(150,12): error TS1005: ':' expected.
+packages/mcp-agents/types/index.ts(155,6): error TS1005: ',' expected.
+packages/mcp-agents/types/index.ts(161,3): error TS1434: Unexpected keyword or identifier.
+packages/mcp-agents/types/index.ts(161,19): error TS1005: ';' expected.
+packages/mcp-agents/types/index.ts(162,12): error TS1005: ':' expected.
+packages/mcp-agents/types/index.ts(165,6): error TS1005: ',' expected.
+packages/mcp-agents/types/index.ts(171,3): error TS1128: Declaration or statement expected.
+packages/mcp-agents/types/index.ts(179,3): error TS1128: Declaration or statement expected.
+packages/mcp-agents/types/index.ts(179,22): error TS1005: ';' expected.
+packages/mcp-agents/types/index.ts(179,24): error TS1434: Unexpected keyword or identifier.
+packages/mcp-agents/types/index.ts(186,3): error TS1128: Declaration or statement expected.
+packages/mcp-agents/types/index.ts(186,27): error TS1005: ';' expected.
+packages/mcp-agents/types/index.ts(186,36): error TS1011: An element access expression should take an argument.
+packages/mcp-agents/types/index.ts(186,38): error TS1005: ';' expected.
+packages/mcp-agents/types/index.ts(193,3): error TS1128: Declaration or statement expected.
+packages/mcp-agents/types/index.ts(193,10): error TS1434: Unexpected keyword or identifier.
+packages/mcp-agents/types/index.ts(193,26): error TS1005: ';' expected.
+packages/mcp-agents/types/index.ts(193,40): error TS1109: Expression expected.
+packages/mcp-agents/types/index.ts(194,9): error TS1005: ':' expected.
+packages/mcp-agents/types/index.ts(195,11): error TS1005: ':' expected.
+packages/mcp-agents/types/index.ts(195,72): error TS1005: ',' expected.
+packages/mcp-agents/types/index.ts(198,12): error TS1359: Identifier expected. 'const' is a reserved word that cannot be used here.
+packages/mcp-agents/types/index.ts(198,18): error TS1005: ',' expected.
+packages/mcp-agents/types/index.ts(198,35): error TS1005: ',' expected.
+packages/mcp-agents/types/index.ts(198,38): error TS1005: ',' expected.
+packages/mcp-agents/types/index.ts(198,44): error TS1005: ',' expected.
+packages/mcp-agents/types/index.ts(198,73): error TS1005: ',' expected.
+packages/mcp-agents/types/index.ts(198,75): error TS1136: Property assignment expected.
+packages/mcp-agents/types/index.ts(205,5): error TS1128: Declaration or statement expected.
+packages/mcp-agents/types/index.ts(205,7): error TS1005: 'try' expected.
+packages/mcp-agents/types/index.ts(211,3): error TS1128: Declaration or statement expected.
+packages/mcp-agents/types/index.ts(216,3): error TS1128: Declaration or statement expected.
+packages/mcp-agents/types/index.ts(216,10): error TS1434: Unexpected keyword or identifier.
+packages/mcp-agents/types/index.ts(216,25): error TS1005: ';' expected.
+packages/mcp-agents/types/index.ts(216,39): error TS1109: Expression expected.
+packages/mcp-agents/types/index.ts(217,9): error TS1005: ':' expected.
+packages/mcp-agents/types/index.ts(218,11): error TS1005: ':' expected.
+packages/mcp-agents/types/index.ts(218,90): error TS1005: ',' expected.
+packages/mcp-agents/types/index.ts(221,13): error TS1005: ':' expected.
+packages/mcp-agents/types/index.ts(221,64): error TS1005: ',' expected.
+packages/mcp-agents/types/index.ts(224,13): error TS1005: ':' expected.
+packages/mcp-agents/types/index.ts(224,58): error TS1005: ',' expected.
+packages/mcp-agents/types/index.ts(227,13): error TS1005: ':' expected.
+packages/mcp-agents/types/index.ts(227,42): error TS1005: ',' expected.
+packages/mcp-agents/types/index.ts(230,13): error TS1005: ':' expected.
+packages/mcp-agents/types/index.ts(230,45): error TS1005: ',' expected.
+packages/mcp-agents/types/index.ts(231,13): error TS1005: ':' expected.
+packages/mcp-agents/types/index.ts(231,56): error TS1005: ',' expected.
+packages/mcp-agents/types/index.ts(234,13): error TS1005: ':' expected.
+packages/mcp-agents/types/index.ts(234,52): error TS1005: ',' expected.
+packages/mcp-agents/types/index.ts(237,13): error TS1005: ':' expected.
+packages/mcp-agents/types/index.ts(243,8): error TS1005: ',' expected.
+packages/mcp-agents/types/index.ts(246,13): error TS1005: ':' expected.
+packages/mcp-agents/types/index.ts(253,8): error TS1005: ',' expected.
+packages/mcp-agents/types/index.ts(256,13): error TS1005: ':' expected.
+packages/mcp-agents/types/index.ts(256,49): error TS1005: ',' expected.
+packages/mcp-agents/types/index.ts(259,13): error TS1005: ':' expected.
+packages/mcp-agents/types/index.ts(259,117): error TS1005: ',' expected.
+packages/mcp-agents/types/index.ts(262,11): error TS1005: ':' expected.
+packages/mcp-agents/types/index.ts(275,8): error TS1005: ',' expected.
+packages/mcp-agents/types/index.ts(278,15): error TS1005: ',' expected.
+packages/mcp-agents/types/index.ts(278,24): error TS1005: ',' expected.
+packages/mcp-agents/types/index.ts(278,26): error TS1136: Property assignment expected.
+packages/mcp-agents/types/index.ts(318,5): error TS1128: Declaration or statement expected.
+packages/mcp-agents/types/index.ts(318,7): error TS1005: 'try' expected.
+packages/mcp-agents/types/index.ts(322,3): error TS1128: Declaration or statement expected.
+packages/mcp-agents/types/index.ts(326,3): error TS1128: Declaration or statement expected.
+packages/mcp-agents/types/index.ts(326,37): error TS1005: ',' expected.
+packages/mcp-agents/types/index.ts(326,46): error TS1005: ';' expected.
+packages/mcp-agents/types/index.ts(326,55): error TS1011: An element access expression should take an argument.
+packages/mcp-agents/types/index.ts(326,57): error TS1005: ';' expected.
+packages/mcp-agents/types/index.ts(392,3): error TS1128: Declaration or statement expected.
+packages/mcp-agents/types/index.ts(392,34): error TS1005: ',' expected.
+packages/mcp-agents/types/index.ts(392,43): error TS1011: An element access expression should take an argument.
+packages/mcp-agents/types/index.ts(392,45): error TS1005: ';' expected.
+packages/mcp-agents/types/index.ts(393,34): error TS1011: An element access expression should take an argument.
+packages/mcp-agents/types/index.ts(394,18): error TS1005: ';' expected.
+packages/mcp-agents/types/index.ts(394,34): error TS1011: An element access expression should take an argument.
+packages/mcp-agents/types/index.ts(449,3): error TS1128: Declaration or statement expected.
+packages/mcp-agents/types/index.ts(449,36): error TS1005: ',' expected.
+packages/mcp-agents/types/index.ts(449,45): error TS1011: An element access expression should take an argument.
+packages/mcp-agents/types/index.ts(449,47): error TS1005: ';' expected.
+packages/mcp-agents/types/index.ts(450,34): error TS1011: An element access expression should take an argument.
+packages/mcp-agents/types/index.ts(451,18): error TS1005: ';' expected.
+packages/mcp-agents/types/index.ts(451,34): error TS1011: An element access expression should take an argument.
+packages/mcp-agents/types/index.ts(549,3): error TS1128: Declaration or statement expected.
+packages/mcp-agents/types/index.ts(549,34): error TS1005: ',' expected.
+packages/mcp-agents/types/index.ts(549,49): error TS1005: ',' expected.
+packages/mcp-agents/types/index.ts(549,74): error TS1005: ';' expected.
+packages/mcp-agents/types/index.ts(549,95): error TS1005: ';' expected.
+packages/mcp-agents/types/index.ts(564,3): error TS1128: Declaration or statement expected.
+packages/mcp-agents/types/index.ts(564,24): error TS1005: ',' expected.
+packages/mcp-agents/types/index.ts(564,33): error TS1005: ';' expected.
+packages/mcp-agents/types/index.ts(564,35): error TS1434: Unexpected keyword or identifier.
+packages/mcp-agents/types/index.ts(568,3): error TS1128: Declaration or statement expected.
+packages/mcp-agents/types/index.ts(568,37): error TS1005: ',' expected.
+packages/mcp-agents/types/index.ts(568,54): error TS1005: ',' expected.
+packages/mcp-agents/types/index.ts(568,63): error TS1005: ';' expected.
+packages/mcp-agents/types/index.ts(568,65): error TS1434: Unexpected keyword or identifier.
+packages/mcp-agents/types/index.ts(597,3): error TS1128: Declaration or statement expected.
+packages/mcp-agents/types/index.ts(597,23): error TS1005: ';' expected.
+packages/mcp-agents/types/index.ts(597,33): error TS1011: An element access expression should take an argument.
+packages/mcp-agents/types/index.ts(597,35): error TS1005: ';' expected.
+packages/mcp-agents/types/index.ts(639,3): error TS1128: Declaration or statement expected.
+packages/mcp-agents/types/index.ts(639,30): error TS1005: ',' expected.
+packages/mcp-agents/types/index.ts(639,39): error TS1005: ';' expected.
+packages/mcp-agents/types/index.ts(640,11): error TS1005: ':' expected.
+packages/mcp-agents/types/index.ts(640,19): error TS1005: ',' expected.
+packages/mcp-agents/types/index.ts(640,44): error TS1005: '(' expected.
+packages/mcp-agents/types/index.ts(640,46): error TS1136: Property assignment expected.
+packages/mcp-agents/types/index.ts(649,3): error TS1128: Declaration or statement expected.
+packages/mcp-agents/types/index.ts(651,3): error TS1128: Declaration or statement expected.
+packages/mcp-agents/types/index.ts(651,25): error TS1005: ';' expected.
+packages/mcp-agents/types/index.ts(651,35): error TS1011: An element access expression should take an argument.
+packages/mcp-agents/types/index.ts(651,37): error TS1005: ';' expected.
+packages/mcp-agents/types/index.ts(717,3): error TS1128: Declaration or statement expected.
+packages/mcp-agents/types/index.ts(717,30): error TS1005: ';' expected.
+packages/mcp-agents/types/index.ts(717,40): error TS1011: An element access expression should take an argument.
+packages/mcp-agents/types/index.ts(717,42): error TS1005: ';' expected.
+packages/mcp-agents/types/index.ts(758,3): error TS1128: Declaration or statement expected.
+packages/mcp-agents/types/index.ts(758,28): error TS1005: ';' expected.
+packages/mcp-agents/types/index.ts(758,38): error TS1011: An element access expression should take an argument.
+packages/mcp-agents/types/index.ts(758,40): error TS1005: ';' expected.
+packages/mcp-agents/types/index.ts(825,3): error TS1128: Declaration or statement expected.
+packages/mcp-agents/types/index.ts(826,18): error TS1005: ',' expected.
+packages/mcp-agents/types/index.ts(826,34): error TS1011: An element access expression should take an argument.
+packages/mcp-agents/types/index.ts(827,14): error TS1005: ',' expected.
+packages/mcp-agents/types/index.ts(827,24): error TS1011: An element access expression should take an argument.
+packages/mcp-agents/types/index.ts(828,15): error TS1005: ',' expected.
+packages/mcp-agents/types/index.ts(828,25): error TS1011: An element access expression should take an argument.
+packages/mcp-agents/types/index.ts(829,21): error TS1005: ',' expected.
+packages/mcp-agents/types/index.ts(829,31): error TS1011: An element access expression should take an argument.
+packages/mcp-agents/types/index.ts(830,19): error TS1005: ',' expected.
+packages/mcp-agents/types/index.ts(830,29): error TS1011: An element access expression should take an argument.
+packages/mcp-agents/types/index.ts(831,4): error TS1005: ';' expected.
+packages/mcp-agents/types/index.ts(831,13): error TS1011: An element access expression should take an argument.
+packages/mcp-agents/types/index.ts(831,15): error TS1005: ';' expected.
+packages/mcp-agents/types/index.ts(862,3): error TS1128: Declaration or statement expected.
+packages/mcp-agents/types/index.ts(863,18): error TS1005: ',' expected.
+packages/mcp-agents/types/index.ts(863,34): error TS1011: An element access expression should take an argument.
+packages/mcp-agents/types/index.ts(864,18): error TS1005: ',' expected.
+packages/mcp-agents/types/index.ts(864,34): error TS1011: An element access expression should take an argument.
+packages/mcp-agents/types/index.ts(865,14): error TS1005: ',' expected.
+packages/mcp-agents/types/index.ts(865,24): error TS1011: An element access expression should take an argument.
+packages/mcp-agents/types/index.ts(866,15): error TS1005: ',' expected.
+packages/mcp-agents/types/index.ts(866,25): error TS1011: An element access expression should take an argument.
+packages/mcp-agents/types/index.ts(867,21): error TS1005: ',' expected.
+packages/mcp-agents/types/index.ts(867,31): error TS1011: An element access expression should take an argument.
+packages/mcp-agents/types/index.ts(868,19): error TS1005: ',' expected.
+packages/mcp-agents/types/index.ts(868,29): error TS1011: An element access expression should take an argument.
+packages/mcp-agents/types/index.ts(869,4): error TS1005: ';' expected.
+packages/mcp-agents/types/index.ts(869,6): error TS1434: Unexpected keyword or identifier.
+packages/mcp-agents/types/index.ts(900,3): error TS1128: Declaration or statement expected.
+packages/mcp-agents/types/index.ts(900,32): error TS1005: ',' expected.
+packages/mcp-agents/types/index.ts(900,41): error TS1005: ';' expected.
+packages/mcp-agents/types/index.ts(900,71): error TS1005: ';' expected.
+packages/mcp-agents/types/index.ts(913,3): error TS1128: Declaration or statement expected.
+packages/mcp-agents/types/index.ts(914,11): error TS1005: ',' expected.
+packages/mcp-agents/types/index.ts(915,18): error TS1005: ',' expected.
+packages/mcp-agents/types/index.ts(915,51): error TS1011: An element access expression should take an argument.
+packages/mcp-agents/types/index.ts(915,83): error TS1011: An element access expression should take an argument.
+packages/mcp-agents/types/index.ts(916,14): error TS1005: ',' expected.
+packages/mcp-agents/types/index.ts(916,24): error TS1011: An element access expression should take an argument.
+packages/mcp-agents/types/index.ts(917,15): error TS1005: ',' expected.
+packages/mcp-agents/types/index.ts(917,25): error TS1011: An element access expression should take an argument.
+packages/mcp-agents/types/index.ts(918,21): error TS1005: ',' expected.
+packages/mcp-agents/types/index.ts(918,31): error TS1011: An element access expression should take an argument.
+packages/mcp-agents/types/index.ts(919,19): error TS1005: ',' expected.
+packages/mcp-agents/types/index.ts(919,29): error TS1011: An element access expression should take an argument.
+packages/mcp-agents/types/index.ts(920,4): error TS1005: ';' expected.
+packages/mcp-agents/types/index.ts(920,13): error TS1011: An element access expression should take an argument.
+packages/mcp-agents/types/index.ts(920,15): error TS1005: ';' expected.
+packages/mcp-agents/types/index.ts(975,3): error TS1128: Declaration or statement expected.
+packages/mcp-agents/types/index.ts(975,11): error TS1434: Unexpected keyword or identifier.
+packages/mcp-agents/types/index.ts(975,33): error TS1005: ';' expected.
+packages/mcp-agents/types/index.ts(975,47): error TS1109: Expression expected.
+packages/mcp-agents/types/index.ts(976,9): error TS1003: Identifier expected.
+packages/mcp-agents/types/index.ts(976,14): error TS1005: ',' expected.
+packages/mcp-agents/types/index.ts(976,41): error TS1005: ',' expected.
+packages/mcp-agents/types/index.ts(976,43): error TS1136: Property assignment expected.
+packages/mcp-agents/types/index.ts(1008,3): error TS1128: Declaration or statement expected.
+packages/mcp-agents/types/index.ts(1013,3): error TS1128: Declaration or statement expected.
+packages/mcp-agents/types/index.ts(1013,11): error TS1434: Unexpected keyword or identifier.
+packages/mcp-agents/types/index.ts(1013,33): error TS1005: ';' expected.
+packages/mcp-agents/types/index.ts(1014,9): error TS1005: ':' expected.
+packages/mcp-agents/types/index.ts(1015,11): error TS1003: Identifier expected.
+packages/mcp-agents/types/index.ts(1015,16): error TS1005: ',' expected.
+packages/mcp-agents/types/index.ts(1015,25): error TS1005: ',' expected.
+packages/mcp-agents/types/index.ts(1015,27): error TS1136: Property assignment expected.
+packages/mcp-agents/types/index.ts(1133,5): error TS1128: Declaration or statement expected.
+packages/mcp-agents/types/index.ts(1133,7): error TS1005: 'try' expected.
+packages/mcp-agents/types/index.ts(1137,3): error TS1128: Declaration or statement expected.
+packages/mcp-agents/types/index.ts(1142,3): error TS1128: Declaration or statement expected.
+packages/mcp-agents/types/index.ts(1142,11): error TS1434: Unexpected keyword or identifier.
+packages/mcp-agents/types/index.ts(1142,34): error TS1005: ';' expected.
+packages/mcp-agents/types/index.ts(1142,48): error TS1109: Expression expected.
+packages/mcp-agents/types/index.ts(1143,9): error TS1003: Identifier expected.
+packages/mcp-agents/types/index.ts(1143,14): error TS1005: ',' expected.
+packages/mcp-agents/types/index.ts(1143,23): error TS1005: ',' expected.
+packages/mcp-agents/types/index.ts(1143,25): error TS1136: Property assignment expected.
+packages/mcp-agents/types/index.ts(1171,3): error TS1128: Declaration or statement expected.
+packages/mcp-agents/types/index.ts(1176,3): error TS1128: Declaration or statement expected.
+packages/mcp-agents/types/index.ts(1176,11): error TS1434: Unexpected keyword or identifier.
+packages/mcp-agents/types/index.ts(1176,30): error TS1005: ';' expected.
+packages/mcp-agents/types/index.ts(1176,44): error TS1109: Expression expected.
+packages/mcp-agents/types/index.ts(1177,9): error TS1003: Identifier expected.
+packages/mcp-agents/types/index.ts(1177,14): error TS1005: ',' expected.
+packages/mcp-agents/types/index.ts(1177,97): error TS1005: ',' expected.
+packages/mcp-agents/types/index.ts(1177,99): error TS1136: Property assignment expected.
+packages/mcp-agents/types/index.ts(1253,3): error TS1128: Declaration or statement expected.
+packages/mcp-agents/types/index.ts(1258,3): error TS1128: Declaration or statement expected.
+packages/mcp-agents/types/index.ts(1258,11): error TS1434: Unexpected keyword or identifier.
+packages/mcp-agents/types/index.ts(1258,31): error TS1005: ';' expected.
+packages/mcp-agents/types/index.ts(1258,45): error TS1109: Expression expected.
+packages/mcp-agents/types/index.ts(1259,9): error TS1003: Identifier expected.
+packages/mcp-agents/types/index.ts(1259,14): error TS1005: ',' expected.
+packages/mcp-agents/types/index.ts(1259,60): error TS1005: ',' expected.
+packages/mcp-agents/types/index.ts(1259,62): error TS1136: Property assignment expected.
+packages/mcp-agents/types/index.ts(1274,3): error TS1128: Declaration or statement expected.
+packages/mcp-agents/types/index.ts(1279,3): error TS1128: Declaration or statement expected.
+packages/mcp-agents/types/index.ts(1279,10): error TS1434: Unexpected keyword or identifier.
+packages/mcp-agents/types/index.ts(1279,25): error TS1005: ';' expected.
+packages/mcp-agents/types/index.ts(1281,12): error TS1005: ':' expected.
+packages/mcp-agents/types/index.ts(1281,27): error TS1005: ',' expected.
+packages/mcp-agents/types/index.ts(1283,1): error TS1128: Declaration or statement expected.

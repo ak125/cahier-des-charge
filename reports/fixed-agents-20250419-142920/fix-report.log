@@ -1,0 +1,1817 @@
+2025-04-19 14:29:20 - 🔍 Recherche des agents problématiques...
+2025-04-19 14:29:20 - Vérification de l'agent: abstract-analyzer-agent dans /workspaces/cahier-des-charge/packages/mcp-agents/analyzers
+2025-04-19 14:29:20 - ⚠️ L'agent abstract-analyzer-agent ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:20 -    - metadata: 2, events: 0, initialize: 2
+2025-04-19 14:29:20 -    - execute: 0, validate: 0, stop: 0, getStatus: 1
+2025-04-19 14:29:20 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/abstract-analyzer-agent.ts.bak-20250419-142920
+2025-04-19 14:29:20 - Nom de classe détecté: class
+2025-04-19 14:29:20 - ✅ Agent abstract-analyzer-agent corrigé
+2025-04-19 14:29:20 - Vérification de l'agent: DataAgent dans /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/data-analyzer
+2025-04-19 14:29:20 - ⚠️ L'agent DataAgent ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:20 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:20 -    - execute: 2, validate: 2, stop: 0, getStatus: 0
+2025-04-19 14:29:20 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/data-analyzer/DataAgent.ts.bak-20250419-142920
+2025-04-19 14:29:20 - Nom de classe détecté: DataAgent
+2025-04-19 14:29:20 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:20 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/data-analyzer/index.ts
+2025-04-19 14:29:20 - ✅ Agent DataAgent corrigé
+2025-04-19 14:29:20 - Vérification de l'agent: data-analyzer-v2 dans /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/data-analyzer
+2025-04-19 14:29:20 - ⚠️ L'agent data-analyzer-v2 ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:20 -    - metadata: 3, events: 0, initialize: 0
+2025-04-19 14:29:20 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:20 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/data-analyzer/data-analyzer-v2.ts.bak-20250419-142920
+2025-04-19 14:29:20 - Nom de classe détecté: DataAnalyzerAgent
+2025-04-19 14:29:20 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:20 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/data-analyzer/index.ts
+2025-04-19 14:29:20 - ✅ Agent data-analyzer-v2 corrigé
+2025-04-19 14:29:20 - Vérification de l'agent: DataAgent dans /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/data-analyzer/DataAgent
+2025-04-19 14:29:20 - ⚠️ L'agent DataAgent ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:20 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:20 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:20 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/data-analyzer/DataAgent/DataAgent.ts.bak-20250419-142920
+2025-04-19 14:29:20 - Nom de classe détecté: DataAgent
+2025-04-19 14:29:20 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:20 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/data-analyzer/DataAgent/index.ts
+2025-04-19 14:29:20 - ✅ Agent DataAgent corrigé
+2025-04-19 14:29:20 - Vérification de l'agent: DependencyAgent dans /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/dependency-analyzer
+2025-04-19 14:29:20 - ⚠️ L'agent DependencyAgent ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:20 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:20 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:20 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/dependency-analyzer/DependencyAgent.ts.bak-20250419-142920
+2025-04-19 14:29:20 - Nom de classe détecté: DependencyAgent
+2025-04-19 14:29:20 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:20 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/dependency-analyzer/index.ts
+2025-04-19 14:29:20 - ✅ Agent DependencyAgent corrigé
+2025-04-19 14:29:20 - Vérification de l'agent: dependency-analyzer-v2 dans /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/dependency-analyzer
+2025-04-19 14:29:20 - ⚠️ L'agent dependency-analyzer-v2 ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:20 -    - metadata: 5, events: 0, initialize: 0
+2025-04-19 14:29:20 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:20 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/dependency-analyzer/dependency-analyzer-v2.ts.bak-20250419-142920
+2025-04-19 14:29:20 - Nom de classe détecté: DependencyAnalyzerAgent
+2025-04-19 14:29:20 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:20 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/dependency-analyzer/index.ts
+2025-04-19 14:29:20 - ✅ Agent dependency-analyzer-v2 corrigé
+2025-04-19 14:29:20 - Vérification de l'agent: DependencyAgent dans /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/dependency-analyzer/DependencyAgent
+2025-04-19 14:29:20 - ⚠️ L'agent DependencyAgent ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:20 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:20 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:20 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/dependency-analyzer/DependencyAgent/DependencyAgent.ts.bak-20250419-142920
+2025-04-19 14:29:20 - Nom de classe détecté: DependencyAgent
+2025-04-19 14:29:20 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:20 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/dependency-analyzer/DependencyAgent/index.ts
+2025-04-19 14:29:20 - ✅ Agent DependencyAgent corrigé
+2025-04-19 14:29:20 - Vérification de l'agent: index dans /workspaces/cahier-des-charge/packages/mcp-agents/analyzers
+2025-04-19 14:29:20 - ⚠️ L'agent index ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:20 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:20 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:20 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/index.ts.bak-20250419-142920
+2025-04-19 14:29:20 - Nom de classe détecté: QAAnalyzer
+2025-04-19 14:29:20 - ✅ Agent index corrigé
+2025-04-19 14:29:20 - Vérification de l'agent: abstract-analyzer dans /workspaces/cahier-des-charge/packages/mcp-agents/analyzers
+2025-04-19 14:29:20 - ⚠️ L'agent abstract-analyzer ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:20 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:20 -    - execute: 0, validate: 0, stop: 0, getStatus: 1
+2025-04-19 14:29:20 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/abstract-analyzer.ts.bak-20250419-142920
+2025-04-19 14:29:20 - Nom de classe détecté: class
+2025-04-19 14:29:20 - ✅ Agent abstract-analyzer corrigé
+2025-04-19 14:29:20 - Vérification de l'agent: php-analyzer-agent dans /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/php-analyzer
+2025-04-19 14:29:20 - ⚠️ L'agent php-analyzer-agent ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:20 -    - metadata: 2, events: 0, initialize: 2
+2025-04-19 14:29:20 -    - execute: 1, validate: 1, stop: 0, getStatus: 0
+2025-04-19 14:29:20 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/php-analyzer/php-analyzer-agent.ts.bak-20250419-142920
+2025-04-19 14:29:20 - Nom de classe détecté: PhpAnalyzerAgent
+2025-04-19 14:29:20 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:20 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/php-analyzer/index.ts
+2025-04-19 14:29:20 - ✅ Agent php-analyzer-agent corrigé
+2025-04-19 14:29:20 - Vérification de l'agent: StructureAgent dans /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/structure-analyzer
+2025-04-19 14:29:20 - ⚠️ L'agent StructureAgent ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:20 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:20 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:20 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/structure-analyzer/StructureAgent.ts.bak-20250419-142920
+2025-04-19 14:29:20 - Nom de classe détecté: StructureAgent
+2025-04-19 14:29:20 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:20 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/structure-analyzer/index.ts
+2025-04-19 14:29:20 - ✅ Agent StructureAgent corrigé
+2025-04-19 14:29:20 - Vérification de l'agent: structure-analyzer-v2 dans /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/structure-analyzer
+2025-04-19 14:29:20 - ⚠️ L'agent structure-analyzer-v2 ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:20 -    - metadata: 3, events: 0, initialize: 0
+2025-04-19 14:29:20 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:20 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/structure-analyzer/structure-analyzer-v2.ts.bak-20250419-142920
+2025-04-19 14:29:20 - Nom de classe détecté: StructureAnalyzerAgent
+2025-04-19 14:29:20 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:20 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/structure-analyzer/index.ts
+2025-04-19 14:29:20 - ✅ Agent structure-analyzer-v2 corrigé
+2025-04-19 14:29:20 - Vérification de l'agent: StructureAgent dans /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/structure-analyzer/StructureAgent
+2025-04-19 14:29:20 - ⚠️ L'agent StructureAgent ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:20 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:20 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:20 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/structure-analyzer/StructureAgent/StructureAgent.ts.bak-20250419-142920
+2025-04-19 14:29:20 - Nom de classe détecté: StructureAgent
+2025-04-19 14:29:20 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:20 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/structure-analyzer/StructureAgent/index.ts
+2025-04-19 14:29:20 - ✅ Agent StructureAgent corrigé
+2025-04-19 14:29:20 - Vérification de l'agent: qa-analyzer-v2 dans /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/qa-analyzer
+2025-04-19 14:29:20 - ⚠️ L'agent qa-analyzer-v2 ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:20 -    - metadata: 3, events: 0, initialize: 0
+2025-04-19 14:29:20 -    - execute: 1, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:20 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/qa-analyzer/qa-analyzer-v2.ts.bak-20250419-142920
+2025-04-19 14:29:20 - Nom de classe détecté: QAAnalyzerV2
+2025-04-19 14:29:20 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:20 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/qa-analyzer/index.ts
+2025-04-19 14:29:20 - ✅ Agent qa-analyzer-v2 corrigé
+2025-04-19 14:29:20 - Vérification de l'agent: base-analyzer-agent dans /workspaces/cahier-des-charge/packages/mcp-agents/analyzers
+2025-04-19 14:29:20 - ⚠️ L'agent base-analyzer-agent ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:20 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:20 -    - execute: 1, validate: 1, stop: 0, getStatus: 0
+2025-04-19 14:29:20 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/analyzers/base-analyzer-agent.ts.bak-20250419-142920
+2025-04-19 14:29:20 - Nom de classe détecté: class
+2025-04-19 14:29:20 - ✅ Agent base-analyzer-agent corrigé
+2025-04-19 14:29:20 - Vérification de l'agent: monitoring-check dans /workspaces/cahier-des-charge/packages/mcp-agents/orchestration/monitors/monitoring-check
+2025-04-19 14:29:20 - ⚠️ L'agent monitoring-check ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:20 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:20 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:20 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/orchestration/monitors/monitoring-check/monitoring-check.ts.bak-20250419-142920
+2025-04-19 14:29:21 - Nom de classe détecté: monitoring
+2025-04-19 14:29:21 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:21 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/orchestration/monitors/monitoring-check/index.ts
+2025-04-19 14:29:21 - ✅ Agent monitoring-check corrigé
+2025-04-19 14:29:21 - Vérification de l'agent: status-writer dans /workspaces/cahier-des-charge/packages/mcp-agents/orchestration/misc/status-writer
+2025-04-19 14:29:21 - ⚠️ L'agent status-writer ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:21 -    - metadata: 0, events: 0, initialize: 1
+2025-04-19 14:29:21 -    - execute: 0, validate: 0, stop: 1, getStatus: 0
+2025-04-19 14:29:21 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/orchestration/misc/status-writer/status-writer.ts.bak-20250419-142921
+2025-04-19 14:29:21 - Nom de classe détecté: StatusWriterAgent
+2025-04-19 14:29:21 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:21 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/orchestration/misc/status-writer/index.ts
+2025-04-19 14:29:21 - ✅ Agent status-writer corrigé
+2025-04-19 14:29:21 - Vérification de l'agent: coordinator-agent dans /workspaces/cahier-des-charge/packages/mcp-agents/orchestration/misc/coordinator-agent
+2025-04-19 14:29:21 - ⚠️ L'agent coordinator-agent ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:21 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:21 -    - execute: 1, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:21 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/orchestration/misc/coordinator-agent/coordinator-agent.ts.bak-20250419-142921
+2025-04-19 14:29:21 - Nom de classe détecté: CoordinatorAgent
+2025-04-19 14:29:21 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:21 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/orchestration/misc/coordinator-agent/index.ts
+2025-04-19 14:29:21 - ✅ Agent coordinator-agent corrigé
+2025-04-19 14:29:21 - Vérification de l'agent: php-analyzer-agent dans /workspaces/cahier-des-charge/packages/mcp-agents/orchestration/misc/php-analyzer-agent
+2025-04-19 14:29:21 - ⚠️ L'agent php-analyzer-agent ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:21 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:21 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:21 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/orchestration/misc/php-analyzer-agent/php-analyzer-agent.ts.bak-20250419-142921
+2025-04-19 14:29:21 - Nom de classe détecté: php
+2025-04-19 14:29:21 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:21 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/orchestration/misc/php-analyzer-agent/index.ts
+2025-04-19 14:29:21 - ✅ Agent php-analyzer-agent corrigé
+2025-04-19 14:29:21 - Vérification de l'agent: caddyfile-generator dans /workspaces/cahier-des-charge/packages/mcp-agents/orchestration/misc/caddyfile-generator
+2025-04-19 14:29:21 - ⚠️ L'agent caddyfile-generator ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:21 -    - metadata: 0, events: 0, initialize: 1
+2025-04-19 14:29:21 -    - execute: 1, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:21 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/orchestration/misc/caddyfile-generator/caddyfile-generator.ts.bak-20250419-142921
+2025-04-19 14:29:21 - Nom de classe détecté: CaddyfileGenerator
+2025-04-19 14:29:21 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:21 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/orchestration/misc/caddyfile-generator/index.ts
+2025-04-19 14:29:21 - ✅ Agent caddyfile-generator corrigé
+2025-04-19 14:29:21 - Vérification de l'agent: agent8-optimizer dans /workspaces/cahier-des-charge/packages/mcp-agents/orchestration/misc/agent8-optimizer
+2025-04-19 14:29:21 - ⚠️ L'agent agent8-optimizer ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:21 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:21 -    - execute: 1, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:21 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/orchestration/misc/agent8-optimizer/agent8-optimizer.ts.bak-20250419-142921
+2025-04-19 14:29:21 - Nom de classe détecté: Agent8SqlOptimizer
+2025-04-19 14:29:21 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:21 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/orchestration/misc/agent8-optimizer/index.ts
+2025-04-19 14:29:21 - ✅ Agent agent8-optimizer corrigé
+2025-04-19 14:29:21 - Vérification de l'agent: sql-analysis-runner dans /workspaces/cahier-des-charge/packages/mcp-agents/orchestration/misc/sql-analysis-runner
+2025-04-19 14:29:21 - ⚠️ L'agent sql-analysis-runner ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:21 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:21 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:21 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/orchestration/misc/sql-analysis-runner/sql-analysis-runner.ts.bak-20250419-142921
+2025-04-19 14:29:21 - Nom de classe détecté: sql
+2025-04-19 14:29:21 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:21 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/orchestration/misc/sql-analysis-runner/index.ts
+2025-04-19 14:29:21 - ✅ Agent sql-analysis-runner corrigé
+2025-04-19 14:29:21 - Vérification de l'agent: agent-audit dans /workspaces/cahier-des-charge/packages/mcp-agents/orchestration/misc/agent-audit
+2025-04-19 14:29:21 - ⚠️ L'agent agent-audit ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:21 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:21 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:21 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/orchestration/misc/agent-audit/agent-audit.ts.bak-20250419-142921
+2025-04-19 14:29:21 - Nom de classe détecté: agent
+2025-04-19 14:29:21 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:21 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/orchestration/misc/agent-audit/index.ts
+2025-04-19 14:29:21 - ✅ Agent agent-audit corrigé
+2025-04-19 14:29:21 - Vérification de l'agent: php-analyzer.worker dans /workspaces/cahier-des-charge/packages/mcp-agents/orchestration/misc/php-analyzer.worker
+2025-04-19 14:29:21 - ⚠️ L'agent php-analyzer.worker ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:21 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:21 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:21 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/orchestration/misc/php-analyzer.worker/php-analyzer.worker.ts.bak-20250419-142921
+2025-04-19 14:29:21 - Nom de classe détecté: php
+2025-04-19 14:29:21 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:21 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/orchestration/misc/php-analyzer.worker/index.ts
+2025-04-19 14:29:21 - ✅ Agent php-analyzer.worker corrigé
+2025-04-19 14:29:21 - Vérification de l'agent: mcp-verifier.worker dans /workspaces/cahier-des-charge/packages/mcp-agents/orchestration/misc/mcp-verifier.worker
+2025-04-19 14:29:21 - ⚠️ L'agent mcp-verifier.worker ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:21 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:21 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:21 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/orchestration/misc/mcp-verifier.worker/mcp-verifier.worker.ts.bak-20250419-142921
+2025-04-19 14:29:21 - Nom de classe détecté: mcp
+2025-04-19 14:29:21 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:21 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/orchestration/misc/mcp-verifier.worker/index.ts
+2025-04-19 14:29:21 - ✅ Agent mcp-verifier.worker corrigé
+2025-04-19 14:29:21 - Vérification de l'agent: orchestrator dans /workspaces/cahier-des-charge/packages/mcp-agents/orchestration/orchestrators/orchestrator
+2025-04-19 14:29:21 - ⚠️ L'agent orchestrator ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:21 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:21 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:21 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/orchestration/orchestrators/orchestrator/orchestrator.ts.bak-20250419-142921
+2025-04-19 14:29:21 - Nom de classe détecté: orchestrator
+2025-04-19 14:29:21 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:21 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/orchestration/orchestrators/orchestrator/index.ts
+2025-04-19 14:29:21 - ✅ Agent orchestrator corrigé
+2025-04-19 14:29:21 - Vérification de l'agent: migration-orchestrator dans /workspaces/cahier-des-charge/packages/mcp-agents/orchestration/orchestrators/migration-orchestrator
+2025-04-19 14:29:21 - ⚠️ L'agent migration-orchestrator ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:21 -    - metadata: 0, events: 0, initialize: 1
+2025-04-19 14:29:21 -    - execute: 0, validate: 0, stop: 0, getStatus: 1
+2025-04-19 14:29:21 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/orchestration/orchestrators/migration-orchestrator/migration-orchestrator.ts.bak-20250419-142921
+2025-04-19 14:29:21 - Nom de classe détecté: MigrationOrchestrator
+2025-04-19 14:29:21 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:21 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/orchestration/orchestrators/migration-orchestrator/index.ts
+2025-04-19 14:29:21 - ✅ Agent migration-orchestrator corrigé
+2025-04-19 14:29:21 - Vérification de l'agent: bullmq-orchestrator dans /workspaces/cahier-des-charge/packages/mcp-agents/orchestration/orchestrators/bullmq-orchestrator
+2025-04-19 14:29:21 - ⚠️ L'agent bullmq-orchestrator ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:21 -    - metadata: 0, events: 0, initialize: 1
+2025-04-19 14:29:21 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:21 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/orchestration/orchestrators/bullmq-orchestrator/bullmq-orchestrator.ts.bak-20250419-142921
+2025-04-19 14:29:21 - Nom de classe détecté: BullMqOrchestrator
+2025-04-19 14:29:21 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:21 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/orchestration/orchestrators/bullmq-orchestrator/index.ts
+2025-04-19 14:29:21 - ✅ Agent bullmq-orchestrator corrigé
+2025-04-19 14:29:21 - Vérification de l'agent: orchestrator-bridge dans /workspaces/cahier-des-charge/packages/mcp-agents/orchestration/orchestrators/orchestrator-bridge
+2025-04-19 14:29:21 - ⚠️ L'agent orchestrator-bridge ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:21 -    - metadata: 0, events: 0, initialize: 1
+2025-04-19 14:29:21 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:21 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/orchestration/orchestrators/orchestrator-bridge/orchestrator-bridge.ts.bak-20250419-142921
+2025-04-19 14:29:21 - Nom de classe détecté: OrchestratorBridge
+2025-04-19 14:29:21 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:21 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/orchestration/orchestrators/orchestrator-bridge/index.ts
+2025-04-19 14:29:21 - ✅ Agent orchestrator-bridge corrigé
+2025-04-19 14:29:21 - Vérification de l'agent: agent-orchestrator dans /workspaces/cahier-des-charge/packages/mcp-agents/orchestration/orchestrators/agent-orchestrator
+2025-04-19 14:29:21 - ⚠️ L'agent agent-orchestrator ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:21 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:21 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:21 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/orchestration/orchestrators/agent-orchestrator/agent-orchestrator.ts.bak-20250419-142921
+2025-04-19 14:29:21 - Nom de classe détecté: AgentOrchestrator
+2025-04-19 14:29:21 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:21 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/orchestration/orchestrators/agent-orchestrator/index.ts
+2025-04-19 14:29:22 - ✅ Agent agent-orchestrator corrigé
+2025-04-19 14:29:22 - Vérification de l'agent: agent-communication dans /workspaces/cahier-des-charge/packages/mcp-agents/utils
+2025-04-19 14:29:22 - ⚠️ L'agent agent-communication ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:22 -    - metadata: 4, events: 1, initialize: 0
+2025-04-19 14:29:22 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:22 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/utils/agent-communication.ts.bak-20250419-142922
+2025-04-19 14:29:22 - Nom de classe détecté: AgentCommunication
+2025-04-19 14:29:22 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:22 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/utils/index.ts
+2025-04-19 14:29:22 - ✅ Agent agent-communication corrigé
+2025-04-19 14:29:22 - Vérification de l'agent: file-manager dans /workspaces/cahier-des-charge/packages/mcp-agents/utils
+2025-04-19 14:29:22 - ⚠️ L'agent file-manager ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:22 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:22 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:22 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/utils/file-manager.ts.bak-20250419-142922
+2025-04-19 14:29:22 - Nom de classe détecté: FileManager
+2025-04-19 14:29:22 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:22 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/utils/index.ts
+2025-04-19 14:29:22 - ✅ Agent file-manager corrigé
+2025-04-19 14:29:22 - Vérification de l'agent: logger dans /workspaces/cahier-des-charge/packages/mcp-agents/utils
+2025-04-19 14:29:22 - ⚠️ L'agent logger ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:22 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:22 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:22 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/utils/logger.ts.bak-20250419-142922
+2025-04-19 14:29:22 - Nom de classe détecté: Logger
+2025-04-19 14:29:22 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:22 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/utils/index.ts
+2025-04-19 14:29:22 - ✅ Agent logger corrigé
+2025-04-19 14:29:22 - Vérification de l'agent: typescript-structure-validator dans /workspaces/cahier-des-charge/packages/mcp-agents/validators
+2025-04-19 14:29:22 - ⚠️ L'agent typescript-structure-validator ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:22 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:22 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:22 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/validators/typescript-structure-validator.ts.bak-20250419-142922
+2025-04-19 14:29:22 - Nom de classe détecté: TypeScriptStructureValidator
+2025-04-19 14:29:22 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:22 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/validators/index.ts
+2025-04-19 14:29:22 - ✅ Agent typescript-structure-validator corrigé
+2025-04-19 14:29:22 - Vérification de l'agent: seo-checker-agent dans /workspaces/cahier-des-charge/packages/mcp-agents/validators
+2025-04-19 14:29:22 - ⚠️ L'agent seo-checker-agent ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:22 -    - metadata: 2, events: 0, initialize: 1
+2025-04-19 14:29:22 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:22 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/validators/seo-checker-agent.ts.bak-20250419-142922
+2025-04-19 14:29:22 - Nom de classe détecté: SEOCheckerAgent
+2025-04-19 14:29:22 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:22 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/validators/index.ts
+2025-04-19 14:29:22 - ✅ Agent seo-checker-agent corrigé
+2025-04-19 14:29:22 - Vérification de l'agent: base-validator-agent dans /workspaces/cahier-des-charge/packages/mcp-agents/validators
+2025-04-19 14:29:22 - ⚠️ L'agent base-validator-agent ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:22 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:22 -    - execute: 1, validate: 1, stop: 0, getStatus: 0
+2025-04-19 14:29:22 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/validators/base-validator-agent.ts.bak-20250419-142922
+2025-04-19 14:29:22 - Nom de classe détecté: class
+2025-04-19 14:29:22 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:22 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/validators/index.ts
+2025-04-19 14:29:22 - ✅ Agent base-validator-agent corrigé
+2025-04-19 14:29:22 - Vérification de l'agent: canonical-validator dans /workspaces/cahier-des-charge/packages/mcp-agents/validators/canonical-validator/canonical-validator
+2025-04-19 14:29:22 - ⚠️ L'agent canonical-validator ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:22 -    - metadata: 0, events: 0, initialize: 2
+2025-04-19 14:29:22 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:22 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/validators/canonical-validator/canonical-validator/canonical-validator.ts.bak-20250419-142922
+2025-04-19 14:29:22 - Nom de classe détecté: CanonicalValidator
+2025-04-19 14:29:22 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:22 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/validators/canonical-validator/canonical-validator/index.ts
+2025-04-19 14:29:22 - ✅ Agent canonical-validator corrigé
+2025-04-19 14:29:22 - Vérification de l'agent: canonical-validator dans /workspaces/cahier-des-charge/packages/mcp-agents/validators/canonical-validator
+2025-04-19 14:29:22 - ⚠️ L'agent canonical-validator ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:22 -    - metadata: 0, events: 0, initialize: 2
+2025-04-19 14:29:22 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:22 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/validators/canonical-validator/canonical-validator.ts.bak-20250419-142922
+2025-04-19 14:29:22 - Nom de classe détecté: CanonicalValidator
+2025-04-19 14:29:22 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:22 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/validators/canonical-validator/index.ts
+2025-04-19 14:29:22 - ✅ Agent canonical-validator corrigé
+2025-04-19 14:29:22 - Vérification de l'agent: seo-checker-agent dans /workspaces/cahier-des-charge/packages/mcp-agents/validators/seo-checker
+2025-04-19 14:29:22 - ⚠️ L'agent seo-checker-agent ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:22 -    - metadata: 2, events: 0, initialize: 0
+2025-04-19 14:29:22 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:22 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/validators/seo-checker/seo-checker-agent.ts.bak-20250419-142922
+2025-04-19 14:29:22 - Nom de classe détecté: SEOCheckerAgent
+2025-04-19 14:29:22 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:22 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/validators/seo-checker/index.ts
+2025-04-19 14:29:22 - ✅ Agent seo-checker-agent corrigé
+2025-04-19 14:29:22 - Vérification de l'agent: seo-checker-agent dans /workspaces/cahier-des-charge/packages/mcp-agents/validators/seo-checker/seo-checker-agent
+2025-04-19 14:29:22 - ⚠️ L'agent seo-checker-agent ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:22 -    - metadata: 2, events: 0, initialize: 0
+2025-04-19 14:29:22 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:22 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/validators/seo-checker/seo-checker-agent/seo-checker-agent.ts.bak-20250419-142922
+2025-04-19 14:29:22 - Nom de classe détecté: SEOCheckerAgent
+2025-04-19 14:29:22 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:22 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/validators/seo-checker/seo-checker-agent/index.ts
+2025-04-19 14:29:22 - ✅ Agent seo-checker-agent corrigé
+2025-04-19 14:29:22 - Vérification de l'agent: abstract-validator dans /workspaces/cahier-des-charge/packages/mcp-agents/validators
+2025-04-19 14:29:22 - ⚠️ L'agent abstract-validator ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:22 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:22 -    - execute: 0, validate: 2, stop: 0, getStatus: 1
+2025-04-19 14:29:22 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/validators/abstract-validator.ts.bak-20250419-142922
+2025-04-19 14:29:23 - Nom de classe détecté: class
+2025-04-19 14:29:23 - ✅ Agent abstract-validator corrigé
+2025-04-19 14:29:23 - Vérification de l'agent: abstract-validator-agent dans /workspaces/cahier-des-charge/packages/mcp-agents/validators
+2025-04-19 14:29:23 - ⚠️ L'agent abstract-validator-agent ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:23 -    - metadata: 0, events: 0, initialize: 2
+2025-04-19 14:29:23 -    - execute: 0, validate: 2, stop: 0, getStatus: 1
+2025-04-19 14:29:23 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/validators/abstract-validator-agent.ts.bak-20250419-142923
+2025-04-19 14:29:23 - Nom de classe détecté: class
+2025-04-19 14:29:23 - ✅ Agent abstract-validator-agent corrigé
+2025-04-19 14:29:23 - Vérification de l'agent: remix-generator dans /workspaces/cahier-des-charge/packages/mcp-agents
+2025-04-19 14:29:23 - ⚠️ L'agent remix-generator ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:23 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:23 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:23 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/remix-generator.ts.bak-20250419-142923
+2025-04-19 14:29:23 - Nom de classe détecté: RemixGenerator
+2025-04-19 14:29:23 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:23 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/index.ts
+2025-04-19 14:29:23 - ✅ Agent remix-generator corrigé
+2025-04-19 14:29:23 - Vérification de l'agent: prisma-analyzer dans /workspaces/cahier-des-charge/packages/mcp-agents
+2025-04-19 14:29:23 - ⚠️ L'agent prisma-analyzer ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:23 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:23 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:23 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/prisma-analyzer.ts.bak-20250419-142923
+2025-04-19 14:29:23 - Nom de classe détecté: PrismaAnalyzer
+2025-04-19 14:29:23 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:23 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/index.ts
+2025-04-19 14:29:23 - ✅ Agent prisma-analyzer corrigé
+2025-04-19 14:29:23 - Vérification de l'agent: adapt-agents dans /workspaces/cahier-des-charge/packages/mcp-agents
+2025-04-19 14:29:23 - ✅ L'agent adapt-agents semble correctement implémenté
+2025-04-19 14:29:23 - Vérification de l'agent: index dans /workspaces/cahier-des-charge/packages/mcp-agents/migration-orchestrator
+2025-04-19 14:29:23 - ⚠️ L'agent index ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:23 -    - metadata: 3, events: 0, initialize: 2
+2025-04-19 14:29:23 -    - execute: 0, validate: 0, stop: 0, getStatus: 1
+2025-04-19 14:29:23 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/migration-orchestrator/index.ts.bak-20250419-142923
+2025-04-19 14:29:23 - Nom de classe détecté: MigrationOrchestrator
+2025-04-19 14:29:23 - ✅ Agent index corrigé
+2025-04-19 14:29:23 - Vérification de l'agent: abstract-analyzer-agent dans /workspaces/cahier-des-charge/packages/mcp-agents/core
+2025-04-19 14:29:23 - ⚠️ L'agent abstract-analyzer-agent ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:23 -    - metadata: 2, events: 0, initialize: 0
+2025-04-19 14:29:23 -    - execute: 2, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:23 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/core/abstract-analyzer-agent.ts.bak-20250419-142923
+2025-04-19 14:29:23 - Nom de classe détecté: class
+2025-04-19 14:29:23 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:23 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/core/index.ts
+2025-04-19 14:29:23 - ✅ Agent abstract-analyzer-agent corrigé
+2025-04-19 14:29:23 - Vérification de l'agent: metrics-collector dans /workspaces/cahier-des-charge/packages/mcp-agents/core/metrics
+2025-04-19 14:29:23 - ⚠️ L'agent metrics-collector ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:23 -    - metadata: 0, events: 4, initialize: 1
+2025-04-19 14:29:23 -    - execute: 0, validate: 0, stop: 1, getStatus: 0
+2025-04-19 14:29:23 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/core/metrics/metrics-collector.ts.bak-20250419-142923
+2025-04-19 14:29:23 - Nom de classe détecté: McpMetricsCollector
+2025-04-19 14:29:23 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:23 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/core/metrics/index.ts
+2025-04-19 14:29:23 - ✅ Agent metrics-collector corrigé
+2025-04-19 14:29:23 - Vérification de l'agent: remix-generator dans /workspaces/cahier-des-charge/packages/mcp-agents/core
+2025-04-19 14:29:23 - ⚠️ L'agent remix-generator ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:23 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:23 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:23 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/core/remix-generator.ts.bak-20250419-142923
+2025-04-19 14:29:23 - Nom de classe détecté: RemixGenerator
+2025-04-19 14:29:23 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:23 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/core/index.ts
+2025-04-19 14:29:23 - ✅ Agent remix-generator corrigé
+2025-04-19 14:29:23 - Vérification de l'agent: abstract-generator-agent dans /workspaces/cahier-des-charge/packages/mcp-agents/core
+2025-04-19 14:29:23 - ⚠️ L'agent abstract-generator-agent ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:23 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:23 -    - execute: 2, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:23 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/core/abstract-generator-agent.ts.bak-20250419-142923
+2025-04-19 14:29:23 - Nom de classe détecté: class
+2025-04-19 14:29:23 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:23 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/core/index.ts
+2025-04-19 14:29:23 - ✅ Agent abstract-generator-agent corrigé
+2025-04-19 14:29:23 - Vérification de l'agent: base-agent dans /workspaces/cahier-des-charge/packages/mcp-agents/core/interfaces
+2025-04-19 14:29:23 - ⚠️ L'agent base-agent ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:23 -    - metadata: 6, events: 5, initialize: 1
+2025-04-19 14:29:23 -    - execute: 2, validate: 1, stop: 0, getStatus: 1
+2025-04-19 14:29:23 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/core/interfaces/base-agent.ts.bak-20250419-142923
+2025-04-19 14:29:23 - Nom de classe détecté: class
+2025-04-19 14:29:23 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:23 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/core/interfaces/index.ts
+2025-04-19 14:29:23 - ✅ Agent base-agent corrigé
+2025-04-19 14:29:23 - Vérification de l'agent: abstract-processor-agent dans /workspaces/cahier-des-charge/packages/mcp-agents/core
+2025-04-19 14:29:23 - ⚠️ L'agent abstract-processor-agent ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:23 -    - metadata: 1, events: 0, initialize: 0
+2025-04-19 14:29:23 -    - execute: 1, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:23 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/core/abstract-processor-agent.ts.bak-20250419-142923
+2025-04-19 14:29:23 - Nom de classe détecté: class
+2025-04-19 14:29:23 - ✅ Agent abstract-processor-agent corrigé
+2025-04-19 14:29:23 - Vérification de l'agent: logger dans /workspaces/cahier-des-charge/packages/mcp-agents/core/logging
+2025-04-19 14:29:23 - ⚠️ L'agent logger ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:23 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:23 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:23 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/core/logging/logger.ts.bak-20250419-142923
+2025-04-19 14:29:23 - Nom de classe détecté: ConsoleLogAdapter
+2025-04-19 14:29:23 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:23 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/core/logging/index.ts
+2025-04-19 14:29:23 - ✅ Agent logger corrigé
+2025-04-19 14:29:23 - Vérification de l'agent: base-agent dans /workspaces/cahier-des-charge/packages/mcp-agents/core
+2025-04-19 14:29:23 - ⚠️ L'agent base-agent ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:23 -    - metadata: 6, events: 5, initialize: 1
+2025-04-19 14:29:23 -    - execute: 2, validate: 1, stop: 0, getStatus: 1
+2025-04-19 14:29:23 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/core/base-agent.ts.bak-20250419-142923
+2025-04-19 14:29:24 - Nom de classe détecté: class
+2025-04-19 14:29:24 - ✅ Agent base-agent corrigé
+2025-04-19 14:29:24 - Vérification de l'agent: nestjs-generator dans /workspaces/cahier-des-charge/packages/mcp-agents/core
+2025-04-19 14:29:24 - ⚠️ L'agent nestjs-generator ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:24 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:24 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:24 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/core/nestjs-generator.ts.bak-20250419-142924
+2025-04-19 14:29:24 - Nom de classe détecté: NestJSGenerator
+2025-04-19 14:29:24 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:24 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/core/index.ts
+2025-04-19 14:29:24 - ✅ Agent nestjs-generator corrigé
+2025-04-19 14:29:24 - Vérification de l'agent: abstract-validator-agent dans /workspaces/cahier-des-charge/packages/mcp-agents/core
+2025-04-19 14:29:24 - ⚠️ L'agent abstract-validator-agent ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:24 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:24 -    - execute: 2, validate: 1, stop: 0, getStatus: 1
+2025-04-19 14:29:24 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/core/abstract-validator-agent.ts.bak-20250419-142924
+2025-04-19 14:29:24 - Nom de classe détecté: class
+2025-04-19 14:29:24 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:24 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/core/index.ts
+2025-04-19 14:29:24 - ✅ Agent abstract-validator-agent corrigé
+2025-04-19 14:29:24 - Vérification de l'agent: abstract-agent dans /workspaces/cahier-des-charge/packages/mcp-agents/core
+2025-04-19 14:29:24 - ⚠️ L'agent abstract-agent ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:24 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:24 -    - execute: 1, validate: 2, stop: 0, getStatus: 0
+2025-04-19 14:29:24 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/core/abstract-agent.ts.bak-20250419-142924
+2025-04-19 14:29:24 - Nom de classe détecté: class
+2025-04-19 14:29:24 - ✅ Agent abstract-agent corrigé
+2025-04-19 14:29:24 - Vérification de l'agent: seo-checker dans /workspaces/cahier-des-charge/packages/mcp-agents/core/seo
+2025-04-19 14:29:24 - ⚠️ L'agent seo-checker ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:24 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:24 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:24 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/core/seo/seo-checker.ts.bak-20250419-142924
+2025-04-19 14:29:24 - Nom de classe détecté: SEOChecker
+2025-04-19 14:29:24 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:24 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/core/seo/index.ts
+2025-04-19 14:29:24 - ✅ Agent seo-checker corrigé
+2025-04-19 14:29:24 - Vérification de l'agent: abstract-orchestrator-agent dans /workspaces/cahier-des-charge/packages/mcp-agents/core
+2025-04-19 14:29:24 - ⚠️ L'agent abstract-orchestrator-agent ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:24 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:24 -    - execute: 1, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:24 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/core/abstract-orchestrator-agent.ts.bak-20250419-142924
+2025-04-19 14:29:24 - Nom de classe détecté: class
+2025-04-19 14:29:24 - ✅ Agent abstract-orchestrator-agent corrigé
+2025-04-19 14:29:24 - Vérification de l'agent: interfaces dans /workspaces/cahier-des-charge/packages/mcp-agents/core
+2025-04-19 14:29:24 - ✅ L'agent interfaces semble correctement implémenté
+2025-04-19 14:29:24 - Vérification de l'agent: db-connector dans /workspaces/cahier-des-charge/packages/mcp-agents/shared
+2025-04-19 14:29:24 - ⚠️ L'agent db-connector ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:24 -    - metadata: 6, events: 0, initialize: 2
+2025-04-19 14:29:24 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:24 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/shared/db-connector.ts.bak-20250419-142924
+2025-04-19 14:29:24 - Nom de classe détecté: Database
+2025-04-19 14:29:24 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:24 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/shared/index.ts
+2025-04-19 14:29:24 - ✅ Agent db-connector corrigé
+2025-04-19 14:29:24 - Vérification de l'agent: base-agent dans /workspaces/cahier-des-charge/packages/mcp-agents/shared
+2025-04-19 14:29:24 - ⚠️ L'agent base-agent ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:24 -    - metadata: 6, events: 5, initialize: 1
+2025-04-19 14:29:24 -    - execute: 2, validate: 1, stop: 0, getStatus: 1
+2025-04-19 14:29:24 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/shared/base-agent.ts.bak-20250419-142924
+2025-04-19 14:29:24 - Nom de classe détecté: class
+2025-04-19 14:29:24 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:24 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/shared/index.ts
+2025-04-19 14:29:24 - ✅ Agent base-agent corrigé
+2025-04-19 14:29:24 - Vérification de l'agent: php-analyzer-v3 dans /workspaces/cahier-des-charge/packages/mcp-agents/business/analyzers/php-analyzer-v3
+2025-04-19 14:29:24 - ⚠️ L'agent php-analyzer-v3 ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:24 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:24 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:24 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/business/analyzers/php-analyzer-v3/php-analyzer-v3.ts.bak-20250419-142924
+2025-04-19 14:29:24 - Nom de classe détecté: php
+2025-04-19 14:29:24 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:24 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/business/analyzers/php-analyzer-v3/index.ts
+2025-04-19 14:29:24 - ✅ Agent php-analyzer-v3 corrigé
+2025-04-19 14:29:24 - Vérification de l'agent: php-analyzer-v4 dans /workspaces/cahier-des-charge/packages/mcp-agents/business/analyzers/php-analyzer-v4
+2025-04-19 14:29:24 - ⚠️ L'agent php-analyzer-v4 ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:24 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:24 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:24 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/business/analyzers/php-analyzer-v4/php-analyzer-v4.ts.bak-20250419-142924
+2025-04-19 14:29:24 - Nom de classe détecté: php
+2025-04-19 14:29:24 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:24 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/business/analyzers/php-analyzer-v4/index.ts
+2025-04-19 14:29:24 - ✅ Agent php-analyzer-v4 corrigé
+2025-04-19 14:29:24 - Vérification de l'agent: index dans /workspaces/cahier-des-charge/packages/mcp-agents/business/analyzers/sql-analyzer
+2025-04-19 14:29:24 - ✅ L'agent index semble correctement implémenté
+2025-04-19 14:29:24 - Vérification de l'agent: nginx-config-analyzer dans /workspaces/cahier-des-charge/packages/mcp-agents/business/analyzers/nginx-config-analyzer
+2025-04-19 14:29:24 - ⚠️ L'agent nginx-config-analyzer ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:24 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:24 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:24 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/business/analyzers/nginx-config-analyzer/nginx-config-analyzer.ts.bak-20250419-142924
+2025-04-19 14:29:24 - Nom de classe détecté: nginx
+2025-04-19 14:29:24 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:24 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/business/analyzers/nginx-config-analyzer/index.ts
+2025-04-19 14:29:24 - ✅ Agent nginx-config-analyzer corrigé
+2025-04-19 14:29:24 - Vérification de l'agent: htaccess-route-analyzer dans /workspaces/cahier-des-charge/packages/mcp-agents/business/analyzers/htaccess-route-analyzer
+2025-04-19 14:29:24 - ⚠️ L'agent htaccess-route-analyzer ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:24 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:24 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:24 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/business/analyzers/htaccess-route-analyzer/htaccess-route-analyzer.ts.bak-20250419-142924
+2025-04-19 14:29:24 - Nom de classe détecté: HtaccessRouteAnalyzer
+2025-04-19 14:29:24 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:24 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/business/analyzers/htaccess-route-analyzer/index.ts
+2025-04-19 14:29:24 - ✅ Agent htaccess-route-analyzer corrigé
+2025-04-19 14:29:24 - Vérification de l'agent: php-analyzer dans /workspaces/cahier-des-charge/packages/mcp-agents/business/analyzers/php-analyzer
+2025-04-19 14:29:24 - ⚠️ L'agent php-analyzer ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:24 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:24 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:24 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/business/analyzers/php-analyzer/php-analyzer.ts.bak-20250419-142924
+2025-04-19 14:29:24 - Nom de classe détecté: php
+2025-04-19 14:29:24 - ✅ Agent php-analyzer corrigé
+2025-04-19 14:29:24 - Vérification de l'agent: debt-analyzer dans /workspaces/cahier-des-charge/packages/mcp-agents/business/analyzers/debt-analyzer
+2025-04-19 14:29:24 - ⚠️ L'agent debt-analyzer ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:24 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:24 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:24 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/business/analyzers/debt-analyzer/debt-analyzer.ts.bak-20250419-142924
+2025-04-19 14:29:24 - Nom de classe détecté: DebtAnalyzer
+2025-04-19 14:29:24 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:24 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/business/analyzers/debt-analyzer/index.ts
+2025-04-19 14:29:24 - ✅ Agent debt-analyzer corrigé
+2025-04-19 14:29:24 - Vérification de l'agent: mysql-analyzer+optimizer dans /workspaces/cahier-des-charge/packages/mcp-agents/business/analyzers/mysql-analyzer+optimizer
+2025-04-19 14:29:24 - ⚠️ L'agent mysql-analyzer+optimizer ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:24 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:24 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:24 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/business/analyzers/mysql-analyzer+optimizer/mysql-analyzer+optimizer.ts.bak-20250419-142924
+2025-04-19 14:29:24 - Nom de classe détecté: mysql
+2025-04-19 14:29:24 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:24 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/business/analyzers/mysql-analyzer+optimizer/index.ts
+2025-04-19 14:29:24 - ✅ Agent mysql-analyzer+optimizer corrigé
+2025-04-19 14:29:24 - Vérification de l'agent: htaccess-router-analyzer dans /workspaces/cahier-des-charge/packages/mcp-agents/business/analyzers/htaccess-router-analyzer
+2025-04-19 14:29:24 - ✅ L'agent htaccess-router-analyzer semble correctement implémenté
+2025-04-19 14:29:24 - Vérification de l'agent: sql-analyzer+prisma-builder dans /workspaces/cahier-des-charge/packages/mcp-agents/business/analyzers/sql-analyzer+prisma-builder
+2025-04-19 14:29:24 - ⚠️ L'agent sql-analyzer+prisma-builder ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:24 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:24 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:24 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/business/analyzers/sql-analyzer+prisma-builder/sql-analyzer+prisma-builder.ts.bak-20250419-142924
+2025-04-19 14:29:24 - Nom de classe détecté: sql
+2025-04-19 14:29:24 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:24 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/business/analyzers/sql-analyzer+prisma-builder/index.ts
+2025-04-19 14:29:24 - ✅ Agent sql-analyzer+prisma-builder corrigé
+2025-04-19 14:29:25 - Vérification de l'agent: index dans /workspaces/cahier-des-charge/packages/mcp-agents/business/analyzers/index
+2025-04-19 14:29:25 - ⚠️ L'agent index ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:25 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:25 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:25 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/business/analyzers/index/index.ts.bak-20250419-142925
+2025-04-19 14:29:25 - Nom de classe détecté: QAAnalyzer
+2025-04-19 14:29:25 - ✅ Agent index corrigé
+2025-04-19 14:29:25 - Vérification de l'agent: index dans /workspaces/cahier-des-charge/packages/mcp-agents/business/analyzers/mysql-analyzer
+2025-04-19 14:29:25 - ✅ L'agent index semble correctement implémenté
+2025-04-19 14:29:25 - Vérification de l'agent: mysql-analyzer dans /workspaces/cahier-des-charge/packages/mcp-agents/business/analyzers/mysql-analyzer
+2025-04-19 14:29:25 - ⚠️ L'agent mysql-analyzer ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:25 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:25 -    - execute: 1, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:25 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/business/analyzers/mysql-analyzer/mysql-analyzer.ts.bak-20250419-142925
+2025-04-19 14:29:25 - Nom de classe détecté: MySQLAnalyzer
+2025-04-19 14:29:25 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:25 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/business/analyzers/mysql-analyzer/index.ts
+2025-04-19 14:29:25 - ✅ Agent mysql-analyzer corrigé
+2025-04-19 14:29:25 - Vérification de l'agent: schema-analyzer dans /workspaces/cahier-des-charge/packages/mcp-agents/business/analyzers/schema-analyzer
+2025-04-19 14:29:25 - ⚠️ L'agent schema-analyzer ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:25 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:25 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:25 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/business/analyzers/schema-analyzer/schema-analyzer.ts.bak-20250419-142925
+2025-04-19 14:29:25 - Nom de classe détecté: SchemaAnalyzer
+2025-04-19 14:29:25 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:25 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/business/analyzers/schema-analyzer/index.ts
+2025-04-19 14:29:25 - ✅ Agent schema-analyzer corrigé
+2025-04-19 14:29:25 - Vérification de l'agent: index dans /workspaces/cahier-des-charge/packages/mcp-agents/business/analyzers/qa-analyzer
+2025-04-19 14:29:25 - ⚠️ L'agent index ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:25 -    - metadata: 0, events: 0, initialize: 2
+2025-04-19 14:29:25 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:25 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/business/analyzers/qa-analyzer/index.ts.bak-20250419-142925
+2025-04-19 14:29:25 - Nom de classe détecté: QaAnalyzer
+2025-04-19 14:29:25 - ✅ Agent index corrigé
+2025-04-19 14:29:25 - Vérification de l'agent: qa-analyzer dans /workspaces/cahier-des-charge/packages/mcp-agents/business/analyzers/qa-analyzer
+2025-04-19 14:29:25 - ⚠️ L'agent qa-analyzer ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:25 -    - metadata: 0, events: 0, initialize: 1
+2025-04-19 14:29:25 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:25 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/business/analyzers/qa-analyzer/qa-analyzer.ts.bak-20250419-142925
+2025-04-19 14:29:25 - Nom de classe détecté: QaAnalyzer
+2025-04-19 14:29:25 - ✅ Agent qa-analyzer corrigé
+2025-04-19 14:29:25 - Vérification de l'agent: php-analyzer-v2 dans /workspaces/cahier-des-charge/packages/mcp-agents/business/analyzers/php-analyzer-v2
+2025-04-19 14:29:25 - ⚠️ L'agent php-analyzer-v2 ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:25 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:25 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:25 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/business/analyzers/php-analyzer-v2/php-analyzer-v2.ts.bak-20250419-142925
+2025-04-19 14:29:25 - Nom de classe détecté: php
+2025-04-19 14:29:25 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:25 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/business/analyzers/php-analyzer-v2/index.ts
+2025-04-19 14:29:25 - ✅ Agent php-analyzer-v2 corrigé
+2025-04-19 14:29:25 - Vérification de l'agent: relation-analyzer dans /workspaces/cahier-des-charge/packages/mcp-agents/business/analyzers/relation-analyzer
+2025-04-19 14:29:25 - ⚠️ L'agent relation-analyzer ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:25 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:25 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:25 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/business/analyzers/relation-analyzer/relation-analyzer.ts.bak-20250419-142925
+2025-04-19 14:29:25 - Nom de classe détecté: relation
+2025-04-19 14:29:25 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:25 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/business/analyzers/relation-analyzer/index.ts
+2025-04-19 14:29:25 - ✅ Agent relation-analyzer corrigé
+2025-04-19 14:29:25 - Vérification de l'agent: analyze-security-risks dans /workspaces/cahier-des-charge/packages/mcp-agents/business/analyzers/analyze-security-risks
+2025-04-19 14:29:25 - ⚠️ L'agent analyze-security-risks ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:25 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:25 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:25 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/business/analyzers/analyze-security-risks/analyze-security-risks.ts.bak-20250419-142925
+2025-04-19 14:29:25 - Nom de classe détecté: SecurityRiskAnalyzer
+2025-04-19 14:29:25 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:25 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/business/analyzers/analyze-security-risks/index.ts
+2025-04-19 14:29:25 - ✅ Agent analyze-security-risks corrigé
+2025-04-19 14:29:25 - Vérification de l'agent: nginx-config-parser dans /workspaces/cahier-des-charge/packages/mcp-agents/business/parsers/nginx-config-parser
+2025-04-19 14:29:25 - ⚠️ L'agent nginx-config-parser ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:25 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:25 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:25 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/business/parsers/nginx-config-parser/nginx-config-parser.ts.bak-20250419-142925
+2025-04-19 14:29:25 - Nom de classe détecté: NginxConfigParser
+2025-04-19 14:29:25 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:25 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/business/parsers/nginx-config-parser/index.ts
+2025-04-19 14:29:25 - ✅ Agent nginx-config-parser corrigé
+2025-04-19 14:29:25 - Vérification de l'agent: parser dans /workspaces/cahier-des-charge/packages/mcp-agents/business/parsers/parser
+2025-04-19 14:29:25 - ⚠️ L'agent parser ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:25 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:25 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:25 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/business/parsers/parser/parser.ts.bak-20250419-142925
+2025-04-19 14:29:25 - Nom de classe détecté: SQLParser
+2025-04-19 14:29:25 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:25 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/business/parsers/parser/index.ts
+2025-04-19 14:29:25 - ✅ Agent parser corrigé
+2025-04-19 14:29:25 - Vérification de l'agent: htaccess-parser dans /workspaces/cahier-des-charge/packages/mcp-agents/business/parsers/htaccess-parser
+2025-04-19 14:29:26 - ⚠️ L'agent htaccess-parser ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:26 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:26 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:26 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/business/parsers/htaccess-parser/htaccess-parser.ts.bak-20250419-142926
+2025-04-19 14:29:26 - Nom de classe détecté: HtaccessParser
+2025-04-19 14:29:26 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:26 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/business/parsers/htaccess-parser/index.ts
+2025-04-19 14:29:26 - ✅ Agent htaccess-parser corrigé
+2025-04-19 14:29:26 - Vérification de l'agent: postgresql-validator dans /workspaces/cahier-des-charge/packages/mcp-agents/business/validators/postgresql-validator
+2025-04-19 14:29:26 - ⚠️ L'agent postgresql-validator ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:26 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:26 -    - execute: 0, validate: 1, stop: 0, getStatus: 0
+2025-04-19 14:29:26 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/business/validators/postgresql-validator/postgresql-validator.ts.bak-20250419-142926
+2025-04-19 14:29:26 - Nom de classe détecté: PostgresqlValidator
+2025-04-19 14:29:26 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:26 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/business/validators/postgresql-validator/index.ts
+2025-04-19 14:29:26 - ✅ Agent postgresql-validator corrigé
+2025-04-19 14:29:26 - Vérification de l'agent: dev-checker dans /workspaces/cahier-des-charge/packages/mcp-agents/business/validators/dev-checker
+2025-04-19 14:29:26 - ⚠️ L'agent dev-checker ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:26 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:26 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:26 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/business/validators/dev-checker/dev-checker.ts.bak-20250419-142926
+2025-04-19 14:29:26 - Nom de classe détecté: DevChecker
+2025-04-19 14:29:26 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:26 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/business/validators/dev-checker/index.ts
+2025-04-19 14:29:26 - ✅ Agent dev-checker corrigé
+2025-04-19 14:29:26 - Vérification de l'agent: seo-checker-canonical dans /workspaces/cahier-des-charge/packages/mcp-agents/business/validators/seo-checker-canonical
+2025-04-19 14:29:26 - ⚠️ L'agent seo-checker-canonical ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:26 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:26 -    - execute: 1, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:26 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/business/validators/seo-checker-canonical/seo-checker-canonical.ts.bak-20250419-142926
+2025-04-19 14:29:26 - Nom de classe détecté: SeoCheckerCanonical
+2025-04-19 14:29:26 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:26 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/business/validators/seo-checker-canonical/index.ts
+2025-04-19 14:29:26 - ✅ Agent seo-checker-canonical corrigé
+2025-04-19 14:29:26 - Vérification de l'agent: index dans /workspaces/cahier-des-charge/packages/mcp-agents/business/validators/canonical-validator
+2025-04-19 14:29:26 - ⚠️ L'agent index ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:26 -    - metadata: 0, events: 0, initialize: 2
+2025-04-19 14:29:26 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:26 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/business/validators/canonical-validator/index.ts.bak-20250419-142926
+2025-04-19 14:29:26 - Nom de classe détecté: CanonicalValidator
+2025-04-19 14:29:26 - ✅ Agent index corrigé
+2025-04-19 14:29:26 - Vérification de l'agent: canonical-validator dans /workspaces/cahier-des-charge/packages/mcp-agents/business/validators/canonical-validator
+2025-04-19 14:29:26 - ⚠️ L'agent canonical-validator ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:26 -    - metadata: 0, events: 0, initialize: 1
+2025-04-19 14:29:26 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:26 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/business/validators/canonical-validator/canonical-validator.ts.bak-20250419-142926
+2025-04-19 14:29:26 - Nom de classe détecté: CanonicalValidator
+2025-04-19 14:29:26 - ✅ Agent canonical-validator corrigé
+2025-04-19 14:29:26 - Vérification de l'agent: index dans /workspaces/cahier-des-charge/packages/mcp-agents/business/validators/seo-checker
+2025-04-19 14:29:27 - ⚠️ L'agent index ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:27 -    - metadata: 0, events: 0, initialize: 1
+2025-04-19 14:29:27 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:27 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/business/validators/seo-checker/index.ts.bak-20250419-142927
+2025-04-19 14:29:27 - Nom de classe détecté: SEOCheckerAgent
+2025-04-19 14:29:27 - ✅ Agent index corrigé
+2025-04-19 14:29:27 - Vérification de l'agent: seo-checker-agent dans /workspaces/cahier-des-charge/packages/mcp-agents/business/validators/seo-checker-agent
+2025-04-19 14:29:27 - ⚠️ L'agent seo-checker-agent ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:27 -    - metadata: 0, events: 0, initialize: 1
+2025-04-19 14:29:27 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:27 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/business/validators/seo-checker-agent/seo-checker-agent.ts.bak-20250419-142927
+2025-04-19 14:29:27 - Nom de classe détecté: SEOCheckerAgent
+2025-04-19 14:29:27 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:27 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/business/validators/seo-checker-agent/index.ts
+2025-04-19 14:29:27 - ✅ Agent seo-checker-agent corrigé
+2025-04-19 14:29:27 - Vérification de l'agent: index dans /workspaces/cahier-des-charge/packages/mcp-agents/business/core/table-classifier
+2025-04-19 14:29:27 - ⚠️ L'agent index ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:27 -    - metadata: 1, events: 0, initialize: 0
+2025-04-19 14:29:27 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:27 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/business/core/table-classifier/index.ts.bak-20250419-142927
+2025-04-19 14:29:27 - Nom de classe détecté: TableClassifier
+2025-04-19 14:29:27 - ✅ Agent index corrigé
+2025-04-19 14:29:27 - Vérification de l'agent: index dans /workspaces/cahier-des-charge/packages/mcp-agents/business/core/BaseAgent
+2025-04-19 14:29:27 - ⚠️ L'agent index ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:27 -    - metadata: 3, events: 0, initialize: 0
+2025-04-19 14:29:27 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:27 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/business/core/BaseAgent/index.ts.bak-20250419-142927
+2025-04-19 14:29:27 - Nom de classe détecté: class
+2025-04-19 14:29:27 - ✅ Agent index corrigé
+2025-04-19 14:29:27 - Vérification de l'agent: index dans /workspaces/cahier-des-charge/packages/mcp-agents/business/core/classifier
+2025-04-19 14:29:27 - ⚠️ L'agent index ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:27 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:27 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:27 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/business/core/classifier/index.ts.bak-20250419-142927
+2025-04-19 14:29:27 - Nom de classe détecté: TableClassifier
+2025-04-19 14:29:27 - ✅ Agent index corrigé
+2025-04-19 14:29:27 - Vérification de l'agent: index dans /workspaces/cahier-des-charge/packages/mcp-agents/business/integrators/metrics-service
+2025-04-19 14:29:27 - ⚠️ L'agent index ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:27 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:27 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:27 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/business/integrators/metrics-service/index.ts.bak-20250419-142927
+2025-04-19 14:29:27 - Nom de classe détecté: MetricsService
+2025-04-19 14:29:27 - ✅ Agent index corrigé
+2025-04-19 14:29:27 - Vérification de l'agent: index dans /workspaces/cahier-des-charge/packages/mcp-agents/business/integrators/notification-service
+2025-04-19 14:29:27 - ⚠️ L'agent index ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:27 -    - metadata: 14, events: 0, initialize: 0
+2025-04-19 14:29:27 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:27 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/business/integrators/notification-service/index.ts.bak-20250419-142927
+2025-04-19 14:29:27 - Nom de classe détecté: NotificationService
+2025-04-19 14:29:27 - ✅ Agent index corrigé
+2025-04-19 14:29:27 - Vérification de l'agent: type-audit-agent dans /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/type-audit-agent
+2025-04-19 14:29:27 - ⚠️ L'agent type-audit-agent ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:27 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:27 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:27 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/type-audit-agent/type-audit-agent.ts.bak-20250419-142927
+2025-04-19 14:29:27 - Nom de classe détecté: type
+2025-04-19 14:29:27 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:27 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/type-audit-agent/index.ts
+2025-04-19 14:29:27 - ✅ Agent type-audit-agent corrigé
+2025-04-19 14:29:27 - Vérification de l'agent: agent-business dans /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/agent-business
+2025-04-19 14:29:27 - ⚠️ L'agent agent-business ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:27 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:27 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:27 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/agent-business/agent-business.ts.bak-20250419-142927
+2025-04-19 14:29:27 - Nom de classe détecté: BusinessAgent
+2025-04-19 14:29:27 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:27 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/agent-business/index.ts
+2025-04-19 14:29:27 - ✅ Agent agent-business corrigé
+2025-04-19 14:29:27 - Vérification de l'agent: agent-structure dans /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/agent-structure
+2025-04-19 14:29:27 - ⚠️ L'agent agent-structure ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:27 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:27 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:27 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/agent-structure/agent-structure.ts.bak-20250419-142927
+2025-04-19 14:29:27 - Nom de classe détecté: StructureAgent
+2025-04-19 14:29:27 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:27 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/agent-structure/index.ts
+2025-04-19 14:29:27 - ✅ Agent agent-structure corrigé
+2025-04-19 14:29:28 - Vérification de l'agent: table-cartographer dans /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/table-cartographer
+2025-04-19 14:29:28 - ⚠️ L'agent table-cartographer ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:28 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:28 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:28 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/table-cartographer/table-cartographer.ts.bak-20250419-142928
+2025-04-19 14:29:28 - Nom de classe détecté: table
+2025-04-19 14:29:28 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:28 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/table-cartographer/index.ts
+2025-04-19 14:29:28 - ✅ Agent table-cartographer corrigé
+2025-04-19 14:29:28 - Vérification de l'agent: helpers dans /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/helpers
+2025-04-19 14:29:28 - ⚠️ L'agent helpers ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:28 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:28 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:28 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/helpers/helpers.ts.bak-20250419-142928
+2025-04-19 14:29:28 - Nom de classe détecté: helpers
+2025-04-19 14:29:28 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:28 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/helpers/index.ts
+2025-04-19 14:29:28 - ✅ Agent helpers corrigé
+2025-04-19 14:29:28 - Vérification de l'agent: devops-preview dans /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/devops-preview
+2025-04-19 14:29:28 - ⚠️ L'agent devops-preview ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:28 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:28 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:28 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/devops-preview/devops-preview.ts.bak-20250419-142928
+2025-04-19 14:29:28 - Nom de classe détecté: devops
+2025-04-19 14:29:28 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:28 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/devops-preview/index.ts
+2025-04-19 14:29:28 - ✅ Agent devops-preview corrigé
+2025-04-19 14:29:28 - Vérification de l'agent: businessagent dans /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/businessagent
+2025-04-19 14:29:28 - ⚠️ L'agent businessagent ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:28 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:28 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:28 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/businessagent/businessagent.ts.bak-20250419-142928
+2025-04-19 14:29:28 - Nom de classe détecté: BusinessAgent
+2025-04-19 14:29:28 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:28 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/businessagent/index.ts
+2025-04-19 14:29:28 - ✅ Agent businessagent corrigé
+2025-04-19 14:29:28 - Vérification de l'agent: mysql-to-postgresql dans /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/mysql-to-postgresql
+2025-04-19 14:29:28 - ⚠️ L'agent mysql-to-postgresql ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:28 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:28 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:28 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/mysql-to-postgresql/mysql-to-postgresql.ts.bak-20250419-142928
+2025-04-19 14:29:28 - Nom de classe détecté: mysql
+2025-04-19 14:29:28 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:28 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/mysql-to-postgresql/index.ts
+2025-04-19 14:29:28 - ✅ Agent mysql-to-postgresql corrigé
+2025-04-19 14:29:28 - Vérification de l'agent: php-router-audit dans /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/php-router-audit
+2025-04-19 14:29:28 - ⚠️ L'agent php-router-audit ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:28 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:28 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:28 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/php-router-audit/php-router-audit.ts.bak-20250419-142928
+2025-04-19 14:29:28 - Nom de classe détecté: PhpRouterAudit
+2025-04-19 14:29:28 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:28 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/php-router-audit/index.ts
+2025-04-19 14:29:28 - ✅ Agent php-router-audit corrigé
+2025-04-19 14:29:28 - Vérification de l'agent: pipeline-strategy-auditor dans /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/pipeline-strategy-auditor
+2025-04-19 14:29:28 - ⚠️ L'agent pipeline-strategy-auditor ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:28 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:28 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:28 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/pipeline-strategy-auditor/pipeline-strategy-auditor.ts.bak-20250419-142928
+2025-04-19 14:29:28 - Nom de classe détecté: pipeline
+2025-04-19 14:29:28 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:28 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/pipeline-strategy-auditor/index.ts
+2025-04-19 14:29:28 - ✅ Agent pipeline-strategy-auditor corrigé
+2025-04-19 14:29:28 - Vérification de l'agent: index dans /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/notifier
+2025-04-19 14:29:28 - ⚠️ L'agent index ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:28 -    - metadata: 0, events: 6, initialize: 2
+2025-04-19 14:29:28 -    - execute: 0, validate: 0, stop: 2, getStatus: 0
+2025-04-19 14:29:28 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/notifier/index.ts.bak-20250419-142928
+2025-04-19 14:29:28 - Nom de classe détecté: MCPNotifier
+2025-04-19 14:29:28 - ✅ Agent index corrigé
+2025-04-19 14:29:28 - Vérification de l'agent: type-auditor dans /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/type-auditor
+2025-04-19 14:29:28 - ⚠️ L'agent type-auditor ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:28 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:28 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:28 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/type-auditor/type-auditor.ts.bak-20250419-142928
+2025-04-19 14:29:28 - Nom de classe détecté: TypeAuditor
+2025-04-19 14:29:28 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:28 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/type-auditor/index.ts
+2025-04-19 14:29:28 - ✅ Agent type-auditor corrigé
+2025-04-19 14:29:28 - Vérification de l'agent: index dans /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/BusinessAgent
+2025-04-19 14:29:28 - ⚠️ L'agent index ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:28 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:28 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:28 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/BusinessAgent/index.ts.bak-20250419-142928
+2025-04-19 14:29:28 - Nom de classe détecté: BusinessAgent
+2025-04-19 14:29:28 - ✅ Agent index corrigé
+2025-04-19 14:29:28 - Vérification de l'agent: pr-creator dans /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/pr-creator
+2025-04-19 14:29:28 - ⚠️ L'agent pr-creator ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:28 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:28 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:28 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/pr-creator/pr-creator.ts.bak-20250419-142928
+2025-04-19 14:29:28 - Nom de classe détecté: PRCreator
+2025-04-19 14:29:28 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:28 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/pr-creator/index.ts
+2025-04-19 14:29:28 - ✅ Agent pr-creator corrigé
+2025-04-19 14:29:28 - Vérification de l'agent: index dans /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/canonical-sync-agent
+2025-04-19 14:29:28 - ⚠️ L'agent index ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:28 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:28 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:28 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/canonical-sync-agent/index.ts.bak-20250419-142928
+2025-04-19 14:29:28 - Nom de classe détecté: CanonicalSyncAgent
+2025-04-19 14:29:28 - ✅ Agent index corrigé
+2025-04-19 14:29:28 - Vérification de l'agent: index dans /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/SupabaseOptimizationTracker
+2025-04-19 14:29:28 - ⚠️ L'agent index ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:28 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:28 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:28 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/SupabaseOptimizationTracker/index.ts.bak-20250419-142928
+2025-04-19 14:29:28 - Nom de classe détecté: SupabaseOptimizationTracker
+2025-04-19 14:29:28 - ✅ Agent index corrigé
+2025-04-19 14:29:28 - Vérification de l'agent: seo-mcp-controller dans /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/seo-mcp-controller
+2025-04-19 14:29:28 - ⚠️ L'agent seo-mcp-controller ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:28 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:28 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:28 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/seo-mcp-controller/seo-mcp-controller.ts.bak-20250419-142928
+2025-04-19 14:29:28 - Nom de classe détecté: SEOMCPController
+2025-04-19 14:29:28 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:28 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/seo-mcp-controller/index.ts
+2025-04-19 14:29:28 - ✅ Agent seo-mcp-controller corrigé
+2025-04-19 14:29:28 - Vérification de l'agent: dependencyagent dans /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/dependencyagent
+2025-04-19 14:29:28 - ⚠️ L'agent dependencyagent ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:28 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:28 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:28 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/dependencyagent/dependencyagent.ts.bak-20250419-142928
+2025-04-19 14:29:28 - Nom de classe détecté: DependencyAgent
+2025-04-19 14:29:28 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:28 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/dependencyagent/index.ts
+2025-04-19 14:29:28 - ✅ Agent dependencyagent corrigé
+2025-04-19 14:29:28 - Vérification de l'agent: dev-integrator dans /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/dev-integrator
+2025-04-19 14:29:29 - ⚠️ L'agent dev-integrator ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:29 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:29 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:29 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/dev-integrator/dev-integrator.ts.bak-20250419-142929
+2025-04-19 14:29:29 - Nom de classe détecté: dev
+2025-04-19 14:29:29 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:29 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/dev-integrator/index.ts
+2025-04-19 14:29:29 - ✅ Agent dev-integrator corrigé
+2025-04-19 14:29:29 - Vérification de l'agent: sql-prisma-migration-planner dans /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/sql-prisma-migration-planner
+2025-04-19 14:29:29 - ⚠️ L'agent sql-prisma-migration-planner ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:29 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:29 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:29 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/sql-prisma-migration-planner/sql-prisma-migration-planner.ts.bak-20250419-142929
+2025-04-19 14:29:29 - Nom de classe détecté: sql
+2025-04-19 14:29:29 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:29 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/sql-prisma-migration-planner/index.ts
+2025-04-19 14:29:29 - ✅ Agent sql-prisma-migration-planner corrigé
+2025-04-19 14:29:29 - Vérification de l'agent: index dans /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/QualityAgent
+2025-04-19 14:29:29 - ⚠️ L'agent index ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:29 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:29 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:29 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/QualityAgent/index.ts.bak-20250419-142929
+2025-04-19 14:29:29 - Nom de classe détecté: QualityAgent
+2025-04-19 14:29:29 - ✅ Agent index corrigé
+2025-04-19 14:29:29 - Vérification de l'agent: mcp-verifier dans /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/mcp-verifier
+2025-04-19 14:29:29 - ⚠️ L'agent mcp-verifier ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:29 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:29 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:29 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/mcp-verifier/mcp-verifier.ts.bak-20250419-142929
+2025-04-19 14:29:29 - Nom de classe détecté: MCPVerifier
+2025-04-19 14:29:29 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:29 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/mcp-verifier/index.ts
+2025-04-19 14:29:29 - ✅ Agent mcp-verifier corrigé
+2025-04-19 14:29:29 - Vérification de l'agent: progressive-migration-agent dans /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/progressive-migration-agent
+2025-04-19 14:29:29 - ⚠️ L'agent progressive-migration-agent ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:29 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:29 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:29 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/progressive-migration-agent/progressive-migration-agent.ts.bak-20250419-142929
+2025-04-19 14:29:29 - Nom de classe détecté: ProgressiveMigrationAgent
+2025-04-19 14:29:29 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:29 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/progressive-migration-agent/index.ts
+2025-04-19 14:29:29 - ✅ Agent progressive-migration-agent corrigé
+2025-04-19 14:29:29 - Vérification de l'agent: mysql-to-pg dans /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/mysql-to-pg
+2025-04-19 14:29:29 - ⚠️ L'agent mysql-to-pg ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:29 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:29 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:29 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/mysql-to-pg/mysql-to-pg.ts.bak-20250419-142929
+2025-04-19 14:29:29 - Nom de classe détecté: mysql
+2025-04-19 14:29:29 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:29 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/mysql-to-pg/index.ts
+2025-04-19 14:29:29 - ✅ Agent mysql-to-pg corrigé
+2025-04-19 14:29:29 - Vérification de l'agent: sql-debt-audit dans /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/sql-debt-audit
+2025-04-19 14:29:29 - ⚠️ L'agent sql-debt-audit ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:29 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:29 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:29 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/sql-debt-audit/sql-debt-audit.ts.bak-20250419-142929
+2025-04-19 14:29:29 - Nom de classe détecté: sql
+2025-04-19 14:29:29 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:29 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/sql-debt-audit/index.ts
+2025-04-19 14:29:29 - ✅ Agent sql-debt-audit corrigé
+2025-04-19 14:29:29 - Vérification de l'agent: dev-linter dans /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/dev-linter
+2025-04-19 14:29:29 - ⚠️ L'agent dev-linter ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:29 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:29 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:29 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/dev-linter/dev-linter.ts.bak-20250419-142929
+2025-04-19 14:29:29 - Nom de classe détecté: dev
+2025-04-19 14:29:29 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:29 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/dev-linter/index.ts
+2025-04-19 14:29:29 - ✅ Agent dev-linter corrigé
+2025-04-19 14:29:29 - Vérification de l'agent: type-mapper dans /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/type-mapper
+2025-04-19 14:29:29 - ⚠️ L'agent type-mapper ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:29 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:29 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:29 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/type-mapper/type-mapper.ts.bak-20250419-142929
+2025-04-19 14:29:29 - Nom de classe détecté: type
+2025-04-19 14:29:29 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:29 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/type-mapper/index.ts
+2025-04-19 14:29:29 - ✅ Agent type-mapper corrigé
+2025-04-19 14:29:29 - Vérification de l'agent: remediator dans /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/remediator
+2025-04-19 14:29:29 - ⚠️ L'agent remediator ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:29 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:29 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:29 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/remediator/remediator.ts.bak-20250419-142929
+2025-04-19 14:29:29 - Nom de classe détecté: remediator
+2025-04-19 14:29:29 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:29 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/remediator/index.ts
+2025-04-19 14:29:29 - ✅ Agent remediator corrigé
+2025-04-19 14:29:29 - Vérification de l'agent: auto-pr-agent dans /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/auto-pr-agent
+2025-04-19 14:29:29 - ⚠️ L'agent auto-pr-agent ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:29 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:29 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:29 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/auto-pr-agent/auto-pr-agent.ts.bak-20250419-142929
+2025-04-19 14:29:29 - Nom de classe détecté: AutoPRAgent
+2025-04-19 14:29:29 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:29 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/auto-pr-agent/index.ts
+2025-04-19 14:29:29 - ✅ Agent auto-pr-agent corrigé
+2025-04-19 14:29:29 - Vérification de l'agent: agent-version-auditor dans /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/agent-version-auditor
+2025-04-19 14:29:29 - ⚠️ L'agent agent-version-auditor ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:29 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:29 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:29 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/agent-version-auditor/agent-version-auditor.ts.bak-20250419-142929
+2025-04-19 14:29:29 - Nom de classe détecté: agent
+2025-04-19 14:29:29 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:29 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/agent-version-auditor/index.ts
+2025-04-19 14:29:29 - ✅ Agent agent-version-auditor corrigé
+2025-04-19 14:29:29 - Vérification de l'agent: ci-tester dans /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/ci-tester
+2025-04-19 14:29:29 - ⚠️ L'agent ci-tester ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:29 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:29 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:29 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/ci-tester/ci-tester.ts.bak-20250419-142929
+2025-04-19 14:29:29 - Nom de classe détecté: ci
+2025-04-19 14:29:29 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:29 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/ci-tester/index.ts
+2025-04-19 14:29:29 - ✅ Agent ci-tester corrigé
+2025-04-19 14:29:29 - Vérification de l'agent: baseagent dans /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/baseagent
+2025-04-19 14:29:29 - ⚠️ L'agent baseagent ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:29 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:29 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:30 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/baseagent/baseagent.ts.bak-20250419-142929
+2025-04-19 14:29:30 - Nom de classe détecté: BaseAgent
+2025-04-19 14:29:30 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:30 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/baseagent/index.ts
+2025-04-19 14:29:30 - ✅ Agent baseagent corrigé
+2025-04-19 14:29:30 - Vérification de l'agent: dataagent dans /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/dataagent
+2025-04-19 14:29:30 - ⚠️ L'agent dataagent ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:30 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:30 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:30 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/dataagent/dataagent.ts.bak-20250419-142930
+2025-04-19 14:29:30 - Nom de classe détecté: DataAgent
+2025-04-19 14:29:30 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:30 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/dataagent/index.ts
+2025-04-19 14:29:30 - ✅ Agent dataagent corrigé
+2025-04-19 14:29:30 - Vérification de l'agent: debt-detector dans /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/debt-detector
+2025-04-19 14:29:30 - ⚠️ L'agent debt-detector ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:30 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:30 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:30 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/debt-detector/debt-detector.ts.bak-20250419-142930
+2025-04-19 14:29:30 - Nom de classe détecté: DebtDetector
+2025-04-19 14:29:30 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:30 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/debt-detector/index.ts
+2025-04-19 14:29:30 - ✅ Agent debt-detector corrigé
+2025-04-19 14:29:30 - Vérification de l'agent: qa-confirmer dans /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/qa-confirmer
+2025-04-19 14:29:30 - ⚠️ L'agent qa-confirmer ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:30 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:30 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:30 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/qa-confirmer/qa-confirmer.ts.bak-20250419-142930
+2025-04-19 14:29:30 - Nom de classe détecté: qa
+2025-04-19 14:29:30 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:30 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/qa-confirmer/index.ts
+2025-04-19 14:29:30 - ✅ Agent qa-confirmer corrigé
+2025-04-19 14:29:30 - Vérification de l'agent: data-verifier dans /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/data-verifier
+2025-04-19 14:29:30 - ⚠️ L'agent data-verifier ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:30 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:30 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:30 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/data-verifier/data-verifier.ts.bak-20250419-142930
+2025-04-19 14:29:30 - Nom de classe détecté: data
+2025-04-19 14:29:30 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:30 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/data-verifier/index.ts
+2025-04-19 14:29:30 - ✅ Agent data-verifier corrigé
+2025-04-19 14:29:30 - Vérification de l'agent: seo-content-enhancer dans /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/seo-content-enhancer
+2025-04-19 14:29:30 - ⚠️ L'agent seo-content-enhancer ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:30 -    - metadata: 0, events: 0, initialize: 1
+2025-04-19 14:29:30 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:30 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/seo-content-enhancer/seo-content-enhancer.ts.bak-20250419-142930
+2025-04-19 14:29:30 - Nom de classe détecté: SEOContentEnhancer
+2025-04-19 14:29:30 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:30 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/seo-content-enhancer/index.ts
+2025-04-19 14:29:30 - ✅ Agent seo-content-enhancer corrigé
+2025-04-19 14:29:30 - Vérification de l'agent: agent-quality dans /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/agent-quality
+2025-04-19 14:29:30 - ⚠️ L'agent agent-quality ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:30 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:30 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:30 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/agent-quality/agent-quality.ts.bak-20250419-142930
+2025-04-19 14:29:30 - Nom de classe détecté: QualityAgent
+2025-04-19 14:29:30 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:30 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/agent-quality/index.ts
+2025-04-19 14:29:30 - ✅ Agent agent-quality corrigé
+2025-04-19 14:29:30 - Vérification de l'agent: discovery-agent dans /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/discovery-agent
+2025-04-19 14:29:30 - ⚠️ L'agent discovery-agent ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:30 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:30 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:30 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/discovery-agent/discovery-agent.ts.bak-20250419-142930
+2025-04-19 14:29:30 - Nom de classe détecté: discovery
+2025-04-19 14:29:30 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:30 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/discovery-agent/index.ts
+2025-04-19 14:29:30 - ✅ Agent discovery-agent corrigé
+2025-04-19 14:29:30 - Vérification de l'agent: seo-redirect-mapper dans /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/seo-redirect-mapper
+2025-04-19 14:29:30 - ⚠️ L'agent seo-redirect-mapper ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:30 -    - metadata: 0, events: 0, initialize: 1
+2025-04-19 14:29:30 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:30 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/seo-redirect-mapper/seo-redirect-mapper.ts.bak-20250419-142930
+2025-04-19 14:29:30 - Nom de classe détecté: SEORedirectMapper
+2025-04-19 14:29:30 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:30 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/seo-redirect-mapper/index.ts
+2025-04-19 14:29:30 - ✅ Agent seo-redirect-mapper corrigé
+2025-04-19 14:29:30 - Vérification de l'agent: consolidator dans /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/consolidator
+2025-04-19 14:29:30 - ⚠️ L'agent consolidator ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:30 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:30 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:30 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/consolidator/consolidator.ts.bak-20250419-142930
+2025-04-19 14:29:30 - Nom de classe détecté: consolidator
+2025-04-19 14:29:30 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:30 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/consolidator/index.ts
+2025-04-19 14:29:30 - ✅ Agent consolidator corrigé
+2025-04-19 14:29:30 - Vérification de l'agent: diff-verifier dans /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/diff-verifier
+2025-04-19 14:29:31 - ⚠️ L'agent diff-verifier ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:31 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:31 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:31 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/diff-verifier/diff-verifier.ts.bak-20250419-142931
+2025-04-19 14:29:31 - Nom de classe détecté: diff
+2025-04-19 14:29:31 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:31 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/diff-verifier/index.ts
+2025-04-19 14:29:31 - ✅ Agent diff-verifier corrigé
+2025-04-19 14:29:31 - Vérification de l'agent: semantic-table-mapper dans /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/semantic-table-mapper
+2025-04-19 14:29:31 - ⚠️ L'agent semantic-table-mapper ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:31 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:31 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:31 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/semantic-table-mapper/semantic-table-mapper.ts.bak-20250419-142931
+2025-04-19 14:29:31 - Nom de classe détecté: SemanticMapper
+2025-04-19 14:29:31 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:31 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/semantic-table-mapper/index.ts
+2025-04-19 14:29:31 - ✅ Agent semantic-table-mapper corrigé
+2025-04-19 14:29:31 - Vérification de l'agent: qualityagent dans /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/qualityagent
+2025-04-19 14:29:31 - ⚠️ L'agent qualityagent ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:31 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:31 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:31 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/qualityagent/qualityagent.ts.bak-20250419-142931
+2025-04-19 14:29:31 - Nom de classe détecté: QualityAgent
+2025-04-19 14:29:31 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:31 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/qualityagent/index.ts
+2025-04-19 14:29:31 - ✅ Agent qualityagent corrigé
+2025-04-19 14:29:31 - Vérification de l'agent: relational-normalizer dans /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/relational-normalizer
+2025-04-19 14:29:31 - ⚠️ L'agent relational-normalizer ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:31 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:31 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:31 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/relational-normalizer/relational-normalizer.ts.bak-20250419-142931
+2025-04-19 14:29:31 - Nom de classe détecté: RelationalNormalizer
+2025-04-19 14:29:31 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:31 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/relational-normalizer/index.ts
+2025-04-19 14:29:31 - ✅ Agent relational-normalizer corrigé
+2025-04-19 14:29:31 - Vérification de l'agent: type-converter dans /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/type-converter
+2025-04-19 14:29:31 - ⚠️ L'agent type-converter ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:31 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:31 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:31 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/type-converter/type-converter.ts.bak-20250419-142931
+2025-04-19 14:29:31 - Nom de classe détecté: TypeConverter
+2025-04-19 14:29:31 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:31 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/type-converter/index.ts
+2025-04-19 14:29:31 - ✅ Agent type-converter corrigé
+2025-04-19 14:29:31 - Vérification de l'agent: migration-strategist dans /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/migration-strategist
+2025-04-19 14:29:31 - ⚠️ L'agent migration-strategist ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:31 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:31 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:31 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/migration-strategist/migration-strategist.ts.bak-20250419-142931
+2025-04-19 14:29:31 - Nom de classe détecté: migration
+2025-04-19 14:29:31 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:31 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/migration-strategist/index.ts
+2025-04-19 14:29:31 - ✅ Agent migration-strategist corrigé
+2025-04-19 14:29:31 - Vérification de l'agent: seo-audit-runner dans /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/seo-audit-runner
+2025-04-19 14:29:31 - ⚠️ L'agent seo-audit-runner ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:31 -    - metadata: 0, events: 0, initialize: 1
+2025-04-19 14:29:31 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:31 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/seo-audit-runner/seo-audit-runner.ts.bak-20250419-142931
+2025-04-19 14:29:31 - Nom de classe détecté: SEOAuditRunner
+2025-04-19 14:29:31 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:31 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/seo-audit-runner/index.ts
+2025-04-19 14:29:31 - ✅ Agent seo-audit-runner corrigé
+2025-04-19 14:29:31 - Vérification de l'agent: structureagent dans /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/structureagent
+2025-04-19 14:29:31 - ⚠️ L'agent structureagent ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:31 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:31 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:31 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/structureagent/structureagent.ts.bak-20250419-142931
+2025-04-19 14:29:31 - Nom de classe détecté: StructureAgent
+2025-04-19 14:29:31 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:31 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/structureagent/index.ts
+2025-04-19 14:29:31 - ✅ Agent structureagent corrigé
+2025-04-19 14:29:31 - Vérification de l'agent: mcp-manifest-manager dans /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/mcp-manifest-manager
+2025-04-19 14:29:31 - ⚠️ L'agent mcp-manifest-manager ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:31 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:31 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:31 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/mcp-manifest-manager/mcp-manifest-manager.ts.bak-20250419-142931
+2025-04-19 14:29:31 - Nom de classe détecté: MCPManifestManager
+2025-04-19 14:29:31 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:31 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/mcp-manifest-manager/index.ts
+2025-04-19 14:29:31 - ✅ Agent mcp-manifest-manager corrigé
+2025-04-19 14:29:31 - Vérification de l'agent: agent-donnees dans /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/agent-donnees
+2025-04-19 14:29:31 - ⚠️ L'agent agent-donnees ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:31 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:31 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:31 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/agent-donnees/agent-donnees.ts.bak-20250419-142931
+2025-04-19 14:29:31 - Nom de classe détecté: agent
+2025-04-19 14:29:31 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:31 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/business/misc/agent-donnees/index.ts
+2025-04-19 14:29:31 - ✅ Agent agent-donnees corrigé
+2025-04-19 14:29:31 - Vérification de l'agent: seo-meta.generator dans /workspaces/cahier-des-charge/packages/mcp-agents/business/generators/seo-meta.generator
+2025-04-19 14:29:31 - ⚠️ L'agent seo-meta.generator ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:31 -    - metadata: 1, events: 0, initialize: 0
+2025-04-19 14:29:31 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:31 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/business/generators/seo-meta.generator/seo-meta.generator.ts.bak-20250419-142931
+2025-04-19 14:29:31 - Nom de classe détecté: SeoMetadataGenerator
+2025-04-19 14:29:31 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:31 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/business/generators/seo-meta.generator/index.ts
+2025-04-19 14:29:31 - ✅ Agent seo-meta.generator corrigé
+2025-04-19 14:29:31 - Vérification de l'agent: index dans /workspaces/cahier-des-charge/packages/mcp-agents/business/generators/prisma-generator
+2025-04-19 14:29:31 - ⚠️ L'agent index ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:31 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:31 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:31 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/business/generators/prisma-generator/index.ts.bak-20250419-142931
+2025-04-19 14:29:31 - Nom de classe détecté: PrismaGenerator
+2025-04-19 14:29:32 - ✅ Agent index corrigé
+2025-04-19 14:29:32 - Vérification de l'agent: prisma-generator dans /workspaces/cahier-des-charge/packages/mcp-agents/business/generators/prisma-generator
+2025-04-19 14:29:32 - ⚠️ L'agent prisma-generator ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:32 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:32 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:32 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/business/generators/prisma-generator/prisma-generator.ts.bak-20250419-142932
+2025-04-19 14:29:32 - Nom de classe détecté: PrismaGenerator
+2025-04-19 14:29:32 - ✅ Agent prisma-generator corrigé
+2025-04-19 14:29:32 - Vérification de l'agent: generate_prisma_model dans /workspaces/cahier-des-charge/packages/mcp-agents/business/generators/generate_prisma_model
+2025-04-19 14:29:32 - ⚠️ L'agent generate_prisma_model ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:32 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:32 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:32 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/business/generators/generate_prisma_model/generate_prisma_model.ts.bak-20250419-142932
+2025-04-19 14:29:32 - Nom de classe détecté: generate_prisma_model
+2025-04-19 14:29:32 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:32 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/business/generators/generate_prisma_model/index.ts
+2025-04-19 14:29:32 - ✅ Agent generate_prisma_model corrigé
+2025-04-19 14:29:32 - Vérification de l'agent: caddy-generator dans /workspaces/cahier-des-charge/packages/mcp-agents/business/generators/caddy-generator
+2025-04-19 14:29:32 - ⚠️ L'agent caddy-generator ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:32 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:32 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:32 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/business/generators/caddy-generator/caddy-generator.ts.bak-20250419-142932
+2025-04-19 14:29:32 - Nom de classe détecté: CaddyGenerator
+2025-04-19 14:29:32 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:32 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/business/generators/caddy-generator/index.ts
+2025-04-19 14:29:32 - ✅ Agent caddy-generator corrigé
+2025-04-19 14:29:32 - Vérification de l'agent: index dans /workspaces/cahier-des-charge/packages/mcp-agents/business/generators/nestjs-generator
+2025-04-19 14:29:32 - ⚠️ L'agent index ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:32 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:32 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:32 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/business/generators/nestjs-generator/index.ts.bak-20250419-142932
+2025-04-19 14:29:32 - Nom de classe détecté: NestJSGenerator
+2025-04-19 14:29:32 - ✅ Agent index corrigé
+2025-04-19 14:29:32 - Vérification de l'agent: remix-route-generator dans /workspaces/cahier-des-charge/packages/mcp-agents/business/generators/remix-route-generator
+2025-04-19 14:29:32 - ⚠️ L'agent remix-route-generator ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:32 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:32 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:32 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/business/generators/remix-route-generator/remix-route-generator.ts.bak-20250419-142932
+2025-04-19 14:29:32 - Nom de classe détecté: RemixRouteGenerator
+2025-04-19 14:29:32 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:32 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/business/generators/remix-route-generator/index.ts
+2025-04-19 14:29:32 - ✅ Agent remix-route-generator corrigé
+2025-04-19 14:29:32 - Vérification de l'agent: prisma-migration-generator dans /workspaces/cahier-des-charge/packages/mcp-agents/business/generators/prisma-migration-generator
+2025-04-19 14:29:32 - ⚠️ L'agent prisma-migration-generator ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:32 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:32 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:32 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/business/generators/prisma-migration-generator/prisma-migration-generator.ts.bak-20250419-142932
+2025-04-19 14:29:32 - Nom de classe détecté: prisma
+2025-04-19 14:29:32 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:32 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/business/generators/prisma-migration-generator/index.ts
+2025-04-19 14:29:32 - ✅ Agent prisma-migration-generator corrigé
+2025-04-19 14:29:32 - Vérification de l'agent: prisma-smart-generator dans /workspaces/cahier-des-charge/packages/mcp-agents/business/generators/prisma-smart-generator
+2025-04-19 14:29:32 - ⚠️ L'agent prisma-smart-generator ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:32 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:32 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:32 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/business/generators/prisma-smart-generator/prisma-smart-generator.ts.bak-20250419-142932
+2025-04-19 14:29:32 - Nom de classe détecté: prisma
+2025-04-19 14:29:32 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:32 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/business/generators/prisma-smart-generator/index.ts
+2025-04-19 14:29:32 - ✅ Agent prisma-smart-generator corrigé
+2025-04-19 14:29:32 - Vérification de l'agent: index dans /workspaces/cahier-des-charge/packages/mcp-agents/business/generators/remix-generator
+2025-04-19 14:29:32 - ⚠️ L'agent index ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:32 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:32 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:32 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/business/generators/remix-generator/index.ts.bak-20250419-142932
+2025-04-19 14:29:32 - Nom de classe détecté: RemixGenerator
+2025-04-19 14:29:32 - ✅ Agent index corrigé
+2025-04-19 14:29:32 - Vérification de l'agent: generate-migration-plan dans /workspaces/cahier-des-charge/packages/mcp-agents/business/generators/generate-migration-plan
+2025-04-19 14:29:33 - ⚠️ L'agent generate-migration-plan ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:33 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:33 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:33 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/business/generators/generate-migration-plan/generate-migration-plan.ts.bak-20250419-142933
+2025-04-19 14:29:33 - Nom de classe détecté: generate
+2025-04-19 14:29:33 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:33 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/business/generators/generate-migration-plan/index.ts
+2025-04-19 14:29:33 - ✅ Agent generate-migration-plan corrigé
+2025-04-19 14:29:33 - Vérification de l'agent: meta-generator dans /workspaces/cahier-des-charge/packages/mcp-agents/business/generators/meta-generator
+2025-04-19 14:29:33 - ⚠️ L'agent meta-generator ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:33 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:33 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:33 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/business/generators/meta-generator/meta-generator.ts.bak-20250419-142933
+2025-04-19 14:29:33 - Nom de classe détecté: MetaGenerator
+2025-04-19 14:29:33 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:33 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/business/generators/meta-generator/index.ts
+2025-04-19 14:29:33 - ✅ Agent meta-generator corrigé
+2025-04-19 14:29:33 - Vérification de l'agent: index dans /workspaces/cahier-des-charge/packages/mcp-agents/business/generators/component-generator
+2025-04-19 14:29:33 - ⚠️ L'agent index ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:33 -    - metadata: 0, events: 0, initialize: 3
+2025-04-19 14:29:33 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:33 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/business/generators/component-generator/index.ts.bak-20250419-142933
+2025-04-19 14:29:33 - Nom de classe détecté: ComponentGenerator
+2025-04-19 14:29:33 - ✅ Agent index corrigé
+2025-04-19 14:29:33 - Vérification de l'agent: component-generator dans /workspaces/cahier-des-charge/packages/mcp-agents/business/generators/component-generator
+2025-04-19 14:29:33 - ⚠️ L'agent component-generator ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:33 -    - metadata: 0, events: 0, initialize: 1
+2025-04-19 14:29:33 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:33 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/business/generators/component-generator/component-generator.ts.bak-20250419-142933
+2025-04-19 14:29:33 - Nom de classe détecté: ComponentGenerator
+2025-04-19 14:29:33 - ✅ Agent component-generator corrigé
+2025-04-19 14:29:33 - Vérification de l'agent: dev-generator dans /workspaces/cahier-des-charge/packages/mcp-agents/business/generators/dev-generator
+2025-04-19 14:29:33 - ⚠️ L'agent dev-generator ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:33 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:33 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:33 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/business/generators/dev-generator/dev-generator.ts.bak-20250419-142933
+2025-04-19 14:29:33 - Nom de classe détecté: DevGenerator
+2025-04-19 14:29:33 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:33 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/business/generators/dev-generator/index.ts
+2025-04-19 14:29:33 - ✅ Agent dev-generator corrigé
+2025-04-19 14:29:33 - Vérification de l'agent: index dans /workspaces/cahier-des-charge/packages/mcp-agents/business/orchestrators/coordinator-agent
+2025-04-19 14:29:33 - ⚠️ L'agent index ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:33 -    - metadata: 5, events: 0, initialize: 0
+2025-04-19 14:29:33 -    - execute: 3, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:33 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/business/orchestrators/coordinator-agent/index.ts.bak-20250419-142933
+2025-04-19 14:29:33 - Nom de classe détecté: CoordinatorAgent
+2025-04-19 14:29:33 - ✅ Agent index corrigé
+2025-04-19 14:29:33 - Vérification de l'agent: index dans /workspaces/cahier-des-charge/packages/mcp-agents/business/orchestrators/bullmq-orchestrator
+2025-04-19 14:29:33 - ⚠️ L'agent index ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:33 -    - metadata: 5, events: 4, initialize: 2
+2025-04-19 14:29:33 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:33 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/business/orchestrators/bullmq-orchestrator/index.ts.bak-20250419-142933
+2025-04-19 14:29:33 - Nom de classe détecté: BullMqOrchestrator
+2025-04-19 14:29:33 - ✅ Agent index corrigé
+2025-04-19 14:29:33 - Vérification de l'agent: image-optimizer dans /workspaces/cahier-des-charge/packages/mcp-agents/processors
+2025-04-19 14:29:33 - ⚠️ L'agent image-optimizer ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:33 -    - metadata: 14, events: 0, initialize: 0
+2025-04-19 14:29:33 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:33 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/processors/image-optimizer.ts.bak-20250419-142933
+2025-04-19 14:29:33 - Nom de classe détecté: ImageOptimizer
+2025-04-19 14:29:33 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:33 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/processors/index.ts
+2025-04-19 14:29:33 - ✅ Agent image-optimizer corrigé
+2025-04-19 14:29:33 - Vérification de l'agent: index dans /workspaces/cahier-des-charge/packages/mcp-agents/php-analyzer
+2025-04-19 14:29:33 - ⚠️ L'agent index ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:33 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:33 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:33 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/php-analyzer/index.ts.bak-20250419-142933
+2025-04-19 14:29:33 - Nom de classe détecté: QAAnalyzer
+2025-04-19 14:29:33 - ✅ Agent index corrigé
+2025-04-19 14:29:33 - Vérification de l'agent: layered-agent-auditor dans /workspaces/cahier-des-charge/packages/mcp-agents/tools/layered-agent-auditor
+2025-04-19 14:29:33 - ⚠️ L'agent layered-agent-auditor ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:33 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:33 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:33 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/tools/layered-agent-auditor/layered-agent-auditor.ts.bak-20250419-142933
+2025-04-19 14:29:33 - Nom de classe détecté: LayeredAgentAuditor
+2025-04-19 14:29:33 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:33 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/tools/layered-agent-auditor/index.ts
+2025-04-19 14:29:33 - ✅ Agent layered-agent-auditor corrigé
+2025-04-19 14:29:33 - Vérification de l'agent: seo-checker dans /workspaces/cahier-des-charge/packages/mcp-agents/seo-checker
+2025-04-19 14:29:34 - ⚠️ L'agent seo-checker ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:34 -    - metadata: 57, events: 0, initialize: 1
+2025-04-19 14:29:34 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:34 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/seo-checker/seo-checker.ts.bak-20250419-142934
+2025-04-19 14:29:34 - Nom de classe détecté: SEOChecker
+2025-04-19 14:29:34 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:34 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/seo-checker/index.ts
+2025-04-19 14:29:34 - ✅ Agent seo-checker corrigé
+2025-04-19 14:29:34 - Vérification de l'agent: seo-ci-tester dans /workspaces/cahier-des-charge/packages/mcp-agents/seo-checker
+2025-04-19 14:29:34 - ⚠️ L'agent seo-ci-tester ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:34 -    - metadata: 1, events: 0, initialize: 0
+2025-04-19 14:29:34 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:34 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/seo-checker/seo-ci-tester.ts.bak-20250419-142934
+2025-04-19 14:29:34 - Nom de classe détecté: SEOCITester
+2025-04-19 14:29:34 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:34 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/seo-checker/index.ts
+2025-04-19 14:29:34 - ✅ Agent seo-ci-tester corrigé
+2025-04-19 14:29:34 - Vérification de l'agent: nestjs-generator dans /workspaces/cahier-des-charge/packages/mcp-agents
+2025-04-19 14:29:34 - ⚠️ L'agent nestjs-generator ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:34 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:34 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:34 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/nestjs-generator.ts.bak-20250419-142934
+2025-04-19 14:29:34 - Nom de classe détecté: NestJSGenerator
+2025-04-19 14:29:34 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:34 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/index.ts
+2025-04-19 14:29:34 - ✅ Agent nestjs-generator corrigé
+2025-04-19 14:29:34 - Vérification de l'agent: index dans /workspaces/cahier-des-charge/packages/mcp-agents/remix-generator
+2025-04-19 14:29:34 - ⚠️ L'agent index ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:34 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:34 -    - execute: 1, validate: 2, stop: 0, getStatus: 0
+2025-04-19 14:29:34 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/remix-generator/index.ts.bak-20250419-142934
+2025-04-19 14:29:34 - Nom de classe détecté: RemixGeneratorAgent
+2025-04-19 14:29:34 - ✅ Agent index corrigé
+2025-04-19 14:29:34 - Vérification de l'agent: abstract-generator dans /workspaces/cahier-des-charge/packages/mcp-agents/generators
+2025-04-19 14:29:34 - ⚠️ L'agent abstract-generator ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:34 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:34 -    - execute: 0, validate: 0, stop: 0, getStatus: 1
+2025-04-19 14:29:34 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/generators/abstract-generator.ts.bak-20250419-142934
+2025-04-19 14:29:34 - Nom de classe détecté: class
+2025-04-19 14:29:34 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:34 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/generators/index.ts
+2025-04-19 14:29:34 - ✅ Agent abstract-generator corrigé
+2025-04-19 14:29:34 - Vérification de l'agent: seo-content-enhancer dans /workspaces/cahier-des-charge/packages/mcp-agents/generators/content-generator/seo-content-enhancer
+2025-04-19 14:29:34 - ⚠️ L'agent seo-content-enhancer ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:34 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:34 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:34 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/generators/content-generator/seo-content-enhancer/seo-content-enhancer.ts.bak-20250419-142934
+2025-04-19 14:29:34 - Nom de classe détecté: SEOContentEnhancer
+2025-04-19 14:29:34 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:34 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/generators/content-generator/seo-content-enhancer/index.ts
+2025-04-19 14:29:34 - ✅ Agent seo-content-enhancer corrigé
+2025-04-19 14:29:34 - Vérification de l'agent: seo-content-enhancer dans /workspaces/cahier-des-charge/packages/mcp-agents/generators/content-generator
+2025-04-19 14:29:34 - ⚠️ L'agent seo-content-enhancer ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:34 -    - metadata: 0, events: 0, initialize: 1
+2025-04-19 14:29:34 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:34 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/generators/content-generator/seo-content-enhancer.ts.bak-20250419-142934
+2025-04-19 14:29:34 - Nom de classe détecté: SEOContentEnhancer
+2025-04-19 14:29:34 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:34 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/generators/content-generator/index.ts
+2025-04-19 14:29:34 - ✅ Agent seo-content-enhancer corrigé
+2025-04-19 14:29:34 - Vérification de l'agent: remix-generator dans /workspaces/cahier-des-charge/packages/mcp-agents/generators
+2025-04-19 14:29:34 - ⚠️ L'agent remix-generator ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:34 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:34 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:34 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/generators/remix-generator.ts.bak-20250419-142934
+2025-04-19 14:29:34 - Nom de classe détecté: RemixGenerator
+2025-04-19 14:29:34 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:34 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/generators/index.ts
+2025-04-19 14:29:34 - ✅ Agent remix-generator corrigé
+2025-04-19 14:29:34 - Vérification de l'agent: react-component-generator dans /workspaces/cahier-des-charge/packages/mcp-agents/generators
+2025-04-19 14:29:34 - ⚠️ L'agent react-component-generator ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:34 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:34 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:34 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/generators/react-component-generator.ts.bak-20250419-142934
+2025-04-19 14:29:34 - Nom de classe détecté: ReactComponentGenerator
+2025-04-19 14:29:34 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:34 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/generators/index.ts
+2025-04-19 14:29:34 - ✅ Agent react-component-generator corrigé
+2025-04-19 14:29:34 - Vérification de l'agent: abstract-generator-agent dans /workspaces/cahier-des-charge/packages/mcp-agents/generators
+2025-04-19 14:29:34 - ⚠️ L'agent abstract-generator-agent ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:34 -    - metadata: 0, events: 0, initialize: 2
+2025-04-19 14:29:34 -    - execute: 0, validate: 0, stop: 0, getStatus: 1
+2025-04-19 14:29:34 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/generators/abstract-generator-agent.ts.bak-20250419-142934
+2025-04-19 14:29:34 - Nom de classe détecté: class
+2025-04-19 14:29:34 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:34 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/generators/index.ts
+2025-04-19 14:29:34 - ✅ Agent abstract-generator-agent corrigé
+2025-04-19 14:29:34 - Vérification de l'agent: index dans /workspaces/cahier-des-charge/packages/mcp-agents/generators
+2025-04-19 14:29:34 - ⚠️ L'agent index ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:34 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:34 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:34 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/generators/index.ts.bak-20250419-142934
+2025-04-19 14:29:34 - Nom de classe détecté: class
+2025-04-19 14:29:34 - ✅ Agent index corrigé
+2025-04-19 14:29:34 - Vérification de l'agent: caddyfile-generator dans /workspaces/cahier-des-charge/packages/mcp-agents/generators/caddyfile-generator/caddyfile-generator
+2025-04-19 14:29:34 - ⚠️ L'agent caddyfile-generator ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:34 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:34 -    - execute: 1, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:34 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/generators/caddyfile-generator/caddyfile-generator/caddyfile-generator.ts.bak-20250419-142934
+2025-04-19 14:29:34 - Nom de classe détecté: CaddyfileGenerator
+2025-04-19 14:29:34 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:34 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/generators/caddyfile-generator/caddyfile-generator/index.ts
+2025-04-19 14:29:34 - ✅ Agent caddyfile-generator corrigé
+2025-04-19 14:29:34 - Vérification de l'agent: caddyfile-generator dans /workspaces/cahier-des-charge/packages/mcp-agents/generators/caddyfile-generator
+2025-04-19 14:29:34 - ⚠️ L'agent caddyfile-generator ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:34 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:34 -    - execute: 1, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:34 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/generators/caddyfile-generator/caddyfile-generator.ts.bak-20250419-142934
+2025-04-19 14:29:34 - Nom de classe détecté: CaddyfileGenerator
+2025-04-19 14:29:34 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:34 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/generators/caddyfile-generator/index.ts
+2025-04-19 14:29:34 - ✅ Agent caddyfile-generator corrigé
+2025-04-19 14:29:34 - Vérification de l'agent: base-generator-agent dans /workspaces/cahier-des-charge/packages/mcp-agents/generators
+2025-04-19 14:29:34 - ⚠️ L'agent base-generator-agent ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:34 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:34 -    - execute: 1, validate: 1, stop: 0, getStatus: 0
+2025-04-19 14:29:34 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/generators/base-generator-agent.ts.bak-20250419-142934
+2025-04-19 14:29:34 - Nom de classe détecté: class
+2025-04-19 14:29:34 - ✅ Agent base-generator-agent corrigé
+2025-04-19 14:29:34 - Vérification de l'agent: nestjs-generator dans /workspaces/cahier-des-charge/packages/mcp-agents/generators
+2025-04-19 14:29:34 - ⚠️ L'agent nestjs-generator ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:34 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:34 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:34 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/generators/nestjs-generator.ts.bak-20250419-142934
+2025-04-19 14:29:34 - Nom de classe détecté: NestJSGenerator
+2025-04-19 14:29:34 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:34 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/generators/index.ts
+2025-04-19 14:29:34 - ✅ Agent nestjs-generator corrigé
+2025-04-19 14:29:34 - Vérification de l'agent: monorepo-analyzer dans /workspaces/cahier-des-charge/packages/mcp-agents
+2025-04-19 14:29:34 - ⚠️ L'agent monorepo-analyzer ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:34 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:34 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:34 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/monorepo-analyzer.ts.bak-20250419-142934
+2025-04-19 14:29:34 - Nom de classe détecté: MonorepoAnalyzer
+2025-04-19 14:29:34 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:34 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/index.ts
+2025-04-19 14:29:34 - ✅ Agent monorepo-analyzer corrigé
+2025-04-19 14:29:34 - Vérification de l'agent: index dans /workspaces/cahier-des-charge/packages/mcp-agents/qa-analyzer
+2025-04-19 14:29:34 - ⚠️ L'agent index ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:34 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:34 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:34 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/qa-analyzer/index.ts.bak-20250419-142934
+2025-04-19 14:29:34 - Nom de classe détecté: QAAnalyzer
+2025-04-19 14:29:34 - ✅ Agent index corrigé
+2025-04-19 14:29:34 - Vérification de l'agent: qa-analyzer dans /workspaces/cahier-des-charge/packages/mcp-agents/qa-analyzer
+2025-04-19 14:29:34 - ⚠️ L'agent qa-analyzer ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:34 -    - metadata: 0, events: 0, initialize: 2
+2025-04-19 14:29:34 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:34 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/qa-analyzer/qa-analyzer.ts.bak-20250419-142934
+2025-04-19 14:29:34 - Nom de classe détecté: QaAnalyzer
+2025-04-19 14:29:34 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:34 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/qa-analyzer/index.ts
+2025-04-19 14:29:34 - ✅ Agent qa-analyzer corrigé
+2025-04-19 14:29:34 - Vérification de l'agent: mcp-verifier dans /workspaces/cahier-des-charge/packages/mcp-agents
+2025-04-19 14:29:34 - ⚠️ L'agent mcp-verifier ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:34 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:34 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:34 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/mcp-verifier.ts.bak-20250419-142934
+2025-04-19 14:29:34 - Nom de classe détecté: mcp-verifierAgent
+2025-04-19 14:29:34 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:34 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/index.ts
+2025-04-19 14:29:34 - ✅ Agent mcp-verifier corrigé
+2025-04-19 14:29:34 - Vérification de l'agent: system-integration-bridge dans /workspaces/cahier-des-charge/packages/mcp-agents/coordination/bridges/system-integration-bridge
+2025-04-19 14:29:34 - ⚠️ L'agent system-integration-bridge ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:34 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:34 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:34 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/coordination/bridges/system-integration-bridge/system-integration-bridge.ts.bak-20250419-142934
+2025-04-19 14:29:34 - Nom de classe détecté: SystemIntegrationBridge
+2025-04-19 14:29:34 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:34 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/coordination/bridges/system-integration-bridge/index.ts
+2025-04-19 14:29:34 - ✅ Agent system-integration-bridge corrigé
+2025-04-19 14:29:34 - Vérification de l'agent: temporal-adapter dans /workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/three-layer/adapters
+2025-04-19 14:29:34 - ⚠️ L'agent temporal-adapter ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:34 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:34 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:34 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/three-layer/adapters/temporal-adapter.ts.bak-20250419-142934
+2025-04-19 14:29:34 - Nom de classe détecté: TemporalAdapter
+2025-04-19 14:29:34 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:34 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/three-layer/adapters/index.ts
+2025-04-19 14:29:34 - ✅ Agent temporal-adapter corrigé
+2025-04-19 14:29:34 - Vérification de l'agent: temporal-orchestration dans /workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/three-layer/implementations
+2025-04-19 14:29:34 - ⚠️ L'agent temporal-orchestration ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:34 -    - metadata: 0, events: 0, initialize: 1
+2025-04-19 14:29:34 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:34 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/three-layer/implementations/temporal-orchestration.ts.bak-20250419-142934
+2025-04-19 14:29:34 - Nom de classe détecté: TemporalOrchestrator
+2025-04-19 14:29:34 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:34 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/three-layer/implementations/index.ts
+2025-04-19 14:29:34 - ✅ Agent temporal-orchestration corrigé
+2025-04-19 14:29:34 - Vérification de l'agent: three-layer-architecture dans /workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/three-layer
+2025-04-19 14:29:34 - ⚠️ L'agent three-layer-architecture ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:34 -    - metadata: 4, events: 0, initialize: 6
+2025-04-19 14:29:34 -    - execute: 2, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:34 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/three-layer/three-layer-architecture.ts.bak-20250419-142934
+2025-04-19 14:29:34 - Nom de classe détecté: ThreeLayerArchitecture
+2025-04-19 14:29:34 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:34 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/three-layer/index.ts
+2025-04-19 14:29:34 - ✅ Agent three-layer-architecture corrigé
+2025-04-19 14:29:34 - Vérification de l'agent: temporal-retry-adapter dans /workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/temporal
+2025-04-19 14:29:35 - ⚠️ L'agent temporal-retry-adapter ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:35 -    - metadata: 3, events: 0, initialize: 0
+2025-04-19 14:29:35 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:35 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/temporal/temporal-retry-adapter.ts.bak-20250419-142935
+2025-04-19 14:29:35 - Nom de classe détecté: TemporalRetryAdapter
+2025-04-19 14:29:35 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:35 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/temporal/index.ts
+2025-04-19 14:29:35 - ✅ Agent temporal-retry-adapter corrigé
+2025-04-19 14:29:35 - Vérification de l'agent: temporal-adapter dans /workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/adapters
+2025-04-19 14:29:35 - ⚠️ L'agent temporal-adapter ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:35 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:35 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:35 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/adapters/temporal-adapter.ts.bak-20250419-142935
+2025-04-19 14:29:35 - Nom de classe détecté: TemporalAdapter
+2025-04-19 14:29:35 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:35 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/adapters/index.ts
+2025-04-19 14:29:35 - ✅ Agent temporal-adapter corrigé
+2025-04-19 14:29:35 - Vérification de l'agent: enhanced-temporal-adapter dans /workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/adapters
+2025-04-19 14:29:35 - ⚠️ L'agent enhanced-temporal-adapter ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:35 -    - metadata: 0, events: 0, initialize: 2
+2025-04-19 14:29:35 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:35 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/adapters/enhanced-temporal-adapter.ts.bak-20250419-142935
+2025-04-19 14:29:35 - Nom de classe détecté: EnhancedTemporalAdapter
+2025-04-19 14:29:35 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:35 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/adapters/index.ts
+2025-04-19 14:29:35 - ✅ Agent enhanced-temporal-adapter corrigé
+2025-04-19 14:29:35 - Vérification de l'agent: temporal-adapter dans /workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/implementations
+2025-04-19 14:29:35 - ⚠️ L'agent temporal-adapter ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:35 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:35 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:35 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/implementations/temporal-adapter.ts.bak-20250419-142935
+2025-04-19 14:29:35 - Nom de classe détecté: TemporalAdapter
+2025-04-19 14:29:35 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:35 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/implementations/index.ts
+2025-04-19 14:29:35 - ✅ Agent temporal-adapter corrigé
+2025-04-19 14:29:35 - Vérification de l'agent: temporal-connector dans /workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/bridges
+2025-04-19 14:29:35 - ⚠️ L'agent temporal-connector ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:35 -    - metadata: 0, events: 1, initialize: 0
+2025-04-19 14:29:35 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:35 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/bridges/temporal-connector.ts.bak-20250419-142935
+2025-04-19 14:29:35 - Nom de classe détecté: TemporalConnector
+2025-04-19 14:29:35 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:35 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/bridges/index.ts
+2025-04-19 14:29:35 - ✅ Agent temporal-connector corrigé
+2025-04-19 14:29:35 - Vérification de l'agent: orchestrator-bridge dans /workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/bridges/orchestrator-bridge
+2025-04-19 14:29:35 - ⚠️ L'agent orchestrator-bridge ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:35 -    - metadata: 14, events: 9, initialize: 2
+2025-04-19 14:29:35 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:35 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/bridges/orchestrator-bridge/orchestrator-bridge.ts.bak-20250419-142935
+2025-04-19 14:29:35 - Nom de classe détecté: OrchestratorBridge
+2025-04-19 14:29:35 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:35 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/bridges/orchestrator-bridge/index.ts
+2025-04-19 14:29:35 - ✅ Agent orchestrator-bridge corrigé
+2025-04-19 14:29:35 - Vérification de l'agent: bullmq-connector dans /workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/bridges
+2025-04-19 14:29:35 - ⚠️ L'agent bullmq-connector ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:35 -    - metadata: 1, events: 13, initialize: 0
+2025-04-19 14:29:35 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:35 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/bridges/bullmq-connector.ts.bak-20250419-142935
+2025-04-19 14:29:35 - Nom de classe détecté: BullMQConnector
+2025-04-19 14:29:35 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:35 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/bridges/index.ts
+2025-04-19 14:29:35 - ✅ Agent bullmq-connector corrigé
+2025-04-19 14:29:35 - Vérification de l'agent: n8n-connector dans /workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/bridges
+2025-04-19 14:29:35 - ⚠️ L'agent n8n-connector ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:35 -    - metadata: 3, events: 13, initialize: 0
+2025-04-19 14:29:35 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:35 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/bridges/n8n-connector.ts.bak-20250419-142935
+2025-04-19 14:29:35 - Nom de classe détecté: N8nConnector
+2025-04-19 14:29:35 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:35 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/bridges/index.ts
+2025-04-19 14:29:35 - ✅ Agent n8n-connector corrigé
+2025-04-19 14:29:35 - Vérification de l'agent: orchestrator-bridge dans /workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/bridges
+2025-04-19 14:29:35 - ⚠️ L'agent orchestrator-bridge ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:35 -    - metadata: 14, events: 9, initialize: 2
+2025-04-19 14:29:35 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:35 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/bridges/orchestrator-bridge.ts.bak-20250419-142935
+2025-04-19 14:29:35 - Nom de classe détecté: OrchestratorBridge
+2025-04-19 14:29:35 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:35 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/bridges/index.ts
+2025-04-19 14:29:35 - ✅ Agent orchestrator-bridge corrigé
+2025-04-19 14:29:35 - Vérification de l'agent: TemporalConnector dans /workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/bridges
+2025-04-19 14:29:35 - ⚠️ L'agent TemporalConnector ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:35 -    - metadata: 0, events: 1, initialize: 0
+2025-04-19 14:29:35 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:35 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/bridges/TemporalConnector.ts.bak-20250419-142935
+2025-04-19 14:29:35 - Nom de classe détecté: TemporalConnector
+2025-04-19 14:29:35 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:35 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/bridges/index.ts
+2025-04-19 14:29:35 - ✅ Agent TemporalConnector corrigé
+2025-04-19 14:29:35 - Vérification de l'agent: prometheus-exporter dans /workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/monitoring
+2025-04-19 14:29:35 - ⚠️ L'agent prometheus-exporter ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:35 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:35 -    - execute: 0, validate: 0, stop: 1, getStatus: 0
+2025-04-19 14:29:35 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/monitoring/prometheus-exporter.ts.bak-20250419-142935
+2025-04-19 14:29:35 - Nom de classe détecté: PrometheusExporter
+2025-04-19 14:29:35 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:35 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/monitoring/index.ts
+2025-04-19 14:29:35 - ✅ Agent prometheus-exporter corrigé
+2025-04-19 14:29:35 - Vérification de l'agent: alert-notifier dans /workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/monitoring
+2025-04-19 14:29:35 - ⚠️ L'agent alert-notifier ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:35 -    - metadata: 20, events: 0, initialize: 1
+2025-04-19 14:29:35 -    - execute: 0, validate: 0, stop: 1, getStatus: 0
+2025-04-19 14:29:35 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/monitoring/alert-notifier.ts.bak-20250419-142935
+2025-04-19 14:29:35 - Nom de classe détecté: AlertNotifier
+2025-04-19 14:29:35 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:35 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/monitoring/index.ts
+2025-04-19 14:29:35 - ✅ Agent alert-notifier corrigé
+2025-04-19 14:29:35 - Vérification de l'agent: bullmq-orchestrator dans /workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/bullmq
+2025-04-19 14:29:35 - ⚠️ L'agent bullmq-orchestrator ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:35 -    - metadata: 5, events: 4, initialize: 2
+2025-04-19 14:29:35 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:35 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/bullmq/bullmq-orchestrator.ts.bak-20250419-142935
+2025-04-19 14:29:35 - Nom de classe détecté: BullMqOrchestrator
+2025-04-19 14:29:35 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:35 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/bullmq/index.ts
+2025-04-19 14:29:35 - ✅ Agent bullmq-orchestrator corrigé
+2025-04-19 14:29:35 - Vérification de l'agent: abstract-orchestrator dans /workspaces/cahier-des-charge/packages/mcp-agents/orchestrators
+2025-04-19 14:29:35 - ⚠️ L'agent abstract-orchestrator ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:35 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:35 -    - execute: 0, validate: 0, stop: 0, getStatus: 1
+2025-04-19 14:29:35 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/abstract-orchestrator.ts.bak-20250419-142935
+2025-04-19 14:29:35 - Nom de classe détecté: class
+2025-04-19 14:29:35 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:35 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/index.ts
+2025-04-19 14:29:35 - ✅ Agent abstract-orchestrator corrigé
+2025-04-19 14:29:35 - Vérification de l'agent: priority-scheduler dans /workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/scheduler
+2025-04-19 14:29:35 - ⚠️ L'agent priority-scheduler ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:35 -    - metadata: 0, events: 0, initialize: 1
+2025-04-19 14:29:35 -    - execute: 1, validate: 0, stop: 2, getStatus: 0
+2025-04-19 14:29:35 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/scheduler/priority-scheduler.ts.bak-20250419-142935
+2025-04-19 14:29:35 - Nom de classe détecté: PriorityScheduler
+2025-04-19 14:29:35 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:35 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/scheduler/index.ts
+2025-04-19 14:29:35 - ✅ Agent priority-scheduler corrigé
+2025-04-19 14:29:35 - Vérification de l'agent: system-monitor dans /workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/scheduler
+2025-04-19 14:29:35 - ⚠️ L'agent system-monitor ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:35 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:35 -    - execute: 0, validate: 0, stop: 1, getStatus: 0
+2025-04-19 14:29:35 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/scheduler/system-monitor.ts.bak-20250419-142935
+2025-04-19 14:29:35 - Nom de classe détecté: SystemMonitor
+2025-04-19 14:29:35 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:35 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/scheduler/index.ts
+2025-04-19 14:29:35 - ✅ Agent system-monitor corrigé
+2025-04-19 14:29:35 - Vérification de l'agent: migration-report-generator dans /workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/reporting
+2025-04-19 14:29:35 - ⚠️ L'agent migration-report-generator ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:35 -    - metadata: 4, events: 0, initialize: 2
+2025-04-19 14:29:35 -    - execute: 0, validate: 0, stop: 1, getStatus: 0
+2025-04-19 14:29:35 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/reporting/migration-report-generator.ts.bak-20250419-142935
+2025-04-19 14:29:35 - Nom de classe détecté: MigrationReportGenerator
+2025-04-19 14:29:35 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:35 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/reporting/index.ts
+2025-04-19 14:29:35 - ✅ Agent migration-report-generator corrigé
+2025-04-19 14:29:35 - Vérification de l'agent: base-orchestrator-agent dans /workspaces/cahier-des-charge/packages/mcp-agents/orchestrators
+2025-04-19 14:29:35 - ⚠️ L'agent base-orchestrator-agent ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:35 -    - metadata: 0, events: 1, initialize: 0
+2025-04-19 14:29:35 -    - execute: 1, validate: 1, stop: 0, getStatus: 0
+2025-04-19 14:29:35 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/base-orchestrator-agent.ts.bak-20250419-142935
+2025-04-19 14:29:35 - Nom de classe détecté: class
+2025-04-19 14:29:35 - ✅ Agent base-orchestrator-agent corrigé
+2025-04-19 14:29:35 - Vérification de l'agent: migration-coordinator dans /workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/resilience
+2025-04-19 14:29:35 - ⚠️ L'agent migration-coordinator ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:35 -    - metadata: 8, events: 1, initialize: 2
+2025-04-19 14:29:35 -    - execute: 1, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:35 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/resilience/migration-coordinator.ts.bak-20250419-142935
+2025-04-19 14:29:35 - Nom de classe détecté: WorkflowPriorityQueue
+2025-04-19 14:29:35 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:35 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/resilience/index.ts
+2025-04-19 14:29:35 - ✅ Agent migration-coordinator corrigé
+2025-04-19 14:29:35 - Vérification de l'agent: advanced-retry-strategy dans /workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/resilience
+2025-04-19 14:29:35 - ⚠️ L'agent advanced-retry-strategy ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:35 -    - metadata: 5, events: 0, initialize: 0
+2025-04-19 14:29:35 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:35 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/resilience/advanced-retry-strategy.ts.bak-20250419-142935
+2025-04-19 14:29:35 - Nom de classe détecté: AdvancedRetryStrategy
+2025-04-19 14:29:35 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:35 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/resilience/index.ts
+2025-04-19 14:29:35 - ✅ Agent advanced-retry-strategy corrigé
+2025-04-19 14:29:35 - Vérification de l'agent: checkpoint-manager dans /workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/persistence
+2025-04-19 14:29:35 - ⚠️ L'agent checkpoint-manager ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:35 -    - metadata: 22, events: 0, initialize: 1
+2025-04-19 14:29:35 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:35 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/persistence/checkpoint-manager.ts.bak-20250419-142935
+2025-04-19 14:29:35 - Nom de classe détecté: CheckpointManager
+2025-04-19 14:29:35 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:35 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/persistence/index.ts
+2025-04-19 14:29:35 - ✅ Agent checkpoint-manager corrigé
+2025-04-19 14:29:35 - Vérification de l'agent: database-service dans /workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/persistence
+2025-04-19 14:29:35 - ⚠️ L'agent database-service ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:35 -    - metadata: 7, events: 0, initialize: 0
+2025-04-19 14:29:35 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:35 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/persistence/database-service.ts.bak-20250419-142935
+2025-04-19 14:29:35 - Nom de classe détecté: DatabaseService
+2025-04-19 14:29:35 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:35 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/persistence/index.ts
+2025-04-19 14:29:35 - ✅ Agent database-service corrigé
+2025-04-19 14:29:35 - Vérification de l'agent: prisma-to-dto dans /workspaces/cahier-des-charge/packages/mcp-agents
+2025-04-19 14:29:35 - ⚠️ L'agent prisma-to-dto ne semble pas implémenter correctement toutes les méthodes requises
+2025-04-19 14:29:35 -    - metadata: 0, events: 0, initialize: 0
+2025-04-19 14:29:35 -    - execute: 0, validate: 0, stop: 0, getStatus: 0
+2025-04-19 14:29:35 - ✅ Sauvegarde créée: /workspaces/cahier-des-charge/packages/mcp-agents/prisma-to-dto.ts.bak-20250419-142935
+2025-04-19 14:29:35 - Nom de classe détecté: PrismaToDto
+2025-04-19 14:29:35 - Création du fichier index.ts pour exporter l'agent...
+2025-04-19 14:29:35 - ✅ Fichier index.ts créé: /workspaces/cahier-des-charge/packages/mcp-agents/index.ts
+2025-04-19 14:29:35 - ✅ Agent prisma-to-dto corrigé
+2025-04-19 14:29:35 - 🎉 Correction terminée. 208 agents ont été corrigés.
+2025-04-19 14:29:35 - Vérification de la compilation TypeScript...
+2025-04-19 14:29:39 - ⚠️ Certains problèmes de compilation TypeScript persistent, voir /workspaces/cahier-des-charge/reports/fixed-agents-20250419-142920/tsc.log
+packages/mcp-agents/analyzers/abstract-analyzer-agent.ts(56,14): error TS1005: '{' expected.
+packages/mcp-agents/analyzers/abstract-analyzer-agent.ts(154,21): error TS1005: '{' expected.
+packages/mcp-agents/analyzers/abstract-analyzer.ts(56,14): error TS1005: '{' expected.
+packages/mcp-agents/analyzers/abstract-analyzer.ts(154,21): error TS1005: '{' expected.
+packages/mcp-agents/analyzers/base-analyzer-agent.ts(56,14): error TS1005: '{' expected.
+packages/mcp-agents/analyzers/base-analyzer-agent.ts(154,21): error TS1005: '{' expected.
+packages/mcp-agents/analyzers/qa-analyzer/qa-analyzer.ts(797,12): error TS1005: ';' expected.
+packages/mcp-agents/analyzers/qa-analyzer/qa-analyzer.ts(797,14): error TS1434: Unexpected keyword or identifier.
+packages/mcp-agents/analyzers/qa-analyzer/qa-analyzer.ts(804,3): error TS1434: Unexpected keyword or identifier.
+packages/mcp-agents/analyzers/qa-analyzer/qa-analyzer.ts(804,19): error TS1005: ';' expected.
+2025-04-19 14:29:40 - Exécution du script CI pour vérifier l'état des agents...
+2025-04-19 14:29:50 - ✅ Script CI exécuté avec succès
+2025-04-19 14:29:50 - Mise à jour des imports d'agents...
+2025-04-19 14:30:21 - ✅ Imports mis à jour avec succès
+2025-04-19 14:30:21 - ✅ Script terminé. Consultez le rapport détaillé dans /workspaces/cahier-des-charge/reports/fixed-agents-20250419-142920/fix-report.log

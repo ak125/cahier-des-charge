@@ -83,8 +83,8 @@ export default function BullMQDashboard() {
       let data = {};
       
       switch (queueName) {
-        case "php-analyzer":
-          endpoint = `${apiUrl}/jobs/php-analyzer`;
+        case "PhpAnalyzer":
+          endpoint = `${apiUrl}/jobs/PhpAnalyzer`;
           data = { 
             filePath: `/test/example-${Date.now()}.php`,
             options: { 

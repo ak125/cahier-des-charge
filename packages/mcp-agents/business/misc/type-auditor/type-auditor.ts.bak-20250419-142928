@@ -1,0 +1,216 @@
+/**
+ * TypeAuditor - Agent MCP pour business (unknown)
+ * 
+ * Migration automatique vers l'architecture MCP OS en 3 couches
+ * Date: 2025-04-18T00:11:24.606Z
+ */
+
+import { UnknownAgent } from '@workspaces/cahier-des-charge/src/core/interfaces/business';
+import { BaseAgent } from '@workspaces/cahier-des-charge/src/core/interfaces/base-agent';
+import * as fs from 'fs';
+import * as path from 'path';
+import { MySQLSchema, TableInfo, ColumnInfo, TypeConversionMap } from '../models/schema';
+import { BusinessAgent } from '../../core/interfaces/base-agent';
+
+
+/**
+ * Configuration pour TypeAuditor
+ */
+export interface TypeAuditorConfig {
+  // TODO: Ajouter les propriétés de configuration spécifiques à l'agent
+}
+
+/**
+ * TypeAuditor - Agent d'analyse et de traitement métier
+ */
+export class TypeAuditor implements BaseAgent, BusinessAgent, BaseAgent, BusinessAgent, UnknownAgent {
+  id = 'type-auditor';
+  name = 'TypeAuditor';
+  type = 'unknown';
+  version = '1.0.0';
+  
+  constructor(private config: TypeAuditorConfig) {
+    // Initialisation
+  }
+  
+  /**
+   * Initialise l'agent avec des options spécifiques
+   */
+  async initialize(options?: Record<string, any>): Promise<void> {
+    // TODO: Implémenter l'initialisation
+  }
+  
+  /**
+   * Indique si l'agent est prêt à être utilisé
+   */
+  isReady(): boolean {
+    return true; // TODO: Implémenter la vérification d'état
+  }
+  
+  /**
+   * Arrête et nettoie l'agent
+   */
+  async shutdown(): Promise<void> {
+    // TODO: Implémenter la fermeture propre
+  }
+  
+  /**
+   * Récupère les métadonnées de l'agent
+   */
+  getMetadata(): Record<string, any> {
+    return {
+      id: this.id,
+      name: this.name,
+      type: this.type,
+      version: this.version
+    };
+  }
+  
+  // TODO: Implémenter les méthodes spécifiques de l'interface UnknownAgent
+  
+  /**
+   * analyze
+   */
+  analyze() {
+    // TODO: Migrer l'implémentation existante
+  }
+  
+  /**
+   * if
+   */
+  if() {
+    // TODO: Migrer l'implémentation existante
+  }
+  
+  /**
+   * if
+   */
+  if() {
+    // TODO: Migrer l'implémentation existante
+  }
+  
+  /**
+   * if
+   */
+  if() {
+    // TODO: Migrer l'implémentation existante
+  }
+  
+  /**
+   * determineOptimalTypes
+   */
+  determineOptimalTypes() {
+    // TODO: Migrer l'implémentation existante
+  }
+  
+  /**
+   * if
+   */
+  if() {
+    // TODO: Migrer l'implémentation existante
+  }
+  
+  /**
+   * if
+   */
+  if() {
+    // TODO: Migrer l'implémentation existante
+  }
+  
+  /**
+   * if
+   */
+  if() {
+    // TODO: Migrer l'implémentation existante
+  }
+  
+  /**
+   * if
+   */
+  if() {
+    // TODO: Migrer l'implémentation existante
+  }
+  
+  /**
+   * if
+   */
+  if() {
+    // TODO: Migrer l'implémentation existante
+  }
+  
+  /**
+   * if
+   */
+  if() {
+    // TODO: Migrer l'implémentation existante
+  }
+  
+  /**
+   * if
+   */
+  if() {
+    // TODO: Migrer l'implémentation existante
+  }
+  
+  /**
+   * extractBaseType
+   */
+  extractBaseType() {
+    // TODO: Migrer l'implémentation existante
+  }
+  
+  /**
+   * detectPotentialEnum
+   */
+  detectPotentialEnum() {
+    // TODO: Migrer l'implémentation existante
+  }
+  
+  /**
+   * if
+   */
+  if() {
+    // TODO: Migrer l'implémentation existante
+  }
+  
+  /**
+   * if
+   */
+  if() {
+    // TODO: Migrer l'implémentation existante
+  }
+  
+  /**
+   * if
+   */
+  if() {
+    // TODO: Migrer l'implémentation existante
+  }
+
+  id: string = '';
+  name: string = '';
+  type: string = '';
+  version: string = '1.0.0';
+
+  /**
+   * Récupère l'état actuel de l'agent business
+   */
+  async getState(): Promise<Record<string, any>> {
+    return {
+      status: 'active',
+      timestamp: new Date().toISOString()
+    };
+  }
+
+  id: string = '';
+  name: string = '';
+  type: string = '';
+  version: string = '1.0.0';
+
+  id: string = '';
+  name: string = '';
+  type: string = '';
+  version: string = '1.0.0';
+}
+
+export default TypeAuditor;

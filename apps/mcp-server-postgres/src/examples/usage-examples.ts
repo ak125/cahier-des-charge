@@ -1,19 +1,19 @@
 /**
- * Exemple d'utilisation du serveur MCP PostgreSQL dans un workflow n8n
+ * Exemple d'utilisation du serveur MCP PostgreSQL dans un workflowDotn8N
  * 
- * Ce fichier montre comment utiliser le serveur MCP PostgreSQL dans un workflow n8n
+ * Ce fichier montre comment utiliser le serveur MCP PostgreSQL dans un workflowDotn8N
  * pour analyser une base de données PostgreSQL et générer des modèles Prisma.
  */
 
-// Exemple de configuration dans n8n - Workflow JSON
-const n8nWorkflowExample = {
+// Exemple de configuration dansDotn8N - Workflow JSON
+constDotn8NWorkflowExample = {
   "nodes": [
     {
       "parameters": {
         "command": "npx -y @modelcontextprotocol/server-postgres postgresql://user:password@host:port/database --export-schema schema_map.json"
       },
       "name": "Export PostgreSQL Schema",
-      "type": "n8n-nodes-base.executeCommand",
+      "type": Dotn8N-nodes-base.executeCommand",
       "position": [600, 300]
     },
     {
@@ -22,13 +22,13 @@ const n8nWorkflowExample = {
         "options": {}
       },
       "name": "Read Schema Map",
-      "type": "n8n-nodes-base.readBinaryFile",
+      "type": Dotn8N-nodes-base.readBinaryFile",
       "position": [800, 300]
     },
     {
       "parameters": {
         "authentication": "basicAuth",
-        "url": "http://localhost:3050/mcp",
+        "url": "http://localhost:3050DoDotmcp",
         "method": "POST",
         "bodyParametersUi": {
           "parameter": [
@@ -44,7 +44,7 @@ const n8nWorkflowExample = {
         }
       },
       "name": "Generate Prisma Model",
-      "type": "n8n-nodes-base.httpRequest",
+      "type": Dotn8N-nodes-base.httpRequest",
       "position": [1000, 300]
     },
     {
@@ -54,7 +54,7 @@ const n8nWorkflowExample = {
         "content": "={{ $json.data.schema }}"
       },
       "name": "Save Prisma Model",
-      "type": "n8n-nodes-base.fileOperations",
+      "type": Dotn8N-nodes-base.fileOperations",
       "position": [1200, 300]
     },
     {
@@ -76,7 +76,7 @@ const n8nWorkflowExample = {
         "options": {}
       },
       "name": "Push to GitHub",
-      "type": "n8n-nodes-base.httpRequest",
+      "type": Dotn8N-nodes-base.httpRequest",
       "position": [1400, 300]
     }
   ],
@@ -128,9 +128,9 @@ const n8nWorkflowExample = {
   }
 };
 
-// Exemple d'intégration avec Claude Desktop (.mcp.json)
-const mcpConfig = {
-  "mcpServers": {
+// Exemple d'intégration avec Claude Desktop (DoDotmcp.json)
+constDoDotmcpConfig = {
+  DoDotmcpServers": {
     "postgres": {
       "command": "npx",
       "args": ["-y", "@modelcontextprotocol/server-postgres", "postgresql://user:pass@localhost:5432/yourdb"]
@@ -141,7 +141,7 @@ const mcpConfig = {
 // Exemple d'appel d'outil MCP via requête HTTP
 const httpRequestExample = `
 # Exemple d'appel d'outil via curl
-curl -X POST http://localhost:3050/mcp \\
+curl -X POST http://localhost:3050DoDotmcp \\
   -H "Content-Type: application/json" \\
   -d '{
     "tool": "describe_table",
@@ -424,8 +424,8 @@ model Session {
 
 // Exportation des exemples pour documentation
 export {
-  n8nWorkflowExample,
-  mcpConfig,
+ Dotn8NWorkflowExample,
+ DoDotmcpConfig,
   httpRequestExample,
   schemaMapExample,
   schemaMigrationDiffExample,

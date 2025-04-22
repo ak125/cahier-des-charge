@@ -1,0 +1,3 @@
+packages/mcp-agents/analyzers/HtaccessRouteAnalyzerAgent/HtaccessRouteAnalyzerAgent.ts(6,39): error TS2307: Cannot find module './htaccess-route-analyzer' or its corresponding type declarations.
+packages/mcp-agents/analyzers/HtaccessRouteAnalyzerAgent/HtaccessRouteAnalyzerAgent.ts(7,31): error TS2307: Cannot find module '../../core/interfaces' or its corresponding type declarations.
+packages/mcp-agents/analyzers/HtaccessRouteAnalyzerAgent/index.ts(6,10): error TS2724: '"./HtaccessRouteAnalyzerAgent"' has no exported member named 'HtaccessRouteAnalyzerAgent'. Did you mean 'HtaccessRouteAnalyzer'?

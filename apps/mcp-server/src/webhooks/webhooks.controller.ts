@@ -1,5 +1,5 @@
 import { Controller, Post, Body, Logger, HttpException, HttpStatus } from '@nestjs/common';
-import { runPRCreator } from '../../agents/pr-creator';
+import { runPRCreator } from '../../agents/PrCreator';
 import { RedisService } from '../redis/redis.service';
 import * as fs from 'fs-extra';
 import * as path from 'path';
@@ -21,12 +21,12 @@ interface WebhookPayload {
 export class WebhooksController {
   private readonly logger = new Logger(WebhooksController.name);
 
-  constructor(private readonly redisService: RedisService) {}
+  constructor(private readonly redisService: RedisService) { }
 
   @Post('github/create-pr')
   async createPR(@Body() payload: WebhookPayload) {
     this.logger.log(`📥 Réception d'une demande de création de PR pour: ${payload.file}`);
-    
+
     try {
       // Validation de base
       if (!payload.file || !payload.target || !payload.generatedFiles || payload.generatedFiles.length === 0) {
@@ -44,14 +44,14 @@ export class WebhooksController {
       if (payload.dryRun) {
         const tempDir = path.join(process.cwd(), '.tmp');
         fs.ensureDirSync(tempDir);
-        
+
         const fileName = `pr-request-${Date.now()}.json`;
         const filePath = path.join(tempDir, fileName);
-        
+
         fs.writeFileSync(filePath, JSON.stringify(payload, null, 2));
-        
+
         this.logger.log(`✅ Dry run: payload sauvegardé dans ${filePath}`);
-        
+
         return {
           success: true,
           message: 'Dry run: Payload valide, aucune PR créée',
@@ -61,7 +61,7 @@ export class WebhooksController {
 
       // Créer la PR
       const prUrl = await runPRCreator(payload);
-      
+
       // Publier un événement Redis pour notifier les autres services
       await this.redisService.publish('mcp:pr-created', JSON.stringify({
         timestamp: new Date().toISOString(),
@@ -70,9 +70,9 @@ export class WebhooksController {
         target: payload.target,
         prUrl
       }));
-      
+
       this.logger.log(`✅ PR créée avec succès: ${prUrl}`);
-      
+
       return {
         success: true,
         message: 'Pull Request créée avec succès',
@@ -95,16 +95,16 @@ export class WebhooksController {
     target: string;
   }) {
     this.logger.log(`📥 Réception d'une notification de PR créée: ${payload.prUrl}`);
-    
+
     try {
       // Publier un événement Redis
       await this.redisService.publish('mcp:pr-created', JSON.stringify({
         timestamp: new Date().toISOString(),
         ...payload
       }));
-      
+
       this.logger.log(`✅ Notification publiée dans Redis`);
-      
+
       return {
         success: true,
         message: 'Notification envoyée avec succès'

@@ -7,7 +7,7 @@ import { migrate, audit, dryRun, qa, checkCompletion, verifyRoutes } from './com
 
 // Configuration de yargs pour une meilleure interface CLI
 yargs(hideBin(process.argv))
-  .scriptName('mcp')
+  .scriptName(DoDotmcp')
   .usage('$0 <cmd> [args]')
   .command('migrate <file>', 'Migre un fichier PHP vers Remix', (yargs) => {
     return yargs.positional('file', {
@@ -37,12 +37,12 @@ yargs(hideBin(process.argv))
     console.log(chalk.blue(`🔍 Simulation de migration pour ${argv.file}...`));
     await dryRun(argv.file as string);
   })
-  .command('generate', 'Génère ou met à jour le backlog.mcp.json à partir du discovery_map.json', () => {}, async () => {
-    console.log(chalk.blue('🔄 Génération du fichier backlog.mcp.json...'));
+  .command('generate', 'Génère ou met à jour le backlogDoDotmcp.json à partir du discovery_map.json', () => {}, async () => {
+    console.log(chalk.blue('🔄 Génération du fichier backlogDoDotmcp.json...'));
     try {
       // Utilisation de require au lieu d'import pour charger un module dynamiquement 
       const { execaSync } = require('execa');
-      execaSync('node', ['packages/mcp-cli/generate-backlog.js'], { stdio: 'inherit' });
+      execaSync('node', ['packagesDoDotmcp-cli/generate-backlog.js'], { stdio: 'inherit' });
     } catch (error) {
       console.error(chalk.red('❌ Erreur lors de la génération du backlog:'), error);
     }

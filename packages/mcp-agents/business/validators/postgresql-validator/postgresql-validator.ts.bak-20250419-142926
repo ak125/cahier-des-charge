@@ -1,0 +1,712 @@
+/**
+ * PostgresqlValidator - Agent MCP pour business (validator)
+ * 
+ * Migration automatique vers l'architecture MCP OS en 3 couches
+ * Date: 2025-04-18T00:11:24.606Z
+ */
+
+import { ValidatorAgent } from '../../../core/interfaces/validator';
+import { BaseAgent } from '../../../core/interfaces/base-agent';
+import { BusinessAgent } from '../../../core/interfaces/business';
+import * as fs from 'fs';
+import * as path from 'path';
+import { program } from 'commander';
+import { execSync } from 'child_process';
+import chalk from 'chalk';
+import { Client } from 'pg';
+import { parse } from '@prisma/sdk';
+
+/**
+ * Configuration pour PostgresqlValidator
+ */
+export interface PostgresqlValidatorConfig {
+  // Propriétés de configuration spécifiques à l'agent
+  dbHost?: string;
+  dbPort?: number;
+  dbUser?: string;
+  dbPassword?: string;
+  dbName?: string;
+  prismaSchemaPath?: string;
+  outputPath?: string;
+  autoFix?: boolean;
+}
+
+/**
+ * PostgresqlValidator - Agent d'analyse et de validation de schéma PostgreSQL
+ */
+export class PostgresqlValidator implements BaseAgent, BusinessAgent, ValidatorAgent {
+  id = 'postgresql-validator';
+  name = 'PostgreSQL Validator';
+  type = 'validator';
+  version = '1.0.0';
+  
+  private prismaModels: any[] = [];
+  private postgresSchema: any[] = [];
+  private validationResults: any = {
+    valid: false,
+    issues: [],
+    fixes: []
+  };
+  
+  constructor(private config: PostgresqlValidatorConfig) {
+    // Initialisation avec configuration par défaut si nécessaire
+    this.config = {
+      dbHost: 'localhost',
+      dbPort: 5432,
+      prismaSchemaPath: './prisma/schema.prisma',
+      outputPath: './reports',
+      autoFix: false,
+      ...config
+    };
+  }
+  
+  /**
+   * Initialise l'agent avec des options spécifiques
+   */
+  async initialize(options?: Record<string, any>): Promise<void> {
+    // Mise à jour de la configuration avec les options fournies
+    if (options) {
+      this.config = { ...this.config, ...options };
+    }
+    
+    // Vérifier que les chemins existent
+    if (this.config.prismaSchemaPath && !fs.existsSync(this.config.prismaSchemaPath)) {
+      throw new Error(`Le chemin du schéma Prisma n'existe pas: ${this.config.prismaSchemaPath}`);
+    }
+    
+    // Créer le répertoire de sortie s'il n'existe pas
+    if (this.config.outputPath) {
+      fs.mkdirSync(this.config.outputPath, { recursive: true });
+    }
+  }
+  
+  /**
+   * Indique si l'agent est prêt à être utilisé
+   */
+  isReady(): boolean {
+    return !!this.config.prismaSchemaPath && !!this.config.dbHost;
+  }
+  
+  /**
+   * Arrête et nettoie l'agent
+   */
+  async shutdown(): Promise<void> {
+    // Nettoyage des ressources si nécessaire
+  }
+  
+  /**
+   * Récupère les métadonnées de l'agent
+   */
+  getMetadata(): Record<string, any> {
+    return {
+      id: this.id,
+      name: this.name,
+      type: this.type,
+      version: this.version,
+      description: 'Validation et correction du schéma PostgreSQL par rapport au schéma Prisma'
+    };
+  }
+  
+  /**
+   * Récupère l'état actuel de l'agent business
+   */
+  async getState(): Promise<Record<string, any>> {
+    return {
+      status: 'active',
+      timestamp: new Date().toISOString(),
+      config: {
+        ...this.config,
+        // Masquer les informations sensibles
+        dbPassword: this.config.dbPassword ? '***' : undefined
+      }
+    };
+  }
+  
+  /**
+   * Exécute la validation principale
+   */
+  async validate(): Promise<any> {
+    try {
+      // Extraire les modèles du schéma Prisma
+      this.prismaModels = await this.extractPrismaModels();
+      
+      // Extraire le schéma PostgreSQL
+      this.postgresSchema = await this.extractPostgresSchema();
+      
+      // Valider les schémas
+      const validationResults = await this.validateSchemas();
+      
+      // Appliquer les corrections si demandé
+      if (this.config.autoFix) {
+        await this.applyFixes(validationResults.fixes);
+      }
+      
+      // Générer un rapport
+      await this.generateReport(validationResults);
+      
+      return validationResults;
+    } catch (error) {
+      console.error(chalk.red('Erreur lors de la validation:'), error);
+      throw error;
+    }
+  }
+  
+  /**
+   * Extrait les modèles du schéma Prisma
+   */
+  private async extractPrismaModels(): Promise<any[]> {
+    try {
+      const schemaContent = fs.readFileSync(this.config.prismaSchemaPath!, 'utf-8');
+      const parsedSchema = parse(schemaContent);
+      const models: any[] = [];
+      
+      // Extraction des modèles et de leurs champs
+      for (const model of parsedSchema.find(item => item.type === 'model')) {
+        const modelData = {
+          name: model.name,
+          fields: []
+        };
+        
+        for (const field of model.fields) {
+          modelData.fields.push({
+            name: field.name,
+            type: field.type,
+            isRequired: !field.isOptional,
+            isUnique: field.isUnique,
+            isId: field.isId,
+            defaultValue: field.default,
+            attributes: field.attributes
+          });
+        }
+        
+        models.push(modelData);
+      }
+      
+      return models;
+    } catch (error) {
+      console.error(chalk.red('Erreur lors de l\'extraction des modèles Prisma:'), error);
+      throw error;
+    }
+  }
+  
+  /**
+   * Extrait le schéma de la base de données PostgreSQL
+   */
+  private async extractPostgresSchema(): Promise<any[]> {
+    const client = new Client({
+      host: this.config.dbHost,
+      port: this.config.dbPort,
+      user: this.config.dbUser,
+      password: this.config.dbPassword,
+      database: this.config.dbName
+    });
+    
+    try {
+      await client.connect();
+      
+      // Requête pour récupérer la liste des tables et colonnes
+      const query = `
+        SELECT 
+          t.table_name, 
+          c.column_name, 
+          c.data_type, 
+          c.is_nullable, 
+          c.column_default,
+          tc.constraint_type
+        FROM 
+          information_schema.tables t
+        JOIN 
+          information_schema.columns c ON t.table_name = c.table_name
+        LEFT JOIN 
+          information_schema.constraint_column_usage ccu ON c.column_name = ccu.column_name AND c.table_name = ccu.table_name
+        LEFT JOIN 
+          information_schema.table_constraints tc ON ccu.constraint_name = tc.constraint_name
+        WHERE 
+          t.table_schema = 'public'
+        ORDER BY 
+          t.table_name, c.ordinal_position;
+      `;
+      
+      const result = await client.query(query);
+      
+      // Organiser les résultats par table
+      const tables: { [key: string]: any } = {};
+      
+      for (const row of result.rows) {
+        if (!tables[row.table_name]) {
+          tables[row.table_name] = {
+            name: row.table_name,
+            fields: []
+          };
+        }
+        
+        tables[row.table_name].fields.push({
+          name: row.column_name,
+          type: row.data_type,
+          isRequired: row.is_nullable === 'NO',
+          isUnique: row.constraint_type === 'UNIQUE',
+          isId: row.constraint_type === 'PRIMARY KEY',
+          defaultValue: row.column_default
+        });
+      }
+      
+      return Object.values(tables);
+    } catch (error) {
+      console.error(chalk.red('Erreur lors de l\'extraction du schéma PostgreSQL:'), error);
+      throw error;
+    } finally {
+      await client.end();
+    }
+  }
+  
+  /**
+   * Validation des schémas Prisma et PostgreSQL
+   */
+  private async validateSchemas(): Promise<any> {
+    const results = {
+      valid: true,
+      issues: [],
+      fixes: []
+    };
+    
+    // Vérifier les tables manquantes
+    for (const prismaModel of this.prismaModels) {
+      const pgTable = this.postgresSchema.find(table => table.name === prismaModel.name);
+      
+      if (!pgTable) {
+        results.valid = false;
+        results.issues.push({
+          type: 'missing_table',
+          model: prismaModel.name,
+          message: `Table manquante dans PostgreSQL: ${prismaModel.name}`
+        });
+        
+        results.fixes.push({
+          type: 'create_table',
+          model: prismaModel,
+          sql: this.generateCreateTableSQL(prismaModel)
+        });
+        
+        continue;
+      }
+      
+      // Vérifier les colonnes manquantes ou différentes
+      for (const prismaField of prismaModel.fields) {
+        const pgField = pgTable.fields.find(field => field.name === prismaField.name);
+        
+        if (!pgField) {
+          results.valid = false;
+          results.issues.push({
+            type: 'missing_column',
+            model: prismaModel.name,
+            field: prismaField.name,
+            message: `Colonne manquante dans PostgreSQL: ${prismaModel.name}.${prismaField.name}`
+          });
+          
+          results.fixes.push({
+            type: 'add_column',
+            model: prismaModel.name,
+            field: prismaField,
+            sql: this.generateAddColumnSQL(prismaModel.name, prismaField)
+          });
+        } else {
+          // Vérifier la compatibilité des types
+          const prismaType = this.mapPrismaTypeToPostgres(prismaField.type);
+          const pgType = pgField.type;
+          
+          if (!this.areTypesCompatible(prismaType, pgType)) {
+            results.valid = false;
+            results.issues.push({
+              type: 'type_mismatch',
+              model: prismaModel.name,
+              field: prismaField.name,
+              prismaType,
+              pgType,
+              message: `Type incompatible pour ${prismaModel.name}.${prismaField.name}: Prisma(${prismaField.type} -> ${prismaType}) vs PostgreSQL(${pgType})`
+            });
+            
+            results.fixes.push({
+              type: 'alter_column_type',
+              model: prismaModel.name,
+              field: prismaField.name,
+              newType: prismaType,
+              sql: this.generateAlterColumnTypeSQL(prismaModel.name, prismaField.name, prismaType)
+            });
+          }
+          
+          // Vérifier les contraintes (required, unique, etc.)
+          if (prismaField.isRequired !== pgField.isRequired) {
+            results.valid = false;
+            results.issues.push({
+              type: 'constraint_mismatch',
+              model: prismaModel.name,
+              field: prismaField.name,
+              constraint: 'NOT NULL',
+              message: `Contrainte NOT NULL différente pour ${prismaModel.name}.${prismaField.name}`
+            });
+            
+            results.fixes.push({
+              type: 'alter_column_nullable',
+              model: prismaModel.name,
+              field: prismaField.name,
+              isRequired: prismaField.isRequired,
+              sql: this.generateAlterColumnNullableSQL(prismaModel.name, prismaField.name, prismaField.isRequired)
+            });
+          }
+        }
+      }
+    }
+    
+    return results;
+  }
+  
+  /**
+   * Applique les corrections à la base de données
+   */
+  private async applyFixes(fixes: any[]): Promise<void> {
+    const client = new Client({
+      host: this.config.dbHost,
+      port: this.config.dbPort,
+      user: this.config.dbUser,
+      password: this.config.dbPassword,
+      database: this.config.dbName
+    });
+    
+    try {
+      await client.connect();
+      
+      for (const fix of fixes) {
+        try {
+          console.log(chalk.blue(`Exécution de la correction: ${fix.type} pour ${fix.model}.${fix.field?.name || ''}`));
+          await client.query(fix.sql);
+          console.log(chalk.green('Correction appliquée avec succès'));
+        } catch (error) {
+          console.error(chalk.red(`Erreur lors de l'application de la correction ${fix.type}:`), error);
+        }
+      }
+    } catch (error) {
+      console.error(chalk.red('Erreur lors de la connexion à PostgreSQL:'), error);
+      throw error;
+    } finally {
+      await client.end();
+    }
+  }
+  
+  /**
+   * Génère un rapport de validation
+   */
+  private async generateReport(results: any): Promise<void> {
+    await this.generateMarkdownReport(results);
+    await this.generateHtmlReport(results);
+  }
+  
+  /**
+   * Génère un rapport au format Markdown
+   */
+  private async generateMarkdownReport(results: any): Promise<void> {
+    const reportPath = path.join(this.config.outputPath!, 'postgresql-validation-report.md');
+    let markdown = `# Rapport de validation PostgreSQL\n\n`;
+    
+    markdown += `## Résumé\n\n`;
+    markdown += `- Date: ${new Date().toISOString()}\n`;
+    markdown += `- Statut: ${results.valid ? '✅ Valide' : '❌ Problèmes détectés'}\n`;
+    markdown += `- Nombre de problèmes: ${results.issues.length}\n`;
+    markdown += `- Nombre de corrections suggérées: ${results.fixes.length}\n\n`;
+    
+    if (results.issues.length > 0) {
+      markdown += `## Problèmes détectés\n\n`;
+      
+      const issuesByType = {
+        missing_table: [],
+        missing_column: [],
+        type_mismatch: [],
+        constraint_mismatch: []
+      };
+      
+      for (const issue of results.issues) {
+        if (issuesByType[issue.type]) {
+          issuesByType[issue.type].push(issue);
+        }
+      }
+      
+      if (issuesByType.missing_table.length > 0) {
+        markdown += `### Tables manquantes\n\n`;
+        for (const issue of issuesByType.missing_table) {
+          markdown += `- Table \`${issue.model}\` manquante dans PostgreSQL\n`;
+        }
+        markdown += '\n';
+      }
+      
+      if (issuesByType.missing_column.length > 0) {
+        markdown += `### Colonnes manquantes\n\n`;
+        for (const issue of issuesByType.missing_column) {
+          markdown += `- Colonne \`${issue.model}.${issue.field}\` manquante dans PostgreSQL\n`;
+        }
+        markdown += '\n';
+      }
+      
+      if (issuesByType.type_mismatch.length > 0) {
+        markdown += `### Types incompatibles\n\n`;
+        for (const issue of issuesByType.type_mismatch) {
+          markdown += `- Type incompatible pour \`${issue.model}.${issue.field}\`: Prisma(${issue.prismaType}) vs PostgreSQL(${issue.pgType})\n`;
+        }
+        markdown += '\n';
+      }
+      
+      if (issuesByType.constraint_mismatch.length > 0) {
+        markdown += `### Contraintes différentes\n\n`;
+        for (const issue of issuesByType.constraint_mismatch) {
+          markdown += `- Contrainte ${issue.constraint} différente pour \`${issue.model}.${issue.field}\`\n`;
+        }
+        markdown += '\n';
+      }
+    }
+    
+    fs.writeFileSync(reportPath, markdown, 'utf-8');
+    console.log(chalk.green(`Rapport Markdown généré: ${reportPath}`));
+  }
+  
+  /**
+   * Génère un rapport au format HTML
+   */
+  private async generateHtmlReport(results: any): Promise<void> {
+    const reportPath = path.join(this.config.outputPath!, 'postgresql-validation-report.html');
+    let html = `<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rapport de validation PostgreSQL</title>
+  <style>
+    body { font-family: Arial, sans-serif; line-height: 1.6; margin: 0; padding: 20px; color: #333; }
+    h1 { color: #2c3e50; }
+    h2 { color: #3498db; margin-top: 20px; }
+    h3 { color: #2980b9; }
+    .summary { background-color: #f8f9fa; padding: 15px; border-radius: 5px; margin-bottom: 20px; }
+    .success { color: #27ae60; }
+    .error { color: #e74c3c; }
+    .issue { margin-bottom: 10px; }
+    .issue-block { margin-bottom: 30px; }
+    .sql-code { background-color: #f0f0f0; padding: 10px; border-radius: 5px; font-family: monospace; white-space: pre; overflow: auto; }
+  </style>
+</head>
+<body>
+  <h1>Rapport de validation PostgreSQL</h1>
+  
+  <div class="summary">
+    <h2>Résumé</h2>
+    <p>Date: ${new Date().toISOString()}</p>
+    <p>Statut: ${results.valid 
+      ? '<span class="success">✅ Valide</span>' 
+      : '<span class="error">❌ Problèmes détectés</span>'}
+    </p>
+    <p>Nombre de problèmes: ${results.issues.length}</p>
+    <p>Nombre de corrections suggérées: ${results.fixes.length}</p>
+  </div>
+`;
+    
+    if (results.issues.length > 0) {
+      html += `<h2>Problèmes détectés</h2>`;
+      
+      const issuesByType = {
+        missing_table: [],
+        missing_column: [],
+        type_mismatch: [],
+        constraint_mismatch: []
+      };
+      
+      for (const issue of results.issues) {
+        if (issuesByType[issue.type]) {
+          issuesByType[issue.type].push(issue);
+        }
+      }
+      
+      if (issuesByType.missing_table.length > 0) {
+        html += `<div class="issue-block">
+          <h3>Tables manquantes</h3>
+          <ul>`;
+        for (const issue of issuesByType.missing_table) {
+          html += `<li class="issue">Table <code>${issue.model}</code> manquante dans PostgreSQL</li>`;
+        }
+        html += `</ul></div>`;
+      }
+      
+      if (issuesByType.missing_column.length > 0) {
+        html += `<div class="issue-block">
+          <h3>Colonnes manquantes</h3>
+          <ul>`;
+        for (const issue of issuesByType.missing_column) {
+          html += `<li class="issue">Colonne <code>${issue.model}.${issue.field}</code> manquante dans PostgreSQL</li>`;
+        }
+        html += `</ul></div>`;
+      }
+      
+      if (issuesByType.type_mismatch.length > 0) {
+        html += `<div class="issue-block">
+          <h3>Types incompatibles</h3>
+          <ul>`;
+        for (const issue of issuesByType.type_mismatch) {
+          html += `<li class="issue">Type incompatible pour <code>${issue.model}.${issue.field}</code>: Prisma(${issue.prismaType}) vs PostgreSQL(${issue.pgType})</li>`;
+        }
+        html += `</ul></div>`;
+      }
+      
+      if (issuesByType.constraint_mismatch.length > 0) {
+        html += `<div class="issue-block">
+          <h3>Contraintes différentes</h3>
+          <ul>`;
+        for (const issue of issuesByType.constraint_mismatch) {
+          html += `<li class="issue">Contrainte ${issue.constraint} différente pour <code>${issue.model}.${issue.field}</code></li>`;
+        }
+        html += `</ul></div>`;
+      }
+    }
+    
+    // Afficher les SQL de correction proposés
+    if (results.fixes.length > 0) {
+      html += `<h2>Corrections suggérées</h2>
+      <div class="issue-block">`;
+      
+      for (const fix of results.fixes) {
+        html += `<div class="issue">
+          <h4>${fix.type} - ${fix.model}${fix.field ? '.' + fix.field.name : ''}</h4>
+          <div class="sql-code">${fix.sql}</div>
+        </div>`;
+      }
+      
+      html += `</div>`;
+    }
+    
+    html += `</body></html>`;
+    
+    fs.writeFileSync(reportPath, html, 'utf-8');
+    console.log(chalk.green(`Rapport HTML généré: ${reportPath}`));
+  }
+  
+  /**
+   * Transforme un type Prisma en type PostgreSQL
+   */
+  private mapPrismaTypeToPostgres(prismaType: string): string {
+    // Types primitifs
+    if (prismaType === 'String') return 'text';
+    if (prismaType === 'Int') return 'integer';
+    if (prismaType === 'Float') return 'double precision';
+    if (prismaType === 'Decimal') return 'numeric';
+    if (prismaType === 'Boolean') return 'boolean';
+    if (prismaType === 'DateTime') return 'timestamp with time zone';
+    if (prismaType === 'Json') return 'jsonb';
+    
+    // Types array
+    if (prismaType.startsWith('String[]')) return 'text[]';
+    if (prismaType.startsWith('Int[]')) return 'integer[]';
+    if (prismaType.startsWith('Float[]')) return 'double precision[]';
+    
+    // Types spéciaux
+    if (prismaType === 'BigInt') return 'bigint';
+    if (prismaType === 'Bytes') return 'bytea';
+    
+    // Type par défaut
+    return 'text';
+  }
+  
+  /**
+   * Vérifie si deux types sont compatibles entre Prisma et PostgreSQL
+   */
+  private areTypesCompatible(prismaType: string, pgType: string): boolean {
+    // Correspondances directes
+    if (prismaType === pgType) return true;
+    
+    // Correspondances courantes
+    const compatMapping: Record<string, string[]> = {
+      'text': ['varchar', 'character varying', 'char', 'character'],
+      'integer': ['int', 'int4', 'smallint'],
+      'bigint': ['int8'],
+      'double precision': ['float8', 'real', 'float4'],
+      'numeric': ['decimal'],
+      'timestamp with time zone': ['timestamptz', 'timestamp without time zone', 'timestamp'],
+      'jsonb': ['json']
+    };
+    
+    // Vérifier les compatibilités connues
+    if (compatMapping[prismaType] && compatMapping[prismaType].includes(pgType)) {
+      return true;
+    }
+    
+    return false;
+  }
+  
+  /**
+   * Génère le SQL pour créer une nouvelle table
+   */
+  private generateCreateTableSQL(model: any): string {
+    let sql = `CREATE TABLE "${model.name}" (\n`;
+    
+    const columns = model.fields.map(field => {
+      const pgType = this.mapPrismaTypeToPostgres(field.type);
+      let column = `  "${field.name}" ${pgType}`;
+      
+      if (field.isRequired) {
+        column += ' NOT NULL';
+      }
+      
+      if (field.isUnique) {
+        column += ' UNIQUE';
+      }
+      
+      if (field.defaultValue) {
+        column += ` DEFAULT ${field.defaultValue}`;
+      }
+      
+      return column;
+    });
+    
+    // Ajouter les colonnes
+    sql += columns.join(',\n');
+    
+    // Ajouter la clé primaire
+    const idField = model.fields.find(field => field.isId);
+    if (idField) {
+      sql += `,\n  PRIMARY KEY ("${idField.name}")`;
+    }
+    
+    sql += '\n);\n';
+    
+    return sql;
+  }
+  
+  /**
+   * Génère le SQL pour ajouter une colonne
+   */
+  private generateAddColumnSQL(tableName: string, field: any): string {
+    const pgType = this.mapPrismaTypeToPostgres(field.type);
+    let sql = `ALTER TABLE "${tableName}" ADD COLUMN "${field.name}" ${pgType}`;
+    
+    if (field.isRequired) {
+      sql += ' NOT NULL';
+    }
+    
+    if (field.defaultValue) {
+      sql += ` DEFAULT ${field.defaultValue}`;
+    }
+    
+    sql += ';';
+    
+    return sql;
+  }
+  
+  /**
+   * Génère le SQL pour modifier le type d'une colonne
+   */
+  private generateAlterColumnTypeSQL(tableName: string, columnName: string, newType: string): string {
+    return `ALTER TABLE "${tableName}" ALTER COLUMN "${columnName}" TYPE ${newType} USING "${columnName}"::${newType};`;
+  }
+  
+  /**
+   * Génère le SQL pour modifier la nullabilité d'une colonne
+   */
+  private generateAlterColumnNullableSQL(tableName: string, columnName: string, isRequired: boolean): string {
+    return `ALTER TABLE "${tableName}" ALTER COLUMN "${columnName}" ${isRequired ? 'SET' : 'DROP'} NOT NULL;`;
+  }
+}
+
+export default PostgresqlValidator;

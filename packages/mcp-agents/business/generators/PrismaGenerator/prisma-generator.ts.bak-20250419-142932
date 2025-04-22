@@ -1,0 +1,335 @@
+/**
+ * PrismaGenerator - Agent MCP pour business (generator)
+ * 
+ * Migration automatique vers l'architecture MCP OS en 3 couches
+ * Date: 2025-04-18T00:11:24.606Z
+ */
+
+import { GeneratorAgent } from '@workspaces/cahier-des-charge/src/core/interfaces/business';
+import { BaseAgent } from '@workspaces/cahier-des-charge/src/core/interfaces/base-agent';
+import * as fs from 'fs';
+import * as path from 'path';
+import { MySQLSchema, TableInfo, ColumnInfo } from '../models/schema';
+import { BusinessAgent } from '../../core/interfaces/base-agent';
+
+
+/**
+ * Configuration pour PrismaGenerator
+ */
+export interface PrismaGeneratorConfig {
+  // TODO: Ajouter les propriétés de configuration spécifiques à l'agent
+}
+
+/**
+ * PrismaGenerator - Agent d'analyse et de traitement métier
+ */
+export class PrismaGenerator implements BaseAgent, BusinessAgent, BaseAgent, BusinessAgent, GeneratorAgent {
+  id = 'prisma-generator';
+  name = 'PrismaGenerator';
+  type = 'generator';
+  version = '1.0.0';
+  
+  constructor(private config: PrismaGeneratorConfig) {
+    // Initialisation
+  }
+  
+  /**
+   * Initialise l'agent avec des options spécifiques
+   */
+  async initialize(options?: Record<string, any>): Promise<void> {
+    // TODO: Implémenter l'initialisation
+  }
+  
+  /**
+   * Indique si l'agent est prêt à être utilisé
+   */
+  isReady(): boolean {
+    return true; // TODO: Implémenter la vérification d'état
+  }
+  
+  /**
+   * Arrête et nettoie l'agent
+   */
+  async shutdown(): Promise<void> {
+    // TODO: Implémenter la fermeture propre
+  }
+  
+  /**
+   * Récupère les métadonnées de l'agent
+   */
+  getMetadata(): Record<string, any> {
+    return {
+      id: this.id,
+      name: this.name,
+      type: this.type,
+      version: this.version
+    };
+  }
+  
+  // TODO: Implémenter les méthodes spécifiques de l'interface GeneratorAgent
+  
+  /**
+   * generate
+   */
+  generate() {
+    // TODO: Migrer l'implémentation existante
+  }
+  
+  /**
+   * if
+   */
+  if() {
+    // TODO: Migrer l'implémentation existante
+  }
+  
+  /**
+   * if
+   */
+  if() {
+    // TODO: Migrer l'implémentation existante
+  }
+  
+  /**
+   * toPascalCase
+   */
+  toPascalCase() {
+    // TODO: Migrer l'implémentation existante
+  }
+  
+  /**
+   * toCamelCase
+   */
+  toCamelCase() {
+    // TODO: Migrer l'implémentation existante
+  }
+  
+  /**
+   * columnToPrismaField
+   */
+  columnToPrismaField() {
+    // TODO: Migrer l'implémentation existante
+  }
+  
+  /**
+   * if
+   */
+  if() {
+    // TODO: Migrer l'implémentation existante
+  }
+  
+  /**
+   * if
+   */
+  if() {
+    // TODO: Migrer l'implémentation existante
+  }
+  
+  /**
+   * if
+   */
+  if() {
+    // TODO: Migrer l'implémentation existante
+  }
+  
+  /**
+   * if
+   */
+  if() {
+    // TODO: Migrer l'implémentation existante
+  }
+  
+  /**
+   * if
+   */
+  if() {
+    // TODO: Migrer l'implémentation existante
+  }
+  
+  /**
+   * if
+   */
+  if() {
+    // TODO: Migrer l'implémentation existante
+  }
+  
+  /**
+   * generateFieldComment
+   */
+  generateFieldComment() {
+    // TODO: Migrer l'implémentation existante
+  }
+  
+  /**
+   * if
+   */
+  if() {
+    // TODO: Migrer l'implémentation existante
+  }
+  
+  /**
+   * if
+   */
+  if() {
+    // TODO: Migrer l'implémentation existante
+  }
+  
+  /**
+   * if
+   */
+  if() {
+    // TODO: Migrer l'implémentation existante
+  }
+  
+  /**
+   * join
+   */
+  join() {
+    // TODO: Migrer l'implémentation existante
+  }
+  
+  /**
+   * if
+   */
+  if() {
+    // TODO: Migrer l'implémentation existante
+  }
+  
+  /**
+   * forEach
+   */
+  forEach() {
+    // TODO: Migrer l'implémentation existante
+  }
+  
+  /**
+   * generateRelationName
+   */
+  generateRelationName() {
+    // TODO: Migrer l'implémentation existante
+  }
+  
+  /**
+   * if
+   */
+  if() {
+    // TODO: Migrer l'implémentation existante
+  }
+  
+  /**
+   * addRelationToModel
+   */
+  addRelationToModel() {
+    // TODO: Migrer l'implémentation existante
+  }
+  
+  /**
+   * if
+   */
+  if() {
+    // TODO: Migrer l'implémentation existante
+  }
+  
+  /**
+   * if
+   */
+  if() {
+    // TODO: Migrer l'implémentation existante
+  }
+  
+  /**
+   * if
+   */
+  if() {
+    // TODO: Migrer l'implémentation existante
+  }
+  
+  /**
+   * if
+   */
+  if() {
+    // TODO: Migrer l'implémentation existante
+  }
+  
+  /**
+   * buildRelationAttribute
+   */
+  buildRelationAttribute() {
+    // TODO: Migrer l'implémentation existante
+  }
+  
+  /**
+   * renderPrismaSchema
+   */
+  renderPrismaSchema() {
+    // TODO: Migrer l'implémentation existante
+  }
+  
+  /**
+   * renderSingleModel
+   */
+  renderSingleModel() {
+    // TODO: Migrer l'implémentation existante
+  }
+  
+  /**
+   * if
+   */
+  if() {
+    // TODO: Migrer l'implémentation existante
+  }
+  
+  /**
+   * if
+   */
+  if() {
+    // TODO: Migrer l'implémentation existante
+  }
+  
+  /**
+   * renderField
+   */
+  renderField() {
+    // TODO: Migrer l'implémentation existante
+  }
+  
+  /**
+   * if
+   */
+  if() {
+    // TODO: Migrer l'implémentation existante
+  }
+  
+  /**
+   * if
+   */
+  if() {
+    // TODO: Migrer l'implémentation existante
+  }
+
+  id: string = '';
+  name: string = '';
+  type: string = '';
+  version: string = '1.0.0';
+
+  /**
+   * Récupère l'état actuel de l'agent business
+   */
+  async getState(): Promise<Record<string, any>> {
+    return {
+      status: 'active',
+      timestamp: new Date().toISOString()
+    };
+  }
+
+  id: string = '';
+  name: string = '';
+  type: string = '';
+  version: string = '1.0.0';
+
+  id: string = '';
+  name: string = '';
+  type: string = '';
+  version: string = '1.0.0';
+}
+
+export default PrismaGenerator;

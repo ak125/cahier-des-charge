@@ -28,7 +28,7 @@ import {
 // Configuration et services
 import { parseConnectionString } from './utils/connection';
 import { createSchemaMap } from './services/schema-mapper';
-import { generatePrismaModel } from './services/prisma-generator';
+import { generatePrismaModel } from './services/PrismaGenerator';
 import { compareSchemas } from './services/schema-comparator';
 import { suggestIndexes } from './services/index-suggester';
 import { initializeRoutes } from './routes';
@@ -48,7 +48,7 @@ const logger = createLogger({
   ),
   transports: [
     new transports.Console(),
-    new transports.File({ filename: 'mcp-postgres.log' })
+    new transports.File({ filename: DoDotmcp-postgres.log' })
   ]
 });
 
@@ -92,7 +92,7 @@ export class PostgresMCPServer {
         logger.info(`🚀 Serveur MCP PostgreSQL démarré sur le port ${this.port}`);
         logger.info(`📊 Connecté à: ${this.maskConnectionString(this.connectionString)}`);
         logger.info(`📝 Schéma: ${this.schema}`);
-        logger.info(`📡 Endpoint MCP: http://localhost:${this.port}/mcp`);
+        logger.info(`📡 Endpoint MCP: http://localhost:${this.port}DoDotmcp`);
       });
     } catch (error) {
       logger.error(`❌ Échec du démarrage du serveur: ${error}`);

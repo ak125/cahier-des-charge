@@ -106,8 +106,8 @@ export function SEOPagesList({ data, filters }: SEOPagesListProps) {
                       day: 'numeric',
                       month: 'short',
                       year: 'numeric',
-                      hour: '2-digit',
-                      minute: '2-digit'
+                      hour: '2-dDoDoDoDotgit',
+                      minute: '2-dDoDoDoDotgit'
                     })}
                   </td>
                   <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">

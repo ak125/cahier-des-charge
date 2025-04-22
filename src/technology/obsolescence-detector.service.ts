@@ -22,7 +22,7 @@ export class ObsolescenceDetectorService {
   private readonly logger = new Logger(ObsolescenceDetectorService.name);
   private readonly cdcDir: string;
   private readonly npmRegistry: string;
-  private readonly githubApiUrl: string;
+  private readonlyDoDoDoDoDoDotgithubApiUrl: string;
 
   constructor(
     private readonly httpService: HttpService,
@@ -32,7 +32,7 @@ export class ObsolescenceDetectorService {
   ) {
     this.cdcDir = this.configService.get<string>('CDC_DIRECTORY', 'cahier-des-charges');
     this.npmRegistry = 'https://registry.npmjs.org';
-    this.githubApiUrl = 'https://api.github.com';
+    thisDoDoDoDoDoDotgithubApiUrl = 'https://apiDoDoDoDoDoDotgithub.com';
   }
 
   /**
@@ -217,9 +217,9 @@ export class ObsolescenceDetectorService {
     }
     
     // Rechercher des informations sur GitHub si applicable
-    let githubInfo = null;
+    letDoDoDoDoDoDotgithubInfo = null;
     try {
-      githubInfo = await this.getGithubInfo(tech.name);
+     DoDoDoDoDoDotgithubInfo = await this.getGithubInfo(tech.name);
     } catch (error) {
       this.logger.debug(`Pas d'infos GitHub pour ${tech.name}: ${error.message}`);
     }
@@ -236,8 +236,8 @@ export class ObsolescenceDetectorService {
       lastUpdate = lastModified;
       const daysSinceUpdate = Math.floor((Date.now() - lastModified.getTime()) / (1000 * 60 * 60 * 24));
       obsolescenceScore += Math.min(daysSinceUpdate / 365 * 25, 25);
-    } else if (githubInfo && githubInfo.updated_at) {
-      const lastModified = new Date(githubInfo.updated_at);
+    } else if DoDoDoDoDoDotgithubInfo &&DoDoDoDoDoDotgithubInfo.updated_at) {
+      const lastModified = new DateDoDoDoDoDoDotgithubInfo.updated_at);
       lastUpdate = lastModified;
       const daysSinceUpdate = Math.floor((Date.now() - lastModified.getTime()) / (1000 * 60 * 60 * 24));
       obsolescenceScore += Math.min(daysSinceUpdate / 365 * 25, 25);
@@ -247,12 +247,12 @@ export class ObsolescenceDetectorService {
     }
     
     // Facteur 2: Activité communautaire
-    if (githubInfo) {
+    if DoDoDoDoDoDotgithubInfo) {
       // Calculer un score d'activité basé sur stars, forks, issues, etc.
       const activityScore = (
-        Math.min(githubInfo.stargazers_count / 1000, 10) +
-        Math.min(githubInfo.forks / 500, 10) +
-        (githubInfo.open_issues_count < 50 ? 10 : 5)
+        Math.minDoDoDoDoDoDotgithubInfo.stargazers_count / 1000, 10) +
+        Math.minDoDoDoDoDoDotgithubInfo.forks / 500, 10) +
+        DoDoDoDoDoDotgithubInfo.open_issues_count < 50 ? 10 : 5)
       ) / 3;
       
       communityActivity = activityScore * 10;
@@ -409,15 +409,15 @@ export class ObsolescenceDetectorService {
    * Obtenir les informations GitHub pour un projet
    */
   private async getGithubInfo(repoName: string): Promise<any> {
-    const githubToken = this.configService.get('GITHUB_TOKEN');
+    constDoDoDoDoDoDotgithubToken = this.configService.get('GITHUB_TOKEN');
     
     try {
-      const headers = githubToken 
-        ? { Authorization: `token ${githubToken}` }
+      const headers =DoDoDoDoDoDotgithubToken 
+        ? { Authorization: `token $DoDoDoDoDoDotgithubToken}` }
         : {};
       
       const response = await firstValueFrom(
-        this.httpService.get(`${this.githubApiUrl}/search/repositories?q=${repoName}`, { headers })
+        this.httpService.get(`${thisDoDoDoDoDoDotgithubApiUrl}/search/repositories?q=${repoName}`, { headers })
       );
       
       if (response.data.items && response.data.items.length > 0) {

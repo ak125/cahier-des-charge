@@ -35,8 +35,8 @@ interface CodeUpdate {
 // Configuration
 const CONFIG = {
   schemaDiffPath: './packages/database/prisma/schema_migration_diff.json',
-  nestjsServicesDir: './apps/mcp-server-postgres/src/services',
-  nestjsDtosDir: './apps/mcp-server-postgres/src/dtos',
+  nestjsServicesDir: './appsDoDotmcp-server-postgres/src/services',
+  nestjsDtosDir: './appsDoDotmcp-server-postgres/src/dtos',
   remixRoutesDir: './apps/frontend/app/routes',
   backupSuffix: `.bak-${new Date().toISOString().replace(/:/g, '-')}`,
 };

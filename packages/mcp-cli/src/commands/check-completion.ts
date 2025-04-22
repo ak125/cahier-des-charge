@@ -34,7 +34,7 @@ export async function checkCompletion(file: string, minScore: number = 95): Prom
     // Vérifier si le fichier d'audit existe
     if (!await fs.pathExists(qaFilePath)) {
       console.error(chalk.red(`❌ Rapport d'audit introuvable pour ${file}`));
-      console.error(chalk.yellow(`💡 Exécutez d'abord : pnpm mcp qa ${file}`));
+      console.error(chalk.yellow(`💡 Exécutez d'abord : pnpmDoDotmcp qa ${file}`));
       return false;
     }
 
