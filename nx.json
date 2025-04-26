@@ -1,0 +1,327 @@
+{
+  "tasksRunnerOptions": {
+    "default": {
+      "runner": "nx/tasks-runner",
+      "options": {
+        "cacheableOperations": [
+          "build",
+          "test",
+          "lint",
+          "e2e",
+          "audit",
+          "migrate"
+        ],
+        "parallel": true,
+        "maxParallel": 4
+      }
+    }
+  },
+  "targetDefaults": {
+    "build": {
+      "dependsOn": [
+        "^build"
+      ],
+      "inputs": [
+        "production",
+        "^production"
+      ]
+    },
+    "test": {
+      "inputs": [
+        "default",
+        "^default"
+      ],
+      "executor": "@nx/jest:jest",
+      "options": {
+        "jestConfig": "{projectRoot}/jest.config.js",
+        "passWithNoTests": true
+      },
+      "configurations": {
+        "ci": {
+          "ci": true,
+          "codeCoverage": true
+        }
+      }
+    },
+    "lint": {
+      "inputs": [
+        "default",
+        "^default"
+      ]
+    },
+    "migrate": {
+      "executor": "@nx/js:node",
+      "options": {
+        "script": "scripts/agent-runner.js"
+      },
+      "configurations": {
+        "analyze": {
+          "args": [
+            "analyze",
+            "{args.path}"
+          ]
+        },
+        "batch": {
+          "script": "scripts/migration-orchestrator.js",
+          "args": [
+            "batch",
+            "--count={args.count}"
+          ]
+        },
+        "default": {
+          "args": [
+            "migrate",
+            "{args.path}"
+          ]
+        }
+      }
+    },
+    "audit": {
+      "executor": "@nx/js:node",
+      "options": {
+        "script": "scripts/code-analyzer.js"
+      },
+      "configurations": {
+        "code": {
+          "args": [
+            "--report=true"
+          ]
+        },
+        "temporal": {
+          "script": "scripts/temporal-checker.js",
+          "args": [
+            "--status"
+          ]
+        },
+        "seo": {
+          "script": "tools/seo-checker.ts"
+        },
+        "performance": {
+          "script": "scripts/perf-analyzer.js"
+        }
+      }
+    },
+    "docker": {
+      "executor": "@nx/js:node",
+      "options": {
+        "script": "scripts/docker-manager.js"
+      },
+      "configurations": {
+        "up": {
+          "args": [
+            "up"
+          ]
+        },
+        "down": {
+          "args": [
+            "down"
+          ]
+        },
+        "restart": {
+          "args": [
+            "restart"
+          ]
+        },
+        "logs": {
+          "args": [
+            "logs",
+            "{args.service}"
+          ]
+        }
+      }
+    },
+    "workflow": {
+      "executor": "@nx/js:node",
+      "options": {
+        "script": "scripts/workflow-manager.js"
+      },
+      "configurations": {
+        "n8n-start": {
+          "args": [
+            "n8n",
+            "start"
+          ]
+        },
+        "n8n-import": {
+          "args": [
+            "n8n",
+            "import"
+          ]
+        },
+        "n8n-stop": {
+          "args": [
+            "n8n",
+            "stop"
+          ]
+        },
+        "temporal-start": {
+          "args": [
+            "temporal",
+            "start"
+          ]
+        },
+        "temporal-status": {
+          "args": [
+            "temporal",
+            "status"
+          ]
+        },
+        "temporal-list": {
+          "args": [
+            "temporal",
+            "list"
+          ]
+        }
+      }
+    },
+    "agents": {
+      "executor": "@nx/js:node",
+      "options": {
+        "script": "scripts/agent-manager.js"
+      },
+      "configurations": {
+        "run": {
+          "args": [
+            "run",
+            "{args.name}",
+            "{args.options}"
+          ]
+        },
+        "status": {
+          "args": [
+            "status"
+          ]
+        },
+        "list": {
+          "args": [
+            "list"
+          ]
+        },
+        "register": {
+          "args": [
+            "register"
+          ]
+        },
+        "verify": {
+          "args": [
+            "verify",
+            "{args.path}"
+          ]
+        },
+        "bullmq": {
+          "args": [
+            "bullmq-orchestrator"
+          ]
+        },
+        "orchestrator": {
+          "args": [
+            "orchestrator"
+          ]
+        }
+      }
+    },
+    "ci": {
+      "executor": "@nx/js:node",
+      "options": {
+        "script": "scripts/ci-manager.js"
+      },
+      "configurations": {
+        "check": {
+          "args": [
+            "check"
+          ]
+        },
+        "lint": {
+          "args": [
+            "lint"
+          ]
+        },
+        "test": {
+          "args": [
+            "test"
+          ]
+        },
+        "build": {
+          "args": [
+            "build"
+          ]
+        },
+        "deploy": {
+          "args": [
+            "deploy"
+          ]
+        }
+      }
+    },
+    "seo": {
+      "executor": "@nx/js:node",
+      "options": {
+        "script": "tools/seo-checker.ts"
+      },
+      "configurations": {
+        "audit": {
+          "args": [
+            "--audit"
+          ]
+        },
+        "fix": {
+          "args": [
+            "--fix"
+          ]
+        },
+        "report": {
+          "args": [
+            "--report"
+          ]
+        }
+      }
+    },
+    "manifest": {
+      "executor": "@nx/js:node",
+      "options": {
+        "script": "scripts/manifest-manager.js"
+      },
+      "configurations": {
+        "generate": {
+          "args": [
+            "generate"
+          ]
+        },
+        "validate": {
+          "args": [
+            "validate"
+          ]
+        }
+      }
+    },
+    "tasks": {
+      "executor": "@nx/js:node",
+      "options": {
+        "script": "scripts/task-manager.js"
+      },
+      "configurations": {
+        "list": {
+          "args": [
+            "list"
+          ]
+        }
+      }
+    }
+  },
+  "namedInputs": {
+    "default": [
+      "{projectRoot}/**/*",
+      "!{projectRoot}/dist/**/*"
+    ],
+    "production": [
+      "default",
+      "!{projectRoot}/**/*.spec.ts",
+      "!{projectRoot}/**/*.test.ts",
+      "!{projectRoot}/tsconfig.spec.json"
+    ]
+  },
+  "workspaceLayout": {
+    "appsDir": "apps",
+    "libsDir": "packages"
+  }
+}
