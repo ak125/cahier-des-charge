@@ -1,0 +1,514 @@
+{
+  "name": "QA Analyzer Workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "expression": "*/4"
+            }
+          ]
+        }
+      },
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "position": [
+        250,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "path": "/workspaces/cahier-des-charge",
+        "command": "node packages/mcp-agents/qa-analyzer/qa-analyzer.js app/routes",
+        "executeTimeout": 120
+      },
+      "name": "Execute QA Analysis",
+      "type": "n8n-nodes-base.executeCommand",
+      "position": [
+        470,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "filePath": "./qa-reports/qa-result-latest.json"
+      },
+      "name": "Read QA Results",
+      "type": "n8n-nodes-base.readBinaryFile",
+      "position": [
+        690,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "dataType": "string",
+        "value": "={{ $node[\"Read QA Results\"].data.binary.data.toString('utf8') }}"
+      },
+      "name": "Parse JSON",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        910,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ $json.hasFailedFiles }}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "name": "Has Failed Files?",
+      "type": "n8n-nodes-base.if",
+      "position": [
+        1130,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "keepOnlySet": true,
+        "values": {
+          "string": [
+            {
+              "name": "summary",
+              "value": "=QA Analysis Report - {{ $json.failedFileCount }} fichier(s) n'ont pas passé les critères de qualité"
+            },
+            {
+              "name": "details",
+              "value": "={{ $json.failedFilesList.join(\"\\n\") }}"
+            },
+            {
+              "name": "severity",
+              "value": "high"
+            }
+          ]
+        }
+      },
+      "name": "Prepare Alert",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        1350,
+        220
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://hooks.slack.com/services/{{ $env.SLACK_WEBHOOK_ID }}",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "text",
+              "value": "=:warning: {{ $json.summary }}\n```\n{{ $json.details }}\n```\nConsultez le dashboard de qualité pour plus de détails: https://dashboard.exemple.fr/qa-dashboard"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "Send Slack Alert",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        1580,
+        220
+      ]
+    },
+    {
+      "parameters": {
+        "batchSize": 1,
+        "items": "={{ $json.createTickets ? $json.failedFilesList : [] }}"
+      },
+      "name": "Each Failed File",
+      "type": "n8n-nodes-base.splitInBatches",
+      "position": [
+        1350,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "keepOnlySet": true,
+        "values": {
+          "string": [
+            {
+              "name": "title",
+              "value": "=Problème de QA détecté sur {{ $json }}"
+            },
+            {
+              "name": "description",
+              "value": "=Le fichier {{ $json }} n'a pas passé les critères de qualité. Veuillez vérifier les champs manquants ou incorrects et les corriger selon les standards.\n\nScore: {{ $node[\"Parse JSON\"].json[$json].score }}/100\n\nChamps manquants: {{ $node[\"Parse JSON\"].json[$json].missingFields.join(\", \") }}\n\nDate de détection: {{ $now }}"
+            },
+            {
+              "name": "priority",
+              "value": "medium"
+            },
+            {
+              "name": "assignee",
+              "value": "={{ $node[\"Parse JSON\"].json.assignee || \"\" }}"
+            }
+          ]
+        }
+      },
+      "name": "Prepare Ticket Data",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        1580,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "resource": "issue",
+        "operation": "create",
+        "project": "={{ $env.JIRA_PROJECT_KEY }}",
+        "issueType": "Task",
+        "summary": "={{ $json.title }}",
+        "description": "={{ $json.description }}",
+        "additionalFields": {
+          "priority": {
+            "name": "={{ $json.priority }}"
+          },
+          "assignee": {
+            "name": "={{ $json.assignee }}"
+          },
+          "labels": [
+            "qa-analyzer",
+            "auto-generated",
+            "qa-issue"
+          ]
+        }
+      },
+      "name": "Create JIRA Ticket",
+      "type": "n8n-nodes-base.jira",
+      "position": [
+        1800,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "path": "qa-reports/qa-dashboard-data.json",
+        "options": {
+          "operation": "write",
+          "dataPropertyName": "",
+          "data": "={{ JSON.stringify({lastUpdate: $now, results: $json, stats: {totalFiles: Object.keys($json).length, passedFiles: Object.keys($json).filter(file => $json[file].status === \"success\").length, partialFiles: Object.keys($json).filter(file => $json[file].status === \"partial\").length, failedFiles: Object.keys($json).filter(file => $json[file].status === \"failed\").length}, averageScore: Object.values($json).reduce((sum, file) => sum + file.score, 0) / Object.keys($json).length}, null, 2) }}"
+        }
+      },
+      "name": "Update Dashboard Data",
+      "type": "n8n-nodes-base.fileOperations",
+      "position": [
+        910,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ Object.keys($json.fieldsToAutofix).length > 0 }}"
+            }
+          ]
+        }
+      },
+      "name": "Has Fields To Autofix?",
+      "type": "n8n-nodes-base.if",
+      "position": [
+        1130,
+        700
+      ]
+    },
+    {
+      "parameters": {
+        "path": "/workspaces/cahier-des-charge",
+        "command": "node packages/mcp-agents/qa-analyzer/autofix.js --fields='={{ JSON.stringify($json.fieldsToAutofix) }}'",
+        "executeTimeout": 120
+      },
+      "name": "Run Autofix",
+      "type": "n8n-nodes-base.executeCommand",
+      "position": [
+        1350,
+        700
+      ]
+    },
+    {
+      "parameters": {},
+      "name": "Function",
+      "type": "n8n-nodes-base.function",
+      "position": [
+        690,
+        500
+      ],
+      "webhookId": "d5028e6d-5e5a-41a2-8db3-4cabe1b31695"
+    },
+    {
+      "parameters": {},
+      "id": "error-trigger",
+      "name": "Gestionnaire d'Erreur",
+      "type": "n8n-nodes-base.errorTrigger",
+      "position": [250, 900],
+      "webhookId": "error-handler-qa-analyzer"
+    },
+    {
+      "parameters": {
+        "functionCode": "// Formater l'erreur pour la notification et le log\nconst workflow = $workflow;\nconst error = $input.item.json.error;\nconst timestamp = new Date().toISOString();\nconst errorNodeId = $input.item.json.lastNodeExecuted;\n\n// Récupérer des informations supplémentaires sur le contexte d'analyse QA\nlet qaContext = {};\ntry {\n  // Essayer de récupérer les informations du contexte QA\n  if ($input.item.json.qaData) {\n    qaContext = {\n      fileCount: $input.item.json.qaData.totalFiles || 'inconnu',\n      reportPath: $input.item.json.qaData.reportPath || 'inconnu'\n    };\n  }\n} catch (e) {\n  // Ignorer les erreurs lors de la récupération du contexte\n  qaContext = { error: 'Impossible de récupérer le contexte' };\n}\n\nreturn {\n  json: {\n    workflow: {\n      id: workflow.id,\n      name: workflow.name\n    },\n    error: {\n      message: error.message || 'Erreur inconnue',\n      stack: error.stack,\n      timestamp,\n      lastNodeExecuted: errorNodeId\n    },\n    context: {\n      ...qaContext,\n      environment: process.env.NODE_ENV || 'development',\n      timestamp\n    }\n  }\n};"
+      },
+      "id": "format-error",
+      "name": "Formater Erreur",
+      "type": "n8n-nodes-base.function",
+      "position": [450, 900]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://hooks.slack.com/services/{{ $env.SLACK_WEBHOOK_ID }}",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "text",
+              "value": "🚨 *ERREUR CRITIQUE dans l'Analyseur QA*\n\n*Workflow:* {{ $json.workflow.name }}\n*Erreur:* {{ $json.error.message }}\n*Nœud:* {{ $json.error.lastNodeExecuted }}\n*Timestamp:* {{ $json.error.timestamp }}\n\nVeuillez vérifier les logs du système pour plus de détails."
+            },
+            {
+              "name": "attachments",
+              "value": "=[{\n  \"color\": \"danger\",\n  \"title\": \"Détails de l'erreur\",\n  \"text\": \"{{ $json.error.stack || 'Pas de trace d\\'erreur disponible' }}\"\n}]"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "error-slack",
+      "name": "Notification Slack Erreur",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [650, 820]
+    },
+    {
+      "parameters": {
+        "filePath": "/workspaces/cahier-des-charge/logs/qa_analyzer_errors.log",
+        "fileContent": "={{ '[' + $json.context.timestamp + '] Workflow: ' + $json.workflow.name + ' | Error: ' + $json.error.message + ' | Node: ' + $json.error.lastNodeExecuted + '\\n' + ($json.error.stack || '') + '\\n\\n' }}",
+        "options": {
+          "append": true,
+          "encoding": "utf8"
+        }
+      },
+      "id": "log-error",
+      "name": "Enregistrer Erreur",
+      "type": "n8n-nodes-base.writeFile",
+      "position": [650, 980]
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "resource": "issue",
+        "operation": "create",
+        "project": "={{ $env.JIRA_PROJECT_KEY }}",
+        "issueType": "Bug",
+        "summary": "Erreur critique dans l'Analyseur QA - {{ $json.error.message | slice(0, 80) }}",
+        "description": "Une erreur critique est survenue dans le workflow d'analyse QA.\n\n*Détails de l'erreur:*\n* *Message:* {{ $json.error.message }}\n* *Nœud:* {{ $json.error.lastNodeExecuted }}\n* *Horodatage:* {{ $json.error.timestamp }}\n\n*Stack trace:*\n{noformat}\n{{ $json.error.stack || 'Non disponible' }}\n{noformat}\n\nCette erreur empêche l'analyse QA de fonctionner correctement. Merci de la traiter en priorité.",
+        "additionalFields": {
+          "priority": {
+            "name": "High"
+          },
+          "labels": [
+            "qa-analyzer",
+            "error",
+            "automation-failure"
+          ]
+        }
+      },
+      "id": "create-error-ticket",
+      "name": "Créer Ticket JIRA",
+      "type": "n8n-nodes-base.jira",
+      "position": [850, 900]
+    }
+  ],
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Execute QA Analysis",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute QA Analysis": {
+      "main": [
+        [
+          {
+            "node": "Read QA Results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read QA Results": {
+      "main": [
+        [
+          {
+            "node": "Parse JSON",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse JSON": {
+      "main": [
+        [
+          {
+            "node": "Has Failed Files?",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Update Dashboard Data",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Function",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Has Failed Files?": {
+      "main": [
+        [
+          {
+            "node": "Prepare Alert",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Each Failed File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Alert": {
+      "main": [
+        [
+          {
+            "node": "Send Slack Alert",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Each Failed File": {
+      "main": [
+        [
+          {
+            "node": "Prepare Ticket Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Ticket Data": {
+      "main": [
+        [
+          {
+            "node": "Create JIRA Ticket",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Function": {
+      "main": [
+        [
+          {
+            "node": "Has Fields To Autofix?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Has Fields To Autofix?": {
+      "main": [
+        [
+          {
+            "node": "Run Autofix",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Gestionnaire d'Erreur": {
+      "main": [
+        [
+          {
+            "node": "Formater Erreur",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Formater Erreur": {
+      "main": [
+        [
+          {
+            "node": "Notification Slack Erreur",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Enregistrer Erreur",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Créer Ticket JIRA",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "saveDataSuccessExecution": "none",
+    "saveDataErrorExecution": "all",
+    "saveExecutionProgress": false,
+    "saveManualExecutions": false,
+    "callerPolicy": "workflowsFromSameOwner",
+    "timezone": "Europe/Paris"
+  },
+  "staticData": null,
+  "meta": {
+    "instanceId": "76b26d90e1facde5fb682fd1428788ecf8c8f42f35f559e8baac9a6de80caec4"
+  },
+  "tags": [
+    "QA",
+    "Automation",
+    "Monitoring"
+  ]
+}

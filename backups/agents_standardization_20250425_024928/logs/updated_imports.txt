@@ -1,0 +1,3 @@
+/workspaces/cahier-des-charge/agents/core/utils.ts|./types|../orchestration/types.ts
+/workspaces/cahier-des-charge/agents/core/base-agent.ts|./types|../orchestration/types.ts
+/workspaces/cahier-des-charge/agents/quality/ab-strategy-tester.ts|./types|../orchestration/types.ts

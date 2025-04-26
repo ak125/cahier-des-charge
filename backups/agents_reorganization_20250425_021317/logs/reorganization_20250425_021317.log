@@ -1,0 +1,143 @@
+[2025-04-25 02:13:20] [0;33mSauvegarde des agents avant réorganisation...[0m
+[2025-04-25 02:13:20] [0;32m✅ Agents sauvegardés dans /workspaces/cahier-des-charge/backups/agents_reorganization_20250425_021317/agents[0m
+[2025-04-25 02:13:20] [0;33mVérification du dossier core...[0m
+[2025-04-25 02:13:20] [0;32mLe dossier core existe déjà[0m
+[2025-04-25 02:13:20] [0;33mCréation de la structure des catégories...[0m
+[2025-04-25 02:13:20] Catégorie notification créée
+[2025-04-25 02:13:20] Catégorie orchestration créée
+[2025-04-25 02:13:20] Catégorie monitoring créée
+[2025-04-25 02:13:20] Catégorie pipeline créée
+[2025-04-25 02:13:20] Catégorie migration existe déjà
+[2025-04-25 02:13:20] Catégorie quality existe déjà
+[2025-04-25 02:13:20] Catégorie ui créée
+[2025-04-25 02:13:20] Catégorie automation créée
+[2025-04-25 02:13:20] Catégorie analysis existe déjà
+[2025-04-25 02:13:20] Catégorie data créée
+[2025-04-25 02:13:20] Catégorie audit créée
+[2025-04-25 02:13:20] Catégorie security créée
+[2025-04-25 02:13:20] Catégorie seo créée
+[2025-04-25 02:13:20] Catégorie integration existe déjà
+[2025-04-25 02:13:20] Catégorie api créée
+[2025-04-25 02:13:20] [0;32m✅ Structure des catégories créée[0m
+[2025-04-25 02:13:20] [0;33mCatégorisation des agents...[0m
+[2025-04-25 02:13:20] Utilisation du rapport d'analyse existant: reports/agents_consolidation_20250425_014514.md
+[2025-04-25 02:13:20] Extrait 10 agents du rapport d'analyse
+[2025-04-25 02:14:19] [0;32m✅ 101 agents catégorisés[0m
+[2025-04-25 02:14:19] [0;33mDéplacement des agents dans leurs catégories respectives...[0m
+[2025-04-25 02:14:19] Agent SupabaseOptimizationTracker.ts déplacé vers monitoring
+[2025-04-25 02:14:19] Agent agent-audit.ts déplacé vers ui
+[2025-04-25 02:14:19] Agent devops-preview.ts déplacé vers ui
+[2025-04-25 02:14:19] Agent trace-verifier.ts déplacé vers monitoring
+[2025-04-25 02:14:19] Agent caddy-generator.ts non catégorisé, reste à la racine
+[2025-04-25 02:14:19] Agent nginx-config-parser.ts déplacé vers analysis
+[2025-04-25 02:14:19] Agent htaccess-parser.ts déplacé vers analysis
+[2025-04-25 02:14:19] Agent seo-audit-runner.ts déplacé vers audit
+[2025-04-25 02:14:19] Agent seo-mcp-controller.ts déplacé vers orchestration
+[2025-04-25 02:14:19] Agent migration-orchestrator.ts déplacé vers migration
+[2025-04-25 02:14:19] Agent ci-tester.ts déplacé vers pipeline
+[2025-04-25 02:14:19] Agent metrics-service.ts déplacé vers monitoring
+[2025-04-25 02:14:19] Agent orchestrator-bridge.ts déplacé vers notification
+[2025-04-25 02:14:19] Agent dev-integrator.ts non catégorisé, reste à la racine
+[2025-04-25 02:14:20] Agent index.ts existe déjà dans seo mais est différent, renommage
+[2025-04-25 02:14:20] Agent index.ts existe déjà dans seo mais est différent, renommage
+[2025-04-25 02:14:20] Agent index.ts existe déjà dans seo mais est différent, renommage
+[2025-04-25 02:14:20] Agent index.ts existe déjà dans seo mais est différent, renommage
+[2025-04-25 02:14:20] Agent index.ts existe déjà dans seo mais est différent, renommage
+[2025-04-25 02:14:20] Agent index.ts existe déjà dans seo mais est différent, renommage
+[2025-04-25 02:14:20] Agent index.ts existe déjà dans seo mais est différent, renommage
+[2025-04-25 02:14:20] Agent index.ts existe déjà dans seo mais est différent, renommage
+[2025-04-25 02:14:20] Agent index.ts existe déjà dans seo mais est différent, renommage
+[2025-04-25 02:14:20] Agent index.ts existe déjà dans seo mais est différent, renommage
+[2025-04-25 02:14:20] Agent index.ts existe déjà dans seo mais est différent, renommage
+[2025-04-25 02:14:20] Agent index.ts existe déjà dans seo mais est différent, renommage
+[2025-04-25 02:14:20] Agent index.ts existe déjà dans seo mais est différent, renommage
+[2025-04-25 02:14:20] Agent index.ts existe déjà dans seo mais est différent, renommage
+[2025-04-25 02:14:20] Agent bullmq-orchestrator.ts non catégorisé, reste à la racine
+[2025-04-25 02:14:20] Agent orchestrator.ts non catégorisé, reste à la racine
+[2025-04-25 02:14:20] Agent meta-generator.ts déplacé vers seo
+[2025-04-25 02:14:20] Agent pipeline-strategy-auditor.ts déplacé vers pipeline
+[2025-04-25 02:14:20] Agent nginx-config-analyzer.ts déplacé vers analysis
+[2025-04-25 02:14:20] Agent sql-analysis-runner.ts déplacé vers analysis
+[2025-04-25 02:14:20] Agent prisma-smart-generator.ts non catégorisé, reste à la racine
+[2025-04-25 02:14:20] Agent caddyfile-generator.ts non catégorisé, reste à la racine
+[2025-04-25 02:14:20] Agent remix-route-generator.ts déplacé vers api
+[2025-04-25 02:14:20] Agent remix-route-generator.ts existe déjà dans api (identique), suppression de l'original
+[2025-04-25 02:14:20] Agent dev-generator.ts non catégorisé, reste à la racine
+[2025-04-25 02:14:20] Agent htaccess-route-analyzer.ts déplacé vers analysis
+[2025-04-25 02:14:20] Agent htaccess-route-analyzer.ts existe déjà dans analysis (identique), suppression de l'original
+[2025-04-25 02:14:20] Agent php-router-audit.ts déplacé vers audit
+[2025-04-25 02:14:20] Agent php-router-audit.ts existe déjà dans audit (identique), suppression de l'original
+[2025-04-25 02:14:20] Agent seo-meta.generator.ts déplacé vers seo
+[2025-04-25 02:14:20] Agent seo-meta.generator.ts existe déjà dans seo (identique), suppression de l'original
+[2025-04-25 02:14:20] Agent seo-checker-canonical.ts déplacé vers seo
+[2025-04-25 02:14:20] Agent seo-checker-canonical.ts existe déjà dans seo (identique), suppression de l'original
+[2025-04-25 02:14:20] Agent inject-to-supabase.ts non catégorisé, reste à la racine
+[2025-04-25 02:14:20] Agent php-sql-mapper.ts déplacé vers quality
+[2025-04-25 02:14:20] Agent htaccess-router-analyzer.ts existe déjà dans analysis (identique), suppression de l'original
+[2025-04-25 02:14:20] Agent data-verifier.ts déplacé vers data
+[2025-04-25 02:14:20] Agent mysql-to-postgresql.ts non catégorisé, reste à la racine
+[2025-04-25 02:14:20] Agent consolidator.ts non catégorisé, reste à la racine
+[2025-04-25 02:14:20] Agent mysql-analyzer.ts déplacé vers analysis
+[2025-04-25 02:14:20] Agent mysql-analyzer.ts existe déjà dans analysis (identique), suppression de l'original
+[2025-04-25 02:14:20] Agent mysql-analyzer.ts existe déjà dans analysis (identique), suppression de l'original
+[2025-04-25 02:14:20] Agent helpers.ts non catégorisé, reste à la racine
+[2025-04-25 02:14:20] Agent schema-analyzer.ts déplacé vers analysis
+[2025-04-25 02:14:20] Agent schema-analyzer.ts existe déjà dans analysis (identique), suppression de l'original
+[2025-04-25 02:14:20] Agent classifier.ts déplacé vers monitoring
+[2025-04-25 02:14:20] Agent classifier.ts existe déjà dans monitoring (identique), suppression de l'original
+[2025-04-25 02:14:20] Agent relation-analyzer.ts existe déjà dans analysis (identique), suppression de l'original
+[2025-04-25 02:14:20] Agent relation-analyzer.ts existe déjà dans analysis (identique), suppression de l'original
+[2025-04-25 02:14:20] Agent table-classifier.ts déplacé vers monitoring
+[2025-04-25 02:14:20] Agent table-classifier.ts existe déjà dans monitoring (identique), suppression de l'original
+[2025-04-25 02:14:20] Agent debt-analyzer.ts déplacé vers analysis
+[2025-04-25 02:14:20] Agent debt-analyzer.ts existe déjà dans analysis (identique), suppression de l'original
+[2025-04-25 02:14:20] Agent prisma-generator.ts déplacé vers monitoring
+[2025-04-25 02:14:20] Agent prisma-generator.ts existe déjà dans monitoring (identique), suppression de l'original
+[2025-04-25 02:14:20] Agent prisma-generator.ts existe déjà dans monitoring (identique), suppression de l'original
+[2025-04-25 02:14:20] Agent prisma-generator.ts existe déjà dans monitoring (identique), suppression de l'original
+[2025-04-25 02:14:20] Agent parser.ts déplacé vers analysis
+[2025-04-25 02:14:20] Agent parser.ts existe déjà dans analysis (identique), suppression de l'original
+[2025-04-25 02:14:20] Agent schema.ts déplacé vers data
+[2025-04-25 02:14:20] Agent schema.ts existe déjà dans data (identique), suppression de l'original
+[2025-04-25 02:14:20] Agent type-auditor.ts déplacé vers audit
+[2025-04-25 02:14:20] Agent type-auditor.ts existe déjà dans audit (identique), suppression de l'original
+[2025-04-25 02:14:20] Agent debt-detector.ts déplacé vers analysis
+[2025-04-25 02:14:20] Agent debt-detector.ts existe déjà dans analysis (identique), suppression de l'original
+[2025-04-25 02:14:20] Agent relational-normalizer.ts non catégorisé, reste à la racine
+[2025-04-25 02:14:20] Agent sql-analyzer+prisma-builder.ts déplacé vers pipeline
+[2025-04-25 02:14:20] Agent postgresql-validator.ts déplacé vers audit
+[2025-04-25 02:14:20] Agent component-generator.ts déplacé vers ui
+[2025-04-25 02:14:20] Agent qa-confirmer.ts non catégorisé, reste à la racine
+[2025-04-25 02:14:20] Agent remediator.ts non catégorisé, reste à la racine
+[2025-04-25 02:14:20] Agent mysql-to-pg.ts non catégorisé, reste à la racine
+[2025-04-25 02:14:21] Agent mysql-analyzer+optimizer.ts existe déjà dans analysis (identique), suppression de l'original
+[2025-04-25 02:14:21] Agent audit-selector.ts déplacé vers pipeline
+[2025-04-25 02:14:21] Agent analyze-security-risks.ts déplacé vers analysis
+[2025-04-25 02:14:21] Agent sql-debt-audit.ts déplacé vers audit
+[2025-04-25 02:14:21] Agent ab-strategy-tester.ts déplacé vers quality
+[2025-04-25 02:14:21] Agent status-auditor.ts déplacé vers monitoring
+[2025-04-25 02:14:21] Agent notifier.ts déplacé vers monitoring
+[2025-04-25 02:14:21] Agent pr-creator.ts non catégorisé, reste à la racine
+[2025-04-25 02:14:21] Agent status-writer.ts déplacé vers monitoring
+[2025-04-25 02:14:21] Agent mcp-manifest-manager.ts déplacé vers orchestration
+[2025-04-25 02:14:21] Agent diff-verifier.ts non catégorisé, reste à la racine
+[2025-04-25 02:14:21] Agent seo-redirect-mapper.ts déplacé vers seo
+[2025-04-25 02:14:21] Agent mcp-verifier.worker.ts non catégorisé, reste à la racine
+[2025-04-25 02:14:21] Agent php-analyzer.worker.ts déplacé vers analysis
+[2025-04-25 02:14:21] Agent mcp-verifier.ts non catégorisé, reste à la racine
+[2025-04-25 02:14:21] Agent type-mapper.ts non catégorisé, reste à la racine
+[2025-04-25 02:14:21] Agent table-cartographer.ts non catégorisé, reste à la racine
+[2025-04-25 02:14:21] Agent generate_prisma_model.ts déplacé vers data
+[2025-04-25 02:14:21] Agent semantic-table-mapper.ts non catégorisé, reste à la racine
+[2025-04-25 02:14:21] Agent php-discovery-engine.ts déplacé vers seo
+[2025-04-25 02:14:21] Agent dynamic_sql_extractor.ts déplacé vers pipeline
+[2025-04-25 02:14:21] Agent seo-content-enhancer.ts déplacé vers seo
+[2025-04-25 02:14:21] Agent dev-linter.ts déplacé vers quality
+[2025-04-25 02:14:21] Agent monitoring-check.ts déplacé vers monitoring
+[2025-04-25 02:14:21] Agent dev-checker.ts déplacé vers monitoring
+[2025-04-25 02:14:21] Agent canonical-validator.ts déplacé vers audit
+[2025-04-25 02:14:21] [0;32m✅ 54 agents déplacés, 14 agents renommés[0m
+[2025-04-25 02:14:21] [0;33mMise à jour de l'index principal...[0m
+[2025-04-25 02:14:21] [0;32m✅ Index principal mis à jour[0m
+[2025-04-25 02:14:21] [0;33mGénération du rapport de réorganisation...[0m
+[2025-04-25 02:14:21] [0;32m✅ Rapport de réorganisation généré: /workspaces/cahier-des-charge/reports/reorganization_20250425_021317.md[0m

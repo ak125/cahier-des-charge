@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rapport de consolidation des agents</title>
+  <style>
+    body { font-family: Arial, sans-serif; line-height: 1.6; max-width: 1200px; margin: 0 auto; padding: 20px; }
+    h1, h2, h3, h4 { color: #333; margin-top: 1.5em; }
+    table { border-collapse: collapse; width: 100%; margin: 1em 0; }
+    th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+    th { background-color: #f2f2f2; }
+    tr:nth-child(even) { background-color: #f9f9f9; }
+    .category-section { border: 1px solid #ddd; padding: 15px; margin: 15px 0; border-radius: 5px; }
+    .chart { height: 300px; margin: 30px 0; }
+    pre { background-color: #f5f5f5; padding: 10px; border-radius: 5px; overflow-x: auto; }
+    code { font-family: 'Courier New', monospace; }
+    .container { display: flex; flex-wrap: wrap; }
+    .column { flex: 1; min-width: 300px; padding: 10px; }
+    details { margin-bottom: 15px; padding: 10px; border: 1px solid #eee; border-radius: 5px; }
+    summary { cursor: pointer; font-weight: bold; }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <h1>Rapport de consolidation des agents</h1>
+  <p>Date: Fri Apr 25 01:47:13 UTC 2025</p>
+  <div class="container">
+    <div class="column">
+      <h2>Vue d'ensemble</h2>
+      <ul>
+        <li><strong>Nombre total d'agents:</strong> 125</li>
+        <li><strong>Nombre total de lignes de code:</strong> 15917</li>
+        <li><strong>Moyenne de lignes par agent:</strong> 127.3</li>
+        <li><strong>Paires potentiellement similaires:</strong> 107</li>
+      </ul>
+      <div class="chart">
+        <canvas id="categoriesChart"></canvas>
+      </div>
+    </div>
+    <div class="column">
+      <h2>Répartition par catégorie</h2>
+      <table>
+        <tr><th>Catégorie</th><th>Nombre</th><th>%</th></tr>
+        <tr><td>notification</td><td>2</td><td>1.6%</td></tr>
+        <tr><td>orchestration</td><td>4</td><td>3.2%</td></tr>
+        <tr><td>monitoring</td><td>23</td><td>18.4%</td></tr>
+        <tr><td>pipeline</td><td>5</td><td>4.0%</td></tr>
+        <tr><td>migration</td><td>10</td><td>8.0%</td></tr>
+        <tr><td>quality</td><td>2</td><td>1.6%</td></tr>
+        <tr><td>ui</td><td>2</td><td>1.6%</td></tr>
+        <tr><td>automation</td><td>0</td><td>0.0%</td></tr>
+        <tr><td>analysis</td><td>30</td><td>24.0%</td></tr>
+        <tr><td>data</td><td>4</td><td>3.2%</td></tr>
+        <tr><td>audit</td><td>8</td><td>6.4%</td></tr>
+        <tr><td>security</td><td>0</td><td>0.0%</td></tr>
+        <tr><td>seo</td><td>7</td><td>5.6%</td></tr>
+        <tr><td>integration</td><td>0</td><td>0.0%</td></tr>
+        <tr><td>api</td><td>0</td><td>0.0%</td></tr>
+      </table>
+    </div>
+  </div>
+  <h2>Agents les plus volumineux</h2>
+  <table>
+    <tr><th>Agent</th><th>Lignes</th><th>Catégorie</th></tr>
+    <tr><td><code>php-discovery-engine.ts</code></td><td>1585</td><td>seo</td></tr>
+    <tr><td><code>index.ts</code></td><td>1441</td><td>ui</td></tr>
+    <tr><td><code>ab-strategy-tester.ts</code></td><td>938</td><td>quality</td></tr>
+    <tr><td><code>php-sql-mapper.ts</code></td><td>716</td><td>analysis</td></tr>
+    <tr><td><code>table-classifier.ts</code></td><td>621</td><td>monitoring</td></tr>
+    <tr><td><code>prisma-generator.ts</code></td><td>621</td><td>monitoring</td></tr>
+    <tr><td><code>classifier.ts</code></td><td>621</td><td>monitoring</td></tr>
+    <tr><td><code>prisma-generator.ts</code></td><td>621</td><td>monitoring</td></tr>
+    <tr><td><code>table-classifier.ts</code></td><td>621</td><td>monitoring</td></tr>
+    <tr><td><code>prisma-generator.ts</code></td><td>621</td><td>monitoring</td></tr>
+  </table>
+  <h2>Agents potentiellement redondants</h2>
+  <table>
+    <tr><th>Agent 1</th><th>Agent 2</th><th>Type</th><th>Score</th></tr>
+    <tr><td><code>mysql-analyzer+optimizer.ts</code></td><td><code>mysql-analyzer+optimizer.ts</code></td><td>name</td><td>25</td></tr>
+    <tr><td><code>htaccess-router-analyzer.ts</code></td><td><code>htaccess-router-analyzer.ts</code></td><td>name</td><td>25</td></tr>
+    <tr><td><code>mysql-analyzer+optimizer.ts</code></td><td><code>mysql-analyzer+optimizer.ts</code></td><td>name</td><td>25</td></tr>
+    <tr><td><code>htaccess-router-analyzer.ts</code></td><td><code>htaccess-router-analyzer.ts</code></td><td>name</td><td>25</td></tr>
+    <tr><td><code>htaccess-route-analyzer.ts</code></td><td><code>htaccess-route-analyzer.ts</code></td><td>name</td><td>24</td></tr>
+    <tr><td><code>htaccess-route-analyzer.ts</code></td><td><code>htaccess-route-analyzer.ts</code></td><td>name</td><td>24</td></tr>
+    <tr><td><code>seo-checker-canonical.ts</code></td><td><code>seo-checker-canonical.ts</code></td><td>name</td><td>22</td></tr>
+    <tr><td><code>remix-route-generator.ts</code></td><td><code>remix-route-generator.ts</code></td><td>name</td><td>22</td></tr>
+    <tr><td><code>relational-normalizer.ts</code></td><td><code>relational-normalizer.ts</code></td><td>name</td><td>22</td></tr>
+    <tr><td><code>seo-checker-canonical.ts</code></td><td><code>seo-checker-canonical.ts</code></td><td>name</td><td>22</td></tr>
+    <tr><td><code>remix-route-generator.ts</code></td><td><code>remix-route-generator.ts</code></td><td>name</td><td>22</td></tr>
+    <tr><td><code>relational-normalizer.ts</code></td><td><code>relational-normalizer.ts</code></td><td>name</td><td>22</td></tr>
+    <tr><td><code>migration-strategist.ts</code></td><td><code>migration-strategist.ts</code></td><td>name</td><td>21</td></tr>
+    <tr><td><code>migration-strategist.ts</code></td><td><code>migration-strategist.ts</code></td><td>name</td><td>21</td></tr>
+    <tr><td><code>nginx-config-parser.ts</code></td><td><code>nginx-config-parser.ts</code></td><td>name</td><td>20</td></tr>
+    <tr><td><code>nginx-config-parser.ts</code></td><td><code>nginx-config-parser.ts</code></td><td>name</td><td>20</td></tr>
+    <tr><td><code>caddyfile-generator.ts</code></td><td><code>caddyfile-generator.ts</code></td><td>name</td><td>20</td></tr>
+    <tr><td><code>caddyfile-generator.ts</code></td><td><code>caddyfile-generator.ts</code></td><td>name</td><td>20</td></tr>
+    <tr><td><code>caddyfile-generator.ts</code></td><td><code>caddyfile-generator.ts</code></td><td>name</td><td>20</td></tr>
+    <tr><td><code>caddyfile-generator.ts</code></td><td><code>caddyfile-generator.ts</code></td><td>name</td><td>20</td></tr>
+  </table>
+  <h2>Propositions de consolidation par catégorie</h2>
+  <div class="category-section">
+    <h3>Catégorie: notification (2 agents)</h3>
+    <details>
+      <summary>Groupes proposés pour consolidation</summary>
+      <div>
+        <p><em>Pas de groupes de consolidation identifiés dans cette catégorie.</em></p>
+      </div>
+    </details>
+    <details>
+      <summary>Agents individuels</summary>
+      <table>
+        <tr><th>Agent</th><th>Lignes</th></tr>
+        <tr><td><code>agent-audit.ts</code></td><td>601</td></tr>
+        <tr><td><code>orchestrator-bridge.ts</code></td><td>106</td></tr>
+      </table>
+    </details>
+  </div>
+  <div class="category-section">
+    <h3>Catégorie: orchestration (4 agents)</h3>
+    <details>
+      <summary>Groupes proposés pour consolidation</summary>
+      <div>
+        <h4>Groupe orchestration-1</h4>
+        <ul>
+          <li><code>orchestrator.ts</code></li>
+          <li><code>orchestrator.ts</code></li>
+          <li><code>orchestrator.ts</code></li>
+        </ul>
+        <p><em>Suggestion: Ces agents partagent des fonctionnalités similaires et pourraient être fusionnés.</em></p>
+      </div>
+    </details>
+    <details>
+      <summary>Agents individuels</summary>
+      <table>
+        <tr><th>Agent</th><th>Lignes</th></tr>
+        <tr><td><code>bullmq-orchestrator.ts</code></td><td>9</td></tr>
+        <tr><td><code>mcp-manifest-manager.ts</code></td><td>9</td></tr>
+        <tr><td><code>migration-orchestrator.ts</code></td><td>9</td></tr>
+      </table>
+    </details>
+  </div>
+  <div class="category-section">
+    <h3>Catégorie: monitoring (23 agents)</h3>
+    <details>
+      <summary>Groupes proposés pour consolidation</summary>
+      <div>
+        <h4>Groupe monitoring-1</h4>
+        <ul>
+          <li><code>htaccess-router-analyzer.ts</code></li>
+          <li><code>htaccess-router-analyzer.ts</code></li>
+        </ul>
+        <p><em>Suggestion: Ces agents partagent des fonctionnalités similaires et pourraient être fusionnés.</em></p>
+        <h4>Groupe monitoring-2</h4>
+        <ul>
+          <li><code>prisma-generator.ts</code></li>
+          <li><code>prisma-generator.ts</code></li>
+          <li><code>prisma-generator.ts</code></li>
+          <li><code>prisma-generator.ts</code></li>
+        </ul>
+        <p><em>Suggestion: Ces agents partagent des fonctionnalités similaires et pourraient être fusionnés.</em></p>
+        <h4>Groupe monitoring-3</h4>
+        <ul>
+          <li><code>classifier.ts</code></li>
+          <li><code>classifier.ts</code></li>
+          <li><code>classifier.ts</code></li>
+          <li><code>classifier.ts</code></li>
+        </ul>
+        <p><em>Suggestion: Ces agents partagent des fonctionnalités similaires et pourraient être fusionnés.</em></p>
+        <h4>Groupe monitoring-4</h4>
+        <ul>
+          <li><code>prisma-generator.ts</code></li>
+          <li><code>prisma-generator.ts</code></li>
+          <li><code>prisma-generator.ts</code></li>
+          <li><code>prisma-generator.ts</code></li>
+        </ul>
+        <p><em>Suggestion: Ces agents partagent des fonctionnalités similaires et pourraient être fusionnés.</em></p>
+        <h4>Groupe monitoring-5</h4>
+        <ul>
+          <li><code>table-classifier.ts</code></li>
+          <li><code>table-classifier.ts</code></li>
+        </ul>
+        <p><em>Suggestion: Ces agents partagent des fonctionnalités similaires et pourraient être fusionnés.</em></p>
+        <h4>Groupe monitoring-6</h4>
+        <ul>
+          <li><code>seo-checker-canonical.ts</code></li>
+          <li><code>seo-checker-canonical.ts</code></li>
+        </ul>
+        <p><em>Suggestion: Ces agents partagent des fonctionnalités similaires et pourraient être fusionnés.</em></p>
+        <h4>Groupe monitoring-7</h4>
+        <ul>
+          <li><code>htaccess-router-analyzer.ts</code></li>
+          <li><code>htaccess-router-analyzer.ts</code></li>
+        </ul>
+        <p><em>Suggestion: Ces agents partagent des fonctionnalités similaires et pourraient être fusionnés.</em></p>
+        <h4>Groupe monitoring-8</h4>
+        <ul>
+          <li><code>prisma-generator.ts</code></li>
+          <li><code>prisma-generator.ts</code></li>
+          <li><code>prisma-generator.ts</code></li>
+          <li><code>prisma-generator.ts</code></li>
+        </ul>
+        <p><em>Suggestion: Ces agents partagent des fonctionnalités similaires et pourraient être fusionnés.</em></p>
+        <h4>Groupe monitoring-9</h4>
+        <ul>
+          <li><code>classifier.ts</code></li>
+          <li><code>classifier.ts</code></li>
+          <li><code>classifier.ts</code></li>
+          <li><code>classifier.ts</code></li>
+        </ul>
+        <p><em>Suggestion: Ces agents partagent des fonctionnalités similaires et pourraient être fusionnés.</em></p>
+        <h4>Groupe monitoring-10</h4>
+        <ul>
+          <li><code>prisma-generator.ts</code></li>
+          <li><code>prisma-generator.ts</code></li>
+          <li><code>prisma-generator.ts</code></li>
+          <li><code>prisma-generator.ts</code></li>
+        </ul>
+        <p><em>Suggestion: Ces agents partagent des fonctionnalités similaires et pourraient être fusionnés.</em></p>
+        <h4>Groupe monitoring-11</h4>
+        <ul>
+          <li><code>table-classifier.ts</code></li>
+          <li><code>table-classifier.ts</code></li>
+        </ul>
+        <p><em>Suggestion: Ces agents partagent des fonctionnalités similaires et pourraient être fusionnés.</em></p>
+        <h4>Groupe monitoring-12</h4>
+        <ul>
+          <li><code>seo-checker-canonical.ts</code></li>
+          <li><code>seo-checker-canonical.ts</code></li>
+        </ul>
+        <p><em>Suggestion: Ces agents partagent des fonctionnalités similaires et pourraient être fusionnés.</em></p>
+      </div>
+    </details>
+    <details>
+      <summary>Agents individuels</summary>
+      <table>
+        <tr><th>Agent</th><th>Lignes</th></tr>
+        <tr><td><code>php-analyzer.ts</code></td><td>310</td></tr>
+        <tr><td><code>dev-checker.ts</code></td><td>9</td></tr>
+        <tr><td><code>metrics-service.ts</code></td><td>347</td></tr>
+        <tr><td><code>notification-service.ts</code></td><td>347</td></tr>
+        <tr><td><code>component-generator.ts</code></td><td>310</td></tr>
+        <tr><td><code>monitoring-check.ts</code></td><td>9</td></tr>
+        <tr><td><code>notifier.ts</code></td><td>310</td></tr>
+        <tr><td><code>SupabaseOptimizationTracker.ts</code></td><td>310</td></tr>
+        <tr><td><code>status-auditor.ts</code></td><td>290</td></tr>
+        <tr><td><code>status-writer.ts</code></td><td>9</td></tr>
+        <tr><td><code>trace-verifier.ts</code></td><td>289</td></tr>
+      </table>
+    </details>
+  </div>
+  <div class="category-section">
+    <h3>Catégorie: pipeline (5 agents)</h3>
+    <details>
+      <summary>Groupes proposés pour consolidation</summary>
+      <div>
+        <p><em>Pas de groupes de consolidation identifiés dans cette catégorie.</em></p>
+      </div>
+    </details>
+    <details>
+      <summary>Agents individuels</summary>
+      <table>
+        <tr><th>Agent</th><th>Lignes</th></tr>
+        <tr><td><code>php-analyzer-v2.ts</code></td><td>15</td></tr>
+        <tr><td><code>ci-tester.ts</code></td><td>9</td></tr>
+        <tr><td><code>audit-selector.ts</code></td><td>234</td></tr>
+        <tr><td><code>sql-analyzer+prisma-builder.ts</code></td><td>9</td></tr>
+        <tr><td><code>pipeline-strategy-auditor.ts</code></td><td>9</td></tr>
+      </table>
+    </details>
+  </div>
+  <div class="category-section">
+    <h3>Catégorie: migration (10 agents)</h3>
+    <details>
+      <summary>Groupes proposés pour consolidation</summary>
+      <div>
+        <h4>Groupe migration-1</h4>
+        <ul>
+          <li><code>migration-strategist.ts</code></li>
+          <li><code>migration-strategist.ts</code></li>
+        </ul>
+        <p><em>Suggestion: Ces agents partagent des fonctionnalités similaires et pourraient être fusionnés.</em></p>
+        <h4>Groupe migration-2</h4>
+        <ul>
+          <li><code>type-converter.ts</code></li>
+          <li><code>type-converter.ts</code></li>
+          <li><code>type-converter.ts</code></li>
+          <li><code>type-converter.ts</code></li>
+        </ul>
+        <p><em>Suggestion: Ces agents partagent des fonctionnalités similaires et pourraient être fusionnés.</em></p>
+        <h4>Groupe migration-3</h4>
+        <ul>
+          <li><code>type-converter.ts</code></li>
+          <li><code>type-converter.ts</code></li>
+          <li><code>type-converter.ts</code></li>
+          <li><code>type-converter.ts</code></li>
+        </ul>
+        <p><em>Suggestion: Ces agents partagent des fonctionnalités similaires et pourraient être fusionnés.</em></p>
+        <h4>Groupe migration-4</h4>
+        <ul>
+          <li><code>migration-strategist.ts</code></li>
+          <li><code>migration-strategist.ts</code></li>
+        </ul>
+        <p><em>Suggestion: Ces agents partagent des fonctionnalités similaires et pourraient être fusionnés.</em></p>
+        <h4>Groupe migration-5</h4>
+        <ul>
+          <li><code>type-converter.ts</code></li>
+          <li><code>type-converter.ts</code></li>
+          <li><code>type-converter.ts</code></li>
+          <li><code>type-converter.ts</code></li>
+        </ul>
+        <p><em>Suggestion: Ces agents partagent des fonctionnalités similaires et pourraient être fusionnés.</em></p>
+        <h4>Groupe migration-6</h4>
+        <ul>
+          <li><code>type-converter.ts</code></li>
+          <li><code>type-converter.ts</code></li>
+          <li><code>type-converter.ts</code></li>
+          <li><code>type-converter.ts</code></li>
+        </ul>
+        <p><em>Suggestion: Ces agents partagent des fonctionnalités similaires et pourraient être fusionnés.</em></p>
+      </div>
+    </details>
+    <details>
+      <summary>Agents individuels</summary>
+      <table>
+        <tr><th>Agent</th><th>Lignes</th></tr>
+        <tr><td><code>generate-migration-plan.ts</code></td><td>9</td></tr>
+        <tr><td><code>php-sql-sync-mapper.ts</code></td><td>528</td></tr>
+        <tr><td><code>prisma-migration-generator.ts</code></td><td>9</td></tr>
+        <tr><td><code>sql-prisma-migration-planner.ts</code></td><td>9</td></tr>
+      </table>
+    </details>
+  </div>
+  <div class="category-section">
+    <h3>Catégorie: quality (2 agents)</h3>
+    <details>
+      <summary>Groupes proposés pour consolidation</summary>
+      <div>
+        <p><em>Pas de groupes de consolidation identifiés dans cette catégorie.</em></p>
+      </div>
+    </details>
+    <details>
+      <summary>Agents individuels</summary>
+      <table>
+        <tr><th>Agent</th><th>Lignes</th></tr>
+        <tr><td><code>ab-strategy-tester.ts</code></td><td>938</td></tr>
+        <tr><td><code>dev-linter.ts</code></td><td>9</td></tr>
+      </table>
+    </details>
+  </div>
+  <div class="category-section">
+    <h3>Catégorie: ui (2 agents)</h3>
+    <details>
+      <summary>Groupes proposés pour consolidation</summary>
+      <div>
+        <p><em>Pas de groupes de consolidation identifiés dans cette catégorie.</em></p>
+      </div>
+    </details>
+    <details>
+      <summary>Agents individuels</summary>
+      <table>
+        <tr><th>Agent</th><th>Lignes</th></tr>
+        <tr><td><code>devops-preview.ts</code></td><td>9</td></tr>
+        <tr><td><code>index.ts</code></td><td>1441</td></tr>
+      </table>
+    </details>
+  </div>
+  <div class="category-section">
+    <h3>Catégorie: analysis (30 agents)</h3>
+    <details>
+      <summary>Groupes proposés pour consolidation</summary>
+      <div>
+        <h4>Groupe analysis-1</h4>
+        <ul>
+          <li><code>nginx-config-parser.ts</code></li>
+          <li><code>nginx-config-parser.ts</code></li>
+          <li><code>nginx-config-parser.ts</code></li>
+        </ul>
+        <p><em>Suggestion: Ces agents partagent des fonctionnalités similaires et pourraient être fusionnés.</em></p>
+        <h4>Groupe analysis-2</h4>
+        <ul>
+          <li><code>nginx-config-parser.ts</code></li>
+          <li><code>nginx-config-parser.ts</code></li>
+          <li><code>nginx-config-parser.ts</code></li>
+        </ul>
+        <p><em>Suggestion: Ces agents partagent des fonctionnalités similaires et pourraient être fusionnés.</em></p>
+        <h4>Groupe analysis-3</h4>
+        <ul>
+          <li><code>mysql-analyzer+optimizer.ts</code></li>
+          <li><code>mysql-analyzer+optimizer.ts</code></li>
+        </ul>
+        <p><em>Suggestion: Ces agents partagent des fonctionnalités similaires et pourraient être fusionnés.</em></p>
+        <h4>Groupe analysis-4</h4>
+        <ul>
+          <li><code>relation-analyzer.ts</code></li>
+          <li><code>relation-analyzer.ts</code></li>
+          <li><code>relation-analyzer.ts</code></li>
+        </ul>
+        <p><em>Suggestion: Ces agents partagent des fonctionnalités similaires et pourraient être fusionnés.</em></p>
+        <h4>Groupe analysis-5</h4>
+        <ul>
+          <li><code>debt-detector.ts</code></li>
+          <li><code>debt-detector.ts</code></li>
+        </ul>
+        <p><em>Suggestion: Ces agents partagent des fonctionnalités similaires et pourraient être fusionnés.</em></p>
+        <h4>Groupe analysis-6</h4>
+        <ul>
+          <li><code>debt-analyzer.ts</code></li>
+          <li><code>debt-analyzer.ts</code></li>
+        </ul>
+        <p><em>Suggestion: Ces agents partagent des fonctionnalités similaires et pourraient être fusionnés.</em></p>
+        <h4>Groupe analysis-7</h4>
+        <ul>
+          <li><code>parser.ts</code></li>
+          <li><code>parser.ts</code></li>
+          <li><code>parser.ts</code></li>
+          <li><code>parser.ts</code></li>
+          <li><code>parser.ts</code></li>
+          <li><code>parser.ts</code></li>
+        </ul>
+        <p><em>Suggestion: Ces agents partagent des fonctionnalités similaires et pourraient être fusionnés.</em></p>
+        <h4>Groupe analysis-8</h4>
+        <ul>
+          <li><code>relation-analyzer.ts</code></li>
+          <li><code>relation-analyzer.ts</code></li>
+          <li><code>relation-analyzer.ts</code></li>
+        </ul>
+        <p><em>Suggestion: Ces agents partagent des fonctionnalités similaires et pourraient être fusionnés.</em></p>
+        <h4>Groupe analysis-9</h4>
+        <ul>
+          <li><code>schema-analyzer.ts</code></li>
+          <li><code>schema-analyzer.ts</code></li>
+        </ul>
+        <p><em>Suggestion: Ces agents partagent des fonctionnalités similaires et pourraient être fusionnés.</em></p>
+        <h4>Groupe analysis-10</h4>
+        <ul>
+          <li><code>mysql-analyzer.ts</code></li>
+          <li><code>mysql-analyzer.ts</code></li>
+          <li><code>mysql-analyzer.ts</code></li>
+          <li><code>mysql-analyzer.ts</code></li>
+          <li><code>mysql-analyzer.ts</code></li>
+        </ul>
+        <p><em>Suggestion: Ces agents partagent des fonctionnalités similaires et pourraient être fusionnés.</em></p>
+        <h4>Groupe analysis-11</h4>
+        <ul>
+          <li><code>htaccess-route-analyzer.ts</code></li>
+          <li><code>htaccess-route-analyzer.ts</code></li>
+        </ul>
+        <p><em>Suggestion: Ces agents partagent des fonctionnalités similaires et pourraient être fusionnés.</em></p>
+        <h4>Groupe analysis-12</h4>
+        <ul>
+          <li><code>mysql-analyzer+optimizer.ts</code></li>
+          <li><code>mysql-analyzer+optimizer.ts</code></li>
+        </ul>
+        <p><em>Suggestion: Ces agents partagent des fonctionnalités similaires et pourraient être fusionnés.</em></p>
+        <h4>Groupe analysis-13</h4>
+        <ul>
+          <li><code>mysql-analyzer.ts</code></li>
+          <li><code>mysql-analyzer.ts</code></li>
+          <li><code>mysql-analyzer.ts</code></li>
+          <li><code>mysql-analyzer.ts</code></li>
+          <li><code>mysql-analyzer.ts</code></li>
+        </ul>
+        <p><em>Suggestion: Ces agents partagent des fonctionnalités similaires et pourraient être fusionnés.</em></p>
+        <h4>Groupe analysis-14</h4>
+        <ul>
+          <li><code>debt-detector.ts</code></li>
+          <li><code>debt-detector.ts</code></li>
+        </ul>
+        <p><em>Suggestion: Ces agents partagent des fonctionnalités similaires et pourraient être fusionnés.</em></p>
+        <h4>Groupe analysis-15</h4>
+        <ul>
+          <li><code>debt-analyzer.ts</code></li>
+          <li><code>debt-analyzer.ts</code></li>
+        </ul>
+        <p><em>Suggestion: Ces agents partagent des fonctionnalités similaires et pourraient être fusionnés.</em></p>
+        <h4>Groupe analysis-16</h4>
+        <ul>
+          <li><code>parser.ts</code></li>
+          <li><code>parser.ts</code></li>
+          <li><code>parser.ts</code></li>
+          <li><code>parser.ts</code></li>
+          <li><code>parser.ts</code></li>
+          <li><code>parser.ts</code></li>
+        </ul>
+        <p><em>Suggestion: Ces agents partagent des fonctionnalités similaires et pourraient être fusionnés.</em></p>
+        <h4>Groupe analysis-17</h4>
+        <ul>
+          <li><code>relation-analyzer.ts</code></li>
+          <li><code>relation-analyzer.ts</code></li>
+          <li><code>relation-analyzer.ts</code></li>
+        </ul>
+        <p><em>Suggestion: Ces agents partagent des fonctionnalités similaires et pourraient être fusionnés.</em></p>
+        <h4>Groupe analysis-18</h4>
+        <ul>
+          <li><code>schema-analyzer.ts</code></li>
+          <li><code>schema-analyzer.ts</code></li>
+        </ul>
+        <p><em>Suggestion: Ces agents partagent des fonctionnalités similaires et pourraient être fusionnés.</em></p>
+        <h4>Groupe analysis-19</h4>
+        <ul>
+          <li><code>mysql-analyzer.ts</code></li>
+          <li><code>mysql-analyzer.ts</code></li>
+          <li><code>mysql-analyzer.ts</code></li>
+          <li><code>mysql-analyzer.ts</code></li>
+          <li><code>mysql-analyzer.ts</code></li>
+        </ul>
+        <p><em>Suggestion: Ces agents partagent des fonctionnalités similaires et pourraient être fusionnés.</em></p>
+        <h4>Groupe analysis-20</h4>
+        <ul>
+          <li><code>htaccess-route-analyzer.ts</code></li>
+          <li><code>htaccess-route-analyzer.ts</code></li>
+        </ul>
+        <p><em>Suggestion: Ces agents partagent des fonctionnalités similaires et pourraient être fusionnés.</em></p>
+        <h4>Groupe analysis-21</h4>
+        <ul>
+          <li><code>nginx-config-parser.ts</code></li>
+          <li><code>nginx-config-parser.ts</code></li>
+          <li><code>nginx-config-parser.ts</code></li>
+        </ul>
+        <p><em>Suggestion: Ces agents partagent des fonctionnalités similaires et pourraient être fusionnés.</em></p>
+      </div>
+    </details>
+    <details>
+      <summary>Agents individuels</summary>
+      <table>
+        <tr><th>Agent</th><th>Lignes</th></tr>
+        <tr><td><code>dynamic_sql_extractor.ts</code></td><td>431</td></tr>
+        <tr><td><code>php-analyzer-v3.ts</code></td><td>9</td></tr>
+        <tr><td><code>php-analyzer-v4.ts</code></td><td>9</td></tr>
+        <tr><td><code>nginx-config-analyzer.ts</code></td><td>9</td></tr>
+        <tr><td><code>php-sql-mapper.ts</code></td><td>716</td></tr>
+        <tr><td><code>sql-analysis-runner.ts</code></td><td>9</td></tr>
+        <tr><td><code>analyze-security-risks.ts</code></td><td>9</td></tr>
+        <tr><td><code>htaccess-parser.ts</code></td><td>9</td></tr>
+        <tr><td><code>php-analyzer.worker.ts</code></td><td>9</td></tr>
+      </table>
+    </details>
+  </div>
+  <div class="category-section">
+    <h3>Catégorie: data (4 agents)</h3>
+    <details>
+      <summary>Groupes proposés pour consolidation</summary>
+      <div>
+        <h4>Groupe data-1</h4>
+        <ul>
+          <li><code>schema.ts</code></li>
+          <li><code>schema.ts</code></li>
+        </ul>
+        <p><em>Suggestion: Ces agents partagent des fonctionnalités similaires et pourraient être fusionnés.</em></p>
+        <h4>Groupe data-2</h4>
+        <ul>
+          <li><code>schema.ts</code></li>
+          <li><code>schema.ts</code></li>
+        </ul>
+        <p><em>Suggestion: Ces agents partagent des fonctionnalités similaires et pourraient être fusionnés.</em></p>
+      </div>
+    </details>
+    <details>
+      <summary>Agents individuels</summary>
+      <table>
+        <tr><th>Agent</th><th>Lignes</th></tr>
+        <tr><td><code>generate_prisma_model.ts</code></td><td>9</td></tr>
+        <tr><td><code>data-verifier.ts</code></td><td>9</td></tr>
+      </table>
+    </details>
+  </div>
+  <div class="category-section">
+    <h3>Catégorie: audit (8 agents)</h3>
+    <details>
+      <summary>Groupes proposés pour consolidation</summary>
+      <div>
+        <h4>Groupe audit-1</h4>
+        <ul>
+          <li><code>type-auditor.ts</code></li>
+          <li><code>type-auditor.ts</code></li>
+        </ul>
+        <p><em>Suggestion: Ces agents partagent des fonctionnalités similaires et pourraient être fusionnés.</em></p>
+        <h4>Groupe audit-2</h4>
+        <ul>
+          <li><code>php-router-audit.ts</code></li>
+          <li><code>php-router-audit.ts</code></li>
+        </ul>
+        <p><em>Suggestion: Ces agents partagent des fonctionnalités similaires et pourraient être fusionnés.</em></p>
+        <h4>Groupe audit-3</h4>
+        <ul>
+          <li><code>type-auditor.ts</code></li>
+          <li><code>type-auditor.ts</code></li>
+        </ul>
+        <p><em>Suggestion: Ces agents partagent des fonctionnalités similaires et pourraient être fusionnés.</em></p>
+        <h4>Groupe audit-4</h4>
+        <ul>
+          <li><code>php-router-audit.ts</code></li>
+          <li><code>php-router-audit.ts</code></li>
+        </ul>
+        <p><em>Suggestion: Ces agents partagent des fonctionnalités similaires et pourraient être fusionnés.</em></p>
+      </div>
+    </details>
+    <details>
+      <summary>Agents individuels</summary>
+      <table>
+        <tr><th>Agent</th><th>Lignes</th></tr>
+        <tr><td><code>canonical-validator.ts</code></td><td>9</td></tr>
+        <tr><td><code>postgresql-validator.ts</code></td><td>9</td></tr>
+        <tr><td><code>sql-debt-audit.ts</code></td><td>9</td></tr>
+        <tr><td><code>seo-audit-runner.ts</code></td><td>9</td></tr>
+      </table>
+    </details>
+  </div>
+  <div class="category-section">
+    <h3>Catégorie: seo (7 agents)</h3>
+    <details>
+      <summary>Groupes proposés pour consolidation</summary>
+      <div>
+        <h4>Groupe seo-1</h4>
+        <ul>
+          <li><code>seo-meta.generator.ts</code></li>
+          <li><code>seo-meta.generator.ts</code></li>
+        </ul>
+        <p><em>Suggestion: Ces agents partagent des fonctionnalités similaires et pourraient être fusionnés.</em></p>
+        <h4>Groupe seo-2</h4>
+        <ul>
+          <li><code>seo-meta.generator.ts</code></li>
+          <li><code>seo-meta.generator.ts</code></li>
+        </ul>
+        <p><em>Suggestion: Ces agents partagent des fonctionnalités similaires et pourraient être fusionnés.</em></p>
+      </div>
+    </details>
+    <details>
+      <summary>Agents individuels</summary>
+      <table>
+        <tr><th>Agent</th><th>Lignes</th></tr>
+        <tr><td><code>php-discovery-engine.ts</code></td><td>1585</td></tr>
+        <tr><td><code>meta-generator.ts</code></td><td>9</td></tr>
+        <tr><td><code>seo-content-enhancer.ts</code></td><td>9</td></tr>
+        <tr><td><code>seo-mcp-controller.ts</code></td><td>9</td></tr>
+        <tr><td><code>seo-redirect-mapper.ts</code></td><td>9</td></tr>
+      </table>
+    </details>
+  </div>
+  <h2>Structure consolidée proposée</h2>
+  <pre><code>
+agents/
+├── core/ # Fonctionnalités de base et utilities partagées
+│   ├── types.ts
+│   ├── utils.ts
+│   └── base-agent.ts
+├── notification/ # 2 agents
+│   ├── notification-consolidated.ts # Agent consolidé
+│   ├── agent-audit.ts
+│   └── ... autres agents
+├── orchestration/ # 4 agents
+│   ├── orchestration-consolidated.ts # Agent consolidé
+│   ├── bullmq-orchestrator.ts
+│   └── ... autres agents
+├── monitoring/ # 23 agents
+│   ├── monitoring-consolidated.ts # Agent consolidé
+│   ├── htaccess-router-analyzer.ts
+│   └── ... autres agents
+├── pipeline/ # 5 agents
+│   ├── pipeline-consolidated.ts # Agent consolidé
+│   ├── php-analyzer-v2.ts
+│   └── ... autres agents
+├── migration/ # 10 agents
+│   ├── migration-consolidated.ts # Agent consolidé
+│   ├── migration-strategist.ts
+│   └── ... autres agents
+├── quality/ # 2 agents
+│   ├── quality-consolidated.ts # Agent consolidé
+│   ├── ab-strategy-tester.ts
+│   └── ... autres agents
+├── ui/ # 2 agents
+│   ├── ui-consolidated.ts # Agent consolidé
+│   ├── devops-preview.ts
+│   └── ... autres agents
+├── analysis/ # 30 agents
+│   ├── analysis-consolidated.ts # Agent consolidé
+│   ├── nginx-config-parser.ts
+│   └── ... autres agents
+├── data/ # 4 agents
+│   ├── data-consolidated.ts # Agent consolidé
+│   ├── generate_prisma_model.ts
+│   └── ... autres agents
+├── audit/ # 8 agents
+│   ├── audit-consolidated.ts # Agent consolidé
+│   ├── canonical-validator.ts
+│   └── ... autres agents
+├── seo/ # 7 agents
+│   ├── seo-consolidated.ts # Agent consolidé
+│   ├── php-discovery-engine.ts
+│   └── ... autres agents
+└── index.ts # Export des agents publics
+  </code></pre>
+  <script>
+    // Données pour le graphique des catégories
+    const categoryData = {
+      labels: ["notification",
+"orchestration",
+"monitoring",
+"pipeline",
+"migration",
+"quality",
+"ui",
+"analysis",
+"data",
+"audit",
+"seo",],
+      datasets: [{
+        label: 'Nombre d\'agents',
+        data: ["2",
+"4",
+"23",
+"5",
+"10",
+"2",
+"2",
+"30",
+"4",
+"8",
+"7",],
+        backgroundColor: [
+          '#4285F4', '#EA4335', '#FBBC05', '#34A853', '#FF6D01',
+          '#46BDC6', '#7BAAF7', '#F66D9B', '#6368D9', '#1A73E8',
+          '#80868B', '#D93025', '#188038', '#F9AB00', '#D01884'
+        ]
+      }]
+    };
+    // Créer le graphique des catégories
+    const ctxCategories = document.getElementById('categoriesChart').getContext('2d');
+    new Chart(ctxCategories, {
+      type: 'pie',
+      data: categoryData,
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { position: 'right' },
+          title: {
+            display: true,
+            text: 'Répartition des agents par catégorie'
+          }
+        }
+      }
+    });
+  </script>
+</body>
+</html>

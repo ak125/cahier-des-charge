@@ -1,0 +1,4 @@
+agents/migration/MysqlAnalyzer/models/schema.ts
+agents/migration/MysqlAnalyzer/models/schema.ts
+agents/migration/mysql-analyzer/models/schema.ts
+agents/migration/mysql-analyzer/models/schema.ts

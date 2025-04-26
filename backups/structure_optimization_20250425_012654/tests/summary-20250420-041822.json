@@ -1,0 +1,15 @@
+{
+  "timestamp": "2025-04-20T04:18:59+00:00",
+  "tests": {
+    "total": 120,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 120,
+    "success_rate": 0
+  },
+  "interfaces": {
+    "compliant": 117,
+    "non_compliant": 3,
+    "compliance_rate": 97.5
+  }
+}

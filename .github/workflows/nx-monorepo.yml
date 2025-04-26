@@ -1,0 +1,131 @@
+name: Monorepo NX CI/CD
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+env:
+  NX_BRANCH: ${{ github.event.number || github.ref_name }}
+  NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
+
+jobs:
+  main:
+    name: Validate and Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'pnpm'
+
+      - name: Setup PNPM
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+          run_install: false
+
+      - name: Get PNPM store directory
+        id: pnpm-cache
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
+
+      - name: Setup PNPM cache
+        uses: actions/cache@v3
+        with:
+          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Get affected projects
+        id: affected
+        run: |
+          echo "AFFECTED_PROJECTS=$(pnpm nx print-affected --base=origin/main --head=HEAD --type=app --select=projects | tr -d '\n')" >> $GITHUB_OUTPUT
+
+      - name: Run Lint on affected projects
+        run: pnpm nx affected --target=lint --base=origin/main --head=HEAD --parallel=4
+
+      - name: Run Type Check
+        run: pnpm run type-check
+
+      - name: Run Tests on affected projects
+        run: pnpm nx affected --target=test --base=origin/main --head=HEAD --parallel=4 --ci
+
+      - name: Build affected projects
+        run: pnpm nx affected --target=build --base=origin/main --head=HEAD --parallel=4
+  
+  deploy-production:
+    name: Deploy to Production
+    needs: main
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'pnpm'
+
+      - name: Setup PNPM
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+          run_install: false
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build for production
+        run: pnpm nx affected --target=build --base=origin/main~1 --head=HEAD --prod --parallel=2
+
+      # Ajoutez ici vos étapes de déploiement en production
+      # Exemple avec Vercel, Netlify, AWS, etc.
+      
+  deploy-staging:
+    name: Deploy to Staging
+    needs: main
+    if: github.ref == 'refs/heads/develop' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'pnpm'
+
+      - name: Setup PNPM
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+          run_install: false
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build for staging
+        run: pnpm nx affected --target=build --base=origin/develop~1 --head=HEAD --parallel=2
+
+      # Ajoutez ici vos étapes de déploiement en staging
+      # Exemple avec Vercel, Netlify, AWS, etc.

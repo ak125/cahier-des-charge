@@ -1,0 +1,75 @@
+version: '3.8'
+
+services:
+  # Base de données
+  mongo:
+    image: mongo:6
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: migration
+      MONGO_INITDB_ROOT_PASSWORD: migration_password
+
+  # Service n8n pour l'orchestration des workflows
+  n8n:
+    image: n8nio/n8n:latest
+    restart: unless-stopped
+    ports:
+      - "5678:5678"
+    environment:
+      - N8N_HOST=localhost
+      - N8N_PORT=5678
+      - N8N_PROTOCOL=http
+      - N8N_ENCRYPTION_KEY=migration-pipeline-secret-key
+      - WEBHOOK_URL=http://localhost:5678/
+      - DB_TYPE=mongodb
+      - DB_MONGODB_CONNECTION_URL=mongodb://migration:migration_password@mongo:27017/n8n?authSource=admin
+      - N8N_BASIC_AUTH_ACTIVE=false
+      - N8N_DISABLE_PRODUCTION_MAIN_PROCESS=true  # Ajouter cette ligne
+    volumes:
+      - n8n_data:/home/node/.n8n
+      - ./workflows:/home/node/.n8n/workflows
+    depends_on:
+      - mongo
+
+  # API des agents IA
+  agents-api:
+    build:
+      context: ./agents
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3001"
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - MONGODB_URI=mongodb://migration:migration_password@mongo:27017/migration?authSource=admin
+      - NODE_ENV=development
+    volumes:
+      - ./agents:/app
+      - /app/node_modules
+    depends_on:
+      - mongo
+
+  # Dashboard d'administration
+  dashboard:
+    build:
+      context: ./dashboard
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - AGENTS_API_URL=http://agents-api:3001
+      - N8N_URL=http://n8n:5678
+      - NODE_ENV=development
+    volumes:
+      - ./dashboard:/app
+      - /app/node_modules
+    depends_on:
+      - agents-api
+      - n8n
+
+volumes:
+  mongo_data:
+  n8n_data:

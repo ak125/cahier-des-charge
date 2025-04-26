@@ -1,0 +1,40 @@
+{
+  "directoryStructure": {
+    "cahier-des-charges": {
+      "docs": "Documentation principale",
+      "audits": "Analyses détaillées des fichiers",
+      "backlogs": "Backlogs de tâches",
+      "impact-graphs": "Graphes d'impact et de dépendances",
+      "rapports": "Rapports générés"
+    },
+    "scripts": {
+      "verifiers": "Scripts de vérification",
+      "utils": "Scripts utilitaires",
+      "templates": "Templates pour génération"
+    },
+    "agents": "Agents IA",
+    "tools": "Outils divers",
+    "rules": "Règles de configuration",
+    "logs": "Journaux d'exécution",
+    "dist": "Fichiers générés"
+  },
+  "filenaming": {
+    "audits": "{filename}.audit.md",
+    "backlogs": "{filename}.backlog.json",
+    "impactGraphs": "{filename}.impact_graph.json",
+    "docs": "{nn}-{name}.md",
+    "scripts": "{name}.sh",
+    "agents": "agent-{name}.ts",
+    "rules": "{name}.rules.json",
+    "reports": "{type}-report-{timestamp}.md"
+  },
+  "linkUpdates": {
+    "updateRelativePaths": true,
+    "pathMappings": {
+      "cahier/": "cahier-des-charges/",
+      "audits/": "cahier-des-charges/audits/",
+      "backlogs/": "cahier-des-charges/backlogs/"
+    }
+  },
+  "checkFrequency": "daily"
+}

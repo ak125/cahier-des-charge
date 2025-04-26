@@ -1,0 +1,101 @@
+| `php-discovery-engine.ts` | 1585 | seo |
+| `index.ts` | 1441 | ui |
+| `ab-strategy-tester.ts` | 938 | quality |
+| `php-sql-mapper.ts` | 716 | analysis |
+| `table-classifier.ts` | 621 | monitoring |
+| `prisma-generator.ts` | 621 | monitoring |
+| `classifier.ts` | 621 | monitoring |
+| `prisma-generator.ts` | 621 | monitoring |
+| `table-classifier.ts` | 621 | monitoring |
+| `prisma-generator.ts` | 621 | monitoring |
+SupabaseOptimizationTracker.ts|monitoring
+agent-audit.ts|ui
+devops-preview.ts|ui
+trace-verifier.ts|monitoring
+caddy-generator.ts|misc
+nginx-config-parser.ts|analysis
+htaccess-parser.ts|analysis
+seo-audit-runner.ts|audit
+seo-mcp-controller.ts|orchestration
+migration-orchestrator.ts|migration
+ci-tester.ts|pipeline
+metrics-service.ts|monitoring
+notification-service.ts|integration
+orchestrator-bridge.ts|notification
+dev-integrator.ts|misc
+index.ts|seo
+bullmq-orchestrator.ts|misc
+orchestrator.ts|misc
+meta-generator.ts|seo
+pipeline-strategy-auditor.ts|pipeline
+nginx-config-analyzer.ts|analysis
+sql-analysis-runner.ts|analysis
+prisma-smart-generator.ts|misc
+php-sql-sync-mapper.ts|migration
+caddyfile-generator.ts|misc
+remix-route-generator.ts|api
+dev-generator.ts|misc
+htaccess-route-analyzer.ts|analysis
+php-router-audit.ts|audit
+seo-meta.generator.ts|seo
+seo-checker-canonical.ts|seo
+inject-to-supabase.ts|misc
+php-sql-mapper.ts|quality
+htaccess-router-analyzer.ts|analysis
+data-verifier.ts|data
+generate-migration-plan.ts|migration
+mysql-to-postgresql.ts|misc
+sql-prisma-migration-planner.ts|migration
+consolidator.ts|misc
+mysql-analyzer.ts|analysis
+helpers.ts|misc
+schema-analyzer.ts|analysis
+classifier.ts|monitoring
+relation-analyzer.ts|analysis
+table-classifier.ts|monitoring
+debt-analyzer.ts|analysis
+type-converter.ts|migration
+prisma-generator.ts|monitoring
+parser.ts|analysis
+schema.ts|data
+migration-strategist.ts|migration
+type-auditor.ts|audit
+debt-detector.ts|analysis
+relational-normalizer.ts|misc
+prisma-migration-generator.ts|migration
+sql-analyzer+prisma-builder.ts|pipeline
+postgresql-validator.ts|audit
+component-generator.ts|ui
+qa-confirmer.ts|misc
+remediator.ts|misc
+mysql-to-pg.ts|misc
+mysql-analyzer+optimizer.ts|analysis
+audit-selector.ts|pipeline
+analyze-security-risks.ts|analysis
+sql-debt-audit.ts|audit
+ab-strategy-tester.ts|quality
+status-auditor.ts|monitoring
+notifier.ts|monitoring
+pr-creator.ts|misc
+status-writer.ts|monitoring
+mcp-manifest-manager.ts|orchestration
+diff-verifier.ts|misc
+seo-redirect-mapper.ts|seo
+mcp-verifier.worker.ts|misc
+php-analyzer.worker.ts|analysis
+mcp-verifier.ts|misc
+type-mapper.ts|misc
+table-cartographer.ts|misc
+generate_prisma_model.ts|data
+semantic-table-mapper.ts|misc
+php-analyzer-v2.ts|analysis
+php-analyzer.ts|analysis
+php-analyzer-v3.ts|analysis
+php-discovery-engine.ts|seo
+dynamic_sql_extractor.ts|pipeline
+php-analyzer-v4.ts|analysis
+seo-content-enhancer.ts|seo
+dev-linter.ts|quality
+monitoring-check.ts|monitoring
+dev-checker.ts|monitoring
+canonical-validator.ts|audit

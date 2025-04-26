@@ -1,0 +1,140 @@
+name: Surveillance post-migration
+
+on:
+  # Déclenchement automatique après les déploiements de preview
+  workflow_run:
+    workflows: ["Prévisualisation automatique des PRs"]
+    types:
+      - completed
+  
+  # Déclenchement manuel
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environnement à surveiller (preview, production, ou URL personnalisée)'
+        required: true
+        default: 'preview'
+      routes:
+        description: 'Routes spécifiques à surveiller (séparées par des virgules)'
+        required: false
+
+jobs:
+  monitoring:
+    name: Vérification post-migration
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' || github.event_name == 'workflow_dispatch' }}
+    
+    steps:
+      - name: Checkout du code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          
+      - name: Configuration de Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+      
+      - name: Installation des dépendances
+        run: npm ci
+      
+      - name: Installation de Playwright
+        run: npx playwright install --with-deps chromium
+      
+      - name: Déterminer l'environnement
+        id: env
+        run: |
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            echo "ENV_TARGET=${{ github.event.inputs.environment }}" >> $GITHUB_ENV
+            echo "TARGET_ROUTES=${{ github.event.inputs.routes }}" >> $GITHUB_ENV
+          else
+            echo "ENV_TARGET=preview" >> $GITHUB_ENV
+            echo "TARGET_ROUTES=" >> $GITHUB_ENV
+          fi
+
+      - name: Récupérer la PR number (pour preview)
+        if: ${{ env.ENV_TARGET == 'preview' }}
+        id: pr_info
+        run: |
+          PR_NUMBER=$(ls -t .preview/fiche-* 2>/dev/null | head -1 | grep -oP 'fiche-\K\d+' || echo "")
+          echo "PR_NUMBER=$PR_NUMBER" >> $GITHUB_ENV
+          echo "Dernier environnement de prévisualisation détecté: PR #$PR_NUMBER"
+          
+      - name: Exécuter la surveillance post-migration
+        run: |
+          TARGET_OPTION=""
+          if [ ! -z "$TARGET_ROUTES" ]; then
+            TARGET_OPTION="--target $TARGET_ROUTES"
+          fi
+          
+          npx ts-node agents/monitoring-check.ts --env $ENV_TARGET $TARGET_OPTION
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          N8N_WEBHOOK: ${{ secrets.N8N_WEBHOOK }}
+          
+      - name: Télécharger les rapports de surveillance
+        uses: actions/upload-artifact@v3
+        with:
+          name: monitoring-reports${{ env.PR_NUMBER != '' && format('-pr-{0}', env.PR_NUMBER) || '' }}
+          path: |
+            reports/monitoring/**
+          retention-days: 7
+          
+      - name: Commenter la PR avec les résultats
+        if: ${{ env.PR_NUMBER != '' }}
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require('fs');
+            const path = require('path');
+            
+            try {
+              // Lire le rapport de synthèse
+              const summaryPath = path.join(process.cwd(), 'reports', 'monitoring', 'monitoring_summary.md');
+              const statusPath = path.join(process.cwd(), 'reports', 'monitoring', 'post_migration_monitor.json');
+              
+              if (!fs.existsSync(summaryPath) || !fs.existsSync(statusPath)) {
+                console.log('Rapports de monitoring non trouvés');
+                return;
+              }
+              
+              const status = JSON.parse(fs.readFileSync(statusPath, 'utf8'));
+              const summary = status.summary;
+              
+              // Définir l'icône de statut
+              const totalIssues = summary.invalidStatusCodes + summary.performanceRegressions + summary.criticalDomIssues;
+              const statusIcon = totalIssues === 0 ? '✅' : totalIssues > 3 ? '❌' : '⚠️';
+              
+              // Créer le commentaire
+              let comment = `## ${statusIcon} Rapport de surveillance post-migration\n\n`;
+              
+              if (totalIssues === 0) {
+                comment += `Tous les tests sont passés avec succès ! 🎉\n\n`;
+              } else {
+                comment += `${totalIssues} problèmes détectés qui nécessitent votre attention.\n\n`;
+              }
+              
+              comment += `**Résumé des vérifications:**\n\n`;
+              comment += `- Routes testées: ${summary.totalRoutes}\n`;
+              comment += `- Codes HTTP valides: ${summary.validStatusCodes}/${summary.totalRoutes}\n`;
+              comment += `- Améliorations de performance: ${summary.performanceImprovements}\n`;
+              comment += `- Régressions de performance: ${summary.performanceRegressions}\n`;
+              comment += `- Problèmes DOM critiques: ${summary.criticalDomIssues}\n`;
+              comment += `- Avertissements: ${summary.warnings}\n\n`;
+              
+              comment += `Consultez les rapports détaillés dans les artefacts de la build pour plus d'informations.`;
+              
+              // Poster le commentaire sur la PR
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: parseInt(${{ env.PR_NUMBER }}),
+                body: comment
+              });
+              
+              console.log('Commentaire ajouté à la PR #' + ${{ env.PR_NUMBER }});
+            } catch (error) {
+              console.error('Erreur lors de la création du commentaire:', error);
+            }

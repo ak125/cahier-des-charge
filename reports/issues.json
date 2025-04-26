@@ -1,0 +1,26 @@
+[
+  {
+    "type": "agent_error",
+    "file": "cart.php",
+    "agent": "DataAgent",
+    "message": "Impossible d'analyser la requête SQL complexe avec sous-requêtes imbriquées.",
+    "severity": "error",
+    "timestamp": 1745501381883
+  },
+  {
+    "type": "agent_error",
+    "file": "user.php",
+    "agent": "StructureAgent",
+    "message": "Détection d'une structure conditionnelle complexe avec plus de 10 niveaux d'imbrication.",
+    "severity": "warning",
+    "timestamp": 1745501381883
+  },
+  {
+    "type": "dependency",
+    "file": "product.php",
+    "agent": "DependencyAgent",
+    "message": "Dépendance externe non trouvée: PHPExcel",
+    "severity": "error",
+    "timestamp": 1745501381883
+  }
+]

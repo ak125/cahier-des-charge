@@ -1,0 +1,108 @@
+{
+  "version": "1.0.0",
+  "generated_date": "2025-04-12",
+  "database_type": "PostgreSQL",
+  "partition_recommendations": [
+    {
+      "table_name": "logs",
+      "estimated_row_count": "> 10 millions",
+      "strategy": "RANGE",
+      "partition_key": "created_at",
+      "partition_interval": "MONTH",
+      "justification": "Table d'historique avec critère temporel dominant. Accès systématique par date.",
+      "implementation": {
+        "create_statement": "CREATE TABLE logs (id SERIAL, message TEXT, level VARCHAR(20), created_at TIMESTAMP NOT NULL) PARTITION BY RANGE (created_at);",
+        "partitions": [
+          "CREATE TABLE logs_y2024m01 PARTITION OF logs FOR VALUES FROM ('2024-01-01') TO ('2024-02-01');",
+          "CREATE TABLE logs_y2024m02 PARTITION OF logs FOR VALUES FROM ('2024-02-01') TO ('2024-03-01');",
+          "..."
+        ],
+        "maintenance": "CREATE PROCEDURE create_logs_partition_for_next_month() AS $$ BEGIN EXECUTE ... END; $$ LANGUAGE plpgsql;"
+      },
+      "expected_benefits": ["Amélioration de 75% des temps de requête par date", "Suppression efficace des anciennes données", "Maintenance simplifiée"]
+    },
+    {
+      "table_name": "commandes",
+      "estimated_row_count": "> 5 millions",
+      "strategy": "RANGE",
+      "partition_key": "date_commande",
+      "partition_interval": "QUARTER",
+      "justification": "Les commandes sont principalement consultées par date. Partitionnement trimestriel adapté au volume et aux patterns d'accès.",
+      "implementation": {
+        "create_statement": "CREATE TABLE commandes (id SERIAL, client_id INTEGER, total DECIMAL(10,2), date_commande DATE NOT NULL) PARTITION BY RANGE (date_commande);",
+        "partitions": [
+          "CREATE TABLE commandes_y2024q1 PARTITION OF commandes FOR VALUES FROM ('2024-01-01') TO ('2024-04-01');",
+          "CREATE TABLE commandes_y2024q2 PARTITION OF commandes FOR VALUES FROM ('2024-04-01') TO ('2024-07-01');",
+          "..."
+        ],
+        "maintenance": "CREATE PROCEDURE create_commandes_partition_for_next_quarter() AS $$ BEGIN ... END; $$ LANGUAGE plpgsql;"
+      },
+      "expected_benefits": ["Amélioration de 60% des temps de requête", "Archivage facilité", "Meilleure gestion des statistiques"]
+    },
+    {
+      "table_name": "lignes_commande",
+      "estimated_row_count": "> 20 millions",
+      "strategy": "LIST",
+      "partition_key": "commande_id",
+      "partition_interval": "N/A (par parent)",
+      "justification": "Les lignes de commande sont presque toujours requêtées via leur commande parente, rarement indépendamment.",
+      "implementation": {
+        "note": "Pour ce type de table, envisager Foreign Key Partitioning ou table-par-commande si le moteur le supporte.",
+        "create_statement": "-- À adapter selon la volumétrie et la stratégie exacte de partitionnement par liste ou par commande",
+        "alternative": "Envisager l'utilisation d'une table partitionnée par HASH sur commande_id si les partitions LIST deviennent trop nombreuses"
+      },
+      "expected_benefits": ["Parallélisation des requêtes", "Possibilité d'archiver des commandes entières", "Isolation des données actives"]
+    },
+    {
+      "table_name": "produits_historique",
+      "estimated_row_count": "> 8 millions",
+      "strategy": "RANGE",
+      "partition_key": "date_modification",
+      "partition_interval": "YEAR",
+      "justification": "Table d'historique avec modifications peu fréquentes mais conservées longtemps.",
+      "implementation": {
+        "create_statement": "CREATE TABLE produits_historique (..., date_modification TIMESTAMP NOT NULL) PARTITION BY RANGE (date_modification);",
+        "partitions": [
+          "CREATE TABLE produits_historique_y2022 PARTITION OF produits_historique FOR VALUES FROM ('2022-01-01') TO ('2023-01-01');",
+          "CREATE TABLE produits_historique_y2023 PARTITION OF produits_historique FOR VALUES FROM ('2023-01-01') TO ('2024-01-01');",
+          "..."
+        ]
+      },
+      "expected_benefits": ["Requêtes historiques plus rapides", "Archivage facilité", "Meilleure gestion des statistiques"]
+    },
+    {
+      "table_name": "evenements",
+      "estimated_row_count": "> 50 millions",
+      "strategy": "HASH",
+      "partition_key": "id",
+      "partition_count": 16,
+      "justification": "Table à très haut volume sans critère dominant de requêtage. Distribution uniforme des données nécessaire.",
+      "implementation": {
+        "create_statement": "CREATE TABLE evenements (...) PARTITION BY HASH (id);",
+        "partitions": [
+          "CREATE TABLE evenements_p0 PARTITION OF evenements FOR VALUES WITH (MODULUS 16, REMAINDER 0);",
+          "CREATE TABLE evenements_p1 PARTITION OF evenements FOR VALUES WITH (MODULUS 16, REMAINDER 1);",
+          "..."
+        ]
+      },
+      "expected_benefits": ["Parallélisation des requêtes", "Réduction des contentions", "Distribution équilibrée de l'I/O"]
+    },
+    {
+      "table_name": "utilisateurs",
+      "estimated_row_count": "< 1 million",
+      "strategy": "AUCUN",
+      "justification": "Table trop petite pour bénéficier du partitionnement. Les index réguliers suffisent.",
+      "recommendation": "Créer des index ciblés plutôt que partitionner."
+    }
+  ],
+  "general_recommendations": {
+    "maintenance": "Créer un job de maintenance pour gérer automatiquement la création des nouvelles partitions",
+    "monitoring": "Implémenter une surveillance pg_partman ou utiliser une extension dédiée pour gérer les partitions",
+    "archiving": "Définir une politique de rétention et d'archivage des anciennes partitions"
+  },
+  "prisma_considerations": {
+    "limitations": "Prisma ne gère pas nativement les tables partitionnées. Utilisez des requêtes brutes pour la création des partitions.",
+    "workaround": "Créer des vues non partitionnées sur les tables partitionnées pour les accès via Prisma",
+    "implementation_note": "Vous devrez gérer le partitionnement au niveau SQL, indépendamment du schéma Prisma"
+  }
+}

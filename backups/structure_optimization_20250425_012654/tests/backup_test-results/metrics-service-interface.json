@@ -1,0 +1,1 @@
+{"agent": "metrics-service", "interfaces": ["BaseAgent\CoordinationAgent"], "status": "NON_COMPLIANT", "missing": ["CoordinationAgent.checkConnection\CoordinationAgent.publish\CoordinationAgent.subscribe"], "timestamp": "2025-04-20T04:18:52+00:00"}

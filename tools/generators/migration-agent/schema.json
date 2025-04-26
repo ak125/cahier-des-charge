@@ -1,0 +1,48 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "cli": "nx",
+  "$id": "migration-agent",
+  "type": "object",
+  "title": "Générateur d'agent de migration",
+  "description": "Créer un nouvel agent de migration avec la structure de fichiers standard",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Nom de l'agent de migration",
+      "$default": {
+        "$source": "argv",
+        "index": 0
+      },
+      "x-prompt": "Quel est le nom de l'agent de migration?"
+    },
+    "type": {
+      "type": "string",
+      "description": "Type d'agent de migration",
+      "enum": ["analysis", "migration", "transformation", "verification", "integration"],
+      "default": "migration",
+      "x-prompt": {
+        "message": "Quel est le type d'agent?",
+        "type": "list",
+        "items": [
+          { "value": "analysis", "label": "Agent d'analyse" },
+          { "value": "migration", "label": "Agent de migration" },
+          { "value": "transformation", "label": "Agent de transformation" },
+          { "value": "verification", "label": "Agent de vérification" },
+          { "value": "integration", "label": "Agent d'intégration" }
+        ]
+      }
+    },
+    "directory": {
+      "type": "string",
+      "description": "Répertoire dans lequel créer l'agent",
+      "default": "agents",
+      "x-prompt": "Dans quel dossier souhaitez-vous créer l'agent?"
+    },
+    "tags": {
+      "type": "string",
+      "description": "Tags à ajouter au projet (séparés par des virgules)",
+      "alias": "t"
+    }
+  },
+  "required": ["name", "type"]
+}

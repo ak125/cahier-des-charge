@@ -1,0 +1,10 @@
+{
+  "name": "Cart",
+  "status": "pending",
+  "progress": 0,
+  "complexity": "medium",
+  "dependencies": [
+    "Product Catalog",
+    "Authentication"
+  ]
+}

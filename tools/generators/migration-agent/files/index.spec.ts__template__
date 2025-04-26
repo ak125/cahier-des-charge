@@ -1,0 +1,31 @@
+import { <%= classify(name) %>Agent } from './index';
+
+describe('<%= classify(name) %>Agent', () => {
+  let agent: <%= classify(name) %>Agent;
+
+  beforeEach(() => {
+    agent = new <%= classify(name) %>Agent({
+      id: 'test-<%= name %>',
+      name: '<%= name %>',
+      version: '1.0.0',
+      // Ajoutez ici d'autres configurations nécessaires pour les tests
+    });
+  });
+
+  it('should initialize successfully', async () => {
+    await expect(agent.initialize()).resolves.not.toThrow();
+  });
+
+  it('should execute successfully with valid input', async () => {
+    const input = {
+      // Données d'entrée pour les tests
+    };
+    
+    const result = await agent.execute(input);
+    expect(result.success).toBe(true);
+  });
+
+  it('should clean up resources properly', async () => {
+    await expect(agent.cleanup()).resolves.not.toThrow();
+  });
+});

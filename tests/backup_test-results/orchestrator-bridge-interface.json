@@ -1,0 +1,1 @@
+{"agent": "orchestrator-bridge", "interfaces": ["BaseAgent\CoordinationAgent\OrchestrationAgent"], "status": "NON_COMPLIANT", "missing": ["CoordinationAgent.checkConnection\CoordinationAgent.publish\CoordinationAgent.subscribe\OrchestrationAgent.startWorkflow\OrchestrationAgent.stopWorkflow"], "timestamp": "2025-04-20T04:18:53+00:00"}

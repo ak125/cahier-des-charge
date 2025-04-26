@@ -1,1 +1,12 @@
-cahier-des-charge/
+# Node
+node_modules/
+# Dotgit
+Dotgit/
+# Build
+dist/
+build/
+.cache/
+out/
+# Nx
+nx-cloud/
+nx-report/

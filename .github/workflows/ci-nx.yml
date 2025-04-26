@@ -1,0 +1,143 @@
+name: CI avec NX
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+env:
+  NX_BRANCH: ${{ github.event.number || github.ref_name }}
+  NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
+
+jobs:
+  build-and-test:
+    name: Build & Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'pnpm'
+
+      - name: Install PNPM
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+          run_install: false
+
+      - name: Get PNPM store directory
+        id: pnpm-cache
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
+
+      - name: Setup PNPM cache
+        uses: actions/cache@v3
+        with:
+          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Lint affected projects
+        run: pnpm nx affected:lint --base=origin/main --head=HEAD --parallel=4
+
+      - name: Test affected projects
+        run: pnpm nx affected:test --base=origin/main --head=HEAD --parallel=4 --ci
+
+      - name: Build affected projects
+        run: pnpm nx affected:build --base=origin/main --head=HEAD --parallel=4
+
+  temporal-workflow-tests:
+    name: Test Temporal Workflows
+    runs-on: ubuntu-latest
+    needs: build-and-test
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'pnpm'
+
+      - name: Install PNPM
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+          run_install: false
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Setup Temporal Dev Server
+        run: |
+          docker run -d --name temporal -p 7233:7233 temporalio/auto-setup:1.20.0
+          echo "Waiting for Temporal server to start..."
+          sleep 10
+
+      - name: Run Temporal workflow tests
+        run: |
+          cd src/temporal
+          pnpm nx run-many --target=test --projects=temporal-* --parallel=2
+
+  deploy-staging:
+    name: Deploy to Staging
+    runs-on: ubuntu-latest
+    needs: [build-and-test, temporal-workflow-tests]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build for staging
+        run: pnpm nx affected:build --base=origin/develop~1 --head=HEAD --configuration=staging --parallel=3
+
+      # Ajoutez ici vos étapes de déploiement sur l'environnement de staging
+      # - name: Deploy to staging
+      #   run: ./scripts/deploy-to-staging.sh
+
+  deploy-production:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    needs: [build-and-test, temporal-workflow-tests]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build for production
+        run: pnpm nx affected:build --base=origin/main~1 --head=HEAD --configuration=production --parallel=2
+
+      # Ajoutez ici vos étapes de déploiement en production
+      # - name: Deploy to production
+      #   run: ./scripts/deploy-to-production.sh

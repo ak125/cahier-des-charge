@@ -1,0 +1,146 @@
+name: MCP Pipeline CI/CD
+
+on:
+  push:
+    branches: [ main, master, dev ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+    inputs:
+      sourceDir:
+        description: 'Répertoire source à analyser'
+        required: false
+        default: 'src/legacy'
+
+jobs:
+  analyze-php:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: |
+        cd apps/mcp-server
+        npm install
+        
+    - name: Run tests
+      run: |
+        cd apps/mcp-server
+        npm test
+        
+    - name: Run MCP Pipeline
+      run: |
+        cd apps/mcp-server
+        # Utiliser le répertoire source spécifié dans les inputs ou la valeur par défaut
+        SOURCE_DIR="${{ github.event.inputs.sourceDir || 'src/legacy' }}"
+        # Mettre à jour la configuration pour utiliser le répertoire source spécifié
+        jq --arg src "$SOURCE_DIR" '.sourceDir = $src' mcp.config.json > mcp.config.new.json && mv mcp.config.new.json mcp.config.json
+        # Exécuter le pipeline
+        npm start
+        
+    - name: Generate Migration Report
+      run: |
+        cd apps/mcp-server
+        # Générer un rapport au format JSON avec les statistiques de migration
+        DATE=$(date +"%Y-%m-%d-%H-%M-%S")
+        echo "{" > migration-report-$DATE.json
+        echo "  \"date\": \"$(date -u +"%Y-%m-%dT%H:%M:%SZ")\"," >> migration-report-$DATE.json
+        echo "  \"commitSha\": \"${{ github.sha }}\"," >> migration-report-$DATE.json
+        echo "  \"branch\": \"${{ github.ref_name }}\"," >> migration-report-$DATE.json
+        echo "  \"stats\": {" >> migration-report-$DATE.json
+        echo "    \"filesAnalyzed\": $(find outputs -name "*.audit.md" | wc -l)," >> migration-report-$DATE.json
+        echo "    \"nestjsFilesGenerated\": $(find outputs -name "*.controller.ts" | wc -l)," >> migration-report-$DATE.json
+        echo "    \"remixFilesGenerated\": $(find outputs -name "*.tsx" | wc -l)" >> migration-report-$DATE.json
+        echo "  }" >> migration-report-$DATE.json
+        echo "}" >> migration-report-$DATE.json
+        
+        # Créer un rapport au format Markdown pour GitHub Pages
+        echo "# Rapport de Migration PHP vers NestJS/Remix" > migration-report-$DATE.md
+        echo "" >> migration-report-$DATE.md
+        echo "## Informations Générales" >> migration-report-$DATE.md
+        echo "" >> migration-report-$DATE.md
+        echo "- **Date:** $(date -u +"%Y-%m-%d %H:%M:%S UTC")" >> migration-report-$DATE.md
+        echo "- **Commit:** ${{ github.sha }}" >> migration-report-$DATE.md
+        echo "- **Branche:** ${{ github.ref_name }}" >> migration-report-$DATE.md
+        echo "" >> migration-report-$DATE.md
+        echo "## Statistiques" >> migration-report-$DATE.md
+        echo "" >> migration-report-$DATE.md
+        echo "- **Fichiers PHP analysés:** $(find outputs -name "*.audit.md" | wc -l)" >> migration-report-$DATE.md
+        echo "- **Contrôleurs NestJS générés:** $(find outputs -name "*.controller.ts" | wc -l)" >> migration-report-$DATE.md
+        echo "- **Composants Remix générés:** $(find outputs -name "*.tsx" | wc -l)" >> migration-report-$DATE.md
+        
+    - name: Upload Artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: mcp-outputs
+        path: |
+          apps/mcp-server/outputs/
+          apps/mcp-server/migration-report-*.json
+          apps/mcp-server/migration-report-*.md
+        
+  deploy-pages:
+    needs: analyze-php
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      
+    - name: Download artifacts
+      uses: actions/download-artifact@v3
+      with:
+        name: mcp-outputs
+        path: reports
+        
+    - name: Setup Pages
+      uses: actions/configure-pages@v3
+        
+    - name: Build Pages Site
+      run: |
+        mkdir -p _site
+        cp -r reports _site/
+        
+        # Créer une page d'index
+        echo "<!DOCTYPE html>" > _site/index.html
+        echo "<html lang=\"fr\">" >> _site/index.html
+        echo "<head>" >> _site/index.html
+        echo "  <meta charset=\"UTF-8\">" >> _site/index.html
+        echo "  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">" >> _site/index.html
+        echo "  <title>Rapports de Migration PHP vers NestJS/Remix</title>" >> _site/index.html
+        echo "  <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css\">" >> _site/index.html
+        echo "</head>" >> _site/index.html
+        echo "<body class=\"bg-light\">" >> _site/index.html
+        echo "  <div class=\"container py-5\">" >> _site/index.html
+        echo "    <h1 class=\"mb-4\">Rapports de Migration PHP vers NestJS/Remix</h1>" >> _site/index.html
+        echo "    <div class=\"card shadow-sm\">" >> _site/index.html
+        echo "      <div class=\"card-body\">" >> _site/index.html
+        echo "        <h2>Derniers Rapports</h2>" >> _site/index.html
+        echo "        <ul class=\"list-group list-group-flush mt-3\">" >> _site/index.html
+        
+        # Lister tous les rapports Markdown
+        for report in $(find reports -name "migration-report-*.md" | sort -r); do
+          filename=$(basename $report)
+          date=$(echo $filename | sed 's/migration-report-\(.*\).md/\1/')
+          formatted_date=$(echo $date | sed 's/-/ /g')
+          echo "          <li class=\"list-group-item\"><a href=\"reports/$filename\">Rapport de migration du $formatted_date</a></li>" >> _site/index.html
+        done
+        
+        echo "        </ul>" >> _site/index.html
+        echo "      </div>" >> _site/index.html
+        echo "    </div>" >> _site/index.html
+        echo "  </div>" >> _site/index.html
+        echo "  <script src=\"https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js\"></script>" >> _site/index.html
+        echo "</body>" >> _site/index.html
+        echo "</html>" >> _site/index.html
+        
+    - name: Deploy to GitHub Pages
+      uses: actions/deploy-pages@v2

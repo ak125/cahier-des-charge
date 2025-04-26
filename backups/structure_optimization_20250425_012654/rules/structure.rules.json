@@ -1,0 +1,30 @@
+{
+  "moduleTypeDetection": {
+    "page": ["echo", "print", "<html", "<body", "<div", "include", "header", "footer"],
+    "api": ["header(", "json_encode", "api", "REST", "GET", "POST", "response", "request"],
+    "form": ["<form", "validate", "submit", "input", "POST", "required", "validation"],
+    "cron": ["cron", "schedule", "task", "job", "sleep", "date", "time", "interval"],
+    "utility": ["class", "function", "static", "public function", "private function"]
+  },
+  "qualityThresholds": {
+    "good": 2.5,
+    "average": 1.5,
+    "poor": 0
+  },
+  "structureChecks": {
+    "maxFunctionLength": 100,
+    "maxNestingDepth": 4,
+    "maxDuplicateBlocks": 2,
+    "minFunctionCoverage": 0.7,
+    "maxBadVariables": 5,
+    "maxHtmlWithLogic": 3
+  },
+  "scoreMultipliers": {
+    "duplication": 1.5,
+    "inlineLogic": 1.2,
+    "frontendBackendMix": 1.8,
+    "lackOfFunctions": 1.5,
+    "inlineJs": 1.0,
+    "variableNaming": 0.8
+  }
+}

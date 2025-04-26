@@ -1,0 +1,270 @@
+{
+  "version": "1.0.0",
+  "timestamp": "2025-04-12T14:45:00.000Z",
+  "generatedBy": "MySQL Schema Analyzer v2.5.0",
+  "projectName": "E-commerce Migration PostgreSQL",
+  "summary": {
+    "totalTasks": 42,
+    "criticalTasks": 7,
+    "highPriorityTasks": 15,
+    "mediumPriorityTasks": 12,
+    "lowPriorityTasks": 8,
+    "estimatedTotalEffort": "14 jours-personnes"
+  },
+  "tasksBeforeMigration": [
+    {
+      "id": "PRE-001",
+      "title": "Corriger les types monétaires (FLOAT → DECIMAL)",
+      "description": "Convertir tous les champs FLOAT stockant des valeurs monétaires en DECIMAL(10,2) pour éviter les erreurs d'arrondi",
+      "tables": ["products", "orders", "order_items", "payment_transactions"],
+      "priority": "CRITICAL",
+      "effort": "MEDIUM",
+      "estimatedHours": 5,
+      "impact": "HIGH",
+      "assignedTo": null,
+      "status": "TO_DO",
+      "dependsOn": []
+    },
+    {
+      "id": "PRE-002",
+      "title": "Sécuriser les données sensibles",
+      "description": "Vérifier et sécuriser les champs contenant des données sensibles (mot de passe, informations de carte de crédit) avant migration",
+      "tables": ["users", "payment_details"],
+      "priority": "CRITICAL",
+      "effort": "MEDIUM",
+      "estimatedHours": 8,
+      "impact": "HIGH",
+      "assignedTo": null,
+      "status": "TO_DO",
+      "dependsOn": []
+    },
+    {
+      "id": "PRE-003",
+      "title": "Ajouter les index manquants sur les clés étrangères",
+      "description": "Créer les index manquants sur les colonnes de clé étrangère pour améliorer les performances des jointures",
+      "tables": ["order_items", "profiles", "product_categories"],
+      "priority": "HIGH",
+      "effort": "LOW",
+      "estimatedHours": 2,
+      "impact": "HIGH",
+      "assignedTo": null,
+      "status": "TO_DO",
+      "dependsOn": []
+    },
+    {
+      "id": "PRE-004",
+      "title": "Normaliser les conventions de nommage",
+      "description": "Harmoniser les conventions de nommage des tables, colonnes et index pour faciliter la migration",
+      "tables": ["UserGroups", "tbl_settings", "Products"],
+      "priority": "HIGH",
+      "effort": "MEDIUM",
+      "estimatedHours": 6,
+      "impact": "MEDIUM",
+      "assignedTo": null,
+      "status": "TO_DO",
+      "dependsOn": []
+    },
+    {
+      "id": "PRE-005",
+      "title": "Nettoyer les données corrompues ou invalides",
+      "description": "Identifier et corriger les données qui ne respectent pas les contraintes d'intégrité avant migration",
+      "tables": ["users", "orders", "products"],
+      "priority": "HIGH",
+      "effort": "HIGH",
+      "estimatedHours": 10,
+      "impact": "HIGH",
+      "assignedTo": null,
+      "status": "TO_DO",
+      "dependsOn": []
+    },
+    {
+      "id": "PRE-006",
+      "title": "Supprimer les colonnes dépréciées",
+      "description": "Supprimer les colonnes marquées comme dépréciées après vérification qu'elles ne sont plus utilisées",
+      "tables": ["users", "orders", "products"],
+      "priority": "MEDIUM",
+      "effort": "LOW",
+      "estimatedHours": 3,
+      "impact": "LOW",
+      "assignedTo": null,
+      "status": "TO_DO",
+      "dependsOn": []
+    },
+    {
+      "id": "PRE-007",
+      "title": "Ajouter des clés primaires aux tables sans PK",
+      "description": "Ajouter des clés primaires aux tables qui n'en ont pas pour garantir l'intégrité des données",
+      "tables": ["log_entries", "temp_uploads"],
+      "priority": "MEDIUM",
+      "effort": "LOW",
+      "estimatedHours": 2,
+      "impact": "MEDIUM",
+      "assignedTo": null,
+      "status": "TO_DO",
+      "dependsOn": []
+    }
+  ],
+  "tasksDuringMigration": [
+    {
+      "id": "MIG-001",
+      "title": "Conversion des ENUM MySQL en types ENUM PostgreSQL",
+      "description": "Configurer les types énumérés dans le schéma Prisma et les définir dans PostgreSQL",
+      "tables": ["users", "products", "orders"],
+      "priority": "HIGH",
+      "effort": "MEDIUM",
+      "estimatedHours": 4,
+      "impact": "MEDIUM",
+      "assignedTo": null,
+      "status": "TO_DO",
+      "dependsOn": ["PRE-004"]
+    },
+    {
+      "id": "MIG-002",
+      "title": "Migration des TIMESTAMP vers TIMESTAMPTZ",
+      "description": "Convertir tous les champs de type TIMESTAMP en TIMESTAMPTZ pour supporter les fuseaux horaires",
+      "tables": ["users", "orders", "products", "sessions"],
+      "priority": "HIGH",
+      "effort": "MEDIUM",
+      "estimatedHours": 4,
+      "impact": "HIGH",
+      "assignedTo": null,
+      "status": "TO_DO",
+      "dependsOn": []
+    },
+    {
+      "id": "MIG-003",
+      "title": "Conversion des champs TEXT/VARCHAR en JSONB",
+      "description": "Convertir les champs stockant des données JSON en type JSONB natif de PostgreSQL",
+      "tables": ["users", "profiles", "products"],
+      "priority": "MEDIUM",
+      "effort": "MEDIUM",
+      "estimatedHours": 5,
+      "impact": "MEDIUM",
+      "assignedTo": null,
+      "status": "TO_DO",
+      "dependsOn": []
+    },
+    {
+      "id": "MIG-004",
+      "title": "Mise en place du partitionnement des tables volumineuses",
+      "description": "Configurer le partitionnement pour les tables log et historique volumineuses",
+      "tables": ["log_entries", "product_views", "user_sessions"],
+      "priority": "MEDIUM",
+      "effort": "HIGH",
+      "estimatedHours": 8,
+      "impact": "HIGH",
+      "assignedTo": null,
+      "status": "TO_DO",
+      "dependsOn": ["PRE-007"]
+    },
+    {
+      "id": "MIG-005",
+      "title": "Création des contraintes CHECK",
+      "description": "Ajouter des contraintes CHECK pour valider les données dans PostgreSQL",
+      "tables": ["users", "products", "orders"],
+      "priority": "MEDIUM",
+      "effort": "LOW",
+      "estimatedHours": 3,
+      "impact": "MEDIUM",
+      "assignedTo": null,
+      "status": "TO_DO",
+      "dependsOn": []
+    }
+  ],
+  "tasksAfterMigration": [
+    {
+      "id": "POST-001",
+      "title": "Création d'index spécialisés PostgreSQL",
+      "description": "Créer des index GIN, GiST et autres index spécialisés pour optimiser les performances",
+      "tables": ["products", "users", "categories", "locations"],
+      "priority": "HIGH",
+      "effort": "MEDIUM",
+      "estimatedHours": 5,
+      "impact": "HIGH",
+      "assignedTo": null,
+      "status": "TO_DO",
+      "dependsOn": []
+    },
+    {
+      "id": "POST-002",
+      "title": "Optimisation des requêtes pour PostgreSQL",
+      "description": "Adapter les requêtes SQL pour tirer parti des fonctionnalités de PostgreSQL",
+      "tables": ["all"],
+      "priority": "HIGH",
+      "effort": "HIGH",
+      "estimatedHours": 15,
+      "impact": "HIGH",
+      "assignedTo": null,
+      "status": "TO_DO",
+      "dependsOn": []
+    },
+    {
+      "id": "POST-003",
+      "title": "Adaptation des DTO aux nouveaux types",
+      "description": "Mettre à jour les DTO pour qu'ils correspondent aux nouveaux types de données",
+      "tables": ["users", "profiles", "products", "orders"],
+      "priority": "HIGH",
+      "effort": "MEDIUM",
+      "estimatedHours": 6,
+      "impact": "MEDIUM",
+      "assignedTo": null,
+      "status": "TO_DO",
+      "dependsOn": []
+    },
+    {
+      "id": "POST-004",
+      "title": "Documentation des modèles Prisma",
+      "description": "Ajouter des commentaires et de la documentation aux modèles Prisma",
+      "tables": ["all"],
+      "priority": "LOW",
+      "effort": "MEDIUM",
+      "estimatedHours": 8,
+      "impact": "LOW",
+      "assignedTo": null,
+      "status": "TO_DO",
+      "dependsOn": []
+    },
+    {
+      "id": "POST-005",
+      "title": "Tests de performance sur PostgreSQL",
+      "description": "Mesurer et comparer les performances avant/après migration",
+      "tables": ["all"],
+      "priority": "MEDIUM",
+      "effort": "MEDIUM",
+      "estimatedHours": 6,
+      "impact": "MEDIUM",
+      "assignedTo": null,
+      "status": "TO_DO",
+      "dependsOn": []
+    },
+    {
+      "id": "POST-006",
+      "title": "Création de vues matérialisées pour les rapports",
+      "description": "Créer des vues matérialisées PostgreSQL pour les requêtes analytiques complexes",
+      "tables": ["orders", "products", "user_activities"],
+      "priority": "LOW",
+      "effort": "MEDIUM",
+      "estimatedHours": 8,
+      "impact": "MEDIUM",
+      "assignedTo": null,
+      "status": "TO_DO",
+      "dependsOn": []
+    }
+  ],
+  "recommendations": {
+    "databaseConfiguration": [
+      "Configurer work_mem à au moins 16MB pour améliorer les performances des tris",
+      "Configurer maintenance_work_mem à 128MB pour améliorer les performances de VACUUM",
+      "Activer l'extension pg_stat_statements pour la surveillance des performances"
+    ],
+    "backupStrategy": [
+      "Mettre en place une sauvegarde WAL (Write-Ahead Log) continue",
+      "Configurer une réplication logique pour la migration en production",
+      "Conserver au moins deux semaines de sauvegardes complètes"
+    ],
+    "monitoringTools": [
+      "Mettre en place pgBadger pour l'analyse des logs PostgreSQL",
+      "Configurer Grafana avec des dashboards PostgreSQL"
+    ]
+  }
+}

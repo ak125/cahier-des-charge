@@ -1,0 +1,10 @@
+{
+  "name": "Order Management",
+  "status": "pending",
+  "progress": 0,
+  "complexity": "high",
+  "dependencies": [
+    "Cart",
+    "Authentication"
+  ]
+}

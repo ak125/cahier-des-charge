@@ -1,0 +1,508 @@
+{
+  "name": "PHP Analyzer Pipeline",
+  "nodes": [
+    {
+      "parameters": {
+        "triggerTimes": {
+          "item": [
+            {
+              "mode": "everyX",
+              "value": 24,
+              "unit": "hours"
+            }
+          ]
+        }
+      },
+      "name": "Daily Analysis Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "position": [100, 200],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "authentication": "genericCredentialType",
+        "httpMethod": "POST",
+        "path": "php-analysis-webhook",
+        "responseMode": "responseNode",
+        "options": {
+          "allowUnauthorizedCerts": true
+        }
+      },
+      "name": "PHP Analysis Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "position": [100, 400],
+      "webhookId": "php-analysis-webhook",
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "mode": "mergeByPosition"
+      },
+      "name": "Merge Triggers",
+      "type": "n8n-nodes-base.merge",
+      "position": [300, 300],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "command": "cd /workspaces/cahier-des-charge && mkdir -p reports/php-analysis",
+        "workingDirectory": "/workspaces/cahier-des-charge",
+        "executeTimeout": 10
+      },
+      "name": "Prepare Reports Directory",
+      "type": "n8n-nodes-base.executeCommand",
+      "position": [500, 300],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "jsCode": "// Déterminer les paramètres d'analyse\nconst now = new Date();\nconst timestamp = now.toISOString().replace(/:/g, '-');\nlet analysisMode = 'full';\nlet targetPath = '/workspaces/cahier-des-charge/src';\nlet analysisOptions = {};\n\n// Analyser les données de webhook si présentes\nif ($json.body && typeof $json.body === 'object') {\n  analysisMode = $json.body.mode || 'full';\n  targetPath = $json.body.targetPath || targetPath;\n  analysisOptions = $json.body.options || {};\n}\n\n// Valider et ajuster les valeurs\nconst validModes = ['quick', 'full', 'deep', 'dependency', 'structure'];\nif (!validModes.includes(analysisMode)) {\n  analysisMode = 'full';\n}\n\n// Générer un ID d'analyse unique\nconst analysisId = `php-analysis-${timestamp}-${analysisMode}`;\n\n// Préparer les options de ligne de commande\nconst optionsFlags = [];\nif (analysisOptions.includeTests === true) optionsFlags.push('--include-tests');\nif (analysisOptions.skipVendor !== false) optionsFlags.push('--skip-vendor');\nif (analysisOptions.analyzeDependencies === true) optionsFlags.push('--analyze-dependencies');\nif (analysisOptions.generateGraph === true) optionsFlags.push('--generate-graph');\nif (analysisOptions.analyzeRoutes === true) optionsFlags.push('--analyze-routes');\n\nreturn {\n  json: {\n    analysisId,\n    analysisMode,\n    targetPath,\n    analysisOptions,\n    optionsFlags: optionsFlags.join(' '),\n    timestamp,\n    reportPath: `/workspaces/cahier-des-charge/reports/php-analysis/report-${timestamp}.json`,\n    summaryPath: `/workspaces/cahier-des-charge/reports/php-analysis/summary-${timestamp}.md`\n  }\n};"
+      },
+      "name": "Prepare Analysis Parameters",
+      "type": "n8n-nodes-base.code",
+      "position": [700, 300],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.analysisMode }}",
+              "operation": "equal",
+              "value2": "full"
+            }
+          ]
+        }
+      },
+      "name": "Analysis Mode?",
+      "type": "n8n-nodes-base.if",
+      "position": [900, 300],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "command": "cd /workspaces/cahier-des-charge && npx ts-node agents/php-analyzer-agent.ts --path=\"{{ $json.targetPath }}\" --mode=full --output-json=\"{{ $json.reportPath }}\" {{ $json.optionsFlags }}",
+        "workingDirectory": "/workspaces/cahier-des-charge",
+        "executeTimeout": 600
+      },
+      "name": "Run Full Analysis",
+      "type": "n8n-nodes-base.executeCommand",
+      "position": [1100, 200],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.analysisMode }}",
+              "operation": "equal",
+              "value2": "deep"
+            }
+          ]
+        }
+      },
+      "name": "Is Deep Analysis?",
+      "type": "n8n-nodes-base.if",
+      "position": [900, 500],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "command": "cd /workspaces/cahier-des-charge && npx ts-node agents/php-analyzer-agent.ts --path=\"{{ $json.targetPath }}\" --mode=deep --output-json=\"{{ $json.reportPath }}\" {{ $json.optionsFlags }} --analyzer=v4",
+        "workingDirectory": "/workspaces/cahier-des-charge",
+        "executeTimeout": 1200
+      },
+      "name": "Run Deep Analysis",
+      "type": "n8n-nodes-base.executeCommand",
+      "position": [1100, 500],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.analysisMode }}",
+              "operation": "equal",
+              "value2": "structure"
+            }
+          ]
+        }
+      },
+      "name": "Is Structure Analysis?",
+      "type": "n8n-nodes-base.if",
+      "position": [900, 700],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "command": "cd /workspaces/cahier-des-charge && npx ts-node agents/analysis/StructureAgent.ts --target=\"{{ $json.targetPath }}\" --output=\"{{ $json.reportPath }}\" {{ $json.optionsFlags }}",
+        "workingDirectory": "/workspaces/cahier-des-charge",
+        "executeTimeout": 300
+      },
+      "name": "Run Structure Analysis",
+      "type": "n8n-nodes-base.executeCommand",
+      "position": [1100, 700],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.analysisMode }}",
+              "operation": "equal",
+              "value2": "dependency"
+            }
+          ]
+        }
+      },
+      "name": "Is Dependency Analysis?",
+      "type": "n8n-nodes-base.if",
+      "position": [900, 900],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "command": "cd /workspaces/cahier-des-charge && npx ts-node agents/analysis/DependencyAgent.ts --target=\"{{ $json.targetPath }}\" --output=\"{{ $json.reportPath }}\" {{ $json.optionsFlags }}",
+        "workingDirectory": "/workspaces/cahier-des-charge",
+        "executeTimeout": 300
+      },
+      "name": "Run Dependency Analysis",
+      "type": "n8n-nodes-base.executeCommand",
+      "position": [1100, 900],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "command": "cd /workspaces/cahier-des-charge && npx ts-node agents/php-analyzer-agent.ts --path=\"{{ $json.targetPath }}\" --mode=quick --output-json=\"{{ $json.reportPath }}\" {{ $json.optionsFlags }}",
+        "workingDirectory": "/workspaces/cahier-des-charge",
+        "executeTimeout": 120
+      },
+      "name": "Run Quick Analysis",
+      "type": "n8n-nodes-base.executeCommand",
+      "position": [1100, 350],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "mode": "mergeByPosition"
+      },
+      "name": "Merge Analysis Results",
+      "type": "n8n-nodes-base.merge",
+      "position": [1300, 500],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "jsCode": "// Extraire et analyser les résultats de l'analyse PHP\nlet analysisResults = {};\nlet summaryData = {\n  fileCount: 0,\n  classCount: 0,\n  functionCount: 0,\n  loc: 0,\n  complexityScore: 0,\n  databaseQueries: 0,\n  potentialIssues: [],\n  dependencies: [],\n  migrationComplexity: 'medium',\n  recommendations: []\n};\n\ntry {\n  // Lire le fichier de rapport JSON\n  const fs = require('fs');\n  if (fs.existsSync($json.reportPath)) {\n    const reportContent = fs.readFileSync($json.reportPath, 'utf8');\n    analysisResults = JSON.parse(reportContent);\n    \n    // Extraire les données de base\n    summaryData.fileCount = analysisResults.fileCount || analysisResults.stats?.fileCount || 0;\n    summaryData.classCount = analysisResults.classCount || analysisResults.stats?.classCount || 0;\n    summaryData.functionCount = analysisResults.functionCount || analysisResults.stats?.functionCount || 0;\n    summaryData.loc = analysisResults.loc || analysisResults.stats?.loc || 0;\n    \n    // Extraire la complexité et les problèmes\n    summaryData.complexityScore = analysisResults.complexityScore || analysisResults.metrics?.complexity || 0;\n    summaryData.databaseQueries = analysisResults.databaseQueries?.length || analysisResults.database?.queryCount || 0;\n    \n    // Extraire les problèmes potentiels\n    if (analysisResults.issues && Array.isArray(analysisResults.issues)) {\n      summaryData.potentialIssues = analysisResults.issues\n        .sort((a, b) => (b.severity || 0) - (a.severity || 0))\n        .slice(0, 10);\n    }\n    \n    // Extraire les dépendances\n    if (analysisResults.dependencies && Array.isArray(analysisResults.dependencies)) {\n      summaryData.dependencies = analysisResults.dependencies\n        .map(dep => typeof dep === 'string' ? { name: dep } : dep)\n        .slice(0, 20);\n    }\n    \n    // Déterminer la complexité de migration\n    const complexityFactors = {\n      fileCount: summaryData.fileCount > 1000 ? 3 : summaryData.fileCount > 500 ? 2 : 1,\n      complexityScore: summaryData.complexityScore > 70 ? 3 : summaryData.complexityScore > 40 ? 2 : 1,\n      issueCount: (analysisResults.issues?.length || 0) > 100 ? 3 : (analysisResults.issues?.length || 0) > 50 ? 2 : 1,\n      databaseComplexity: (analysisResults.database?.complexity || 0) > 7 ? 3 : (analysisResults.database?.complexity || 0) > 4 ? 2 : 1\n    };\n    \n    const avgComplexity = Object.values(complexityFactors).reduce((sum, val) => sum + val, 0) / Object.values(complexityFactors).length;\n    \n    if (avgComplexity > 2.5) {\n      summaryData.migrationComplexity = 'very-high';\n    } else if (avgComplexity > 2) {\n      summaryData.migrationComplexity = 'high';\n    } else if (avgComplexity > 1.5) {\n      summaryData.migrationComplexity = 'medium';\n    } else {\n      summaryData.migrationComplexity = 'low';\n    }\n    \n    // Générer des recommandations\n    if (summaryData.fileCount > 1000) {\n      summaryData.recommendations.push('Envisager une approche de migration progressive en priorisant les modules clés');\n    }\n    \n    if (summaryData.complexityScore > 60) {\n      summaryData.recommendations.push('Refactoriser le code complexe avant la migration pour simplifier le processus');\n    }\n    \n    if (summaryData.databaseQueries > 100) {\n      summaryData.recommendations.push('Utiliser une couche d\\'abstraction de base de données pour faciliter la transition');\n    }\n    \n    // Ajouter des recommandations spécifiques des analyseurs\n    if (analysisResults.recommendations && Array.isArray(analysisResults.recommendations)) {\n      summaryData.recommendations = [...summaryData.recommendations, ...analysisResults.recommendations.slice(0, 5)];\n    }\n  } else {\n    throw new Error(`Le fichier de rapport ${$json.reportPath} n'existe pas`);\n  }\n} catch (error) {\n  summaryData.error = `Erreur lors du traitement des résultats: ${error.message}`;\n}\n\nreturn {\n  json: {\n    ...$json,\n    analysisResults: {\n      summary: summaryData,\n      details: analysisResults\n    }\n  }\n};"
+      },
+      "name": "Process Analysis Results",
+      "type": "n8n-nodes-base.code",
+      "position": [1500, 500],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "# Rapport d'analyse PHP - {{ $json.timestamp }}\n\n## Résumé\n\n- **Mode d'analyse**: {{ $json.analysisMode }}\n- **Chemin analysé**: {{ $json.targetPath }}\n- **Complexité de migration**: {{ $json.analysisResults.summary.migrationComplexity === 'very-high' ? 'Très élevée' : $json.analysisResults.summary.migrationComplexity === 'high' ? 'Élevée' : $json.analysisResults.summary.migrationComplexity === 'medium' ? 'Moyenne' : 'Faible' }}\n\n## Statistiques\n\n- **Fichiers analysés**: {{ $json.analysisResults.summary.fileCount }}\n- **Classes**: {{ $json.analysisResults.summary.classCount }}\n- **Fonctions**: {{ $json.analysisResults.summary.functionCount }}\n- **Lignes de code**: {{ $json.analysisResults.summary.loc }}\n- **Score de complexité**: {{ $json.analysisResults.summary.complexityScore }}\n- **Requêtes de base de données**: {{ $json.analysisResults.summary.databaseQueries }}\n\n## Problèmes potentiels identifiés\n\n{% if $json.analysisResults.summary.potentialIssues.length === 0 %}\nAucun problème majeur identifié.\n{% else %}\n{% for issue in $json.analysisResults.summary.potentialIssues %}\n### {{ issue.type || \"Problème\" }} (Sévérité: {{ issue.severity || \"moyenne\" }})\n\n{{ issue.message || issue.description || \"Description non disponible\" }}\n\n{% if issue.file %}**Fichier**: {{ issue.file }}{% if issue.line %}:{{ issue.line }}{% endif %}{% endif %}\n\n{% if issue.recommendation %}**Recommandation**: {{ issue.recommendation }}{% endif %}\n\n{% endfor %}\n{% endif %}\n\n## Dépendances identifiées\n\n{% if $json.analysisResults.summary.dependencies.length === 0 %}\nAucune dépendance majeure identifiée.\n{% else %}\n{% for dep in $json.analysisResults.summary.dependencies %}\n- **{{ dep.name }}**{% if dep.version %} ({{ dep.version }}){% endif %}{% if dep.usageCount %} - Utilisé {{ dep.usageCount }} fois{% endif %}\n{% endfor %}\n{% endif %}\n\n## Recommandations\n\n{% if $json.analysisResults.summary.recommendations.length === 0 %}\nAucune recommandation spécifique.\n{% else %}\n{% for rec in $json.analysisResults.summary.recommendations %}\n- {{ rec }}\n{% endfor %}\n{% endif %}\n\n> Ce rapport a été généré automatiquement par le pipeline d'analyse PHP le {{ $json.timestamp }}.",
+        "destination": "={{ $json.summaryPath }}",
+        "options": {}
+      },
+      "name": "Generate Analysis Report",
+      "type": "n8n-nodes-base.writeTextFile",
+      "position": [1700, 400],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "command": "cd /workspaces/cahier-des-charge && npx ts-node agents/bulkmq-orchestrator.ts --action=add --queue=migration --data='{\"type\":\"analyze-results\",\"reportPath\":\"{{ $json.reportPath }}\",\"summaryPath\":\"{{ $json.summaryPath }}\",\"analysisId\":\"{{ $json.analysisId }}\",\"timestamp\":\"{{ $json.timestamp }}\",\"targetPath\":\"{{ $json.targetPath }}\",\"mode\":\"{{ $json.analysisMode }}\"}' --priority=high",
+        "workingDirectory": "/workspaces/cahier-des-charge",
+        "executeTimeout": 30
+      },
+      "name": "Queue Analysis Processing",
+      "type": "n8n-nodes-base.executeCommand",
+      "position": [1700, 600],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "operation": "insert",
+        "schema": "audit",
+        "table": "php_analysis_runs",
+        "columns": "timestamp,analysis_id,analysis_mode,target_path,file_count,complexity_score,migration_complexity,report_path,summary_path",
+        "values": "={{ $json.timestamp }},={{ $json.analysisId }},={{ $json.analysisMode }},={{ $json.targetPath }},={{ $json.analysisResults.summary.fileCount || 0 }},={{ $json.analysisResults.summary.complexityScore || 0 }},={{ $json.analysisResults.summary.migrationComplexity || 'unknown' }},={{ $json.reportPath }},={{ $json.summaryPath }}",
+        "additionalFields": {}
+      },
+      "name": "Log to Database",
+      "type": "n8n-nodes-base.postgres",
+      "position": [1900, 500],
+      "typeVersion": 1,
+      "credentials": {
+        "postgres": {
+          "id": "1",
+          "name": "Postgres Account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "{{ $env.NOTIFICATION_CHAT_ID }}",
+        "text": "📊 *Analyse PHP terminée*\n\n*Mode:* {{ $json.analysisMode }}\n*Complexité de migration:* {{ $json.analysisResults.summary.migrationComplexity === 'very-high' ? 'Très élevée' : $json.analysisResults.summary.migrationComplexity === 'high' ? 'Élevée' : $json.analysisResults.summary.migrationComplexity === 'medium' ? 'Moyenne' : 'Faible' }}\n\n📈 *Statistiques:*\n- Fichiers: {{ $json.analysisResults.summary.fileCount }}\n- Classes: {{ $json.analysisResults.summary.classCount }}\n- Fonctions: {{ $json.analysisResults.summary.functionCount }}\n- LOC: {{ $json.analysisResults.summary.loc }}\n\n{% if $json.analysisResults.summary.recommendations.length > 0 %}📋 *Recommandations principales:*\n{% for rec in $json.analysisResults.summary.recommendations.slice(0, 3) %}\n- {{ rec }}\n{% endfor %}\n{% if $json.analysisResults.summary.recommendations.length > 3 %}...et {{ $json.analysisResults.summary.recommendations.length - 3 }} autre(s){% endif %}{% endif %}\n\n📝 *Rapport:* [Voir le rapport complet](file://{{ $json.summaryPath }})\n\n*Timestamp:* {{ $json.timestamp }}",
+        "additionalFields": {
+          "parseMode": "Markdown",
+          "disableNotification": true
+        }
+      },
+      "name": "Send Analysis Notification",
+      "type": "n8n-nodes-base.telegram",
+      "position": [2100, 500],
+      "typeVersion": 1
+    }
+  ],
+  "connections": {
+    "Daily Analysis Trigger": {
+      "main": [
+        [
+          {
+            "node": "Merge Triggers",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PHP Analysis Webhook": {
+      "main": [
+        [
+          {
+            "node": "Merge Triggers",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge Triggers": {
+      "main": [
+        [
+          {
+            "node": "Prepare Reports Directory",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Reports Directory": {
+      "main": [
+        [
+          {
+            "node": "Prepare Analysis Parameters",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Analysis Parameters": {
+      "main": [
+        [
+          {
+            "node": "Analysis Mode?",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Is Deep Analysis?",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Is Structure Analysis?",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Is Dependency Analysis?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analysis Mode?": {
+      "main": [
+        [
+          {
+            "node": "Run Full Analysis",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Run Quick Analysis",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Run Full Analysis": {
+      "main": [
+        [
+          {
+            "node": "Merge Analysis Results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is Deep Analysis?": {
+      "main": [
+        [
+          {
+            "node": "Run Deep Analysis",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Run Deep Analysis": {
+      "main": [
+        [
+          {
+            "node": "Merge Analysis Results",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Is Structure Analysis?": {
+      "main": [
+        [
+          {
+            "node": "Run Structure Analysis",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Run Structure Analysis": {
+      "main": [
+        [
+          {
+            "node": "Merge Analysis Results",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "Is Dependency Analysis?": {
+      "main": [
+        [
+          {
+            "node": "Run Dependency Analysis",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Run Dependency Analysis": {
+      "main": [
+        [
+          {
+            "node": "Merge Analysis Results",
+            "type": "main",
+            "index": 3
+          }
+        ]
+      ]
+    },
+    "Run Quick Analysis": {
+      "main": [
+        [
+          {
+            "node": "Merge Analysis Results",
+            "type": "main",
+            "index": 4
+          }
+        ]
+      ]
+    },
+    "Merge Analysis Results": {
+      "main": [
+        [
+          {
+            "node": "Process Analysis Results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Process Analysis Results": {
+      "main": [
+        [
+          {
+            "node": "Generate Analysis Report",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Queue Analysis Processing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Analysis Report": {
+      "main": [
+        [
+          {
+            "node": "Log to Database",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Queue Analysis Processing": {
+      "main": [
+        [
+          {
+            "node": "Log to Database",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log to Database": {
+      "main": [
+        [
+          {
+            "node": "Send Analysis Notification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {},
+  "tags": ["php", "analysis", "codebase", "migration", "complexity"]
+}

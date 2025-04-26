@@ -1,0 +1,171 @@
+name: Validation des audits
+
+on:
+  pull_request:
+    paths:
+      - 'reports/audits/**'
+      - 'reports/backlogs/**'
+      - 'reports/impact_graphs/**'
+  workflow_dispatch:
+    inputs:
+      force_validation:
+        description: 'Force validation on all audits'
+        required: false
+        default: 'false'
+
+jobs:
+  validate-audits:
+    runs-on: ubuntu-latest
+    name: Validate Audit Files
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run audit validation
+        run: npx ts-node utils/validate-audit-outputs.ts --github-action
+
+      - name: Run audit quality analysis
+        run: npx ts-node utils/audit-quality-analyzer.ts --ci
+
+      - name: Check for quality issues
+        id: check-quality
+        run: |
+          QUALITY_REPORT="./reports/audit_quality_metrics.json"
+          if [ -f "$QUALITY_REPORT" ]; then
+            PRIORITY_COUNT=$(jq '.recommendations.priority | length' $QUALITY_REPORT)
+            echo "priority_count=$PRIORITY_COUNT" >> $GITHUB_OUTPUT
+            
+            if [ $PRIORITY_COUNT -gt 0 ]; then
+              echo "⚠️ $PRIORITY_COUNT audits prioritaires nécessitent des améliorations"
+              PRIORITY_AUDITS=$(jq -r '.recommendations.priority | join(", ")' $QUALITY_REPORT)
+              echo "priority_audits=$PRIORITY_AUDITS" >> $GITHUB_OUTPUT
+            else
+              echo "✅ Aucun audit prioritaire détecté"
+            fi
+          else
+            echo "❌ Rapport de qualité non trouvé"
+            exit 1
+          fi
+
+      - name: Comment PR
+        uses: actions/github-script@v6
+        if: github.event_name == 'pull_request'
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const priorityCount = parseInt('${{ steps.check-quality.outputs.priority_count }}') || 0;
+            const priorityAudits = '${{ steps.check-quality.outputs.priority_audits }}';
+            
+            const fs = require('fs');
+            let validationReport;
+            try {
+              validationReport = JSON.parse(fs.readFileSync('./reports/audit_consistency_report.json', 'utf8'));
+            } catch (error) {
+              console.error('Erreur lors de la lecture du rapport de validation:', error);
+              validationReport = { missingFiles: [], inconsistentFields: [] };
+            }
+            
+            let qualityReport;
+            try {
+              qualityReport = JSON.parse(fs.readFileSync('./reports/audit_quality_metrics.json', 'utf8'));
+            } catch (error) {
+              console.error('Erreur lors de la lecture du rapport de qualité:', error);
+              qualityReport = { averageMetrics: { completeness: 0, consistency: 0, migrationReadiness: 0 } };
+            }
+            
+            // Construire le message du commentaire
+            let body = '## 📊 Rapport de validation des audits\n\n';
+            
+            // Ajouter le statut global
+            const hasValidationIssues = validationReport.missingFiles.length > 0 || validationReport.inconsistentFields.length > 0;
+            const hasQualityIssues = priorityCount > 0;
+            
+            if (!hasValidationIssues && !hasQualityIssues) {
+              body += '### ✅ Tous les audits sont valides et de bonne qualité\n\n';
+            } else {
+              body += '### ⚠️ Des problèmes ont été détectés\n\n';
+            }
+            
+            // Ajouter les métriques moyennes
+            body += '### Métriques moyennes\n\n';
+            body += `- **Complétude**: ${qualityReport.averageMetrics.completeness.toFixed(1)}%\n`;
+            body += `- **Cohérence**: ${qualityReport.averageMetrics.consistency.toFixed(1)}%\n`;
+            body += `- **Préparation à la migration**: ${qualityReport.averageMetrics.migrationReadiness.toFixed(1)}%\n\n`;
+            
+            // Ajouter les problèmes de validation si présents
+            if (hasValidationIssues) {
+              body += '### Problèmes de validation\n\n';
+              
+              if (validationReport.missingFiles.length > 0) {
+                body += '#### Fichiers manquants\n\n';
+                validationReport.missingFiles.forEach(item => {
+                  body += `- \`${item.sourcePath}\`: ${item.missingTypes.join(', ')}\n`;
+                });
+                body += '\n';
+              }
+              
+              if (validationReport.inconsistentFields.length > 0) {
+                body += '#### Champs incohérents\n\n';
+                validationReport.inconsistentFields.forEach(item => {
+                  body += `- \`${item.sourcePath}\`: Champ \`${item.fieldName}\` a des valeurs incohérentes\n`;
+                });
+                body += '\n';
+              }
+            }
+            
+            // Ajouter les problèmes de qualité si présents
+            if (hasQualityIssues) {
+              body += '### Audits prioritaires\n\n';
+              body += 'Les audits suivants nécessitent des améliorations:\n\n';
+              
+              priorityAudits.split(', ').forEach(audit => {
+                body += `- \`${audit}\`\n`;
+              });
+              
+              body += '\nVeuillez améliorer ces audits avant de fusionner cette pull request.\n\n';
+            }
+            
+            body += '---\n';
+            body += '*Ce commentaire a été généré automatiquement par le workflow de validation des audits.*';
+            
+            // Commenter la PR
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: body
+            });
+
+      - name: Check validation status
+        run: |
+          VALIDATION_REPORT="./reports/audit_consistency_report.json"
+          PRIORITY_COUNT="${{ steps.check-quality.outputs.priority_count }}"
+          
+          if [ -f "$VALIDATION_REPORT" ]; then
+            MISSING_FILES_COUNT=$(jq '.missingFiles | length' $VALIDATION_REPORT)
+            INCONSISTENT_FIELDS_COUNT=$(jq '.inconsistentFields | length' $VALIDATION_REPORT)
+            
+            if [ $MISSING_FILES_COUNT -gt 0 ] || [ $INCONSISTENT_FIELDS_COUNT -gt 0 ] || [ $PRIORITY_COUNT -gt 3 ]; then
+              echo "❌ Des problèmes critiques ont été détectés dans les audits"
+              exit 1
+            else
+              if [ $PRIORITY_COUNT -gt 0 ]; then
+                echo "⚠️ Des améliorations sont recommandées, mais pas bloquantes"
+              else
+                echo "✅ Tous les audits sont valides"
+              fi
+              exit 0
+            fi
+          else
+            echo "❌ Rapport de validation non trouvé"
+            exit 1
+          fi

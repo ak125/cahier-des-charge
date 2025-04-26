@@ -1,0 +1,95 @@
+{
+  "compilerOptions": {
+    /* Paramètres de base */
+    "target": "ES2020",
+    "module": "CommonJS", // Compile vers CommonJS pour Node.js
+    "lib": [
+      "ES2020",
+      "DOM"
+    ],
+    "allowJs": true,
+    "checkJs": false,
+    "declaration": true,
+    "sourceMap": true,
+    "outDir": "./dist",
+    "rootDir": ".",
+    /* Configuration stricte des types */
+    "strict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "strictBindCallApply": true,
+    "strictPropertyInitialization": true,
+    "noImplicitThis": true,
+    "alwaysStrict": true,
+    /* Vérifications supplémentaires */
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedIndexedAccess": true,
+    /* Configuration des modules */
+    "moduleResolution": "NodeNext", // Utilise la résolution de module Node moderne
+    "baseUrl": "./",
+    "paths": {
+      "*": [
+        "*",
+        "node_modules/*"
+      ],
+      "@types/*": [
+        "./@types/*"
+      ]
+    },
+    "typeRoots": [
+      "./node_modules/@types",
+      "./@types"
+    ],
+    "types": [
+      "node"
+    ],
+    "esModuleInterop": true, // Facilite l'interopérabilité entre CommonJS et ES modules
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true, // Permet import par défaut pour les modules CommonJS
+    /* Configuration JSX */
+    "jsx": "react-jsx",
+    "jsxImportSource": "react",
+    /* Autres paramètres avancés */
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "composite": true,
+    "incremental": true
+  },
+  "include": [
+    "packages/**/*.ts",
+    "packages/**/*.tsx",
+    "apps/**/*.ts",
+    "apps/**/*.tsx",
+    "scripts/**/*.ts",
+    "agents/**/*.ts",
+    "tools/**/*.ts",
+    "*.ts",
+    "*.tsx"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "**/*.js",
+    "**/*.jsx"
+  ],
+  "references": [
+    {
+      "path": "./packages/mcp-agents"
+    },
+    {
+      "path": "./packages/mcp-core"
+    },
+    {
+      "path": "./packages/mcp-cli"
+    },
+    {
+      "path": "./packages/mcp-orchestrator"
+    }
+  ]
+}

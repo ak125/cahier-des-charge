@@ -1,0 +1,39 @@
+name: Validate MCP Agents
+
+on:
+  push:
+    paths:
+      - 'packages/mcp-agents/**/*.ts'
+      - 'agents/**/*.ts'
+      - 'apps/mcp-server*/**/*.ts'
+  pull_request:
+    paths:
+      - 'packages/mcp-agents/**/*.ts'
+      - 'agents/**/*.ts'
+      - 'apps/mcp-server*/**/*.ts'
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Validate agents implementation
+        run: bash ./fix-agent-errors.sh
+        
+      - name: Commit changes if needed
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: "fix: correction automatique des erreurs TypeScript des agents MCP"
+          commit_user_name: "MCP Auto-Fix Bot"
+          commit_user_email: "mcp-bot@example.com"
+          file_pattern: 'packages/mcp-agents/**/*.ts agents/**/*.ts apps/mcp-server*/**/*.ts'

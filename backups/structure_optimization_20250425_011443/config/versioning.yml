@@ -1,0 +1,24 @@
+# Configuration du versionnement intelligent du cahier des charges
+
+# Seuils déclenchant la création d'une nouvelle version
+thresholds:
+  lines_changed_percentage: 5       # % de lignes modifiées
+  files_changed_percentage: 10      # % de fichiers modifiés
+  min_changes_for_version: 50       # Nombre min. de lignes modifiées
+
+# Configuration du versionnement
+versioning:
+  auto_increment: true              # Incrémentation automatique des versions
+  semantic_analysis: true           # Analyse sémantique des changements
+
+# Déclencheurs automatiques
+triggers:
+  scheduled: true                   # Versionnement programmé (quotidien/hebdo)
+  git_commit: true                  # À chaque commit significatif
+  explicit: true                    # Déclenchement explicite via script
+
+# Politique de rétention
+retention:
+  all_versions: "7 years"           # Durée de conservation de toutes les versions
+  major_versions: "indefinite"      # Conservation indéfinie des versions majeures
+  daily_versions: "30 days"         # Conservation des versions quotidiennes

@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<navicat-export version="16.0">
+    <meta>
+        <created>2025-04-12T10:00:00</created>
+        <schema-version>1.0</schema-version>
+        <product>Navicat Premium</product>
+    </meta>
+    <connections>
+        <!-- Configuration de la connexion MySQL source -->
+        <connection name="MySQL Source" type="MYSQL" host="localhost" port="3306" user-name="root" password-encrypted="encrypted-password-placeholder" database="mysql_database" auto-connect="true" ssh-use="false">
+            <settings use-unicode="true" use-compression="false" charset="utf8mb4" auto-reconnect="true"/>
+            <ssh host="" port="22" user-name="" auth-method="PASSWORD" password-encrypted=""/>
+            <ssl use="false" ca-file="" cert-file="" key-file="" cipher-list=""/>
+            <other show-error="10"/>
+        </connection>
+        
+        <!-- Configuration de la connexion PostgreSQL (Supabase) cible -->
+        <connection name="Supabase PostgreSQL" type="PGSQL" host="db.your-project-ref.supabase.co" port="5432" user-name="postgres" password-encrypted="encrypted-password-placeholder" database="postgres" auto-connect="true" ssh-use="false">
+            <settings auto-connect="true" keep-alive="true" encoding="UTF-8" timezone="UTC" auto-reconnect="true"/>
+            <ssh host="" port="22" user-name="" auth-method="PASSWORD" password-encrypted=""/>
+            <ssl use="true" verify-server-cert="false" ca-file="" cert-file="" key-file="" cipher-list="HIGH:!aNULL:!MD5"/>
+            <other show-error="10"/>
+        </connection>
+    </connections>
+    
+    <!-- Configuration de la tâche de migration/synchronisation -->
+    <transfer>
+        <task name="MySQL to Supabase Migration" source-connection="MySQL Source" destination-connection="Supabase PostgreSQL" type="data-transfer">
+            <options>
+                <option name="withCreateSql" value="true"/>
+                <option name="targetIsEmpty" value="true"/>
+                <option name="createTarget" value="true"/>
+                <option name="dropIfExists" value="false"/>
+                <option name="ignoreError" value="true"/>
+                <option name="continueOnError" value="true"/>
+                <option name="commentsTransfer" value="true"/>
+                <option name="scriptsAfterData" value="true"/>
+                <option name="convertAutoInc" value="true"/>
+                <option name="useTransaction" value="true"/>
+                <option name="chunkedTransfer" value="true"/>
+                <option name="chunkedSize" value="5000"/>
+                <option name="bulkInsert" value="true"/>
+                <option name="maxInsertSize" value="10000"/>
+            </options>
+            <!-- Type mappings spécifiques MySQL -> PostgreSQL -->
+            <type-mappings>
+                <type-mapping source-type="TINYINT(1)" destination-type="BOOLEAN"/>
+                <type-mapping source-type="TINYINT" destination-type="SMALLINT"/>
+                <type-mapping source-type="SMALLINT UNSIGNED" destination-type="INTEGER"/>
+                <type-mapping source-type="INT UNSIGNED" destination-type="BIGINT"/>
+                <type-mapping source-type="BIGINT UNSIGNED" destination-type="BIGINT"/>
+                <type-mapping source-type="ENUM" destination-type="TEXT"/>
+                <type-mapping source-type="SET" destination-type="TEXT"/>
+                <type-mapping source-type="BLOB" destination-type="BYTEA"/>
+                <type-mapping source-type="MEDIUMBLOB" destination-type="BYTEA"/>
+                <type-mapping source-type="LONGBLOB" destination-type="BYTEA"/>
+                <type-mapping source-type="JSON" destination-type="JSONB"/>
+                <type-mapping source-type="DATETIME" destination-type="TIMESTAMP"/>
+                <type-mapping source-type="TIMESTAMP" destination-type="TIMESTAMP"/>
+            </type-mappings>
+            <!-- Tables et vues à inclure dans la migration -->
+            <include-objects>
+                <database name="mysql_database">
+                    <schema name="public">
+                        <!-- Ajoutez vos tables à migrer ici -->
+                        <table name="users"/>
+                        <table name="products"/>
+                        <table name="orders"/>
+                        <table name="categories"/>
+                        <table name="customers"/>
+                        <!-- Autres tables... -->
+                    </schema>
+                </database>
+            </include-objects>
+        </task>
+    </transfer>
+    
+    <!-- Configuration de synchronisation de structure -->
+    <synchronization>
+        <task name="MySQL to Supabase Structure Sync" source-connection="MySQL Source" destination-connection="Supabase PostgreSQL" type="structure-sync">
+            <options>
+                <option name="dropIfExists" value="false"/>
+                <option name="ignoreCase" value="true"/>
+                <option name="ignoreComment" value="false"/>
+                <option name="ignoreDefault" value="false"/>
+                <option name="ignoreIndex" value="false"/>
+                <option name="ignoreNotNull" value="false"/>
+                <option name="ignorePK" value="false"/>
+                <option name="ignoreUK" value="false"/>
+                <option name="ignoreFK" value="false"/>
+                <option name="convertAutoInc" value="true"/>
+                <option name="convertEnum" value="true"/>
+                <option name="convertSet" value="true"/>
+            </options>
+            <!-- Type mappings pour la synchronisation de structure -->
+            <type-mappings>
+                <type-mapping source-type="TINYINT(1)" destination-type="BOOLEAN"/>
+                <type-mapping source-type="TINYINT" destination-type="SMALLINT"/>
+                <type-mapping source-type="SMALLINT UNSIGNED" destination-type="INTEGER"/>
+                <type-mapping source-type="INT UNSIGNED" destination-type="BIGINT"/>
+                <type-mapping source-type="BIGINT UNSIGNED" destination-type="BIGINT"/>
+                <type-mapping source-type="ENUM" destination-type="TEXT"/>
+                <type-mapping source-type="SET" destination-type="TEXT"/>
+                <type-mapping source-type="BLOB" destination-type="BYTEA"/>
+                <type-mapping source-type="MEDIUMBLOB" destination-type="BYTEA"/>
+                <type-mapping source-type="LONGBLOB" destination-type="BYTEA"/>
+                <type-mapping source-type="JSON" destination-type="JSONB"/>
+                <type-mapping source-type="DATETIME" destination-type="TIMESTAMP"/>
+                <type-mapping source-type="TIMESTAMP" destination-type="TIMESTAMP"/>
+            </type-mappings>
+        </task>
+    </synchronization>
+</navicat-export>

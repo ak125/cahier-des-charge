@@ -1,0 +1,21 @@
+[2025-04-24 23:49:28] [0;33mCréation de sauvegardes des workflows...[0m
+[2025-04-24 23:49:28] Sauvegarde des CI workflows effectuée
+[2025-04-24 23:49:28] Sauvegarde des fichiers docker-compose effectuée
+[2025-04-24 23:49:28] Sauvegarde du dossier workflows effectuée
+[2025-04-24 23:49:28] [0;32m✅ Sauvegarde des workflows terminée dans /workspaces/cahier-des-charge/backups/workflows_20250424_234924[0m
+[2025-04-24 23:49:28] [0;33mDésactivation des GitHub Actions workflows...[0m
+[2025-04-24 23:49:28] [0;32m✅ GitHub Actions workflows désactivés[0m
+[2025-04-24 23:49:28] [0;33mCréation d'un inventaire des workflows CI/CD...[0m
+[2025-04-24 23:49:28] [0;32m✅ Inventaire des workflows terminé dans /workspaces/cahier-des-charge/documentation/workflows/workflow-inventory.md[0m
+[2025-04-24 23:49:28] [0;33mAnalyse des dépendances entre workflows...[0m
+[2025-04-24 23:49:29] [0;32m✅ Analyse des dépendances terminée dans /workspaces/cahier-des-charge/documentation/workflows/workflow-dependencies.md[0m
+[2025-04-24 23:49:29] [0;33mGénération de documentation pour les workflows...[0m
+[2025-04-24 23:49:29] [0;32m✅ Documentation générée dans /workspaces/cahier-des-charge/documentation/workflows/workflows-documentation.md[0m
+[2025-04-24 23:49:29] [0;33mCréation d'un rapport de synthèse...[0m
+[2025-04-24 23:49:29] [0;32m✅ Rapport de synthèse créé dans /workspaces/cahier-des-charge/documentation/workflows/workflows-summary.md[0m
+[2025-04-24 23:49:29] [0;32m======================================================[0m
+[2025-04-24 23:49:29] [0;32m✅ Nettoyage des workflows terminé avec succès![0m
+[2025-04-24 23:49:29] [0;32m   - Sauvegarde : /workspaces/cahier-des-charge/backups/workflows_20250424_234924[0m
+[2025-04-24 23:49:29] [0;32m   - Documentation : /workspaces/cahier-des-charge/documentation/workflows[0m
+[2025-04-24 23:49:29] [0;32m   - Log : /workspaces/cahier-des-charge/logs/workflow_cleanup_20250424_234924.log[0m
+[2025-04-24 23:49:29] [0;32m======================================================[0m

@@ -1,0 +1,22 @@
+scripts,tools,utils -> utils
+  /workspaces/cahier-des-charge/scripts
+  /workspaces/cahier-des-charge/utils
+
+docs,documentation -> documentation
+  /workspaces/cahier-des-charge/documentation
+
+migration-toolkit,migrations -> migrations
+  /workspaces/cahier-des-charge/migrations
+
+tests,test-results -> tests
+  /workspaces/cahier-des-charge/tests
+
+packages,modules -> packages
+  /workspaces/cahier-des-charge/packages
+
+reports,logs -> reports
+  /workspaces/cahier-des-charge/reports
+
+backups,clean-backups,structure-backups,conflict-resolution-backups -> backups
+  /workspaces/cahier-des-charge/backups
+

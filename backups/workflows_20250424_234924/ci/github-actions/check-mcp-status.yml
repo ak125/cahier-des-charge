@@ -1,0 +1,111 @@
+name: Vérification du statut de migration MCP
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - '**.php'
+      - 'status.json'
+
+jobs:
+  check-migration-status:
+    runs-on: ubuntu-latest
+    name: Vérifier le statut des fichiers migrés
+    
+    steps:
+      - name: Checkout du code
+        uses: actions/checkout@v3
+        
+      - name: Configuration de Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+          
+      - name: Installation des dépendances
+        run: npm ci
+        
+      - name: Vérification des fichiers modifiés
+        id: check-modified-files
+        run: |
+          # Obtenir la liste des fichiers PHP modifiés dans cette PR
+          MODIFIED_PHP_FILES=$(git diff --name-only --diff-filter=AM origin/${{ github.base_ref }} | grep "\.php$" || echo "")
+          echo "PHP files modified: $MODIFIED_PHP_FILES"
+          echo "modified_php_files=$(echo $MODIFIED_PHP_FILES | tr '\n' ' ')" >> $GITHUB_OUTPUT
+          
+      - name: Vérifier le statut dans status.json
+        id: check-status
+        run: |
+          # Obtenir la liste des fichiers PHP modifiés
+          MODIFIED_PHP_FILES="${{ steps.check-modified-files.outputs.modified_php_files }}"
+          
+          if [ -z "$MODIFIED_PHP_FILES" ]; then
+            echo "Aucun fichier PHP modifié dans cette PR"
+            exit 0
+          fi
+          
+          # Vérifier status.json pour chaque fichier
+          ERRORS=0
+          ERROR_FILES=""
+          
+          for FILE in $MODIFIED_PHP_FILES; do
+            BASENAME=$(basename $FILE)
+            
+            # Vérifier si le fichier existe dans status.json
+            STATUS=$(jq -r --arg file "$BASENAME" '.files[$file].status // "unknown"' status.json)
+            
+            if [ "$STATUS" == "invalid" ]; then
+              ERRORS=$((ERRORS+1))
+              ERROR=$(jq -r --arg file "$BASENAME" '.files[$file].error // "Erreur inconnue"' status.json)
+              ERROR_FILES="$ERROR_FILES\n- $BASENAME: $ERROR"
+            elif [ "$STATUS" == "unknown" ]; then
+              ERRORS=$((ERRORS+1))
+              ERROR_FILES="$ERROR_FILES\n- $BASENAME: Non traité par le pipeline MCP"
+            fi
+          done
+          
+          echo "errors_count=$ERRORS" >> $GITHUB_OUTPUT
+          echo "error_files<<EOF" >> $GITHUB_OUTPUT
+          echo -e "$ERROR_FILES" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+          
+      - name: Rapport de statut des migrations
+        run: |
+          echo "## Rapport de vérification MCP" > report.md
+          echo "" >> report.md
+          
+          if [ "${{ steps.check-status.outputs.errors_count }}" -gt "0" ]; then
+            echo "### ❌ ${{ steps.check-status.outputs.errors_count }} fichier(s) avec des erreurs" >> report.md
+            echo "" >> report.md
+            echo "Les fichiers suivants ont des erreurs de migration qui doivent être corrigées :" >> report.md
+            echo "${{ steps.check-status.outputs.error_files }}" >> report.md
+          else
+            echo "### ✅ Tous les fichiers PHP modifiés ont passé la vérification MCP" >> report.md
+          fi
+          
+          echo "" >> report.md
+          echo "Pour plus de détails, consultez le [dashboard MCP](/admin/jobs)." >> report.md
+          
+          cat report.md
+          
+      - name: Commenter sur la PR
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require('fs');
+            const reportContent = fs.readFileSync('report.md', 'utf8');
+            
+            const errorCount = ${{ steps.check-status.outputs.errors_count }};
+            const commentBody = reportContent;
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: commentBody
+            });
+            
+            if (errorCount > 0) {
+              core.setFailed(`${errorCount} fichier(s) ont échoué à la validation MCP`);
+            }

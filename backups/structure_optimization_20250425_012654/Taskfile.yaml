@@ -1,0 +1,168 @@
+version: "3"
+
+vars:
+  MIGRATION_CONFIG: "{{.ROOT_DIR}}/migration-config.json"
+  MCP_MANIFEST: "{{.ROOT_DIR}}/MCPManifest.json"
+  DOCKER_COMPOSE: "docker-compose -f docker-compose.mcp.yml"
+
+includes:
+  agents:
+    taskfile: ./tasks/Agents.yaml
+    dir: .
+  ci:
+    taskfile: ./tasks/CI.yaml
+    dir: .
+  seo:
+    taskfile: ./tasks/SEO.yaml
+    dir: .
+
+tasks:
+  default:
+    desc: Liste toutes les tâches disponibles
+    cmds:
+      - task --list
+    silent: true
+
+  setup:
+    desc: Configure l'environnement de développement
+    cmds:
+      - mkdir -p tasks
+      - pnpm install
+      - task: docker:up
+      - echo "Configuration terminée ✅"
+
+  # Commandes de migration
+  migrate:
+    desc: Lance la migration d'un fichier ou répertoire PHP vers Remix/NestJS
+    summary: |
+      Migration intelligente de PHP vers Remix/NestJS
+      
+      Exemples:
+        - task migrate -- controllers/UserController.php
+        - task migrate -- models/User.php
+        - task migrate -- services
+    cmds:
+      - node scripts/agent-runner.js migrate {{.CLI_ARGS}}
+    requires:
+      vars: [CLI_ARGS]
+
+  migrate:analyze:
+    desc: Analyse un fichier PHP sans effectuer de migration
+    cmds:
+      - node scripts/agent-runner.js analyze {{.CLI_ARGS}}
+
+  migrate:batch:
+    desc: Lance une migration par lot depuis le backlog
+    cmds:
+      - node scripts/migration-orchestrator.js batch --count={{.CLI_ARGS | default "5"}}
+
+  # Tâches d'audit et vérification
+  audit:
+    desc: Lance un audit complet du projet
+    cmds:
+      - task: audit:code
+      - task: audit:seo
+      - task: audit:performance
+      - echo "Audit terminé ✅"
+
+  audit:code:
+    desc: Analyse la qualité du code
+    cmds:
+      - node scripts/code-analyzer.js --report=true
+
+  audit:temporal:
+    desc: Vérifie l'état des jobs Temporal
+    cmds:
+      - node scripts/temporal-checker.js --status
+
+  audit:seo:
+    desc: Lance un audit SEO
+    cmds:
+      - node tools/seo-checker.ts
+
+  audit:performance:
+    desc: Analyse les performances des applications
+    cmds:
+      - node scripts/perf-analyzer.js
+
+  # Tâches Docker
+  docker:up:
+    desc: Démarre tous les services Docker
+    cmds:
+      - "{{.DOCKER_COMPOSE}} up -d"
+
+  docker:down:
+    desc: Arrête tous les services Docker
+    cmds:
+      - "{{.DOCKER_COMPOSE}} down"
+
+  docker:restart:
+    desc: Redémarre tous les services Docker
+    cmds:
+      - task: docker:down
+      - task: docker:up
+
+  docker:logs:
+    desc: Affiche les logs des services Docker
+    cmds:
+      - "{{.DOCKER_COMPOSE}} logs -f {{.CLI_ARGS}}"
+
+  # CI/CD
+  ci:check:
+    desc: Lance toutes les vérifications CI
+    cmds:
+      - task: lint
+      - task: test
+      - task: build:check
+      - echo "Vérifications CI terminées ✅"
+
+  test:
+    desc: Lance les tests automatisés
+    cmds:
+      - pnpm test
+
+  lint:
+    desc: Lance le linting sur tous les fichiers
+    cmds:
+      - pnpm lint
+      - echo "Linting terminé ✅"
+
+  # Gestion des workflows n8n
+  n8n:start:
+    desc: Démarre les workflows n8n
+    cmds:
+      - docker-compose -f docker-compose.n8n.yml up -d
+      - echo "n8n démarré sur http://localhost:5678"
+
+  n8n:import:
+    desc: Importe les workflows n8n
+    cmds:
+      - node scripts/setup-n8n-pipelines.js
+
+  # Outils de développement
+  dev:
+    desc: Démarre l'environnement de développement
+    cmds:
+      - task: docker:up
+      - pnpm dev
+
+  build:
+    desc: Construit l'application pour la production
+    cmds:
+      - pnpm build
+
+  build:check:
+    desc: Vérifie que l'application peut être construite
+    cmds:
+      - pnpm build --dry-run
+
+  # Intégration avec les agents MCP
+  generate:manifest:
+    desc: Génère ou met à jour le manifest MCP
+    cmds:
+      - ts-node generate-agent-manifest.ts
+
+  register:agents:
+    desc: Enregistre les agents disponibles
+    cmds:
+      - node scripts/agent-runner.js register

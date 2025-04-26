@@ -1,0 +1,38 @@
+[
+  {
+    "id": "business-overview",
+    "title": "Fonction métier",
+    "content": "Affiche une fiche produit complète, avec variantes, OEM, véhicules compatibles.",
+    "type": "business",
+    "source": "ai-analyzer"
+  },
+  {
+    "id": "tech-structure",
+    "title": "Structure technique",
+    "content": "- Couche logique complexe (plusieurs if imbriqués)\n- SQL legacy non typé\n- Sélection dynamique via GET + sessions",
+    "type": "technical",
+    "source": "code-analyzer"
+  },
+  {
+    "id": "sql-analysis",
+    "title": "SQL détecté",
+    "content": "- Tables : `PIECES`, `AUTO_TYPE`, `PIECES_REF`, `PIECES_GAMME`\n- Champs critiques : `prix_ht`, `oem_ref`, `type_id`\n- Conflits potentiels avec Prisma : `oem_ref` renommé `refOEM` ✅",
+    "type": "sql",
+    "source": "sql-analyzer"
+  },
+  {
+    "id": "security-issues",
+    "title": "Sécurité",
+    "content": "- Pas de filtrage XSS → ⚠️ injection HTML possible",
+    "type": "security",
+    "severity": "critical",
+    "source": "security-analyzer"
+  },
+  {
+    "id": "dependencies",
+    "title": "Dépendances",
+    "content": "- Inclut auto_type.php\n- Dépend de pieces_ref.php\n- Utilise functions.inc.php",
+    "type": "dependencies",
+    "source": "dependency-analyzer"
+  }
+]

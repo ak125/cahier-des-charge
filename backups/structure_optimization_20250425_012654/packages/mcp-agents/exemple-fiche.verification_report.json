@@ -1,0 +1,45 @@
+{
+  "file": "fiche",
+  "status": "warning",
+  "tags": ["⏳ À vérifier"],
+  "results": [
+    {
+      "fileType": ".tsx",
+      "status": "success",
+      "tags": ["✅ Validé"],
+      "messages": []
+    },
+    {
+      "fileType": ".loader.ts",
+      "status": "warning",
+      "tags": ["⏳ À vérifier"],
+      "messages": [
+        "Le loader ne semble pas effectuer de requête de données",
+        "Exports manquants par rapport à la spec: getErrorMessage"
+      ]
+    },
+    {
+      "fileType": ".meta.ts",
+      "status": "success",
+      "tags": ["✅ Validé"],
+      "messages": []
+    },
+    {
+      "fileType": ".dto.ts",
+      "status": "not-found",
+      "tags": ["⏳ À vérifier", "❓ Fichier manquant"],
+      "messages": [
+        "Fichier fiche.dto.ts non trouvé dans ./apps/frontend/app/generated"
+      ]
+    },
+    {
+      "fileType": ".zod.ts",
+      "status": "error",
+      "tags": ["❌ À corriger"],
+      "messages": [
+        "Le fichier Zod ne contient pas d'export de schéma",
+        "Faible correspondance avec la spécification (55%)"
+      ]
+    }
+  ]
+}

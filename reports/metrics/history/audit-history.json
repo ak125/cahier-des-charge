@@ -1,0 +1,959 @@
+[
+  {
+    "timestamp": "2025-04-24T21:25:13.359Z",
+    "date": "2025-04-24",
+    "metrics": {
+      "auditedModules": 2,
+      "totalModules": 2,
+      "avgScore": 76,
+      "passedModules": 1,
+      "failedModules": 1
+    }
+  },
+  {
+    "timestamp": "2025-04-24T21:25:20.227Z",
+    "date": "2025-04-24",
+    "metrics": {
+      "auditedModules": 2,
+      "totalModules": 2,
+      "avgScore": 76,
+      "passedModules": 1,
+      "failedModules": 1
+    }
+  },
+  {
+    "timestamp": "2025-04-24T21:25:25.014Z",
+    "date": "2025-04-24",
+    "metrics": {
+      "auditedModules": 2,
+      "totalModules": 2,
+      "avgScore": 76,
+      "passedModules": 1,
+      "failedModules": 1
+    }
+  },
+  {
+    "timestamp": "2025-04-24T21:25:47.042Z",
+    "date": "2025-04-24",
+    "metrics": {
+      "auditedModules": 2,
+      "totalModules": 2,
+      "avgScore": 76,
+      "passedModules": 1,
+      "failedModules": 1
+    }
+  },
+  {
+    "timestamp": "2025-04-24T21:25:48.776Z",
+    "date": "2025-04-24",
+    "metrics": {
+      "auditedModules": 2,
+      "totalModules": 2,
+      "avgScore": 76,
+      "passedModules": 1,
+      "failedModules": 1
+    }
+  },
+  {
+    "timestamp": "2025-04-24T21:25:50.974Z",
+    "date": "2025-04-24",
+    "metrics": {
+      "auditedModules": 2,
+      "totalModules": 2,
+      "avgScore": 76,
+      "passedModules": 1,
+      "failedModules": 1
+    }
+  },
+  {
+    "timestamp": "2025-04-24T21:26:17.177Z",
+    "date": "2025-04-24",
+    "metrics": {
+      "auditedModules": 2,
+      "totalModules": 2,
+      "avgScore": 76,
+      "passedModules": 1,
+      "failedModules": 1
+    }
+  },
+  {
+    "timestamp": "2025-04-24T21:26:21.003Z",
+    "date": "2025-04-24",
+    "metrics": {
+      "auditedModules": 2,
+      "totalModules": 2,
+      "avgScore": 76,
+      "passedModules": 1,
+      "failedModules": 1
+    }
+  },
+  {
+    "timestamp": "2025-04-24T21:26:47.249Z",
+    "date": "2025-04-24",
+    "metrics": {
+      "auditedModules": 2,
+      "totalModules": 2,
+      "avgScore": 76,
+      "passedModules": 1,
+      "failedModules": 1
+    }
+  },
+  {
+    "timestamp": "2025-04-24T21:26:51.109Z",
+    "date": "2025-04-24",
+    "metrics": {
+      "auditedModules": 2,
+      "totalModules": 2,
+      "avgScore": 76,
+      "passedModules": 1,
+      "failedModules": 1
+    }
+  },
+  {
+    "timestamp": "2025-04-24T21:27:17.232Z",
+    "date": "2025-04-24",
+    "metrics": {
+      "auditedModules": 2,
+      "totalModules": 2,
+      "avgScore": 76,
+      "passedModules": 1,
+      "failedModules": 1
+    }
+  },
+  {
+    "timestamp": "2025-04-24T21:27:21.030Z",
+    "date": "2025-04-24",
+    "metrics": {
+      "auditedModules": 2,
+      "totalModules": 2,
+      "avgScore": 76,
+      "passedModules": 1,
+      "failedModules": 1
+    }
+  },
+  {
+    "timestamp": "2025-04-24T21:27:47.362Z",
+    "date": "2025-04-24",
+    "metrics": {
+      "auditedModules": 2,
+      "totalModules": 2,
+      "avgScore": 76,
+      "passedModules": 1,
+      "failedModules": 1
+    }
+  },
+  {
+    "timestamp": "2025-04-24T21:27:51.575Z",
+    "date": "2025-04-24",
+    "metrics": {
+      "auditedModules": 2,
+      "totalModules": 2,
+      "avgScore": 76,
+      "passedModules": 1,
+      "failedModules": 1
+    }
+  },
+  {
+    "timestamp": "2025-04-24T21:28:17.786Z",
+    "date": "2025-04-24",
+    "metrics": {
+      "auditedModules": 2,
+      "totalModules": 2,
+      "avgScore": 76,
+      "passedModules": 1,
+      "failedModules": 1
+    }
+  },
+  {
+    "timestamp": "2025-04-24T21:28:33.683Z",
+    "date": "2025-04-24",
+    "metrics": {
+      "auditedModules": 2,
+      "totalModules": 2,
+      "avgScore": 76,
+      "passedModules": 1,
+      "failedModules": 1
+    }
+  },
+  {
+    "timestamp": "2025-04-24T21:28:47.531Z",
+    "date": "2025-04-24",
+    "metrics": {
+      "auditedModules": 2,
+      "totalModules": 2,
+      "avgScore": 76,
+      "passedModules": 1,
+      "failedModules": 1
+    }
+  },
+  {
+    "timestamp": "2025-04-24T21:29:17.389Z",
+    "date": "2025-04-24",
+    "metrics": {
+      "auditedModules": 2,
+      "totalModules": 2,
+      "avgScore": 76,
+      "passedModules": 1,
+      "failedModules": 1
+    }
+  },
+  {
+    "timestamp": "2025-04-24T21:29:33.440Z",
+    "date": "2025-04-24",
+    "metrics": {
+      "auditedModules": 2,
+      "totalModules": 2,
+      "avgScore": 76,
+      "passedModules": 1,
+      "failedModules": 1
+    }
+  },
+  {
+    "timestamp": "2025-04-24T21:29:47.267Z",
+    "date": "2025-04-24",
+    "metrics": {
+      "auditedModules": 2,
+      "totalModules": 2,
+      "avgScore": 76,
+      "passedModules": 1,
+      "failedModules": 1
+    }
+  },
+  {
+    "timestamp": "2025-04-24T21:30:17.255Z",
+    "date": "2025-04-24",
+    "metrics": {
+      "auditedModules": 2,
+      "totalModules": 2,
+      "avgScore": 76,
+      "passedModules": 1,
+      "failedModules": 1
+    }
+  },
+  {
+    "timestamp": "2025-04-24T21:30:33.054Z",
+    "date": "2025-04-24",
+    "metrics": {
+      "auditedModules": 2,
+      "totalModules": 2,
+      "avgScore": 76,
+      "passedModules": 1,
+      "failedModules": 1
+    }
+  },
+  {
+    "timestamp": "2025-04-24T21:30:47.632Z",
+    "date": "2025-04-24",
+    "metrics": {
+      "auditedModules": 2,
+      "totalModules": 2,
+      "avgScore": 76,
+      "passedModules": 1,
+      "failedModules": 1
+    }
+  },
+  {
+    "timestamp": "2025-04-24T21:31:17.435Z",
+    "date": "2025-04-24",
+    "metrics": {
+      "auditedModules": 2,
+      "totalModules": 2,
+      "avgScore": 76,
+      "passedModules": 1,
+      "failedModules": 1
+    }
+  },
+  {
+    "timestamp": "2025-04-24T21:31:33.178Z",
+    "date": "2025-04-24",
+    "metrics": {
+      "auditedModules": 2,
+      "totalModules": 2,
+      "avgScore": 76,
+      "passedModules": 1,
+      "failedModules": 1
+    }
+  },
+  {
+    "timestamp": "2025-04-24T21:31:47.312Z",
+    "date": "2025-04-24",
+    "metrics": {
+      "auditedModules": 2,
+      "totalModules": 2,
+      "avgScore": 76,
+      "passedModules": 1,
+      "failedModules": 1
+    }
+  },
+  {
+    "timestamp": "2025-04-24T21:32:17.339Z",
+    "date": "2025-04-24",
+    "metrics": {
+      "auditedModules": 2,
+      "totalModules": 2,
+      "avgScore": 76,
+      "passedModules": 1,
+      "failedModules": 1
+    }
+  },
+  {
+    "timestamp": "2025-04-24T21:32:32.857Z",
+    "date": "2025-04-24",
+    "metrics": {
+      "auditedModules": 2,
+      "totalModules": 2,
+      "avgScore": 76,
+      "passedModules": 1,
+      "failedModules": 1
+    }
+  },
+  {
+    "timestamp": "2025-04-24T21:32:47.200Z",
+    "date": "2025-04-24",
+    "metrics": {
+      "auditedModules": 2,
+      "totalModules": 2,
+      "avgScore": 76,
+      "passedModules": 1,
+      "failedModules": 1
+    }
+  },
+  {
+    "timestamp": "2025-04-24T21:33:17.301Z",
+    "date": "2025-04-24",
+    "metrics": {
+      "auditedModules": 2,
+      "totalModules": 2,
+      "avgScore": 76,
+      "passedModules": 1,
+      "failedModules": 1
+    }
+  },
+  {
+    "timestamp": "2025-04-24T21:33:33.037Z",
+    "date": "2025-04-24",
+    "metrics": {
+      "auditedModules": 2,
+      "totalModules": 2,
+      "avgScore": 76,
+      "passedModules": 1,
+      "failedModules": 1
+    }
+  },
+  {
+    "timestamp": "2025-04-24T21:33:48.128Z",
+    "date": "2025-04-24",
+    "metrics": {
+      "auditedModules": 2,
+      "totalModules": 2,
+      "avgScore": 76,
+      "passedModules": 1,
+      "failedModules": 1
+    }
+  },
+  {
+    "timestamp": "2025-04-24T21:33:51.612Z",
+    "date": "2025-04-24",
+    "metrics": {
+      "auditedModules": 2,
+      "totalModules": 2,
+      "avgScore": 76,
+      "passedModules": 1,
+      "failedModules": 1
+    }
+  },
+  {
+    "timestamp": "2025-04-24T21:34:18.355Z",
+    "date": "2025-04-24",
+    "metrics": {
+      "auditedModules": 2,
+      "totalModules": 2,
+      "avgScore": 76,
+      "passedModules": 1,
+      "failedModules": 1
+    }
+  },
+  {
+    "timestamp": "2025-04-24T21:34:21.089Z",
+    "date": "2025-04-24",
+    "metrics": {
+      "auditedModules": 2,
+      "totalModules": 2,
+      "avgScore": 76,
+      "passedModules": 1,
+      "failedModules": 1
+    }
+  },
+  {
+    "timestamp": "2025-04-24T21:34:48.116Z",
+    "date": "2025-04-24",
+    "metrics": {
+      "auditedModules": 2,
+      "totalModules": 2,
+      "avgScore": 76,
+      "passedModules": 1,
+      "failedModules": 1
+    }
+  },
+  {
+    "timestamp": "2025-04-24T21:34:51.165Z",
+    "date": "2025-04-24",
+    "metrics": {
+      "auditedModules": 2,
+      "totalModules": 2,
+      "avgScore": 76,
+      "passedModules": 1,
+      "failedModules": 1
+    }
+  },
+  {
+    "timestamp": "2025-04-24T21:35:17.370Z",
+    "date": "2025-04-24",
+    "metrics": {
+      "auditedModules": 2,
+      "totalModules": 2,
+      "avgScore": 76,
+      "passedModules": 1,
+      "failedModules": 1
+    }
+  },
+  {
+    "timestamp": "2025-04-24T21:35:20.979Z",
+    "date": "2025-04-24",
+    "metrics": {
+      "auditedModules": 2,
+      "totalModules": 2,
+      "avgScore": 76,
+      "passedModules": 1,
+      "failedModules": 1
+    }
+  },
+  {
+    "timestamp": "2025-04-24T21:35:47.232Z",
+    "date": "2025-04-24",
+    "metrics": {
+      "auditedModules": 2,
+      "totalModules": 2,
+      "avgScore": 76,
+      "passedModules": 1,
+      "failedModules": 1
+    }
+  },
+  {
+    "timestamp": "2025-04-24T21:36:18.175Z",
+    "date": "2025-04-24",
+    "metrics": {
+      "auditedModules": 2,
+      "totalModules": 2,
+      "avgScore": 76,
+      "passedModules": 1,
+      "failedModules": 1
+    }
+  },
+  {
+    "timestamp": "2025-04-24T21:36:22.040Z",
+    "date": "2025-04-24",
+    "metrics": {
+      "auditedModules": 2,
+      "totalModules": 2,
+      "avgScore": 76,
+      "passedModules": 1,
+      "failedModules": 1
+    }
+  },
+  {
+    "timestamp": "2025-04-24T21:36:47.967Z",
+    "date": "2025-04-24",
+    "metrics": {
+      "auditedModules": 2,
+      "totalModules": 2,
+      "avgScore": 76,
+      "passedModules": 1,
+      "failedModules": 1
+    }
+  },
+  {
+    "timestamp": "2025-04-24T21:36:55.768Z",
+    "date": "2025-04-24",
+    "metrics": {
+      "auditedModules": 2,
+      "totalModules": 2,
+      "avgScore": 76,
+      "passedModules": 1,
+      "failedModules": 1
+    }
+  },
+  {
+    "timestamp": "2025-04-24T21:36:58.065Z",
+    "date": "2025-04-24",
+    "metrics": {
+      "auditedModules": 2,
+      "totalModules": 2,
+      "avgScore": 76,
+      "passedModules": 1,
+      "failedModules": 1
+    }
+  },
+  {
+    "timestamp": "2025-04-24T21:36:58.735Z",
+    "date": "2025-04-24",
+    "metrics": {
+      "auditedModules": 2,
+      "totalModules": 2,
+      "avgScore": 76,
+      "passedModules": 1,
+      "failedModules": 1
+    }
+  },
+  {
+    "timestamp": "2025-04-24T21:36:59.398Z",
+    "date": "2025-04-24",
+    "metrics": {
+      "auditedModules": 2,
+      "totalModules": 2,
+      "avgScore": 76,
+      "passedModules": 1,
+      "failedModules": 1
+    }
+  },
+  {
+    "timestamp": "2025-04-24T21:36:59.697Z",
+    "date": "2025-04-24",
+    "metrics": {
+      "auditedModules": 2,
+      "totalModules": 2,
+      "avgScore": 76,
+      "passedModules": 1,
+      "failedModules": 1
+    }
+  },
+  {
+    "timestamp": "2025-04-24T21:36:59.838Z",
+    "date": "2025-04-24",
+    "metrics": {
+      "auditedModules": 2,
+      "totalModules": 2,
+      "avgScore": 76,
+      "passedModules": 1,
+      "failedModules": 1
+    }
+  },
+  {
+    "timestamp": "2025-04-24T21:36:59.958Z",
+    "date": "2025-04-24",
+    "metrics": {
+      "auditedModules": 2,
+      "totalModules": 2,
+      "avgScore": 76,
+      "passedModules": 1,
+      "failedModules": 1
+    }
+  },
+  {
+    "timestamp": "2025-04-24T21:37:01.150Z",
+    "date": "2025-04-24",
+    "metrics": {
+      "auditedModules": 2,
+      "totalModules": 2,
+      "avgScore": 76,
+      "passedModules": 1,
+      "failedModules": 1
+    }
+  },
+  {
+    "timestamp": "2025-04-24T21:37:13.126Z",
+    "date": "2025-04-24",
+    "metrics": {
+      "auditedModules": 2,
+      "totalModules": 2,
+      "avgScore": 76,
+      "passedModules": 1,
+      "failedModules": 1
+    }
+  },
+  {
+    "timestamp": "2025-04-24T21:37:17.870Z",
+    "date": "2025-04-24",
+    "metrics": {
+      "auditedModules": 2,
+      "totalModules": 2,
+      "avgScore": 76,
+      "passedModules": 1,
+      "failedModules": 1
+    }
+  },
+  {
+    "timestamp": "2025-04-24T21:37:23.109Z",
+    "date": "2025-04-24",
+    "metrics": {
+      "auditedModules": 2,
+      "totalModules": 2,
+      "avgScore": 76,
+      "passedModules": 1,
+      "failedModules": 1
+    }
+  },
+  {
+    "timestamp": "2025-04-24T21:37:44.068Z",
+    "date": "2025-04-24",
+    "metrics": {
+      "auditedModules": 2,
+      "totalModules": 2,
+      "avgScore": 76,
+      "passedModules": 1,
+      "failedModules": 1
+    }
+  },
+  {
+    "timestamp": "2025-04-24T21:37:47.834Z",
+    "date": "2025-04-24",
+    "metrics": {
+      "auditedModules": 2,
+      "totalModules": 2,
+      "avgScore": 76,
+      "passedModules": 1,
+      "failedModules": 1
+    }
+  },
+  {
+    "timestamp": "2025-04-24T21:38:14.108Z",
+    "date": "2025-04-24",
+    "metrics": {
+      "auditedModules": 2,
+      "totalModules": 2,
+      "avgScore": 76,
+      "passedModules": 1,
+      "failedModules": 1
+    }
+  },
+  {
+    "timestamp": "2025-04-24T21:38:24.142Z",
+    "date": "2025-04-24",
+    "metrics": {
+      "auditedModules": 2,
+      "totalModules": 2,
+      "avgScore": 76,
+      "passedModules": 1,
+      "failedModules": 1
+    }
+  },
+  {
+    "timestamp": "2025-04-24T21:38:33.213Z",
+    "date": "2025-04-24",
+    "metrics": {
+      "auditedModules": 2,
+      "totalModules": 2,
+      "avgScore": 76,
+      "passedModules": 1,
+      "failedModules": 1
+    }
+  },
+  {
+    "timestamp": "2025-04-24T21:38:43.973Z",
+    "date": "2025-04-24",
+    "metrics": {
+      "auditedModules": 2,
+      "totalModules": 2,
+      "avgScore": 76,
+      "passedModules": 1,
+      "failedModules": 1
+    }
+  },
+  {
+    "timestamp": "2025-04-24T21:39:14.129Z",
+    "date": "2025-04-24",
+    "metrics": {
+      "auditedModules": 2,
+      "totalModules": 2,
+      "avgScore": 76,
+      "passedModules": 1,
+      "failedModules": 1
+    }
+  },
+  {
+    "timestamp": "2025-04-24T21:39:25.129Z",
+    "date": "2025-04-24",
+    "metrics": {
+      "auditedModules": 2,
+      "totalModules": 2,
+      "avgScore": 76,
+      "passedModules": 1,
+      "failedModules": 1
+    }
+  },
+  {
+    "timestamp": "2025-04-24T21:39:33.036Z",
+    "date": "2025-04-24",
+    "metrics": {
+      "auditedModules": 2,
+      "totalModules": 2,
+      "avgScore": 76,
+      "passedModules": 1,
+      "failedModules": 1
+    }
+  },
+  {
+    "timestamp": "2025-04-24T21:39:44.024Z",
+    "date": "2025-04-24",
+    "metrics": {
+      "auditedModules": 2,
+      "totalModules": 2,
+      "avgScore": 76,
+      "passedModules": 1,
+      "failedModules": 1
+    }
+  },
+  {
+    "timestamp": "2025-04-24T21:40:26.544Z",
+    "date": "2025-04-24",
+    "metrics": {
+      "auditedModules": 2,
+      "totalModules": 2,
+      "avgScore": 76,
+      "passedModules": 1,
+      "failedModules": 1
+    }
+  },
+  {
+    "timestamp": "2025-04-24T21:40:33.255Z",
+    "date": "2025-04-24",
+    "metrics": {
+      "auditedModules": 2,
+      "totalModules": 2,
+      "avgScore": 76,
+      "passedModules": 1,
+      "failedModules": 1
+    }
+  },
+  {
+    "timestamp": "2025-04-24T21:40:33.494Z",
+    "date": "2025-04-24",
+    "metrics": {
+      "auditedModules": 2,
+      "totalModules": 2,
+      "avgScore": 76,
+      "passedModules": 1,
+      "failedModules": 1
+    }
+  },
+  {
+    "timestamp": "2025-04-24T21:41:27.280Z",
+    "date": "2025-04-24",
+    "metrics": {
+      "auditedModules": 2,
+      "totalModules": 2,
+      "avgScore": 76,
+      "passedModules": 1,
+      "failedModules": 1
+    }
+  },
+  {
+    "timestamp": "2025-04-24T21:41:32.842Z",
+    "date": "2025-04-24",
+    "metrics": {
+      "auditedModules": 2,
+      "totalModules": 2,
+      "avgScore": 76,
+      "passedModules": 1,
+      "failedModules": 1
+    }
+  },
+  {
+    "timestamp": "2025-04-24T21:41:32.992Z",
+    "date": "2025-04-24",
+    "metrics": {
+      "auditedModules": 2,
+      "totalModules": 2,
+      "avgScore": 76,
+      "passedModules": 1,
+      "failedModules": 1
+    }
+  },
+  {
+    "timestamp": "2025-04-24T21:42:28.491Z",
+    "date": "2025-04-24",
+    "metrics": {
+      "auditedModules": 2,
+      "totalModules": 2,
+      "avgScore": 76,
+      "passedModules": 1,
+      "failedModules": 1
+    }
+  },
+  {
+    "timestamp": "2025-04-24T21:42:33.039Z",
+    "date": "2025-04-24",
+    "metrics": {
+      "auditedModules": 2,
+      "totalModules": 2,
+      "avgScore": 76,
+      "passedModules": 1,
+      "failedModules": 1
+    }
+  },
+  {
+    "timestamp": "2025-04-24T21:42:33.382Z",
+    "date": "2025-04-24",
+    "metrics": {
+      "auditedModules": 2,
+      "totalModules": 2,
+      "avgScore": 76,
+      "passedModules": 1,
+      "failedModules": 1
+    }
+  },
+  {
+    "timestamp": "2025-04-24T21:43:29.594Z",
+    "date": "2025-04-24",
+    "metrics": {
+      "auditedModules": 2,
+      "totalModules": 2,
+      "avgScore": 76,
+      "passedModules": 1,
+      "failedModules": 1
+    }
+  },
+  {
+    "timestamp": "2025-04-24T21:43:32.879Z",
+    "date": "2025-04-24",
+    "metrics": {
+      "auditedModules": 2,
+      "totalModules": 2,
+      "avgScore": 76,
+      "passedModules": 1,
+      "failedModules": 1
+    }
+  },
+  {
+    "timestamp": "2025-04-24T21:43:33.065Z",
+    "date": "2025-04-24",
+    "metrics": {
+      "auditedModules": 2,
+      "totalModules": 2,
+      "avgScore": 76,
+      "passedModules": 1,
+      "failedModules": 1
+    }
+  },
+  {
+    "timestamp": "2025-04-24T21:44:30.211Z",
+    "date": "2025-04-24",
+    "metrics": {
+      "auditedModules": 2,
+      "totalModules": 2,
+      "avgScore": 76,
+      "passedModules": 1,
+      "failedModules": 1
+    }
+  },
+  {
+    "timestamp": "2025-04-24T21:44:32.971Z",
+    "date": "2025-04-24",
+    "metrics": {
+      "auditedModules": 2,
+      "totalModules": 2,
+      "avgScore": 76,
+      "passedModules": 1,
+      "failedModules": 1
+    }
+  },
+  {
+    "timestamp": "2025-04-24T21:44:33.127Z",
+    "date": "2025-04-24",
+    "metrics": {
+      "auditedModules": 2,
+      "totalModules": 2,
+      "avgScore": 76,
+      "passedModules": 1,
+      "failedModules": 1
+    }
+  },
+  {
+    "timestamp": "2025-04-24T21:45:33.311Z",
+    "date": "2025-04-24",
+    "metrics": {
+      "auditedModules": 2,
+      "totalModules": 2,
+      "avgScore": 76,
+      "passedModules": 1,
+      "failedModules": 1
+    }
+  },
+  {
+    "timestamp": "2025-04-24T21:45:33.576Z",
+    "date": "2025-04-24",
+    "metrics": {
+      "auditedModules": 2,
+      "totalModules": 2,
+      "avgScore": 76,
+      "passedModules": 1,
+      "failedModules": 1
+    }
+  },
+  {
+    "timestamp": "2025-04-24T21:46:33.121Z",
+    "date": "2025-04-24",
+    "metrics": {
+      "auditedModules": 2,
+      "totalModules": 2,
+      "avgScore": 76,
+      "passedModules": 1,
+      "failedModules": 1
+    }
+  },
+  {
+    "timestamp": "2025-04-24T21:46:33.570Z",
+    "date": "2025-04-24",
+    "metrics": {
+      "auditedModules": 2,
+      "totalModules": 2,
+      "avgScore": 76,
+      "passedModules": 1,
+      "failedModules": 1
+    }
+  },
+  {
+    "timestamp": "2025-04-24T21:47:33.521Z",
+    "date": "2025-04-24",
+    "metrics": {
+      "auditedModules": 2,
+      "totalModules": 2,
+      "avgScore": 76,
+      "passedModules": 1,
+      "failedModules": 1
+    }
+  },
+  {
+    "timestamp": "2025-04-24T21:47:33.953Z",
+    "date": "2025-04-24",
+    "metrics": {
+      "auditedModules": 2,
+      "totalModules": 2,
+      "avgScore": 76,
+      "passedModules": 1,
+      "failedModules": 1
+    }
+  },
+  {
+    "timestamp": "2025-04-24T21:48:33.006Z",
+    "date": "2025-04-24",
+    "metrics": {
+      "auditedModules": 2,
+      "totalModules": 2,
+      "avgScore": 76,
+      "passedModules": 1,
+      "failedModules": 1
+    }
+  },
+  {
+    "timestamp": "2025-04-24T21:48:33.265Z",
+    "date": "2025-04-24",
+    "metrics": {
+      "auditedModules": 2,
+      "totalModules": 2,
+      "avgScore": 76,
+      "passedModules": 1,
+      "failedModules": 1
+    }
+  }
+]

@@ -1,0 +1,129 @@
+name: SEO Quality Gate
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - 'app/routes/**/*.tsx'
+      - 'app/routes/**/*.jsx'
+      - 'app/routes/**/*.ts'
+      - 'app/routes/**/*.js'
+      - '.github/workflows/block-merge-on-seo-fail.yml'
+
+jobs:
+  seo-check:
+    name: Vérification SEO
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Identifier les fichiers modifiés
+        id: changed-files
+        uses: tj-actions/changed-files@v39
+        with:
+          files: |
+            app/routes/**/*.tsx
+            app/routes/**/*.jsx
+            app/routes/**/*.ts
+            app/routes/**/*.js
+          
+      - name: Analyser les fichiers modifiés pour les scores SEO
+        if: steps.changed-files.outputs.any_changed == 'true'
+        id: seo-analysis
+        run: |
+          SEO_ISSUE=false
+          LOW_SCORE_FILES=()
+          
+          for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
+            # Extraction du chemin relatif du fichier route
+            ROUTE_PATH=$(echo "$file" | sed 's#app/routes/##' | sed 's#\.tsx$##' | sed 's#\.jsx$##' | sed 's#\.ts$##' | sed 's#\.js$##')
+            
+            # Vérification si un fichier .seo.json existe pour cette route
+            SEO_JSON_FILE="app/data/seo/${ROUTE_PATH}.seo.json"
+            
+            if [ -f "$SEO_JSON_FILE" ]; then
+              # Extraire le score SEO du fichier JSON
+              SEO_SCORE=$(cat "$SEO_JSON_FILE" | jq -r '.score')
+              
+              echo "Route: $ROUTE_PATH, Score SEO: $SEO_SCORE"
+              
+              # Si le score est inférieur à 85, c'est un échec
+              if (( $(echo "$SEO_SCORE < 85" | bc -l) )); then
+                SEO_ISSUE=true
+                LOW_SCORE_FILES+=("$file: $SEO_SCORE")
+              fi
+            else
+              echo "Aucun fichier .seo.json trouvé pour $ROUTE_PATH, vérification du score SEO défaut"
+              
+              # Analyse du fichier pour extraire les métadonnées SEO
+              TITLE_COUNT=$(grep -c "title:" "$file" || echo "0")
+              DESC_COUNT=$(grep -c "description" "$file" || echo "0")
+              CANONICAL_COUNT=$(grep -c "canonical" "$file" || echo "0")
+              
+              # Score basique basé sur la présence des éléments SEO essentiels
+              BASIC_SCORE=$((TITLE_COUNT * 30 + DESC_COUNT * 30 + CANONICAL_COUNT * 25))
+              
+              echo "Score SEO basique pour $file: $BASIC_SCORE"
+              
+              if [ "$BASIC_SCORE" -lt 85 ]; then
+                SEO_ISSUE=true
+                LOW_SCORE_FILES+=("$file: $BASIC_SCORE (estimé)")
+              fi
+            fi
+          done
+          
+          # Définir la sortie pour les étapes suivantes
+          if [ "$SEO_ISSUE" = true ]; then
+            echo "has_seo_issues=true" >> $GITHUB_OUTPUT
+            echo "low_score_files=$(IFS=$'\n'; echo "${LOW_SCORE_FILES[*]}")" >> $GITHUB_OUTPUT
+          else
+            echo "has_seo_issues=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Commenter le PR avec les problèmes SEO
+        if: steps.seo-analysis.outputs.has_seo_issues == 'true'
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const files = `${{ steps.seo-analysis.outputs.low_score_files }}`.split('\n');
+            
+            const body = `## ⚠️ Score SEO insuffisant
+            
+            Certains fichiers modifiés ont un score SEO inférieur à 85 :
+            
+            ${files.map(file => `- ${file}`).join('\n')}
+            
+            ### ℹ️ Actions requises :
+            
+            1. Utilisez le dashboard SEO admin pour améliorer les métadonnées
+            2. Assurez-vous que chaque page a au minimum :
+               - Un titre optimisé (<60 caractères)
+               - Une méta-description (<160 caractères)
+               - Une URL canonique
+               - Des balises Open Graph
+            3. Relancez les tests après correction
+            
+            *Cette vérification est effectuée automatiquement par le GitHub Action SEO Quality Gate.*
+            `;
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body
+            });
+            
+            core.setFailed("🛑 Score SEO insuffisant pour certains fichiers modifiés. Voir les commentaires du PR pour plus de détails.");

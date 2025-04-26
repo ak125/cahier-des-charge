@@ -1,0 +1,13 @@
+{
+  "name": "@mcp/php-analyzer-core",
+  "version": "1.0.0",
+  "description": "Agent MCP php-analyzer",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "jest"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}

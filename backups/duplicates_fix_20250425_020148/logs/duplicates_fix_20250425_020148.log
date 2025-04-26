@@ -1,0 +1,20 @@
+[2025-04-25 02:01:55] [0;33mSauvegarde des agents avant modifications...[0m
+[2025-04-25 02:01:56] [0;32m✅ Agents sauvegardés dans /workspaces/cahier-des-charge/backups/duplicates_fix_20250425_020148/agents[0m
+[2025-04-25 02:01:56] [0;33mRecherche des agents avec des noms identiques...[0m
+[2025-04-25 02:01:57] [0;32m✅ Trouvé 25 noms d'agents dupliqués[0m
+[2025-04-25 02:01:57] [0;33mRecherche des agents avec un contenu similaire...[0m
+[2025-04-25 02:01:57] Analyse de 125 agents pour trouver des contenus similaires...
+[2025-04-25 02:05:55] [0;32m✅ Trouvé 190 paires d'agents avec contenu similaire[0m
+[2025-04-25 02:05:55] [0;33mSélection des agents principaux pour chaque groupe de doublons...[0m
+[2025-04-25 02:05:55] [0;32m✅ Sélectionné 0 agents principaux et 0 doublons à fusionner[0m
+[2025-04-25 02:05:55] [0;33mFusion des agents dupliqués...[0m
+[2025-04-25 02:05:55] [0;32m✅ 0 agents dupliqués ont été fusionnés[0m
+[2025-04-25 02:05:55] [0;33mGénération du rapport de résolution...[0m
+[2025-04-25 02:05:55] [0;32m✅ Rapport de résolution généré: /workspaces/cahier-des-charge/reports/duplicates_resolution_20250425_020148.md[0m
+[2025-04-25 02:05:55] [0;33mCréation de la structure de base pour les agents...[0m
+[2025-04-25 02:05:55] Dossier agents/core existe déjà
+[2025-04-25 02:05:55] Fichier types.ts créé
+[2025-04-25 02:05:55] Fichier base-agent.ts créé
+[2025-04-25 02:05:55] Fichier utils.ts créé
+[2025-04-25 02:05:55] Fichier index.ts créé
+[2025-04-25 02:05:55] [0;32m✅ Structure de base créée[0m

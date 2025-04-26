@@ -1,0 +1,88 @@
+# Dockerfile.supabase - Image pour l'analyse PHP avec stockage dans Supabase
+FROM supabase/postgres:15.1.0
+
+# Installation des outils nécessaires
+USER root
+RUN apt-get update && apt-get install -y \
+    curl \
+    git \
+    unzip \
+    php-cli \
+    php-xml \
+    php-curl \
+    php-mbstring \
+    php-zip \
+    composer \
+    postgresql-15-pgvector \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# Configuration PostgreSQL pour Supabase
+ENV POSTGRES_PASSWORD=postgres
+ENV POSTGRES_HOST=localhost
+ENV POSTGRES_USER=postgres
+ENV POSTGRES_DB=postgres
+
+# Installation des migrations SQL nécessaires
+WORKDIR /docker-entrypoint-initdb.d
+COPY ./config/migration/supabase/01_init_schema.sql /docker-entrypoint-initdb.d/01_init_schema.sql
+COPY ./config/supabase-rls-policies.sql /docker-entrypoint-initdb.d/02_rls_policies.sql
+
+# Installation de l'analyseur PHP
+WORKDIR /app
+COPY ./apps/mcp-server-php/src/utils/phpParser.ts /app/phpParser.ts
+COPY ./apps/mcp-server-php/package.json /app/package.json
+
+# Installation des dépendances PHP pour l'analyseur
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+COPY ./apps/mcp-server-php/composer.json /app/composer.json
+RUN composer install --no-dev --optimize-autoloader
+
+# Créer le script d'analyse qui utilise à la fois PHP et Supabase
+RUN echo '#!/bin/bash\n\
+# Démarrer PostgreSQL\n\
+service postgresql start\n\
+\n\
+# Exécuter l\'outil d\'analyse PHP\n\
+cd /app\n\
+php analyzer.php "$@"\n\
+\n\
+# Insérer les résultats dans Supabase\n\
+psql -U postgres -d postgres -c "INSERT INTO php_analysis.files (file_path, complexity_score, loc) VALUES (\'$1\', $2, $3);"\n\
+\n\
+echo "Analyse terminée et stockée dans Supabase"\n\
+' > /app/run-analysis.sh \
+&& chmod +x /app/run-analysis.sh
+
+# Créer un script PHP simple pour l'analyse (sera remplacé par le vrai analyseur)
+RUN echo '<?php\n\
+// Exemple simple d\'analyseur\n\
+if ($argc < 2) {\n\
+    echo "Usage: php analyzer.php <fichier_php>\\n";\n\
+    exit(1);\n\
+}\n\
+\n\
+$filePath = $argv[1];\n\
+$code = file_get_contents($filePath);\n\
+\n\
+// Mesures simples\n\
+$lines = count(explode("\\n", $code));\n\
+$complexity = substr_count($code, "if") + substr_count($code, "for") + substr_count($code, "foreach") + substr_count($code, "while") + substr_count($code, "switch") + 1;\n\
+\n\
+echo "Fichier: $filePath\\n";\n\
+echo "Lignes de code: $lines\\n";\n\
+echo "Complexité cyclomatique estimée: $complexity\\n";\n\
+\n\
+// Enregistrement des métriques pour être utilisées par le script bash\n\
+echo $complexity . " " . $lines;\n\
+?>' > /app/analyzer.php
+
+# Exposer PostgreSQL
+EXPOSE 5432
+
+# Point d'entrée pour l'analyse
+ENTRYPOINT ["/app/run-analysis.sh"]
+CMD ["--help"]
+
+# Configuration pour pgvector et autres extensions
+RUN echo "shared_preload_libraries = 'pg_stat_statements'" >> /var/lib/postgresql/data/postgresql.conf

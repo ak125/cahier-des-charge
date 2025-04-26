@@ -1,0 +1,93 @@
+{
+  "id": "product-page-migration",
+  "name": "Test A/B de migration de page produit",
+  "description": "Compare différentes stratégies pour migrer une page produit PHP vers Remix",
+  "sourceFile": "/workspaces/cahier-des-charge/examples/sources/product.php",
+  "sourceDependencies": [
+    "/workspaces/cahier-des-charge/examples/sources/database.php",
+    "/workspaces/cahier-des-charge/examples/sources/config.php"
+  ],
+  "strategies": [
+    {
+      "id": "standard-approach",
+      "name": "Approche Standard",
+      "description": "Migration standard PHP vers Remix",
+      "agents": [
+        "php-analyzer-agent",
+        "remix-generator"
+      ],
+      "options": {
+        "optimizeForReadability": true
+      }
+    },
+    {
+      "id": "data-first-approach",
+      "name": "Approche Data-First",
+      "description": "Analyse d'abord les données puis génère l'interface",
+      "agents": [
+        "php-analyzer-agent",
+        "mysql-analyzer",
+        "remix-generator"
+      ],
+      "options": {
+        "extractDataModel": true,
+        "preferTypedSchemas": true
+      }
+    },
+    {
+      "id": "seo-optimized",
+      "name": "Approche SEO Optimisée",
+      "description": "Optimise la migration pour le référencement",
+      "agents": [
+        "php-analyzer-agent",
+        "seo-content-enhancer",
+        "remix-generator",
+        "seo-meta"
+      ],
+      "options": {
+        "generateMetaTags": true,
+        "ensureStructuredData": true
+      }
+    }
+  ],
+  "evaluationCriteria": {
+    "metrics": [
+      "performance",
+      "codeQuality",
+      "functionalCoverage",
+      "accessibilityScore",
+      "seoScore",
+      "bundleSize"
+    ],
+    "weights": {
+      "performance": 0.8,
+      "codeQuality": 1.0,
+      "functionalCoverage": 1.0,
+      "accessibilityScore": 0.7,
+      "seoScore": 0.9,
+      "bundleSize": 0.5
+    },
+    "customTests": [
+      {
+        "name": "pagespeed",
+        "command": "npx lighthouse --quiet --output=json --output-path=/dev/null --chrome-flags='--headless' --only-categories=performance {dir}/index.html | grep -o '\"score\":[0-9.]\\+' | head -1 | cut -d':' -f2",
+        "weight": 0.8
+      },
+      {
+        "name": "accessibility",
+        "command": "npx lighthouse --quiet --output=json --output-path=/dev/null --chrome-flags='--headless' --only-categories=accessibility {dir}/index.html | grep -o '\"score\":[0-9.]\\+' | head -1 | cut -d':' -f2",
+        "weight": 0.6
+      }
+    ]
+  },
+  "outputs": {
+    "reportFormat": "html",
+    "outputDirectory": "/workspaces/cahier-des-charge/audit/ab-tests",
+    "saveGeneratedFiles": true
+  },
+  "schedule": {
+    "enabled": false,
+    "cron": "0 2 * * *",
+    "notifyEmail": "team@example.com"
+  }
+}

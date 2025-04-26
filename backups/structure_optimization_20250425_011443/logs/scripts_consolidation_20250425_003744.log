@@ -1,0 +1,27 @@
+[2025-04-25 00:37:48] [0;33mSauvegarde de tous les scripts...[0m
+[2025-04-25 00:37:52] [0;32m✅ Sauvegarde des scripts terminée dans /workspaces/cahier-des-charge/backups/scripts_20250425_003744[0m
+[2025-04-25 00:37:52] [0;33mAnalyse des scripts existants...[0m
+[2025-04-25 00:37:55] [0;32m✅ Analyse des scripts terminée. Rapport disponible dans /workspaces/cahier-des-charge/documentation/scripts/scripts-analysis.md[0m
+[2025-04-25 00:37:55] [0;33mCréation de la nouvelle structure de répertoires...[0m
+[2025-04-25 00:37:55] [0;32m✅ Nouvelle structure de répertoires créée[0m
+[2025-04-25 00:37:55] [0;33mCréation du plan de consolidation...[0m
+[2025-04-25 00:37:56] [0;32m✅ Plan de consolidation créé. Disponible dans /workspaces/cahier-des-charge/documentation/scripts/scripts-consolidation-plan.md[0m
+[2025-04-25 00:37:57] [0;33mConsolidation des scripts...[0m
+[2025-04-25 00:37:57] Consolidation des scripts de migration...
+[2025-04-25 00:37:57] Consolidation des scripts CI/CD...
+[2025-04-25 00:37:57] Consolidation des scripts de vérification...
+[2025-04-25 00:37:58] Consolidation des scripts d'agents...
+[2025-04-25 00:37:58] Consolidation des autres scripts...
+[2025-04-25 00:38:21] [0;32m✅ Consolidation des scripts terminée[0m
+[2025-04-25 00:38:21] [0;33mCréation du rapport de consolidation...[0m
+[2025-04-25 00:38:21] [0;32m✅ Rapport de consolidation créé. Disponible dans /workspaces/cahier-des-charge/documentation/scripts/scripts-consolidation-report.md[0m
+[2025-04-25 00:38:21] [0;32m======================================================[0m
+[2025-04-25 00:38:21] [0;32m✅ Consolidation des scripts terminée![0m
+[2025-04-25 00:38:21] [0;32m   - Sauvegarde : /workspaces/cahier-des-charge/backups/scripts_20250425_003744[0m
+[2025-04-25 00:38:21] [0;32m   - Nouvelle structure : /workspaces/cahier-des-charge/scripts/organized[0m
+[2025-04-25 00:38:21] [0;32m   - Rapports : /workspaces/cahier-des-charge/documentation/scripts[0m
+[2025-04-25 00:38:21] [0;32m   - Log : /workspaces/cahier-des-charge/logs/scripts_consolidation_20250425_003744.log[0m
+[2025-04-25 00:38:21] [0;32m======================================================[0m
+[2025-04-25 00:38:33] [0;33mApplication de la nouvelle structure...[0m
+[2025-04-25 00:38:36] [0;32m✅ Nouvelle structure appliquée avec succès![0m
+[2025-04-25 00:38:36] [0;33mLes anciens scripts ont été déplacés dans /workspaces/cahier-des-charge/scripts/legacy/[0m

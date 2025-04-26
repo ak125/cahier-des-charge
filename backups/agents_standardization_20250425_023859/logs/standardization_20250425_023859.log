@@ -1,0 +1,34 @@
+[2025-04-25 02:39:46] [0;33mSauvegarde des agents avant standardisation...[0m
+[2025-04-25 02:39:48] [0;32m✅ Agents sauvegardés dans /workspaces/cahier-des-charge/backups/agents_standardization_20250425_023859/agents[0m
+[2025-04-25 02:39:48] [0;33mCréation des interfaces spécifiques à chaque catégorie...[0m
+[2025-04-25 02:39:48] Créé types.ts pour la catégorie orchestration
+[2025-04-25 02:39:48] Créé base-orchestration-agent.ts pour la catégorie orchestration
+[2025-04-25 02:39:48] Mis à jour index.ts pour la catégorie orchestration
+[2025-04-25 02:39:48] Créé types.ts pour la catégorie utils
+[2025-04-25 02:39:48] Créé base-utils-agent.ts pour la catégorie utils
+[2025-04-25 02:39:48] Mis à jour index.ts pour la catégorie utils
+[2025-04-25 02:39:48] Créé types.ts pour la catégorie ui
+[2025-04-25 02:39:48] Créé base-ui-agent.ts pour la catégorie ui
+[2025-04-25 02:39:48] Mis à jour index.ts pour la catégorie ui
+[2025-04-25 02:39:48] Créé types.ts pour la catégorie integration
+[2025-04-25 02:39:48] Créé base-integration-agent.ts pour la catégorie integration
+[2025-04-25 02:39:48] Mis à jour index.ts pour la catégorie integration
+[2025-04-25 02:39:48] Créé types.ts pour la catégorie monitoring
+[2025-04-25 02:39:48] Créé base-monitoring-agent.ts pour la catégorie monitoring
+[2025-04-25 02:39:48] Mis à jour index.ts pour la catégorie monitoring
+[2025-04-25 02:39:48] Créé types.ts pour la catégorie notification
+[2025-04-25 02:39:48] Créé base-notification-agent.ts pour la catégorie notification
+[2025-04-25 02:39:48] Mis à jour index.ts pour la catégorie notification
+[2025-04-25 02:39:48] Créé types.ts pour la catégorie audit
+[2025-04-25 02:39:48] Créé base-audit-agent.ts pour la catégorie audit
+[2025-04-25 02:39:48] Mis à jour index.ts pour la catégorie audit
+[2025-04-25 02:39:48] Créé types.ts pour la catégorie migration
+[2025-04-25 02:39:48] Créé base-migration-agent.ts pour la catégorie migration
+[2025-04-25 02:39:48] Mis à jour index.ts pour la catégorie migration
+[2025-04-25 02:39:48] Créé types.ts pour la catégorie quality
+[2025-04-25 02:39:48] Créé base-quality-agent.ts pour la catégorie quality
+[2025-04-25 02:39:48] Mis à jour index.ts pour la catégorie quality
+[2025-04-25 02:39:48] Créé types.ts pour la catégorie api
+[2025-04-25 02:39:48] Créé base-api-agent.ts pour la catégorie api
+[2025-04-25 02:39:48] Mis à jour index.ts pour la catégorie api
+[2025-04-25 02:39:48] Créé types.ts pour la catégorie seo

@@ -1,0 +1,353 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "functionCode": "// Script pour exécuter l'agent de surveillance post-migration\nconst { execSync } = require('child_process');\nconst path = require('path');\n\n// Récupérer les paramètres\nconst environment = $input.environment || 'preview';\nconst targetRoutes = $input.routes || [];\nconst outputDir = $input.outputDir || 'reports/monitoring';\n\n// Construire la commande\nlet command = `npx ts-node ${path.join(process.cwd(), 'agents', 'monitoring-check.ts')} --env ${environment}`;\n\n// Ajouter les routes cibles si spécifiées\nif (targetRoutes.length > 0) {\n  command += ` --target ${targetRoutes.join(',')}`;\n}\n\n// Ajouter le dossier de sortie\ncommand += ` --output ${outputDir}`;\n\n// Exécuter la commande\ntry {\n  console.log(`Exécution de: ${command}`);\n  const output = execSync(command, { encoding: 'utf8' });\n  console.log(output);\n  \n  // Récupérer les résultats\n  const fs = require('fs');\n  const monitoringResultsPath = path.join(process.cwd(), outputDir, 'post_migration_monitor.json');\n  \n  if (fs.existsSync(monitoringResultsPath)) {\n    const results = JSON.parse(fs.readFileSync(monitoringResultsPath, 'utf8'));\n    \n    // Préparer la sortie pour le nœud suivant\n    return {\n      success: true,\n      results,\n      summary: results.summary,\n      reportsPath: outputDir,\n      timestamp: new Date().toISOString()\n    };\n  } else {\n    throw new Error('Fichier de résultats non trouvé');\n  }\n} catch (error) {\n  console.error(`Erreur: ${error.message}`);\n  return {\n    success: false,\n    error: error.message\n  };\n}"
+      },
+      "name": "Exécuter monitoring-check",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        880,
+        440
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ $json.success }}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "name": "Vérifier succès",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        1100,
+        440
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $node[\"Entrée workflow\"].json.slackWebhook }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "text",
+              "value": "=🚨 Surveillance post-migration : problèmes détectés !"
+            },
+            {
+              "name": "blocks",
+              "value": "={{ [\n  {\n    \"type\": \"header\",\n    \"text\": {\n      \"type\": \"plain_text\",\n      \"text\": \"🚨 Problèmes post-migration détectés\",\n      \"emoji\": true\n    }\n  },\n  {\n    \"type\": \"section\",\n    \"text\": {\n      \"type\": \"mrkdwn\",\n      \"text\": `*Environnement:* ${ $node[\"Entrée workflow\"].json.environment }\\n*URL:* ${ $json.results.baseUrl }\\n*Date:* ${ new Date().toLocaleString('fr-FR') }`\n    }\n  },\n  {\n    \"type\": \"section\",\n    \"fields\": [\n      {\n        \"type\": \"mrkdwn\",\n        \"text\": `*Routes testées:*\\n${ $json.summary.totalRoutes }`\n      },\n      {\n        \"type\": \"mrkdwn\",\n        \"text\": `*HTTP invalides:*\\n${ $json.summary.invalidStatusCodes }`\n      },\n      {\n        \"type\": \"mrkdwn\",\n        \"text\": `*Régressions perf:*\\n${ $json.summary.performanceRegressions }`\n      },\n      {\n        \"type\": \"mrkdwn\",\n        \"text\": `*Problèmes DOM:*\\n${ $json.summary.criticalDomIssues }`\n      }\n    ]\n  }\n] }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "Envoyer alerte Slack",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [
+        1320,
+        520
+      ]
+    },
+    {
+      "parameters": {
+        "keepOnlySet": true,
+        "values": {
+          "string": [
+            {
+              "name": "status",
+              "value": "={% if ($json.summary.invalidStatusCodes + $json.summary.criticalDomIssues) > 0 %}failed{% else %}success{% endif %}"
+            },
+            {
+              "name": "message",
+              "value": "={% if ($json.summary.invalidStatusCodes + $json.summary.criticalDomIssues) > 0 %}Des problèmes ont été détectés lors de la surveillance post-migration.{% else %}La surveillance post-migration s'est terminée avec succès.{% endif %}"
+            },
+            {
+              "name": "reportUrl",
+              "value": "={{ $json.reportsPath }}/monitoring_summary.md"
+            }
+          ],
+          "number": [
+            {
+              "name": "totalIssues",
+              "value": "={{ $json.summary.invalidStatusCodes + $json.summary.performanceRegressions + $json.summary.criticalDomIssues }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "Préparer résumé",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        1320,
+        360
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Surveillance post-migration\n\nCe workflow exécute l'agent de surveillance post-migration pour vérifier la stabilité des routes migrées après déploiement.\n\n### Paramètres d'entrée\n\n- `environment` : Environnement à surveiller (preview, production, ou URL personnalisée)\n- `routes` : Liste des routes spécifiques à surveiller (optionnel)\n- `slackWebhook` : URL du webhook Slack pour les notifications (optionnel)\n\n### Fonctionnalités principales\n\n- Vérification des statuts HTTP (200, 301, 404, etc.)\n- Analyse des temps de réponse et comparaison avec les données historiques\n- Inspection de la structure DOM pour détecter les problèmes\n- Génération de rapports détaillés\n- Envoi de notifications en cas de problèmes",
+        "height": 420,
+        "width": 697
+      },
+      "name": "Documentation",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        500,
+        260
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "// Vérifier si des alertes doivent être envoyées\nconst invalidStatusCodes = $json.summary.invalidStatusCodes || 0;\nconst criticalDomIssues = $json.summary.criticalDomIssues || 0;\nconst performanceRegressions = $json.summary.performanceRegressions || 0;\n\n// Déterminer si des alertes sont nécessaires\nconst needsAlert = (invalidStatusCodes > 0 || criticalDomIssues > 0 || performanceRegressions > 2);\n\nreturn {\n  needsAlert,\n  totalIssues: invalidStatusCodes + criticalDomIssues + performanceRegressions,\n  hasSucceeded: invalidStatusCodes === 0 && criticalDomIssues === 0\n};"
+      },
+      "name": "Évaluer résultats",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        1100,
+        700
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ $json.needsAlert }}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "name": "Alerter ?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        1320,
+        700
+      ]
+    },
+    {
+      "parameters": {},
+      "name": "Sortie workflow",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        1540,
+        440
+      ]
+    },
+    {
+      "parameters": {
+        "triggerTimes": {
+          "item": [
+            {
+              "mode": "everyX",
+              "value": 1,
+              "unit": "hours"
+            }
+          ]
+        }
+      },
+      "name": "Planification",
+      "type": "n8n-nodes-base.cron",
+      "typeVersion": 1,
+      "position": [
+        660,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "environment",
+              "value": "production"
+            }
+          ],
+          "array": [
+            {
+              "name": "routes",
+              "values": [
+                {
+                  "value": "/"
+                },
+                {
+                  "value": "/produits"
+                },
+                {
+                  "value": "/contact"
+                },
+                {
+                  "value": "/blog"
+                }
+              ]
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "Paramétrer monitoring production",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        880,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "monitoring",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        660,
+        360
+      ]
+    },
+    {
+      "parameters": {},
+      "name": "Entrée workflow",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        660,
+        520
+      ]
+    }
+  ],
+  "connections": {
+    "Exécuter monitoring-check": {
+      "main": [
+        [
+          {
+            "node": "Vérifier succès",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Évaluer résultats",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Vérifier succès": {
+      "main": [
+        [
+          {
+            "node": "Préparer résumé",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Préparer résumé": {
+      "main": [
+        [
+          {
+            "node": "Sortie workflow",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Alerter ?": {
+      "main": [
+        [
+          {
+            "node": "Envoyer alerte Slack",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Envoyer alerte Slack": {
+      "main": [
+        [
+          {
+            "node": "Sortie workflow",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Planification": {
+      "main": [
+        [
+          {
+            "node": "Paramétrer monitoring production",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Paramétrer monitoring production": {
+      "main": [
+        [
+          {
+            "node": "Exécuter monitoring-check",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Exécuter monitoring-check",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Entrée workflow": {
+      "main": [
+        [
+          {
+            "node": "Exécuter monitoring-check",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}

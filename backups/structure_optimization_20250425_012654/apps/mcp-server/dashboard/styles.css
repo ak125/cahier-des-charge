@@ -1,0 +1,271 @@
+/* Dashboard styles */
+:root {
+  --primary-color: #4a6bff;
+  --secondary-color: #ff6b6b;
+  --tertiary-color: #50e3c2;
+  --warning-color: #ffc107;
+  --success-color: #28a745;
+  --light-bg: #f8f9fa;
+  --dark-bg: #343a40;
+  --text-color: #212529;
+  --border-color: #dee2e6;
+  --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: var(--light-bg);
+  color: var(--text-color);
+}
+
+/* Dashboard layout */
+.dashboard {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.dashboard-header {
+  margin-bottom: 24px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.dashboard-header h1 {
+  font-size: 28px;
+  margin: 0;
+  color: var(--primary-color);
+}
+
+.last-updated {
+  font-size: 14px;
+  color: #6c757d;
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+}
+
+/* Cards styles */
+.stats-summary-card,
+.migration-progress-card,
+.file-analysis-card {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: var(--card-shadow);
+  padding: 20px;
+}
+
+.file-analysis-card {
+  grid-column: span 2;
+}
+
+.stats-summary-card h2,
+.migration-progress-card h2,
+.file-analysis-card h2 {
+  font-size: 20px;
+  margin-top: 0;
+  margin-bottom: 16px;
+  color: var(--primary-color);
+}
+
+/* Stats summary styles */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.stat-item {
+  text-align: center;
+  padding: 12px;
+  background-color: var(--light-bg);
+  border-radius: 6px;
+}
+
+.stat-value {
+  font-size: 24px;
+  font-weight: bold;
+  color: var(--primary-color);
+}
+
+.stat-label {
+  font-size: 14px;
+  color: #6c757d;
+  margin-top: 4px;
+}
+
+/* Migration progress styles */
+.chart-container {
+  height: 200px;
+  margin-bottom: 16px;
+}
+
+.completion-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 16px;
+}
+
+.percentage-circle {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: var(--primary-color);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.percentage-circle span {
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+/* File analysis styles */
+.filter-controls {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.filter-controls label {
+  margin-right: 8px;
+}
+
+.filter-controls select {
+  padding: 6px 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  background-color: white;
+}
+
+.files-table-container {
+  overflow-x: auto;
+}
+
+.files-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.files-table th,
+.files-table td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.files-table th {
+  background-color: var(--light-bg);
+  font-weight: 600;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.status-analyzed {
+  background-color: rgba(54, 162, 235, 0.2);
+  color: rgb(54, 162, 235);
+}
+
+.status-nestjs {
+  background-color: rgba(255, 99, 132, 0.2);
+  color: rgb(255, 99, 132);
+}
+
+.status-remix {
+  background-color: rgba(75, 192, 192, 0.2);
+  color: rgb(75, 192, 192);
+}
+
+.status-pending {
+  background-color: rgba(255, 206, 86, 0.2);
+  color: rgb(255, 206, 86);
+}
+
+.issues-badge {
+  display: inline-block;
+  padding: 2px 6px;
+  background-color: var(--warning-color);
+  color: white;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.no-issues {
+  color: var(--success-color);
+}
+
+.no-files {
+  text-align: center;
+  color: #6c757d;
+  padding: 20px;
+}
+
+/* Loading and error states */
+.dashboard-loading,
+.dashboard-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+}
+
+.spinner {
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+  border-top: 4px solid var(--primary-color);
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  margin-bottom: 16px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.dashboard-error h2 {
+  color: var(--secondary-color);
+  margin-bottom: 8px;
+}
+
+.dashboard-error button {
+  padding: 8px 16px;
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 16px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .file-analysis-card {
+    grid-column: span 1;
+  }
+}

@@ -1,0 +1,36 @@
+[2025-04-25 01:14:47] [0;33mSauvegarde de la structure actuelle du projet...[0m
+[2025-04-25 01:15:53] [0;32m✅ Sauvegarde terminée dans /workspaces/cahier-des-charge/backups/structure_optimization_20250425_011443[0m
+[2025-04-25 01:15:53] [0;33mRecherche des dossiers vides à tous les niveaux...[0m
+[2025-04-25 01:16:07]   Trouvé 948 dossiers vides (itération en cours...)
+[2025-04-25 01:16:19]   Trouvé 997 dossiers vides (itération en cours...)
+[2025-04-25 01:16:34]   Trouvé 1004 dossiers vides (itération en cours...)
+[2025-04-25 01:16:48]   Trouvé 1008 dossiers vides (itération en cours...)
+[2025-04-25 01:17:05]   Trouvé 1010 dossiers vides (itération en cours...)
+[2025-04-25 01:17:23]   Trouvé 1011 dossiers vides (itération en cours...)
+[2025-04-25 01:17:35]   Trouvé 1012 dossiers vides (itération en cours...)
+[2025-04-25 01:17:50] [0;32m✅ 1012 dossiers vides identifiés à tous les niveaux[0m
+[2025-04-25 01:17:50] [0;33mSuppression des dossiers vides à tous les niveaux...[0m
+[2025-04-25 01:17:50] [0;32m✅ 0 dossiers vides supprimés (y compris sous-dossiers et sous-sous-dossiers)[0m
+[2025-04-25 01:17:50] [0;33mIdentification des dossiers similaires...[0m
+[2025-04-25 01:17:50] [0;32m✅ Identification des dossiers similaires terminée[0m
+[2025-04-25 01:17:50] [0;33mFusion des dossiers similaires...[0m
+[2025-04-25 01:17:50] Fusion du groupe: scripts,tools,utils -> utils
+[2025-04-25 01:17:50]   Déplacement de scripts vers utils
+[2025-04-25 01:17:50]     Fusion récursive de scripts/dashboards dans utils/dashboards
+[2025-04-25 01:17:50]     Le dossier scripts n'est pas complètement vide après fusion, sauvegarde dans utils/backup_scripts
+[2025-04-25 01:17:50]   Déplacement de tools vers utils
+[2025-04-25 01:17:50]     Fusion récursive de tools/agents dans utils/agents
+[2025-04-25 01:17:50]     Le dossier tools n'est pas complètement vide après fusion, sauvegarde dans utils/backup_tools
+[2025-04-25 01:17:50] Fusion du groupe: docs,documentation -> documentation
+[2025-04-25 01:17:50]   Déplacement de docs vers documentation
+[2025-04-25 01:17:50]     Le dossier docs n'est pas complètement vide après fusion, sauvegarde dans documentation/backup_docs
+[2025-04-25 01:17:51] Fusion du groupe: migration-toolkit,migrations -> migrations
+[2025-04-25 01:17:51]   Déplacement de migration-toolkit vers migrations
+[2025-04-25 01:17:51]     Le dossier migration-toolkit n'est pas complètement vide après fusion, sauvegarde dans migrations/backup_migration-toolkit
+[2025-04-25 01:17:51] Fusion du groupe: tests,test-results -> tests
+[2025-04-25 01:17:51]   Déplacement de test-results vers tests
+[2025-04-25 01:17:54]     Le dossier test-results n'est pas complètement vide après fusion, sauvegarde dans tests/backup_test-results
+[2025-04-25 01:17:54] Fusion du groupe: packages,modules -> packages
+[2025-04-25 01:17:54]   Déplacement de modules vers packages
+[2025-04-25 01:17:54] Fusion du groupe: reports,logs -> reports
+[2025-04-25 01:17:54]   Déplacement de logs vers reports

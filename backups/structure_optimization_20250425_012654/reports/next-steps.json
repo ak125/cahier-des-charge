@@ -1,0 +1,74 @@
+[
+  {
+    "step": "Analyse initiale",
+    "status": "non démarré",
+    "priority": "haute",
+    "agents": [
+      "legacy-discovery",
+      "complexity-analyzer"
+    ]
+  },
+  {
+    "step": "Audit des fichiers",
+    "status": "non démarré",
+    "priority": "haute",
+    "agents": [
+      "code-auditor",
+      "sql-analyzer"
+    ]
+  },
+  {
+    "step": "Planification",
+    "status": "non démarré",
+    "priority": "moyenne",
+    "agents": [
+      "migration-planner",
+      "dependency-analyzer"
+    ]
+  },
+  {
+    "step": "Migration backend",
+    "status": "non démarré",
+    "priority": "haute",
+    "agents": [
+      "nestjs-adapter",
+      "prisma-adapter"
+    ]
+  },
+  {
+    "step": "Migration frontend",
+    "status": "non démarré",
+    "priority": "haute",
+    "agents": [
+      "remix-converter",
+      "ui-generator"
+    ]
+  },
+  {
+    "step": "Tests et validation",
+    "status": "non démarré",
+    "priority": "moyenne",
+    "agents": [
+      "test-generator",
+      "validator"
+    ]
+  },
+  {
+    "step": "Optimisation SEO",
+    "status": "non démarré",
+    "priority": "moyenne",
+    "agents": [
+      "seo-validator",
+      "redirect-handler"
+    ]
+  },
+  {
+    "step": "Déploiement",
+    "status": "non démarré",
+    "priority": "basse",
+    "agents": [
+      "ci-configurator",
+      "deployment-validator"
+    ]
+  }
+]

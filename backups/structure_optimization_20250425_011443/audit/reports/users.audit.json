@@ -1,0 +1,14 @@
+{
+  "moduleName": "users",
+  "timestamp": "2025-04-24T20:19:58.427Z",
+  "score": 97,
+  "status": "pass",
+  "issues": [
+    {
+      "severity": "warning",
+      "code": "AUDIT-001",
+      "message": "Problème d'audit démontré pour users",
+      "location": "users/index.ts"
+    }
+  ]
+}

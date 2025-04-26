@@ -1,0 +1,15 @@
+{
+    "id": "metrics-collector",
+    "name": "Collecteur de Métriques MCP",
+    "version": "1.0.0",
+    "description": "Plugin qui collecte des métriques de performance pour tous les agents et les migrations MCP",
+    "author": "Équipe MCP",
+    "type": "utility",
+    "main": "index.ts",
+    "dependencies": [],
+    "config": {
+        "metricsRetentionDays": 30,
+        "collectionInterval": 60000,
+        "outputPath": "../../audit/metrics"
+    }
+}

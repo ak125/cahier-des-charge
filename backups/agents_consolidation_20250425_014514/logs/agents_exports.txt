@@ -1,0 +1,529 @@
+--- agents/ab-strategy-tester.ts ---
+export class ABStrategyTester implements BaseAgent {
+export default new ABStrategyTester();
+
+--- agents/analysis/ConfigParsers/nginx-config-parser.ts ---
+export default NginxConfigParser;
+export { NginxConfigParser };
+
+--- agents/analysis/config-parsers/nginx-config-parser.ts ---
+export default NginxConfigParser;
+export { NginxConfigParser };
+
+--- agents/analysis/dynamic_sql_extractor.ts ---
+export function extractSQLFromPHPFile(filePath: string): ExtractedSQLQuery[] {
+export function extractSQLQueries(auditContent: string): ExtractedSQLQuery[] {
+
+--- agents/analysis/generate_prisma_model.ts ---
+export default generate_prisma_model;
+export { generate_prisma_model };
+
+--- agents/analysis/htaccess-router-analyzer.ts ---
+export const events = agent.events;
+export const execute = (context: AgentContext) => agent.execute(context);
+export const getStatus = () => agent.getStatus();
+export const initialize = () => agent.initialize();
+export const metadata = agent.metadata;
+export const stop = () => agent.stop();
+export const validate = (context: AgentContext) => agent.validate(context);
+export default agent;
+export interface AgentContext {
+export { HtaccessRouterAnalyzer };
+
+--- agents/analysis/mysql-analyzer+optimizer.ts ---
+export default mysql;
+export { mysql };
+
+--- agents/analysis/php-analyzer-v2.ts ---
+export * from ../../../../packagesDoDoDotmcp-agents/analyzers/php-analyzer/php-analyzer-v2.tsstructure-agent';
+export { default } from ../../../../packagesDoDoDotmcp-agents/analyzers/php-analyzer/php-analyzer-v2.tsstructure-agent';
+
+--- agents/analysis/php-analyzer-v3.ts ---
+export default php;
+export { php };
+
+--- agents/analysis/php-analyzer-v4.ts ---
+export default php;
+export { php };
+
+--- agents/analysis/php-analyzer.ts ---
+export class QAAnalyzer implements McpAgent , BaseAgent, BusinessAgent, AnalyzerAgent{
+export default QAAnalyzer;
+
+--- agents/analysis/php-discovery-engine.ts ---
+export function analyzePhpFile(content: string, filePath: string): FileAnalysisResult {
+export function calculatePriorityScore(
+export interface FileAnalysisResult {
+
+--- agents/analysis/relation-analyzer.ts ---
+export default relation;
+export { relation };
+
+--- agents/analysis/semantic-table-mapper.ts ---
+export default SemanticMapper;
+export { SemanticMapper };
+
+--- agents/analysis/table-cartographer.ts ---
+export default table;
+export { table };
+
+--- agents/analysis/type-mapper.ts ---
+export default type;
+export { type };
+
+--- agents/bullmq-orchestrator.ts ---
+export default BullMqOrchestrator;
+export { BullMqOrchestrator };
+
+--- agents/canonical-validator.ts ---
+export default CanonicalValidator;
+export { CanonicalValidator };
+
+--- agents/ci-tester.ts ---
+export default ci;
+export { ci };
+
+--- agents/dev-checker.ts ---
+export default DevChecker;
+export { DevChecker };
+
+--- agents/dev-integrator.ts ---
+export default dev;
+export { dev };
+
+--- agents/dev-linter.ts ---
+export default dev;
+export { dev };
+
+--- agents/devops-preview.ts ---
+export default devops;
+export { devops };
+
+--- agents/diff-verifier.ts ---
+export default diff;
+export { diff };
+
+--- agents/discovery/audit-selector.ts ---
+export {
+
+--- agents/index.ts ---
+export async function runQAAnalyzer(sourcePhpPath: string, generatedFiles: Record<string, string>, options: QAAnalyzerOptions = {}): Promise<QAAnalysisResult> {
+export async function updateFinalMdTags(finalMdPath: string, tags: string[]): Promise<void> {
+export class QAAnalyzer extends BaseAgent implements BusinessAgent {
+export interface FieldAnalysis {
+export interface QAAnalysisResult {
+export interface QAAnalyzerOptions {
+export interface QAIssue {
+
+--- agents/integration/metrics-service.ts ---
+export class MetricsService implements McpAgent , BaseAgent, BusinessAgent, CoordinationAgent{
+export default MetricsService;
+
+--- agents/integration/notification-service.ts ---
+export class NotificationService implements McpAgent , BaseAgent, BusinessAgent, CoordinationAgent{
+export default NotificationService;
+
+--- agents/integration/orchestrator-bridge.ts ---
+export class OrchestratorBridge implements OrchestrationAgent {
+export default OrchestratorBridge;
+
+--- agents/mcp-manifest-manager.ts ---
+export default MCPManifestManager;
+export { MCPManifestManager };
+
+--- agents/mcp-verifier.ts ---
+export default MCPVerifier;
+export { MCPVerifier };
+
+--- agents/meta-generator.ts ---
+export default MetaGenerator;
+export { MetaGenerator };
+
+--- agents/migration-orchestrator.ts ---
+export default MigrationOrchestrator;
+export { MigrationOrchestrator };
+
+--- agents/migration/MysqlAnalyzer/agents/debt-detector.ts ---
+export default DebtDetector;
+export { DebtDetector };
+
+--- agents/migration/MysqlAnalyzer/agents/migration-strategist.ts ---
+export default migration;
+export { migration };
+
+--- agents/migration/MysqlAnalyzer/agents/prisma-generator.ts ---
+export class PrismaGenerator implements McpAgent , BaseAgent, BusinessAgent, GeneratorAgent, AnalyzerAgent{
+export default PrismaGenerator;
+
+--- agents/migration/MysqlAnalyzer/agents/relational-normalizer.ts ---
+export default RelationalNormalizer;
+export { RelationalNormalizer };
+
+--- agents/migration/MysqlAnalyzer/agents/type-auditor.ts ---
+export default TypeAuditor;
+export { TypeAuditor };
+
+--- agents/migration/MysqlAnalyzer/agents/type-converter.ts ---
+export default TypeConverter;
+export { TypeConverter };
+
+--- agents/migration/MysqlAnalyzer/core/classifier.ts ---
+export class TableClassifier implements McpAgent , BaseAgent, BusinessAgent, AnalyzerAgent{
+export default TableClassifier;
+
+--- agents/migration/MysqlAnalyzer/core/debt-analyzer.ts ---
+export default DebtAnalyzer;
+export { DebtAnalyzer };
+
+--- agents/migration/MysqlAnalyzer/core/parser.ts ---
+export default SQLParser;
+export { SQLParser };
+
+--- agents/migration/MysqlAnalyzer/core/prisma-generator.ts ---
+export class PrismaGenerator implements McpAgent , BaseAgent, BusinessAgent, GeneratorAgent, AnalyzerAgent{
+export default PrismaGenerator;
+
+--- agents/migration/MysqlAnalyzer/core/relation-analyzer.ts ---
+export default relation;
+export { relation };
+
+--- agents/migration/MysqlAnalyzer/core/schema-analyzer.ts ---
+export default SchemaAnalyzer;
+export { SchemaAnalyzer };
+
+--- agents/migration/MysqlAnalyzer/core/table-classifier.ts ---
+export class TableClassifier implements McpAgent , BaseAgent, BusinessAgent, AnalyzerAgent{
+export default TableClassifier;
+
+--- agents/migration/MysqlAnalyzer/core/type-converter.ts ---
+export default TypeConverter;
+export { TypeConverter };
+
+--- agents/migration/MysqlAnalyzer/models/schema.ts ---
+export enum TableType {
+export interface ColumnInfo {
+export interface DebtIssue {
+export interface ForeignKeyInfo {
+export interface IndexInfo {
+export interface MySQLSchema {
+export interface PrismaEnum {
+export interface PrismaField {
+export interface PrismaMapping {
+export interface PrismaModel {
+export interface SchemaAnalysisResult {
+export interface SchemaStats {
+export interface TableInfo {
+export interface TableStats {
+
+--- agents/migration/MysqlAnalyzer/mysql-analyzer.ts ---
+export default MySQLAnalyzer;
+export { MySQLAnalyzer };
+
+--- agents/migration/MysqlAnalyzer/utils/helpers.ts ---
+export default helpers;
+export { helpers };
+
+--- agents/migration/NginxToCaddy/caddyfile-generator.ts ---
+export default CaddyfileGenerator;
+export { CaddyfileGenerator };
+
+--- agents/migration/PhpToRemix/dev-generator.ts ---
+export default DevGenerator;
+export { DevGenerator };
+
+--- agents/migration/PhpToRemix/htaccess-route-analyzer.ts ---
+export default HtaccessRouteAnalyzer;
+export { HtaccessRouteAnalyzer };
+
+--- agents/migration/PhpToRemix/php-router-audit.ts ---
+export default PhpRouterAudit;
+export { PhpRouterAudit };
+
+--- agents/migration/PhpToRemix/remix-route-generator.ts ---
+export default RemixRouteGenerator;
+export { RemixRouteGenerator };
+
+--- agents/migration/PhpToRemix/seo-checker-canonical.ts ---
+export default SeoCheckerCanonical;
+export { SeoCheckerCanonical };
+
+--- agents/migration/PhpToRemix/seo-meta.generator.ts ---
+export default SeoMetadataGenerator;
+export { SeoMetadataGenerator };
+
+--- agents/migration/caddyfile-generator.ts ---
+export default CaddyfileGenerator;
+export { CaddyfileGenerator };
+
+--- agents/migration/component-generator.ts ---
+export class ComponentGenerator implements McpAgent , BaseAgent, BusinessAgent, GeneratorAgent{
+export default ComponentGenerator;
+
+--- agents/migration/consolidator.ts ---
+export default consolidator;
+export { consolidator };
+
+--- agents/migration/data-verifier.ts ---
+export default data;
+export { data };
+
+--- agents/migration/generate-migration-plan.ts ---
+export default generate;
+export { generate };
+
+--- agents/migration/htaccess-router-analyzer.ts ---
+export const events = agent.events;
+export const execute = (context: AgentContext) => agent.execute(context);
+export const getStatus = () => agent.getStatus();
+export const initialize = () => agent.initialize();
+export const metadata = agent.metadata;
+export const stop = () => agent.stop();
+export const validate = (context: AgentContext) => agent.validate(context);
+export default agent;
+export interface AgentContext {
+export { HtaccessRouterAnalyzer };
+
+--- agents/migration/mysql-analyzer+optimizer.ts ---
+export default mysql;
+export { mysql };
+
+--- agents/migration/mysql-analyzer.ts ---
+export default MySQLAnalyzer;
+export { MySQLAnalyzer };
+
+--- agents/migration/mysql-analyzer/agents/debt-detector.ts ---
+export default DebtDetector;
+export { DebtDetector };
+
+--- agents/migration/mysql-analyzer/agents/migration-strategist.ts ---
+export default migration;
+export { migration };
+
+--- agents/migration/mysql-analyzer/agents/prisma-generator.ts ---
+export class PrismaGenerator implements McpAgent , BaseAgent, BusinessAgent, GeneratorAgent, AnalyzerAgent{
+export default PrismaGenerator;
+
+--- agents/migration/mysql-analyzer/agents/relational-normalizer.ts ---
+export default RelationalNormalizer;
+export { RelationalNormalizer };
+
+--- agents/migration/mysql-analyzer/agents/type-auditor.ts ---
+export default TypeAuditor;
+export { TypeAuditor };
+
+--- agents/migration/mysql-analyzer/agents/type-converter.ts ---
+export default TypeConverter;
+export { TypeConverter };
+
+--- agents/migration/mysql-analyzer/core/classifier.ts ---
+export class TableClassifier implements McpAgent , BaseAgent, BusinessAgent, AnalyzerAgent{
+export default TableClassifier;
+
+--- agents/migration/mysql-analyzer/core/debt-analyzer.ts ---
+export default DebtAnalyzer;
+export { DebtAnalyzer };
+
+--- agents/migration/mysql-analyzer/core/parser.ts ---
+export default SQLParser;
+export { SQLParser };
+
+--- agents/migration/mysql-analyzer/core/prisma-generator.ts ---
+export class PrismaGenerator implements McpAgent , BaseAgent, BusinessAgent, GeneratorAgent, AnalyzerAgent{
+export default PrismaGenerator;
+
+--- agents/migration/mysql-analyzer/core/relation-analyzer.ts ---
+export default relation;
+export { relation };
+
+--- agents/migration/mysql-analyzer/core/schema-analyzer.ts ---
+export default SchemaAnalyzer;
+export { SchemaAnalyzer };
+
+--- agents/migration/mysql-analyzer/core/table-classifier.ts ---
+export class TableClassifier implements McpAgent , BaseAgent, BusinessAgent, AnalyzerAgent{
+export default TableClassifier;
+
+--- agents/migration/mysql-analyzer/core/type-converter.ts ---
+export default TypeConverter;
+export { TypeConverter };
+
+--- agents/migration/mysql-analyzer/models/schema.ts ---
+export enum TableType {
+export interface ColumnInfo {
+export interface DebtIssue {
+export interface ForeignKeyInfo {
+export interface IndexInfo {
+export interface MySQLSchema {
+export interface PrismaEnum {
+export interface PrismaField {
+export interface PrismaMapping {
+export interface PrismaModel {
+export interface SchemaAnalysisResult {
+export interface SchemaStats {
+export interface TableInfo {
+export interface TableStats {
+
+--- agents/migration/mysql-analyzer/mysql-analyzer.ts ---
+export default MySQLAnalyzer;
+export { MySQLAnalyzer };
+
+--- agents/migration/mysql-analyzer/utils/helpers.ts ---
+export default helpers;
+export { helpers };
+
+--- agents/migration/mysql-to-pg.ts ---
+export default mysql;
+export { mysql };
+
+--- agents/migration/mysql-to-postgresql.ts ---
+export default mysql;
+export { mysql };
+
+--- agents/migration/nginx-config-analyzer.ts ---
+export default nginx;
+export { nginx };
+
+--- agents/migration/nginx-to-caddy/caddyfile-generator.ts ---
+export default CaddyfileGenerator;
+export { CaddyfileGenerator };
+
+--- agents/migration/php-sql-mapper.ts ---
+export async function mapPhpSqlFields(
+
+--- agents/migration/php-sql-sync-mapper.ts ---
+export async function mapPhpSqlSync(
+
+--- agents/migration/php-to-remix/dev-generator.ts ---
+export default DevGenerator;
+export { DevGenerator };
+
+--- agents/migration/php-to-remix/htaccess-route-analyzer.ts ---
+export default HtaccessRouteAnalyzer;
+export { HtaccessRouteAnalyzer };
+
+--- agents/migration/php-to-remix/php-router-audit.ts ---
+export default PhpRouterAudit;
+export { PhpRouterAudit };
+
+--- agents/migration/php-to-remix/remix-route-generator.ts ---
+export default RemixRouteGenerator;
+export { RemixRouteGenerator };
+
+--- agents/migration/php-to-remix/seo-checker-canonical.ts ---
+export default SeoCheckerCanonical;
+export { SeoCheckerCanonical };
+
+--- agents/migration/php-to-remix/seo-meta.generator.ts ---
+export default SeoMetadataGenerator;
+export { SeoMetadataGenerator };
+
+--- agents/migration/postgresql-validator.ts ---
+export default PostgresqlValidator;
+export { PostgresqlValidator };
+
+--- agents/migration/prisma-migration-generator.ts ---
+export default prisma;
+export { prisma };
+
+--- agents/migration/prisma-smart-generator.ts ---
+export default prisma;
+export { prisma };
+
+--- agents/migration/qa-confirmer.ts ---
+export default qa;
+export { qa };
+
+--- agents/migration/remediator.ts ---
+export default remediator;
+export { remediator };
+
+--- agents/migration/sql-analysis-runner.ts ---
+export default sql;
+export { sql };
+
+--- agents/migration/sql-analyzer+prisma-builder.ts ---
+export default sql;
+export { sql };
+
+--- agents/migration/sql-prisma-migration-planner.ts ---
+export default sql;
+export { sql };
+
+--- agents/monitoring-check.ts ---
+export default monitoring;
+export { monitoring };
+
+--- agents/notifier.ts ---
+export class MCPNotifier implements McpAgent , BaseAgent, BusinessAgent{
+export default MCPNotifier;
+
+--- agents/optimization/SupabaseOptimizationTracker.ts ---
+export class SupabaseOptimizationTracker implements McpAgent , BaseAgent, BusinessAgent{
+export default SupabaseOptimizationTracker;
+
+--- agents/orchestrator.ts ---
+export default orchestrator;
+export { orchestrator };
+
+--- agents/pipeline-strategy-auditor.ts ---
+export default pipeline;
+export { pipeline };
+
+--- agents/pr-creator.ts ---
+export default PRCreator;
+export { PRCreator };
+
+--- agents/quality/analyze-security-risks.ts ---
+export default SecurityRiskAnalyzer;
+export { SecurityRiskAnalyzer };
+
+--- agents/quality/sql-debt-audit.ts ---
+export default sql;
+export { sql };
+
+--- agents/seo-audit-runner.ts ---
+export default SEOAuditRunner;
+export { SEOAuditRunner };
+
+--- agents/seo-content-enhancer.ts ---
+export default SEOContentEnhancer;
+export { SEOContentEnhancer };
+
+--- agents/seo-mcp-controller.ts ---
+export default SEOMCPController;
+export { SEOMCPController };
+
+--- agents/seo-redirect-mapper.ts ---
+export default SEORedirectMapper;
+export { SEORedirectMapper };
+
+--- agents/status-auditor.ts ---
+export async function auditMCPStatus(): Promise<AuditReport> {
+
+--- agents/status-writer.ts ---
+export default StatusWriterAgent;
+export { StatusWriterAgent };
+
+--- agents/trace-verifier.ts ---
+export async function verifyMigrationTraces(): Promise<void> {
+
+--- agents/utils/caddy-generator.ts ---
+export default CaddyGenerator;
+export { CaddyGenerator };
+
+--- agents/utils/htaccess-parser.ts ---
+export default HtaccessParser;
+export { HtaccessParser };
+
+--- agents/utils/nginx-config-parser.ts ---
+export default NginxConfigParser;
+export { NginxConfigParser };
+
+--- agents/workers/mcp-verifier.worker.ts ---
+export defaultDoDotmcp;
+export {DoDotmcp };
+
+--- agents/workers/php-analyzer.worker.ts ---
+export default php;
+export { php };
+

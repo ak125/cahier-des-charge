@@ -1,0 +1,1154 @@
+{
+  "version": "1.0.0",
+  "timestamp": "2025-04-12T16:30:00Z",
+  "generator": "MySQL-PostgreSQL Migration Tool",
+  "metadata": {
+    "source": {
+      "database": "mysql",
+      "version": "8.0.28",
+      "tables": 42,
+      "columns": 267,
+      "constraints": 56
+    },
+    "target": {
+      "database": "postgresql",
+      "version": "14.5",
+      "prismaEnabled": true
+    },
+    "summary": {
+      "totalChanges": 142,
+      "typeChanges": 84,
+      "constraintChanges": 23,
+      "defaultValueChanges": 35
+    }
+  },
+  "tableDiffs": [
+    {
+      "table": "users",
+      "status": "READY",
+      "migrationScore": 85,
+      "changes": [
+        {
+          "column": "id",
+          "sourceType": "VARCHAR(36)",
+          "targetType": "UUID",
+          "prismaType": "String",
+          "prismaAttributes": ["@db.Uuid"],
+          "changeType": "TYPE_CHANGE",
+          "severity": "LOW",
+          "note": "Conversion de VARCHAR(36) en UUID natif pour optimisation"
+        },
+        {
+          "column": "status",
+          "sourceType": "ENUM('ACTIVE','INACTIVE','SUSPENDED','DELETED')",
+          "targetType": "USER_STATUS",
+          "prismaType": "UserStatus",
+          "changeType": "ENUM_CONVERSION",
+          "severity": "LOW",
+          "note": "Conversion d'un ENUM MySQL vers un type enum PostgreSQL"
+        },
+        {
+          "column": "is_admin",
+          "sourceType": "TINYINT(1)",
+          "targetType": "BOOLEAN",
+          "prismaType": "Boolean",
+          "changeType": "TYPE_CHANGE",
+          "severity": "LOW",
+          "note": "Conversion de TINYINT(1) en BOOLEAN natif"
+        },
+        {
+          "column": "created_at",
+          "sourceType": "TIMESTAMP",
+          "targetType": "TIMESTAMP WITH TIME ZONE",
+          "prismaType": "DateTime",
+          "prismaAttributes": ["@db.Timestamptz(6)"],
+          "changeType": "TYPE_CHANGE",
+          "severity": "MEDIUM",
+          "note": "Ajout du support de fuseau horaire pour timestamp"
+        },
+        {
+          "column": "updated_at",
+          "sourceType": "TIMESTAMP NULL",
+          "targetType": "TIMESTAMP WITH TIME ZONE NULL",
+          "prismaType": "DateTime?",
+          "prismaAttributes": ["@db.Timestamptz(6)"],
+          "changeType": "TYPE_CHANGE",
+          "severity": "MEDIUM",
+          "note": "Ajout du support de fuseau horaire pour timestamp"
+        }
+      ],
+      "indexChanges": [
+        {
+          "name": "idx_users_email",
+          "columns": ["email"],
+          "changeType": "KEEP",
+          "note": "Index maintenu à l'identique"
+        }
+      ],
+      "constraintChanges": [],
+      "recommendations": [
+        "Utiliser UUID au lieu de VARCHAR(36) pour bénéficier des performances et fonctionnalités natives PostgreSQL",
+        "Ajouter @db.Timestamptz(6) pour tous les champs DateTime pour conserver le support fuseau horaire"
+      ]
+    },
+    {
+      "table": "profiles",
+      "status": "NEEDS_ATTENTION",
+      "migrationScore": 68,
+      "changes": [
+        {
+          "column": "id",
+          "sourceType": "INT AUTO_INCREMENT",
+          "targetType": "SERIAL",
+          "prismaType": "Int",
+          "prismaAttributes": ["@default(autoincrement())"],
+          "changeType": "TYPE_CHANGE",
+          "severity": "LOW",
+          "note": "Conversion de AUTO_INCREMENT vers SERIAL"
+        },
+        {
+          "column": "user_id",
+          "sourceType": "VARCHAR(36)",
+          "targetType": "UUID",
+          "prismaType": "String",
+          "prismaAttributes": ["@db.Uuid"],
+          "changeType": "TYPE_CHANGE",
+          "severity": "MEDIUM",
+          "note": "La clé étrangère doit correspondre au type UUID de users.id"
+        },
+        {
+          "column": "metadata",
+          "sourceType": "JSON",
+          "targetType": "JSONB",
+          "prismaType": "Json",
+          "changeType": "TYPE_CHANGE",
+          "severity": "MEDIUM",
+          "note": "Conversion de JSON MySQL vers JSONB PostgreSQL (plus performant pour requêtes)"
+        },
+        {
+          "column": "created_at",
+          "sourceType": "TIMESTAMP",
+          "targetType": "TIMESTAMP WITH TIME ZONE",
+          "prismaType": "DateTime",
+          "prismaAttributes": ["@db.Timestamptz(6)"],
+          "changeType": "TYPE_CHANGE",
+          "severity": "MEDIUM",
+          "note": "Ajout du support de fuseau horaire pour timestamp"
+        },
+        {
+          "column": "updated_at",
+          "sourceType": "TIMESTAMP NULL",
+          "targetType": "TIMESTAMP WITH TIME ZONE NULL",
+          "prismaType": "DateTime?",
+          "prismaAttributes": ["@db.Timestamptz(6)"],
+          "changeType": "TYPE_CHANGE",
+          "severity": "MEDIUM",
+          "note": "Ajout du support de fuseau horaire pour timestamp"
+        }
+      ],
+      "indexChanges": [],
+      "constraintChanges": [
+        {
+          "name": "fk_profiles_users",
+          "type": "FOREIGN_KEY",
+          "columns": ["user_id"],
+          "referencedTable": "users",
+          "referencedColumns": ["id"],
+          "changeType": "MODIFY",
+          "note": "La contrainte de clé étrangère doit être adaptée pour types UUID"
+        }
+      ],
+      "recommendations": [
+        "Vérifier les requêtes qui manipulent le champ JSON 'metadata' après conversion en JSONB",
+        "S'assurer que le type UUID est correctement géré dans les relations avec la table users"
+      ]
+    },
+    {
+      "table": "sessions",
+      "status": "READY",
+      "migrationScore": 75,
+      "changes": [
+        {
+          "column": "id",
+          "sourceType": "VARCHAR(40)",
+          "targetType": "VARCHAR(40)",
+          "prismaType": "String",
+          "changeType": "KEEP",
+          "severity": "NONE",
+          "note": "Type conservé à l'identique"
+        },
+        {
+          "column": "user_id",
+          "sourceType": "VARCHAR(36) NULL",
+          "targetType": "UUID NULL",
+          "prismaType": "String?",
+          "prismaAttributes": ["@db.Uuid"],
+          "changeType": "TYPE_CHANGE",
+          "severity": "MEDIUM",
+          "note": "Conversion pour correspondre au type UUID de users.id"
+        },
+        {
+          "column": "ip_address",
+          "sourceType": "VARCHAR(45)",
+          "targetType": "VARCHAR(45)",
+          "prismaType": "String",
+          "prismaAttributes": ["@db.VarChar(45)"],
+          "changeType": "KEEP",
+          "severity": "NONE",
+          "note": "Type conservé à l'identique"
+        },
+        {
+          "column": "last_activity",
+          "sourceType": "INT UNSIGNED",
+          "targetType": "INTEGER",
+          "prismaType": "Int",
+          "changeType": "TYPE_CHANGE",
+          "severity": "LOW",
+          "note": "PostgreSQL n'a pas d'UNSIGNED INTEGER, utiliser INTEGER standard"
+        },
+        {
+          "column": "created_at",
+          "sourceType": "TIMESTAMP",
+          "targetType": "TIMESTAMP WITH TIME ZONE",
+          "prismaType": "DateTime",
+          "prismaAttributes": ["@db.Timestamptz(6)"],
+          "changeType": "TYPE_CHANGE",
+          "severity": "MEDIUM",
+          "note": "Ajout du support de fuseau horaire pour timestamp"
+        },
+        {
+          "column": "expires_at",
+          "sourceType": "TIMESTAMP",
+          "targetType": "TIMESTAMP WITH TIME ZONE",
+          "prismaType": "DateTime",
+          "prismaAttributes": ["@db.Timestamptz(6)"],
+          "changeType": "TYPE_CHANGE",
+          "severity": "MEDIUM",
+          "note": "Ajout du support de fuseau horaire pour timestamp"
+        }
+      ],
+      "indexChanges": [
+        {
+          "name": "idx_sessions_user_id",
+          "columns": ["user_id"],
+          "changeType": "KEEP",
+          "note": "Index maintenu à l'identique"
+        },
+        {
+          "name": "idx_sessions_token",
+          "columns": ["token"],
+          "changeType": "KEEP",
+          "note": "Index maintenu à l'identique"
+        }
+      ],
+      "constraintChanges": [
+        {
+          "name": "fk_sessions_users",
+          "type": "FOREIGN_KEY",
+          "columns": ["user_id"],
+          "referencedTable": "users",
+          "referencedColumns": ["id"],
+          "changeType": "MODIFY",
+          "note": "La contrainte de clé étrangère doit être adaptée pour types UUID"
+        }
+      ],
+      "recommendations": [
+        "Vérifier si des requêtes utilisent les propriétés spécifiques INT UNSIGNED",
+        "Ajouter 'onDelete: SetNull' dans la relation Prisma avec users"
+      ]
+    }
+  ],
+  "globalRecommendations": [
+    {
+      "category": "Types de données",
+      "items": [
+        "Utiliser UUID au lieu de VARCHAR(36) pour les identifiants",
+        "Utiliser Boolean au lieu de TINYINT(1) pour les flags",
+        "Utiliser TIMESTAMPTZ au lieu de TIMESTAMP pour supporter les fuseaux horaires",
+        "Utiliser JSONB au lieu de JSON pour de meilleures performances"
+      ]
+    },
+    {
+      "category": "Contraintes",
+      "items": [
+        "Tirer parti des contraintes CHECK de PostgreSQL pour la validation des données",
+        "Activer les contraintes de clé étrangère par défaut (contrairement à MyISAM)"
+      ]
+    },
+    {
+      "category": "Performances",
+      "items": [
+        "Revoir les index pour utiliser les types d'index spécifiques à PostgreSQL (GIN, GiST)",
+        "Convertir les champs TEXT en VARCHAR avec une limite appropriée lorsque possible"
+      ]
+    },
+    {
+      "category": "Prisma spécifique",
+      "items": [
+        "Utiliser @default(cuid()) ou @default(uuid()) pour les identifiants",
+        "Ajouter des attributs explicites comme @db.Timestamptz(6) pour les timestamps",
+        "Utiliser la directive @@map pour conserver les noms de tables originaux"
+      ]
+    }
+  ],
+  "migrationReadinessSummary": {
+    "readyTables": 35,
+    "needsAttentionTables": 7,
+    "blockedTables": 0,
+    "overallReadiness": 83,
+    "estimatedEffort": "MEDIUM",
+    "estimatedTimeInDays": 5
+  },
+  "version": "1.0.0",
+  "timestamp": "2025-04-12T14:30:00.000Z",
+  "schemaName": "ecommerce_db",
+  "diffStats": {
+    "tables": {
+      "total": 25,
+      "modified": 18,
+      "renamed": 2,
+      "added": 0,
+      "removed": 0
+    },
+    "columns": {
+      "total": 243,
+      "modified": 78,
+      "renamed": 12,
+      "added": 5,
+      "removed": 0
+    },
+    "types": {
+      "modified": 64
+    },
+    "indexes": {
+      "added": 14,
+      "modified": 8,
+      "removed": 3
+    },
+    "foreignKeys": {
+      "added": 12,
+      "modified": 6,
+      "removed": 0
+    },
+    "enums": {
+      "created": 8
+    }
+  },
+  "tableChanges": [
+    {
+      "tableName": "users",
+      "modelName": "User",
+      "status": "MODIFIED",
+      "columnChanges": [
+        {
+          "column": "id",
+          "mysqlType": "BIGINT(20) UNSIGNED",
+          "prismaType": "BigInt",
+          "postgresType": "BIGINT",
+          "status": "TYPE_MODIFIED",
+          "comment": "Type conservé mais recommandation d'utiliser @id @default(autoincrement())"
+        },
+        {
+          "column": "is_admin",
+          "mysqlType": "TINYINT(1)",
+          "prismaType": "Boolean",
+          "postgresType": "BOOLEAN",
+          "status": "TYPE_MODIFIED",
+          "comment": "Conversion de TINYINT(1) en BOOLEAN natif"
+        },
+        {
+          "column": "status",
+          "mysqlType": "ENUM('ACTIVE', 'INACTIVE', 'SUSPENDED', 'DELETED')",
+          "prismaType": "UserStatus",
+          "postgresType": "TEXT",
+          "status": "TYPE_MODIFIED",
+          "comment": "Conversion de ENUM MySQL en enum Prisma"
+        },
+        {
+          "column": "created_at",
+          "mysqlType": "TIMESTAMP",
+          "prismaType": "DateTime",
+          "postgresType": "TIMESTAMP WITH TIME ZONE",
+          "status": "TYPE_MODIFIED",
+          "comment": "Ajout de la gestion du fuseau horaire"
+        },
+        {
+          "column": "updated_at",
+          "mysqlType": "TIMESTAMP",
+          "prismaType": "DateTime",
+          "postgresType": "TIMESTAMP WITH TIME ZONE",
+          "status": "TYPE_MODIFIED",
+          "comment": "Ajout de la gestion du fuseau horaire"
+        }
+      ],
+      "indexChanges": [
+        {
+          "name": "users_email_unique",
+          "columns": ["email"],
+          "status": "UNCHANGED",
+          "comment": "Converti en @unique dans Prisma"
+        }
+      ],
+      "relationChanges": [
+        {
+          "name": "user_profiles",
+          "status": "ADDED",
+          "type": "ONE_TO_ONE",
+          "comment": "Relation explicite définie dans le modèle Prisma"
+        },
+        {
+          "name": "user_sessions",
+          "status": "ADDED",
+          "type": "ONE_TO_MANY",
+          "comment": "Relation explicite définie dans le modèle Prisma"
+        }
+      ],
+      "enumCreations": [
+        {
+          "name": "UserStatus",
+          "values": ["ACTIVE", "INACTIVE", "SUSPENDED", "DELETED"],
+          "comment": "Création d'un enum Prisma pour remplacer l'enum MySQL"
+        }
+      ]
+    },
+    {
+      "tableName": "profiles",
+      "modelName": "Profile",
+      "status": "MODIFIED",
+      "columnChanges": [
+        {
+          "column": "id",
+          "mysqlType": "BIGINT(20) UNSIGNED",
+          "prismaType": "BigInt",
+          "postgresType": "BIGINT",
+          "status": "TYPE_MODIFIED",
+          "comment": "Type conservé mais recommandation d'utiliser @id @default(autoincrement())"
+        },
+        {
+          "column": "user_id",
+          "mysqlType": "BIGINT(20) UNSIGNED",
+          "prismaType": "String",
+          "postgresType": "TEXT",
+          "status": "TYPE_MODIFIED",
+          "comment": "Type modifié pour correspondre au type ID dans User (cuid)"
+        },
+        {
+          "column": "created_at",
+          "mysqlType": "TIMESTAMP",
+          "prismaType": "DateTime",
+          "postgresType": "TIMESTAMP WITH TIME ZONE",
+          "status": "TYPE_MODIFIED",
+          "comment": "Ajout de la gestion du fuseau horaire"
+        },
+        {
+          "column": "updated_at",
+          "mysqlType": "TIMESTAMP",
+          "prismaType": "DateTime",
+          "postgresType": "TIMESTAMP WITH TIME ZONE",
+          "status": "TYPE_MODIFIED",
+          "comment": "Ajout de la gestion du fuseau horaire"
+        }
+      ],
+      "indexChanges": [
+        {
+          "name": "profiles_user_id_unique",
+          "columns": ["user_id"],
+          "status": "UNCHANGED",
+          "comment": "Converti en @unique dans Prisma"
+        }
+      ],
+      "relationChanges": [
+        {
+          "name": "profile_user",
+          "status": "ADDED",
+          "type": "ONE_TO_ONE",
+          "comment": "Relation explicite définie dans le modèle Prisma"
+        }
+      ]
+    },
+    {
+      "tableName": "sessions",
+      "modelName": "Session",
+      "status": "MODIFIED",
+      "columnChanges": [
+        {
+          "column": "id",
+          "mysqlType": "VARCHAR(255)",
+          "prismaType": "String",
+          "postgresType": "TEXT",
+          "status": "TYPE_MODIFIED",
+          "comment": "Type conservé mais recommandation d'utiliser @id @default(cuid())"
+        },
+        {
+          "column": "user_id",
+          "mysqlType": "BIGINT(20) UNSIGNED",
+          "prismaType": "String",
+          "postgresType": "TEXT",
+          "status": "TYPE_MODIFIED",
+          "comment": "Type modifié pour correspondre au type ID dans User (cuid)"
+        },
+        {
+          "column": "created_at",
+          "mysqlType": "TIMESTAMP",
+          "prismaType": "DateTime",
+          "postgresType": "TIMESTAMP WITH TIME ZONE",
+          "status": "TYPE_MODIFIED",
+          "comment": "Ajout de la gestion du fuseau horaire"
+        },
+        {
+          "column": "expires_at",
+          "mysqlType": "TIMESTAMP",
+          "prismaType": "DateTime",
+          "postgresType": "TIMESTAMP WITH TIME ZONE",
+          "status": "TYPE_MODIFIED",
+          "comment": "Ajout de la gestion du fuseau horaire"
+        }
+      ],
+      "indexChanges": [
+        {
+          "name": "sessions_user_id_index",
+          "columns": ["user_id"],
+          "status": "UNCHANGED"
+        },
+        {
+          "name": "sessions_token_unique",
+          "columns": ["token"],
+          "status": "UNCHANGED",
+          "comment": "Converti en @unique dans Prisma"
+        }
+      ],
+      "relationChanges": [
+        {
+          "name": "session_user",
+          "status": "ADDED",
+          "type": "MANY_TO_ONE",
+          "comment": "Relation explicite définie dans le modèle Prisma"
+        }
+      ]
+    },
+    {
+      "tableName": "products",
+      "modelName": "Product",
+      "status": "MODIFIED",
+      "columnChanges": [
+        {
+          "column": "price",
+          "mysqlType": "FLOAT",
+          "prismaType": "Decimal",
+          "postgresType": "DECIMAL(10,2)",
+          "status": "TYPE_MODIFIED",
+          "comment": "Conversion de FLOAT en DECIMAL pour éviter les erreurs d'arrondi monétaire"
+        },
+        {
+          "column": "status",
+          "mysqlType": "VARCHAR(20)",
+          "prismaType": "ProductStatus",
+          "postgresType": "TEXT",
+          "status": "TYPE_MODIFIED",
+          "comment": "Conversion de VARCHAR en enum Prisma pour des valeurs constantes"
+        }
+      ],
+      "enumCreations": [
+        {
+          "name": "ProductStatus",
+          "values": ["ACTIVE", "DRAFT", "ARCHIVED", "OUT_OF_STOCK"],
+          "comment": "Création d'un enum Prisma basé sur les valeurs détectées dans les données"
+        }
+      ]
+    },
+    {
+      "tableName": "user_access_logs",
+      "modelName": "UserAccessLog",
+      "status": "RENAMED",
+      "renamedTo": "user_activities",
+      "renamedModelTo": "UserActivity",
+      "comment": "Table renommée pour une meilleure cohérence avec le domaine métier"
+    }
+  ],
+  "recommendedMigrationSteps": [
+    {
+      "step": 1,
+      "action": "Créer les enums Prisma",
+      "description": "Définir tous les enums détectés dans le schéma Prisma"
+    },
+    {
+      "step": 2,
+      "action": "Adapter les types de colonne",
+      "description": "Appliquer les changements de type recommandés dans le schéma PostgreSQL"
+    },
+    {
+      "step": 3,
+      "action": "Ajouter les relations explicites",
+      "description": "Définir toutes les relations dans le schéma Prisma"
+    },
+    {
+      "step": 4,
+      "action": "Renommer les tables et colonnes",
+      "description": "Effectuer les changements de nom recommandés avec @map et @@map"
+    },
+    {
+      "step": 5,
+      "action": "Créer et optimiser les index",
+      "description": "Ajouter les index recommandés pour améliorer les performances"
+    },
+    {
+      "step": 6,
+      "action": "Générer la migration Prisma",
+      "description": "Utiliser 'prisma migrate dev' pour générer le script SQL de migration"
+    }
+  ],
+  "impactAssessment": {
+    "codebaseImpact": "MEDIUM",
+    "dataImpact": "LOW",
+    "performanceImpact": "POSITIVE",
+    "securityImpact": "POSITIVE",
+    "legacySystemImpact": "MEDIUM"
+  },
+  "schemaMigrationDiff": {
+    "version": "1.0.0",
+    "timestamp": "2025-04-12T15:30:00.000Z",
+    "generatedBy": "Prisma Schema Analyzer v1.2.0",
+    "summary": {
+      "totalTables": 24,
+      "tablesWithChanges": 18,
+      "totalChanges": 76,
+      "typeChanges": 32,
+      "indexChanges": 15,
+      "relationChanges": 12,
+      "constraintChanges": 17,
+      "severityLevel": "MEDIUM"
+    },
+    "tableChanges": [
+      {
+        "tableName": "users",
+        "mysqlName": "users",
+        "prismaName": "User",
+        "changes": [
+          {
+            "type": "TYPE_CHANGE",
+            "severity": "HIGH",
+            "column": "created_at",
+            "mysqlType": "TIMESTAMP",
+            "prismaType": "DateTime",
+            "postgresType": "TIMESTAMPTZ",
+            "impact": "Le type TIMESTAMP sans fuseau horaire sera converti en TIMESTAMPTZ avec UTC par défaut",
+            "recommendation": "Vérifier les logiques qui dépendent de l'heure locale et ajuster si nécessaire"
+          },
+          {
+            "type": "TYPE_CHANGE",
+            "severity": "HIGH",
+            "column": "balance",
+            "mysqlType": "FLOAT",
+            "prismaType": "Decimal",
+            "postgresType": "DECIMAL(10,2)",
+            "impact": "Possible perte de précision pour les valeurs monétaires",
+            "recommendation": "Convertir explicitement en DECIMAL(10,2) avant migration"
+          },
+          {
+            "type": "ENUM_CHANGE",
+            "severity": "MEDIUM",
+            "column": "status",
+            "mysqlType": "ENUM('ACTIVE','INACTIVE','SUSPENDED','DELETED')",
+            "prismaType": "UserStatus",
+            "postgresType": "VARCHAR + CHECK constraint",
+            "impact": "Les contraintes de validation seront différentes",
+            "recommendation": "Créer un type énuméré Prisma dédié"
+          },
+          {
+            "type": "INDEX_MISSING",
+            "severity": "MEDIUM",
+            "indexName": "idx_users_email_status",
+            "columns": ["email", "status"],
+            "impact": "Performances dégradées pour les requêtes filtrant par email et status",
+            "recommendation": "Ajouter cet index dans le schéma Prisma"
+          },
+          {
+            "type": "CONSTRAINT_MISSING",
+            "severity": "LOW",
+            "constraintName": "chk_users_email_valid",
+            "impact": "Pas de validation du format d'email au niveau base de données",
+            "recommendation": "Ajouter une contrainte CHECK dans PostgreSQL et une validation dans Prisma"
+          }
+        ]
+      },
+      {
+        "tableName": "products",
+        "mysqlName": "products",
+        "prismaName": "Product",
+        "changes": [
+          {
+            "type": "TYPE_CHANGE",
+            "severity": "HIGH",
+            "column": "price",
+            "mysqlType": "FLOAT",
+            "prismaType": "Decimal",
+            "postgresType": "DECIMAL(10,2)",
+            "impact": "Possible perte de précision pour les valeurs monétaires",
+            "recommendation": "Convertir explicitement en DECIMAL(10,2) avant migration"
+          },
+          {
+            "type": "TYPE_CHANGE",
+            "severity": "MEDIUM",
+            "column": "attributes",
+            "mysqlType": "TEXT",
+            "prismaType": "Json",
+            "postgresType": "JSONB",
+            "impact": "Les données JSON stockées en texte seront converties en JSONB",
+            "recommendation": "Valider que toutes les chaînes sont du JSON valide avant migration"
+          },
+          {
+            "type": "INDEX_ADDED",
+            "severity": "POSITIVE",
+            "indexName": "idx_products_name_gin",
+            "columns": ["name"],
+            "indexType": "GIN",
+            "impact": "Amélioration des performances pour les recherches textuelles",
+            "recommendation": "Maintenir cet index dans le schéma PostgreSQL"
+          }
+        ]
+      },
+      {
+        "tableName": "orders",
+        "mysqlName": "orders",
+        "prismaName": "Order",
+        "changes": [
+          {
+            "type": "TYPE_CHANGE",
+            "severity": "HIGH",
+            "column": "total_amount",
+            "mysqlType": "FLOAT",
+            "prismaType": "Decimal",
+            "postgresType": "DECIMAL(10,2)",
+            "impact": "Possible perte de précision pour les valeurs monétaires",
+            "recommendation": "Convertir explicitement en DECIMAL(10,2) avant migration"
+          },
+          {
+            "type": "RELATION_CHANGE",
+            "severity": "HIGH",
+            "relation": "orders -> users",
+            "mysqlDefinition": "FOREIGN KEY sans ON DELETE CASCADE",
+            "prismaDefinition": "onDelete: CASCADE",
+            "impact": "Les commandes seront automatiquement supprimées si l'utilisateur est supprimé",
+            "recommendation": "Vérifier l'impact métier de cette cascade et ajuster si nécessaire"
+          },
+          {
+            "type": "CONSTRAINT_ADDED",
+            "severity": "POSITIVE",
+            "constraintName": "chk_orders_amount_positive",
+            "definition": "CHECK (total_amount > 0)",
+            "impact": "Garantie d'intégrité des montants de commande",
+            "recommendation": "Maintenir cette contrainte"
+          }
+        ]
+      },
+      {
+        "tableName": "order_items",
+        "mysqlName": "order_items",
+        "prismaName": "OrderItem",
+        "changes": [
+          {
+            "type": "TYPE_CHANGE",
+            "severity": "HIGH",
+            "column": "unit_price",
+            "mysqlType": "FLOAT",
+            "prismaType": "Decimal",
+            "postgresType": "DECIMAL(10,2)",
+            "impact": "Possible perte de précision pour les valeurs monétaires",
+            "recommendation": "Convertir explicitement en DECIMAL(10,2) avant migration"
+          },
+          {
+            "type": "INDEX_MISSING",
+            "severity": "HIGH",
+            "indexName": "idx_order_items_product_id",
+            "columns": ["product_id"],
+            "impact": "Performances dégradées pour les jointures avec les produits",
+            "recommendation": "Ajouter cet index dans le schéma Prisma"
+          }
+        ]
+      },
+      {
+        "tableName": "categories",
+        "mysqlName": "categories",
+        "prismaName": "Category",
+        "changes": [
+          {
+            "type": "COLUMN_ADDED",
+            "severity": "MEDIUM",
+            "column": "path",
+            "prismaType": "String",
+            "postgresType": "VARCHAR(255)",
+            "impact": "Nouvel attribut pour la hiérarchie des catégories",
+            "recommendation": "Générer les valeurs de chemin lors de la migration"
+          },
+          {
+            "type": "INDEX_ADDED",
+            "severity": "POSITIVE",
+            "indexName": "idx_categories_path_gist",
+            "columns": ["path"],
+            "indexType": "GIST",
+            "impact": "Amélioration des performances pour les requêtes hiérarchiques",
+            "recommendation": "Maintenir cet index dans le schéma PostgreSQL"
+          }
+        ]
+      },
+      {
+        "tableName": "payment_transactions",
+        "mysqlName": "payment_transactions",
+        "prismaName": "PaymentTransaction",
+        "changes": [
+          {
+            "type": "TYPE_CHANGE",
+            "severity": "HIGH",
+            "column": "amount",
+            "mysqlType": "FLOAT",
+            "prismaType": "Decimal",
+            "postgresType": "DECIMAL(10,2)",
+            "impact": "Possible perte de précision pour les valeurs monétaires",
+            "recommendation": "Convertir explicitement en DECIMAL(10,2) avant migration"
+          },
+          {
+            "type": "ENCRYPTION_NEEDED",
+            "severity": "HIGH",
+            "column": "payment_details",
+            "impact": "Informations de paiement stockées sans chiffrement",
+            "recommendation": "Implémenter le chiffrement côté application ou utiliser pgcrypto"
+          }
+        ]
+      },
+      {
+        "tableName": "log_entries",
+        "mysqlName": "log_entries",
+        "prismaName": "LogEntry",
+        "changes": [
+          {
+            "type": "PRIMARY_KEY_MISSING",
+            "severity": "CRITICAL",
+            "impact": "Table sans clé primaire, ce qui n'est pas pris en charge par Prisma",
+            "recommendation": "Ajouter une clé primaire ID avant migration"
+          },
+          {
+            "type": "PARTITIONING_RECOMMENDED",
+            "severity": "MEDIUM",
+            "strategy": "RANGE",
+            "partitionKey": "created_at",
+            "impact": "Table volumineuse qui bénéficierait du partitionnement",
+            "recommendation": "Implémenter le partitionnement par date dans PostgreSQL"
+          },
+          {
+            "type": "TYPE_CHANGE",
+            "severity": "MEDIUM",
+            "column": "context",
+            "mysqlType": "TEXT",
+            "prismaType": "Json",
+            "postgresType": "JSONB",
+            "impact": "Les données JSON stockées en texte seront converties en JSONB",
+            "recommendation": "Valider que toutes les chaînes sont du JSON valide avant migration"
+          }
+        ]
+      }
+    ],
+    "globalRecommendations": [
+      {
+        "category": "INDICES",
+        "recommendation": "Vérifier tous les index pour optimiser les performances dans PostgreSQL"
+      },
+      {
+        "category": "TYPES",
+        "recommendation": "Standardiser les types monétaires en DECIMAL(10,2) avant migration"
+      },
+      {
+        "category": "ÉNUMÉRATIONS",
+        "recommendation": "Utiliser des types énumérés Prisma et des contraintes CHECK PostgreSQL"
+      },
+      {
+        "category": "PARTITIONNEMENT",
+        "recommendation": "Considérer le partitionnement des tables volumineuses logs et historiques"
+      },
+      {
+        "category": "JSONB",
+        "recommendation": "Tirer parti du type JSONB pour les données semi-structurées"
+      },
+      {
+        "category": "CONTRAINTES",
+        "recommendation": "Rendre explicites toutes les contraintes métier avec CHECK"
+      }
+    ]
+  },
+  "schema_migration_diff": {
+    "version": "1.0.0",
+    "generatedAt": "2025-04-12T14:30:00Z",
+    "databaseSource": "MySQL 8.0.28",
+    "databaseTarget": "PostgreSQL 15",
+    "changes": [
+      {
+        "table": "users",
+        "changes": [
+          {
+            "type": "COLUMN_TYPE_CHANGE",
+            "column": "is_admin",
+            "fromType": "TINYINT(1)",
+            "toType": "BOOLEAN",
+            "prismaMapping": "Boolean",
+            "impact": "LOW",
+            "dataTransformation": "Convertir 0 en false, 1 en true",
+            "notes": "PostgreSQL dispose d'un type BOOLEAN natif qui est plus approprié pour ce cas d'utilisation"
+          },
+          {
+            "type": "COLUMN_TYPE_CHANGE",
+            "column": "status",
+            "fromType": "ENUM('ACTIVE', 'INACTIVE', 'SUSPENDED', 'DELETED')",
+            "toType": "TEXT",
+            "prismaMapping": "UserStatus (enum)",
+            "impact": "MEDIUM",
+            "dataTransformation": "Mappage direct des valeurs",
+            "notes": "Implémenté avec un type ENUM Prisma et une contrainte PostgreSQL"
+          },
+          {
+            "type": "COLUMN_TYPE_CHANGE",
+            "column": "created_at",
+            "fromType": "TIMESTAMP",
+            "toType": "TIMESTAMPTZ",
+            "prismaMapping": "DateTime",
+            "impact": "LOW",
+            "dataTransformation": "Ajouter le fuseau horaire UTC",
+            "notes": "TIMESTAMPTZ permet une meilleure gestion des fuseaux horaires"
+          },
+          {
+            "type": "COLUMN_TYPE_CHANGE",
+            "column": "updated_at",
+            "fromType": "TIMESTAMP",
+            "toType": "TIMESTAMPTZ",
+            "prismaMapping": "DateTime?",
+            "impact": "LOW",
+            "dataTransformation": "Ajouter le fuseau horaire UTC",
+            "notes": "TIMESTAMPTZ permet une meilleure gestion des fuseaux horaires"
+          },
+          {
+            "type": "COLUMN_NAME_CONVENTION",
+            "column": "is_admin",
+            "modelField": "isAdmin",
+            "mappedWith": "@map(\"is_admin\")",
+            "impact": "NONE",
+            "notes": "Utilise la convention camelCase en TypeScript et snake_case en base de données"
+          },
+          {
+            "type": "COLUMN_NAME_CONVENTION",
+            "column": "created_at",
+            "modelField": "createdAt",
+            "mappedWith": "@map(\"created_at\")",
+            "impact": "NONE",
+            "notes": "Utilise la convention camelCase en TypeScript et snake_case en base de données"
+          },
+          {
+            "type": "COLUMN_NAME_CONVENTION",
+            "column": "updated_at",
+            "modelField": "updatedAt",
+            "mappedWith": "@map(\"updated_at\")",
+            "impact": "NONE",
+            "notes": "Utilise la convention camelCase en TypeScript et snake_case en base de données"
+          },
+          {
+            "type": "INDEX_ADDITION",
+            "name": "idx_users_status",
+            "columns": ["status"],
+            "impact": "LOW",
+            "notes": "Ajout d'un index pour améliorer les performances sur les filtres par statut"
+          }
+        ]
+      },
+      {
+        "table": "profiles",
+        "changes": [
+          {
+            "type": "COLUMN_NAME_CONVENTION",
+            "column": "user_id",
+            "modelField": "userId",
+            "mappedWith": "@map(\"user_id\")",
+            "impact": "NONE",
+            "notes": "Utilise la convention camelCase en TypeScript et snake_case en base de données"
+          },
+          {
+            "type": "COLUMN_NAME_CONVENTION",
+            "column": "full_name",
+            "modelField": "fullName",
+            "mappedWith": "@map(\"full_name\")",
+            "impact": "NONE",
+            "notes": "Utilise la convention camelCase en TypeScript et snake_case en base de données"
+          },
+          {
+            "type": "COLUMN_NAME_CONVENTION",
+            "column": "avatar_url",
+            "modelField": "avatarUrl",
+            "mappedWith": "@map(\"avatar_url\")",
+            "impact": "NONE",
+            "notes": "Utilise la convention camelCase en TypeScript et snake_case en base de données"
+          },
+          {
+            "type": "COLUMN_TYPE_CHANGE",
+            "column": "created_at",
+            "fromType": "TIMESTAMP",
+            "toType": "TIMESTAMPTZ",
+            "prismaMapping": "DateTime",
+            "impact": "LOW",
+            "dataTransformation": "Ajouter le fuseau horaire UTC",
+            "notes": "TIMESTAMPTZ permet une meilleure gestion des fuseaux horaires"
+          },
+          {
+            "type": "COLUMN_TYPE_CHANGE",
+            "column": "updated_at",
+            "fromType": "TIMESTAMP",
+            "toType": "TIMESTAMPTZ",
+            "prismaMapping": "DateTime?",
+            "impact": "LOW",
+            "dataTransformation": "Ajouter le fuseau horaire UTC",
+            "notes": "TIMESTAMPTZ permet une meilleure gestion des fuseaux horaires"
+          },
+          {
+            "type": "CONSTRAINT_IMPROVEMENT",
+            "description": "Relation explicite 1:1 avec User",
+            "implementation": "@relation(fields: [userId], references: [id], onDelete: Cascade)",
+            "impact": "LOW",
+            "notes": "Garantit l'intégrité référentielle avec comportement de suppression en cascade"
+          },
+          {
+            "type": "INDEX_ADDITION",
+            "name": "idx_profiles_name",
+            "columns": ["full_name", "address"],
+            "impact": "LOW",
+            "notes": "Ajout d'un index composite pour les recherches courantes"
+          }
+        ]
+      },
+      {
+        "table": "sessions",
+        "changes": [
+          {
+            "type": "COLUMN_TYPE_CHANGE",
+            "column": "payload",
+            "fromType": "TEXT",
+            "toType": "JSONB",
+            "prismaMapping": "Json",
+            "impact": "MEDIUM",
+            "dataTransformation": "Convertir TEXT en JSON valide",
+            "notes": "Utilisation du type JSONB de PostgreSQL pour de meilleures performances et capacités de requête"
+          },
+          {
+            "type": "COLUMN_TYPE_CHANGE",
+            "column": "last_activity",
+            "fromType": "INT",
+            "toType": "TIMESTAMPTZ",
+            "prismaMapping": "DateTime",
+            "impact": "MEDIUM",
+            "dataTransformation": "Convertir timestamp UNIX (secondes) en datetime",
+            "script": "to_timestamp(last_activity)",
+            "notes": "Utilise le type native de date pour simplifier les opérations de date/heure"
+          },
+          {
+            "type": "COLUMN_NAME_CONVENTION",
+            "column": "user_id",
+            "modelField": "userId",
+            "mappedWith": "@map(\"user_id\")",
+            "impact": "NONE",
+            "notes": "Utilise la convention camelCase en TypeScript et snake_case en base de données"
+          },
+          {
+            "type": "COLUMN_NAME_CONVENTION",
+            "column": "ip_address",
+            "modelField": "ipAddress",
+            "mappedWith": "@map(\"ip_address\")",
+            "impact": "NONE",
+            "notes": "Utilise la convention camelCase en TypeScript et snake_case en base de données"
+          },
+          {
+            "type": "COLUMN_NAME_CONVENTION",
+            "column": "user_agent",
+            "modelField": "userAgent",
+            "mappedWith": "@map(\"user_agent\")",
+            "impact": "NONE",
+            "notes": "Utilise la convention camelCase en TypeScript et snake_case en base de données"
+          },
+          {
+            "type": "COLUMN_NAME_CONVENTION",
+            "column": "last_activity",
+            "modelField": "lastActivity",
+            "mappedWith": "@map(\"last_activity\")",
+            "impact": "NONE",
+            "notes": "Utilise la convention camelCase en TypeScript et snake_case en base de données"
+          },
+          {
+            "type": "COLUMN_TYPE_CHANGE",
+            "column": "created_at",
+            "fromType": "TIMESTAMP",
+            "toType": "TIMESTAMPTZ",
+            "prismaMapping": "DateTime",
+            "impact": "LOW",
+            "dataTransformation": "Ajouter le fuseau horaire UTC",
+            "notes": "TIMESTAMPTZ permet une meilleure gestion des fuseaux horaires"
+          },
+          {
+            "type": "COLUMN_TYPE_CHANGE",
+            "column": "expires_at",
+            "fromType": "TIMESTAMP",
+            "toType": "TIMESTAMPTZ",
+            "prismaMapping": "DateTime",
+            "impact": "LOW",
+            "dataTransformation": "Ajouter le fuseau horaire UTC",
+            "notes": "TIMESTAMPTZ permet une meilleure gestion des fuseaux horaires"
+          },
+          {
+            "type": "INDEX_ADDITION",
+            "name": "idx_sessions_expires_at",
+            "columns": ["expires_at"],
+            "impact": "LOW",
+            "notes": "Ajout d'un index pour améliorer les performances des requêtes de nettoyage des sessions expirées"
+          }
+        ]
+      }
+    ],
+    "globalChanges": [
+      {
+        "type": "NAMING_CONVENTION",
+        "description": "Utilisation de camelCase pour les noms de champs dans les modèles Prisma",
+        "impact": "LOW",
+        "implementation": "Via @map pour maintenir la compatibilité avec la base de données",
+        "notes": "Meilleure intégration avec l'écosystème TypeScript"
+      },
+      {
+        "type": "TYPE_MAPPING",
+        "description": "Utilisation de types PostgreSQL natifs",
+        "examples": [
+          "TINYINT(1) → BOOLEAN",
+          "ENUM → Type ENUM personnalisé",
+          "TEXT (contenant JSON) → JSONB",
+          "TIMESTAMP → TIMESTAMPTZ"
+        ],
+        "impact": "MEDIUM",
+        "notes": "Optimisation des types pour les fonctionnalités PostgreSQL"
+      },
+      {
+        "type": "RELATION_IMPROVEMENT",
+        "description": "Relations explicites avec comportements de cascade définis",
+        "implementation": "Via les attributs Prisma @relation",
+        "impact": "MEDIUM",
+        "notes": "Meilleure intégrité référentielle et comportement prévisible pour les suppressions"
+      },
+      {
+        "type": "INDEX_OPTIMIZATION",
+        "description": "Ajout d'index stratégiques pour améliorer les performances",
+        "impact": "MEDIUM",
+        "notes": "Ciblage des colonnes fréquemment utilisées dans les clauses WHERE, ORDER BY et JOIN"
+      }
+    ],
+    "statistics": {
+      "tablesAnalyzed": 3,
+      "columnsAnalyzed": 21,
+      "columnsChanged": 14,
+      "indexesAdded": 3,
+      "relationshipsEnhanced": 2,
+      "namingConventionChanges": 12,
+      "highImpactChanges": 0,
+      "mediumImpactChanges": 4,
+      "lowImpactChanges": 10
+    }
+  }
+}

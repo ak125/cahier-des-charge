@@ -1,0 +1,69 @@
+{
+  "lastUpdated": "2025-04-15T00:00:00.000Z",
+  "summary": {
+    "total": 8,
+    "pending": 2,
+    "done": 4,
+    "invalid": 2
+  },
+  "files": {
+    "index.php": {
+      "status": "done",
+      "agent": "php-analyzer",
+      "lastUpdated": "2025-04-14T10:30:15.123Z"
+    },
+    "contact.php": {
+      "status": "invalid",
+      "agent": "mcp-verifier",
+      "lastUpdated": "2025-04-14T10:15:23.789Z",
+      "error": "Route incompatible avec le schéma Remix"
+    },
+    "produit.php": {
+      "status": "invalid",
+      "agent": "diff-verifier",
+      "lastUpdated": "2025-04-14T10:25:34.123Z",
+      "error": "Différence de sortie HTML > 30% entre ancienne et nouvelle version"
+    },
+    "panier.php": {
+      "status": "done",
+      "agent": "php-analyzer",
+      "lastUpdated": "2025-04-14T10:34:22.456Z"
+    },
+    "account.php": {
+      "status": "pending",
+      "agent": "mcp-verifier",
+      "lastUpdated": "2025-04-14T10:33:12.456Z"
+    },
+    "checkout.php": {
+      "status": "pending",
+      "agent": "php-analyzer",
+      "lastUpdated": "2025-04-14T10:32:45.123Z"
+    },
+    "categories.php": {
+      "status": "done",
+      "agent": "php-analyzer",
+      "lastUpdated": "2025-04-14T10:31:05.987Z"
+    },
+    "faq.php": {
+      "status": "done",
+      "agent": "mcp-verifier",
+      "lastUpdated": "2025-04-14T10:28:47.654Z"
+    }
+  },
+  "migrations": [],
+  "stats": {
+    "total": 0,
+    "completed": 0,
+    "failed": 0,
+    "inProgress": 0,
+    "pending": 0
+  },
+  "config": {
+    "enableGitHubIntegration": true,
+    "createPullRequestsByDefault": true,
+    "qaThreshold": 90,
+    "enableTestGeneration": true,
+    "checkAccessibility": true,
+    "enableSeoCheck": true
+  }
+}

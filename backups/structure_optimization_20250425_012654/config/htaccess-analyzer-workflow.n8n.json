@@ -1,0 +1,208 @@
+{
+  "name": "Htaccess Analyzer Workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "triggerTimes": {
+          "item": [
+            {
+              "mode": "everyX",
+              "value": 24,
+              "unit": "hours"
+            }
+          ]
+        }
+      },
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "position": [100, 200],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "path": "/workspaces/cahier-des-charge/app/legacy",
+        "fileExtensions": [".htaccess"],
+        "options": {
+          "recursive": true
+        }
+      },
+      "name": "Find Htaccess Files",
+      "type": "n8n-nodes-base.filesearch",
+      "position": [300, 200],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "operation": "read",
+        "options": {}
+      },
+      "name": "Read Htaccess",
+      "type": "n8n-nodes-base.readTextFile",
+      "position": [500, 200],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "jsCode": "// Analyser le contenu du fichier .htaccess\nconst timestamp = new Date().toISOString();\nconst outputDir = '/workspaces/cahier-des-charge/reports/analysis/htaccess';\nconst fs = require('fs');\nconst path = require('path');\n\n// Garantir que le répertoire existe\nif (!fs.existsSync(outputDir)) {\n  fs.mkdirSync(outputDir, { recursive: true });\n}\n\n// Données du fichier htaccess\nconst htaccessContent = $input.item.json.data;\nconst filePath = $input.item.json.file;\nconst fileName = path.basename(filePath);\n\n// Analyse des règles htaccess\nconst analysis = {\n  timestamp,\n  filePath,\n  fileName,\n  rules: [],\n  redirects: [],\n  rewrites: [],\n  security: [],\n  performance: [],\n  errors: [],\n  summary: {}\n};\n\n// Analyser ligne par ligne\nconst lines = htaccessContent.split('\\n');\nlet currentSection = null;\n\nfor (let i = 0; i < lines.length; i++) {\n  const line = lines[i].trim();\n  \n  // Ignorer les lignes vides et les commentaires\n  if (line === '' || line.startsWith('#')) continue;\n  \n  // Détecter les blocs de configuration\n  if (line.startsWith('<')) {\n    if (line.startsWith('<Directory') || line.startsWith('<Location') || line.startsWith('<Files')) {\n      currentSection = { type: line.split(' ')[0].substring(1), path: line, rules: [], lineStart: i + 1 };\n    } else if (line.startsWith('</')) {\n      if (currentSection) {\n        currentSection.lineEnd = i + 1;\n        analysis.rules.push(currentSection);\n        currentSection = null;\n      }\n    }\n    continue;\n  }\n  \n  // Extraire les redirections\n  if (line.startsWith('Redirect') || line.startsWith('RedirectMatch') || line.startsWith('RedirectPermanent') || line.startsWith('RedirectTemp')) {\n    analysis.redirects.push({ type: line.split(' ')[0], rule: line, line: i + 1 });\n  }\n  \n  // Extraire les réécritures d'URL\n  else if (line.startsWith('RewriteEngine') || line.startsWith('RewriteBase') || line.startsWith('RewriteRule') || line.startsWith('RewriteCond')) {\n    analysis.rewrites.push({ type: line.split(' ')[0], rule: line, line: i + 1 });\n  }\n  \n  // Extraire les règles de sécurité\n  else if (line.includes('deny from') || line.includes('allow from') || line.includes('Require') || line.includes('AuthType')) {\n    analysis.security.push({ rule: line, line: i + 1 });\n  }\n  \n  // Extraire les règles de performance\n  else if (line.includes('ExpiresActive') || line.includes('Header set Cache-Control') || line.includes('FileETag')) {\n    analysis.performance.push({ rule: line, line: i + 1 });\n  }\n  \n  // Ajouter la règle au bloc courant si nous sommes dans un bloc\n  if (currentSection) {\n    currentSection.rules.push({ rule: line, line: i + 1 });\n  }\n}\n\n// Résumé\nanalysis.summary = {\n  redirectCount: analysis.redirects.length,\n  rewriteCount: analysis.rewrites.length,\n  securityCount: analysis.security.length,\n  performanceCount: analysis.performance.length,\n  totalRuleCount: analysis.rules.length + analysis.redirects.length + analysis.rewrites.length + analysis.security.length + analysis.performance.length\n};\n\n// Sauvegarder l'analyse\nconst analysisPath = path.join(outputDir, `${fileName.replace(/\\./g, '_')}_analysis_${timestamp.replace(/:/g, '-')}.json`);\nfs.writeFileSync(analysisPath, JSON.stringify(analysis, null, 2));\n\nreturn {\n  json: {\n    ...analysis,\n    analysisPath,\n    outputDir\n  }\n};"
+      },
+      "name": "Analyze Htaccess",
+      "type": "n8n-nodes-base.code",
+      "position": [700, 200],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "command": "cd /workspaces/cahier-des-charge && npx ts-node agents/migration/htaccess-to-nginx.ts --input-file={{ $json.filePath }} --analysis={{ $json.analysisPath }} --output-dir={{ $json.outputDir }}/nginx",
+        "workingDirectory": "/workspaces/cahier-des-charge",
+        "executeTimeout": 120
+      },
+      "name": "Generate Nginx Config",
+      "type": "n8n-nodes-base.executeCommand",
+      "position": [900, 150],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "command": "cd /workspaces/cahier-des-charge && npx ts-node agents/migration/htaccess-to-caddy.ts --input-file={{ $json.filePath }} --analysis={{ $json.analysisPath }} --output-dir={{ $json.outputDir }}/caddy",
+        "workingDirectory": "/workspaces/cahier-des-charge",
+        "executeTimeout": 120
+      },
+      "name": "Generate Caddy Config",
+      "type": "n8n-nodes-base.executeCommand",
+      "position": [900, 300],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "functionCode": "// Vérifier si le fichier htaccess contient des directives nécessitant une attention spéciale\nconst htaccessContent = $node[\"Read Htaccess\"].json.data;\nconst analysis = $input.item.json;\n\nconst specialAttentionNeeded = [];\n\n// Vérifier les règles qui pourraient nécessiter une attention manuelle\nif (htaccessContent.includes('mod_rewrite')) specialAttentionNeeded.push('mod_rewrite');\nif (htaccessContent.includes('SetEnv')) specialAttentionNeeded.push('environment variables');\nif (htaccessContent.includes('php_value') || htaccessContent.includes('php_flag')) specialAttentionNeeded.push('PHP settings');\nif (htaccessContent.includes('AddHandler') || htaccessContent.includes('SetHandler')) specialAttentionNeeded.push('handlers');\nif (htaccessContent.includes('SSLOptions') || htaccessContent.includes('SSLRequire')) specialAttentionNeeded.push('SSL configuration');\n\n// Déterminer la complexité de la migration\nconst complexity = specialAttentionNeeded.length === 0 ? 'simple' : \n                   specialAttentionNeeded.length <= 2 ? 'modérée' : 'complexe';\n\n// Générer des conseils de migration\nconst migrationAdvice = [];\nif (analysis.rewrites.length > 0) {\n  migrationAdvice.push('Les règles de réécriture doivent être testées après migration pour vérifier leur exactitude.');\n}\nif (analysis.security.length > 0) {\n  migrationAdvice.push('Implémenter une stratégie de sécurité équivalente dans la nouvelle configuration.');\n}\nif (analysis.performance.length > 0) {\n  migrationAdvice.push('Optimiser les performances avec des directives natives Nginx/Caddy plutôt que des équivalents directs.');\n}\n\n// Évaluer les risques potentiels\nconst migrationRisks = [];\nif (htaccessContent.includes('RewriteCond %{HTTP_HOST}')) {\n  migrationRisks.push('Les conditions basées sur l\\'hôte requièrent une attention particulière dans Nginx/Caddy.');\n}\nif (htaccessContent.includes('RewriteCond %{REQUEST_FILENAME}')) {\n  migrationRisks.push('Les conditions basées sur les fichiers peuvent nécessiter une logique différente dans Nginx/Caddy.');\n}\n\nreturn {\n  json: {\n    ...analysis,\n    migrationComplexity: complexity,\n    specialAttention: specialAttentionNeeded,\n    migrationAdvice,\n    migrationRisks\n  }\n};"
+      },
+      "name": "Evaluate Migration Complexity",
+      "type": "n8n-nodes-base.function",
+      "position": [1100, 200],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "chatId": "{{ $env.NOTIFICATION_CHAT_ID }}",
+        "text": "🔍 *Analyse htaccess complétée*\n\nFichier: `{{ $json.fileName }}`\nEmplacement: `{{ $json.filePath }}`\n\n📊 *Statistiques:*\n- Redirections: {{ $json.summary.redirectCount }}\n- Réécritures: {{ $json.summary.rewriteCount }}\n- Règles de sécurité: {{ $json.summary.securityCount }}\n- Optimisations: {{ $json.summary.performanceCount }}\n- Total: {{ $json.summary.totalRuleCount }}\n\n🔄 *Migration:*\n- Complexité: {{ $json.migrationComplexity }}\n{% if $json.specialAttention.length > 0 %}\n- Attention requise: {{ $json.specialAttention.join(', ') }}\n{% endif %}\n\n✅ Configurations générées:\n- [Nginx](file://{{ $json.outputDir }}/nginx)\n- [Caddy](file://{{ $json.outputDir }}/caddy)\n\n*Timestamp:* {{ $json.timestamp }}",
+        "additionalFields": {
+          "parseMode": "Markdown",
+          "disableNotification": false
+        }
+      },
+      "name": "Send Notification",
+      "type": "n8n-nodes-base.telegram",
+      "position": [1300, 200],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "# Rapport d'analyse htaccess - {{ $json.timestamp }}\n\n## Fichier analysé\n\n- **Nom du fichier**: {{ $json.fileName }}\n- **Chemin**: {{ $json.filePath }}\n- **Date d'analyse**: {{ $json.timestamp }}\n\n## Résumé\n\n- **Redirections**: {{ $json.summary.redirectCount }}\n- **Réécritures**: {{ $json.summary.rewriteCount }}\n- **Règles de sécurité**: {{ $json.summary.securityCount }}\n- **Optimisations**: {{ $json.summary.performanceCount }}\n- **Nombre total de règles**: {{ $json.summary.totalRuleCount }}\n\n## Évaluation de la migration\n\n- **Complexité**: {{ $json.migrationComplexity }}\n{% if $json.specialAttention.length > 0 %}\n- **Attention spéciale requise pour**:\n{% for item in $json.specialAttention %}\n  - {{ item }}\n{% endfor %}\n{% endif %}\n\n## Conseils de migration\n\n{% for advice in $json.migrationAdvice %}\n- {{ advice }}\n{% endfor %}\n\n## Risques potentiels\n\n{% for risk in $json.migrationRisks %}\n- {{ risk }}\n{% endfor %}\n\n## Configurations générées\n\n- [Configuration Nginx](file://{{ $json.outputDir }}/nginx/{{ $json.fileName }}.conf)\n- [Configuration Caddy](file://{{ $json.outputDir }}/caddy/{{ $json.fileName }}.Caddyfile)\n\n> Ce rapport a été généré automatiquement par le pipeline d'analyse htaccess.",
+        "destination": "={{ $json.outputDir }}/{{ $json.fileName.replace('.htaccess', '') }}_rapport.md",
+        "options": {}
+      },
+      "name": "Generate Report",
+      "type": "n8n-nodes-base.writeTextFile",
+      "position": [1500, 200],
+      "typeVersion": 1
+    }
+  ],
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Find Htaccess Files",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Find Htaccess Files": {
+      "main": [
+        [
+          {
+            "node": "Read Htaccess",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Htaccess": {
+      "main": [
+        [
+          {
+            "node": "Analyze Htaccess",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analyze Htaccess": {
+      "main": [
+        [
+          {
+            "node": "Generate Nginx Config",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Generate Caddy Config",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Nginx Config": {
+      "main": [
+        [
+          {
+            "node": "Evaluate Migration Complexity",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Caddy Config": {
+      "main": [
+        [
+          {
+            "node": "Evaluate Migration Complexity",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Evaluate Migration Complexity": {
+      "main": [
+        [
+          {
+            "node": "Send Notification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Notification": {
+      "main": [
+        [
+          {
+            "node": "Generate Report",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {},
+  "tags": ["migration", "htaccess", "apache", "nginx", "caddy", "webserver"]
+}
