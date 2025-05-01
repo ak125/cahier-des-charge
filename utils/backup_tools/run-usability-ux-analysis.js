@@ -339,7 +339,7 @@ async function analyzePageUsability(browser, urlInfo) {
       
       // Si un formulaire de recherche ou un lien de contact est directement visible, c'est une bonne chose
       const easilyAccessible = searchForm !== null || contactLink !== null;
-      let score = easilyAccessible ? 100 : 50; // Estimation simplifée
+      const score = easilyAccessible ? 100 : 50; // Estimation simplifée
       
       return {
         passed: easilyAccessible,

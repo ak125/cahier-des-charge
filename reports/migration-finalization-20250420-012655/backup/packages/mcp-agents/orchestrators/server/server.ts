@@ -3,14 +3,14 @@
  * Expose les endpoints REST pour interagir avec le système d'agents
  */
 
-import express from 'express';
-import cors from 'cors';
-import bodyParser from 'body-parser';
-import agentController from './AgentController';
-import { Logger } from '../utils/logger';
-import { AgentRegistry } from '../core/AgentRegistry';
 import * as path from 'path';
+import bodyParser from 'body-parser';
+import cors from 'cors';
+import express from 'express';
 import * as fs from 'fs-extra';
+import { AgentRegistry } from '../core/AgentRegistry';
+import { Logger } from '../utils/logger';
+import agentController from './AgentController';
 
 // Création du logger
 const logger = new Logger('AgentAPIServer');
@@ -38,7 +38,7 @@ app.get('/', (req, res) => {
     name: 'Agent Control API',
     version: '1.0.0',
     status: 'running',
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   });
 });
 
@@ -205,7 +205,7 @@ app.get('/dashboard', (req, res) => {
 app.use((req, res) => {
   res.status(404).json({
     success: false,
-    error: 'Route non trouvée'
+    error: 'Route non trouvée',
   });
 });
 
@@ -216,40 +216,40 @@ async function loadAgents() {
   try {
     // Initialisation du registre des agents
     const registry = AgentRegistry.getInstance();
-    
+
     // Chemin vers le dossier des agents
     const agentsBasePath = path.resolve(__dirname, '../');
-    
+
     // Liste des types d'agents à charger
     const agentTypes = ['analyzers', 'generators', 'processors', 'orchestrators', 'validators'];
-    
+
     logger.info('Chargement des agents...');
-    
+
     // Pour chaque type d'agent
     for (const type of agentTypes) {
       const typePath = path.join(agentsBasePath, type);
-      
+
       // Vérifier si le dossier existe
-      if (!await fs.pathExists(typePath)) {
+      if (!(await fs.pathExists(typePath))) {
         logger.warn(`Dossier ${type} non trouvé, passage au suivant`);
         continue;
       }
-      
+
       // Lire le contenu du dossier
       const agentFolders = await fs.readdir(typePath);
-      
+
       for (const folder of agentFolders) {
         const agentPath = path.join(typePath, folder);
         const stat = await fs.stat(agentPath);
-        
+
         // Vérifier que c'est un dossier
         if (!stat.isDirectory()) continue;
-        
+
         try {
           // Vérifier s'il y a un point d'entrée index.js/ts
           const entryPoints = ['index.ts', 'index.js', `${folder}.ts`, `${folder}.js`];
           let entryPoint = null;
-          
+
           for (const entry of entryPoints) {
             const entryPath = path.join(agentPath, entry);
             if (await fs.pathExists(entryPath)) {
@@ -257,23 +257,23 @@ async function loadAgents() {
               break;
             }
           }
-          
+
           if (!entryPoint) {
             logger.warn(`Pas de point d'entrée trouvé pour l'agent ${folder}`);
             continue;
           }
-          
+
           // Ici, on importerait dynamiquement l'agent
           // Note: Dans un environnement réel, cette partie serait complétée
           // mais nous ne pouvons pas faire un import dynamique dans ce contexte
-          
+
           logger.info(`Agent chargé: ${folder} (${type})`);
         } catch (error) {
           logger.error(`Erreur lors du chargement de l'agent ${folder}: ${error}`);
         }
       }
     }
-    
+
     const agentCount = (await registry.getAllAgents()).length;
     logger.info(`Nombre total d'agents chargés: ${agentCount}`);
   } catch (error) {
@@ -290,7 +290,7 @@ export function startServer(port = 3000) {
     try {
       // Charger les agents
       await loadAgents();
-      
+
       // Démarrer le serveur
       app.listen(port, () => {
         logger.info(`Serveur API démarré sur le port ${port}`);
@@ -311,316 +311,5 @@ if (require.main === module) {
 
 export default app;
 
-
-
-
-
-
-
-
-
-
-
-
 import { BaseAgent } from '@workspaces/cahier-des-charge/src/core/interfaces/BaseAgent';
 import { BusinessAgent } from '@workspaces/cahier-des-charge/src/core/interfaces/business';
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

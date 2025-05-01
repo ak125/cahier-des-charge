@@ -1,7 +1,7 @@
-import { OrchestrationAgent } from '@workspaces/cahier-des-charge/src/core/interfaces/orchestration';
 import * as fs from 'fs';
-import * as path from 'path';
 import { promises as fsPromises } from 'fs';
+import * as path from 'path';
+import { OrchestrationAgent } from '@workspaces/cahier-des-charge/src/core/interfaces/orchestration';
 
 export interface AuditSection {
   id: string;
@@ -37,15 +37,15 @@ export interface IAgent {
   getDependencies(): string[]; // Renvoie les noms des agents dont celui-ci dépend
 }
 
-export abstract class BaseAgent implements IAgent , OrchestrationAgent{
+export abstract class BaseAgent implements IAgent, OrchestrationAgent {
   protected filePath: string;
-  protected fileContent: string = '';
+  protected fileContent = '';
   protected sections: AuditSection[] = [];
-  protected startTime: number = 0;
+  protected startTime = 0;
   protected errors: Error[] = [];
   protected warnings: string[] = [];
   protected artifacts: string[] = [];
-  
+
   constructor(filePath: string) {
     this.filePath = filePath;
   }
@@ -56,14 +56,14 @@ export abstract class BaseAgent implements IAgent , OrchestrationAgent{
   public getName(): string {
     return this.constructor.name;
   }
-  
+
   /**
    * Renvoie la version de l'agent
    */
   public getVersion(): string {
     return '1.0.0'; // À surcharger par les implémentations concrètes
   }
-  
+
   /**
    * Renvoie les agents dont celui-ci dépend
    */
@@ -92,7 +92,7 @@ export abstract class BaseAgent implements IAgent , OrchestrationAgent{
     const baseFilename = path.basename(this.filePath);
     const dirPath = path.dirname(this.filePath);
     const outputPath = path.join(dirPath, `${baseFilename}.audit.sections.json`);
-    
+
     try {
       // Vérifier si le fichier existe déjà
       let existingSections: AuditSection[] = [];
@@ -102,29 +102,29 @@ export abstract class BaseAgent implements IAgent , OrchestrationAgent{
       } catch (error) {
         // Le fichier n'existe pas encore, on continue
       }
-      
+
       // Ajouter un timestamp aux sections
       const timestamp = Date.now();
-      this.sections.forEach(section => {
+      this.sections.forEach((section) => {
         section.timestamp = timestamp;
       });
-      
+
       // Fusionner ou ajouter les nouvelles sections
       const updatedSections = [...existingSections];
-      
+
       for (const newSection of this.sections) {
-        const existingIndex = updatedSections.findIndex(s => s.id === newSection.id);
+        const existingIndex = updatedSections.findIndex((s) => s.id === newSection.id);
         if (existingIndex !== -1) {
           updatedSections[existingIndex] = newSection;
         } else {
           updatedSections.push(newSection);
         }
       }
-      
+
       // Écrire le fichier mis à jour
       await fsPromises.writeFile(outputPath, JSON.stringify(updatedSections, null, 2), 'utf8');
       console.log(`✅ Sections d'audit enregistrées dans ${outputPath}`);
-      
+
       // Ajouter le chemin aux artefacts
       this.artifacts.push(outputPath);
     } catch (error: unknown) {
@@ -139,9 +139,9 @@ export abstract class BaseAgent implements IAgent , OrchestrationAgent{
    * Ajoute une section au rapport d'audit
    */
   protected addSection(
-    id: string, 
-    title: string, 
-    content: string, 
+    id: string,
+    title: string,
+    content: string,
     type: string,
     severity: 'info' | 'warning' | 'critical' = 'info',
     metadata?: Record<string, any>
@@ -153,10 +153,10 @@ export abstract class BaseAgent implements IAgent , OrchestrationAgent{
       type,
       severity,
       source: this.constructor.name,
-      metadata
+      metadata,
     });
   }
-  
+
   /**
    * Ajoute un avertissement
    */
@@ -178,12 +178,12 @@ export abstract class BaseAgent implements IAgent , OrchestrationAgent{
     this.errors = [];
     this.warnings = [];
     this.artifacts = [];
-    
+
     try {
       await this.loadFile();
       await this.analyze();
       await this.saveSections();
-      
+
       const executionTime = Date.now() - this.startTime;
       return {
         success: this.errors.length === 0,
@@ -192,27 +192,27 @@ export abstract class BaseAgent implements IAgent , OrchestrationAgent{
         warnings: this.warnings.length > 0 ? this.warnings : undefined,
         metrics: {
           executionTimeMs: executionTime,
-          itemsProcessed: this.sections.length
+          itemsProcessed: this.sections.length,
         },
-        artifacts: this.artifacts.length > 0 ? this.artifacts : undefined
+        artifacts: this.artifacts.length > 0 ? this.artifacts : undefined,
       };
     } catch (error: unknown) {
       const executionTime = Date.now() - this.startTime;
       const errorObj = error instanceof Error ? error : new Error(String(error));
-      
+
       if (!this.errors.includes(errorObj)) {
         this.errors.push(errorObj);
       }
-      
+
       return {
         success: false,
         sections: this.sections,
         errors: this.errors,
         warnings: this.warnings,
         metrics: {
-          executionTimeMs: executionTime
+          executionTimeMs: executionTime,
         },
-        artifacts: this.artifacts.length > 0 ? this.artifacts : undefined
+        artifacts: this.artifacts.length > 0 ? this.artifacts : undefined,
       };
     }
   }

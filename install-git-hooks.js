@@ -3,7 +3,7 @@
 /**
  * Script d'installation des hooks Git pour prévenir les collisions de noms
  * et autres problèmes de structure dans le projet
- * 
+ *
  * Ce script installe un hook pre-commit qui exécute le script de validation
  * avant chaque commit pour empêcher l'introduction de nouveaux problèmes.
  */
@@ -20,26 +20,28 @@ const PRE_COMMIT_HOOK = path.join(HOOKS_DIR, 'pre-commit');
 
 // Couleurs pour la sortie console
 const colors = {
-    reset: '\x1b[0m',
-    red: '\x1b[31m',
-    green: '\x1b[32m',
-    yellow: '\x1b[33m',
-    blue: '\x1b[34m'
+  reset: '\x1b[0m',
+  red: '\x1b[31m',
+  green: '\x1b[32m',
+  yellow: '\x1b[33m',
+  blue: '\x1b[34m',
 };
 
 console.log(`${colors.blue}Installation des hooks Git pour le projet...${colors.reset}`);
 
 // Vérifier si le répertoire .git existe
 if (!fs.existsSync(GIT_DIR)) {
-    console.error(`${colors.red}Erreur: Le répertoire .git n'existe pas dans ${BASE_DIR}${colors.reset}`);
-    console.log('Ce script doit être exécuté à la racine d\'un dépôt Git.');
-    process.exit(1);
+  console.error(
+    `${colors.red}Erreur: Le répertoire .git n'existe pas dans ${BASE_DIR}${colors.reset}`
+  );
+  console.log("Ce script doit être exécuté à la racine d'un dépôt Git.");
+  process.exit(1);
 }
 
 // Vérifier/créer le répertoire hooks
 if (!fs.existsSync(HOOKS_DIR)) {
-    console.log(`${colors.yellow}Création du répertoire de hooks: ${HOOKS_DIR}${colors.reset}`);
-    fs.mkdirSync(HOOKS_DIR, { recursive: true });
+  console.log(`${colors.yellow}Création du répertoire de hooks: ${HOOKS_DIR}${colors.reset}`);
+  fs.mkdirSync(HOOKS_DIR, { recursive: true });
 }
 
 // Contenu du hook pre-commit
@@ -68,7 +70,9 @@ exit 0
 fs.writeFileSync(PRE_COMMIT_HOOK, preCommitContent);
 fs.chmodSync(PRE_COMMIT_HOOK, '755'); // Rendre le hook exécutable
 
-console.log(`${colors.green}✅ Hook pre-commit installé avec succès dans ${PRE_COMMIT_HOOK}${colors.reset}`);
+console.log(
+  `${colors.green}✅ Hook pre-commit installé avec succès dans ${PRE_COMMIT_HOOK}${colors.reset}`
+);
 
 // Créer un fichier README pour les hooks
 const readmeContent = `# Hooks Git pour la prévention des collisions de noms
@@ -138,26 +142,28 @@ console.log(`${colors.green}✅ Fichier CONTRIBUTING.md créé à la racine du p
 
 // Vérifier si les scripts de validation et de correction existent
 const requiredScripts = [
-    'validate-structure.js',
-    'fix-package-name-collisions.js',
-    'clean-recursive-structure.sh'
+  'validate-structure.js',
+  'fix-package-name-collisions.js',
+  'clean-recursive-structure.sh',
 ];
 
 for (const script of requiredScripts) {
-    const scriptPath = path.join(BASE_DIR, script);
+  const scriptPath = path.join(BASE_DIR, script);
 
-    if (!fs.existsSync(scriptPath)) {
-        console.log(`${colors.yellow}⚠️ Le script ${script} n'existe pas dans ${BASE_DIR}${colors.reset}`);
-        console.log(`  Ce script est nécessaire pour le bon fonctionnement des hooks.`);
-    } else {
-        // Vérifier les permissions
-        fs.chmodSync(scriptPath, '755'); // Rendre le script exécutable
-        console.log(`${colors.green}✓ Le script ${script} est présent et exécutable${colors.reset}`);
-    }
+  if (!fs.existsSync(scriptPath)) {
+    console.log(
+      `${colors.yellow}⚠️ Le script ${script} n'existe pas dans ${BASE_DIR}${colors.reset}`
+    );
+    console.log('  Ce script est nécessaire pour le bon fonctionnement des hooks.');
+  } else {
+    // Vérifier les permissions
+    fs.chmodSync(scriptPath, '755'); // Rendre le script exécutable
+    console.log(`${colors.green}✓ Le script ${script} est présent et exécutable${colors.reset}`);
+  }
 }
 
 console.log('\n=== Installation des hooks Git terminée ===');
 console.log(`${colors.yellow}N'oubliez pas d'effectuer les actions suivantes:${colors.reset}`);
 console.log(`1. Exécuter 'node validate-structure.js' pour vérifier votre structure`);
 console.log(`2. Utiliser 'node fix-package-name-collisions.js' pour résoudre les collisions`);
-console.log(`3. Partager le fichier CONTRIBUTING.md avec votre équipe`);
+console.log('3. Partager le fichier CONTRIBUTING.md avec votre équipe');

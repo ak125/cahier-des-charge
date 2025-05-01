@@ -230,7 +230,7 @@ describe('{{componentName}}', () => {
 });
 `,
     
-    iteration: `# Itération: {{iterationName}}
+    iteration: `# {{iterationName}}
 
 ## Description
 {{description}}
@@ -245,8 +245,8 @@ describe('{{componentName}}', () => {
 {{estimatedEffort}}
 
 ## État actuel
-- Date de début: {{startDate}}
-- Date prévue de fin: {{endDate}}
+- Date de {{startDate}}
+- Date prévue de {{endDate}}
 - Progression: {{progress}}%
 
 ## Notes
@@ -384,7 +384,7 @@ describe('{{componentName}}', () => {
       : "Aucune dépendance externe";
     
     // Générer le contenu du fichier
-    let content = this.templateMap.iteration
+    const content = this.templateMap.iteration
       .replace(/\{\{iterationName\}\}/g, config.name)
       .replace(/\{\{description\}\}/g, config.description)
       .replace(/\{\{tasks\}\}/g, tasksMarkdown)
@@ -502,7 +502,7 @@ describe('{{componentName}}', () => {
     const expectedText = task.name;
     
     // Remplacer les variables dans le template
-    let content = template
+    const content = template
       .replace(/\{\{ComponentName\}\}/g, componentName)
       .replace(/\{\{componentName\}\}/g, componentName)
       .replace(/\{\{componentClassName\}\}/g, componentClassName)

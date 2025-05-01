@@ -5,7 +5,4 @@
 
 import { MigrationOrchestratorAgent } from './MigrationOrchestratorAgent';
 
-export {
-  MigrationOrchestratorAgent,
-};
-
+export { MigrationOrchestratorAgent };

@@ -3,8 +3,8 @@
  * Agent export file
  */
 
-import { SEOContentEnhancer } from ./seo-content-enhancer';
-import { BusinessAgent } from ../../core/interfacesstructure-agent';
+import { BusinessAgent } from '../../core/interfacesstructure-agent';
+import { SEOContentEnhancer } from './seo-content-enhancer';
 
 export { SEOContentEnhancer };
 export default SEOContentEnhancer;

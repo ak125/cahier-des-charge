@@ -24,22 +24,24 @@ export function AIActivityLog({ activities }: AIActivityLogProps) {
   return (
     <div className="w-full max-w-4xl mx-auto">
       <h2 className="text-2xl font-semibold mb-6">Activité IA récente</h2>
-      
+
       <div className="space-y-6">
         {sortedDates.map((date) => (
           <div key={date} className="border-b pb-4">
             <h3 className="font-medium text-lg mb-3 text-gray-700">{date}</h3>
-            
+
             <div className="space-y-3">
               {groupedActivities[date].map((activity) => (
-                <div 
-                  key={activity.id} 
+                <div
+                  key={activity.id}
                   className="bg-white p-4 rounded-lg border shadow-sm hover:shadow-md transition-shadow"
                 >
                   <div className="flex justify-between items-start">
                     <div>
                       <div className="flex items-center gap-2">
-                        <span className={`w-2 h-2 rounded-full ${getStatusColor(activity.status)}`}></span>
+                        <span
+                          className={`w-2 h-2 rounded-full ${getStatusColor(activity.status)}`}
+                        />
                         <span className="font-medium">{activity.type}</span>
                       </div>
                       <p className="text-sm text-gray-500 mt-1">{activity.description}</p>
@@ -48,7 +50,7 @@ export function AIActivityLog({ activities }: AIActivityLogProps) {
                       {new Date(activity.timestamp).toLocaleTimeString()}
                     </span>
                   </div>
-                  
+
                   {activity.details && (
                     <div className="mt-3 text-xs">
                       <div className="grid grid-cols-3 gap-2">
@@ -58,21 +60,21 @@ export function AIActivityLog({ activities }: AIActivityLogProps) {
                             <p className="text-gray-600">{truncate(activity.details.input)}</p>
                           </div>
                         )}
-                        
+
                         {activity.details.output && (
                           <div>
                             <p className="font-medium text-gray-700">Output</p>
                             <p className="text-gray-600">{truncate(activity.details.output)}</p>
                           </div>
                         )}
-                        
+
                         {activity.details.model && (
                           <div>
                             <p className="font-medium text-gray-700">Model</p>
                             <p className="text-gray-600">{activity.details.model}</p>
                           </div>
                         )}
-                        
+
                         {activity.details.tokens && (
                           <div>
                             <p className="font-medium text-gray-700">Tokens</p>
@@ -108,5 +110,5 @@ function getStatusColor(status: string) {
 
 // Helper function to truncate long texts
 function truncate(text: string, length = 50) {
-  return text.length > length ? text.substring(0, length) + '...' : text;
+  return text.length > length ? `${text.substring(0, length)}...` : text;
 }

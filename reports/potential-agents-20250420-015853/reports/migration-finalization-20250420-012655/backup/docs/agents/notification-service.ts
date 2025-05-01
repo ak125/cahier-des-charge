@@ -1,8 +1,8 @@
-import { CoordinationAgent } from '@workspaces/cahier-des-charge/src/core/interfaces/coordination';
-import { Logger } from "@nestjs/common";
-import axios from "axios";
 import * as fs from "fs";
 import * as path from "path";
+import { Logger } from "@nestjs/common";
+import { CoordinationAgent } from '@workspaces/cahier-des-charge/src/core/interfaces/coordination';
+import axios from "axios";
 import * as nodemailer from "nodemailer";
 import { BaseAgent, OrchestrationAgent } from '../core/interfaces/BaseAgent';
 

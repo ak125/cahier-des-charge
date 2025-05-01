@@ -1,12 +1,12 @@
+import * as path from 'path';
 import {
+  Tree,
   formatFiles,
   generateFiles,
   getWorkspaceLayout,
   names,
   offsetFromRoot,
-  Tree,
 } from '@nx/devkit';
-import * as path from 'path';
 import { MigrationAgentGeneratorSchema } from './schema';
 
 interface NormalizedSchema extends MigrationAgentGeneratorSchema {
@@ -16,19 +16,14 @@ interface NormalizedSchema extends MigrationAgentGeneratorSchema {
   parsedTags: string[];
 }
 
-function normalizeOptions(
-  tree: Tree,
-  options: MigrationAgentGeneratorSchema
-): NormalizedSchema {
+function normalizeOptions(_tree: Tree, options: MigrationAgentGeneratorSchema): NormalizedSchema {
   const name = names(options.name).fileName;
   const projectDirectory = options.directory
     ? `${names(options.directory).fileName}/${name}`
     : name;
   const projectName = projectDirectory.replace(new RegExp('/', 'g'), '-');
   const projectRoot = `${projectDirectory}`;
-  const parsedTags = options.tags
-    ? options.tags.split(',').map((s) => s.trim())
-    : [];
+  const parsedTags = options.tags ? options.tags.split(',').map((s) => s.trim()) : [];
 
   return {
     ...options,
@@ -39,24 +34,16 @@ function normalizeOptions(
   };
 }
 
-export default async function (
-  tree: Tree,
-  options: MigrationAgentGeneratorSchema
-) {
+export default async function (tree: Tree, options: MigrationAgentGeneratorSchema) {
   const normalizedOptions = normalizeOptions(tree, options);
   const { projectRoot } = normalizedOptions;
-  
-  generateFiles(
-    tree,
-    path.join(__dirname, 'files'),
-    projectRoot,
-    {
-      ...normalizedOptions,
-      ...names(normalizedOptions.name),
-      offsetFromRoot: offsetFromRoot(projectRoot),
-      template: ''
-    }
-  );
+
+  generateFiles(tree, path.join(__dirname, 'files'), projectRoot, {
+    ...normalizedOptions,
+    ...names(normalizedOptions.name),
+    offsetFromRoot: offsetFromRoot(projectRoot),
+    template: '',
+  });
 
   await formatFiles(tree);
 }

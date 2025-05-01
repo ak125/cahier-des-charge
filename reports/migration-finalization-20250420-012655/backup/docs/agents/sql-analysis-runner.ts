@@ -9,9 +9,9 @@
  * Compatible avec GitHub Codespaces.
  */
 
+import { execSync } from 'child_process';
 import * as fs from 'fs';
 import * as path from 'path';
-import { execSync } from 'child_process';
 import * as readline from 'readline';
 
 // Importations des services d'analyse

@@ -5,7 +5,4 @@
 
 import { DevGeneratorAgent } from './DevGeneratorAgent';
 
-export {
-  DevGeneratorAgent,
-};
-
+export { DevGeneratorAgent };

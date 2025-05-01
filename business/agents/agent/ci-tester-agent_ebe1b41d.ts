@@ -3,8 +3,8 @@
  * Agent export file
  */
 
-import { ci } from ./ci-testerstructure-agent';
-import { BusinessAgent } from ../../core/interfacesstructure-agent';
+import { BusinessAgent } from '../../core/interfacesstructure-agent';
+import { ci } from './ci-testerstructure-agent';
 
 export { ci };
 export default ci;

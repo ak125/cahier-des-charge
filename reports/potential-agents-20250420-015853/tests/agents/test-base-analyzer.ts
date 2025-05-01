@@ -1,4 +1,8 @@
-import { BaseAnalyzerAgent, AnalysisResult, AnalyzerAgentConfig } from '../../packagesDoDotmcp-agents/analyzers/base-analyzer-agent';
+import {
+  AnalysisResult,
+  AnalyzerAgentConfig,
+  BaseAnalyzerAgent,
+} from '../../packagesDoDotmcp-agents/analyzers/base-analyzer-agent';
 import { AgentContext, AgentResult } from '../../packagesDoDotmcp-agents/core/interfaces';
 
 // Classe concrète pour tester BaseAnalyzerAgent
@@ -7,7 +11,7 @@ class TestBaseAnalyzer extends BaseAnalyzerAgent<any> {
   public id = 'test-base-analyzer';
   public name = 'Test Base Analyzer';
   public version = '1.0.0';
-  public description = 'Agent d\'analyse de base pour les tests';
+  public description = "Agent d'analyse de base pour les tests";
 
   // Implémentation de la méthode abstraite performAnalysis
   protected async performAnalysis(context: AgentContext): Promise<AnalysisResult<any>> {
@@ -16,20 +20,20 @@ class TestBaseAnalyzer extends BaseAnalyzerAgent<any> {
         {
           type: 'test-finding',
           severity: 'info',
-          message: 'Ceci est un test'
-        }
+          message: 'Ceci est un test',
+        },
       ],
       summary: {
-        testResult: true
+        testResult: true,
       },
       statistics: {
         totalFiles: 1,
         filesAnalyzed: 1,
         totalFindings: 1,
         findingsBySeverity: {
-          'info': 1
-        }
-      }
+          info: 1,
+        },
+      },
     };
   }
 
@@ -66,21 +70,24 @@ class TestBaseAnalyzer extends BaseAnalyzerAgent<any> {
   }
 
   // Méthode pour l'exécution avec métriques
-  protected async executeWithMetrics<T>(context: AgentContext, callback: () => Promise<AgentResult<T>>): Promise<AgentResult<T>> {
+  protected async executeWithMetrics<T>(
+    context: AgentContext,
+    callback: () => Promise<AgentResult<T>>
+  ): Promise<AgentResult<T>> {
     const startTime = Date.now();
     try {
       const result = await callback();
       const endTime = Date.now();
       return {
         ...result,
-        executionTime: endTime - startTime
+        executionTime: endTime - startTime,
       };
     } catch (error) {
       const endTime = Date.now();
       return {
         success: false,
         error: error instanceof Error ? error : new Error(String(error)),
-        executionTime: endTime - startTime
+        executionTime: endTime - startTime,
       };
     }
   }
@@ -89,28 +96,28 @@ class TestBaseAnalyzer extends BaseAnalyzerAgent<any> {
 // Fonction principale pour exécuter le test
 async function main() {
   const testAgent = new TestBaseAnalyzer();
-  
+
   console.log('Initializing test agent...');
   await testAgent.initialize();
-  
+
   console.log('Executing test agent...');
   const result = await testAgent.execute({} as AgentContext);
-  
+
   console.log('Test result:', JSON.stringify(result, null, 2));
-  
+
   console.log('Testing all interface methods...');
   await testAgent.validate({});
   await testAgent.run({});
   await testAgent.process({});
   testAgent.validateData({});
   await testAgent.generate({});
-  
+
   console.log('All tests completed successfully');
 }
 
 // Exécuter le test si ce fichier est appelé directement
 if (require.main === module) {
-  main().catch(error => {
+  main().catch((error) => {
     console.error('Test failed:', error);
     process.exit(1);
   });

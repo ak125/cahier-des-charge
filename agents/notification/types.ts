@@ -8,13 +8,9 @@ import { AgentOptions, AgentResult } from '../core/types';
 /**
  * Options spécifiques aux agents notification
  */
-export interface NotificationAgentOptions extends AgentOptions {
-  // Options spécifiques à cette catégorie
-}
+export type NotificationAgentOptions = AgentOptions;
 
 /**
  * Résultat spécifique aux agents notification
  */
-export interface NotificationResult extends AgentResult {
-  // Données spécifiques à cette catégorie
-}
+export type NotificationResult = AgentResult;

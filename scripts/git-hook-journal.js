@@ -3,8 +3,8 @@
 /**
  * Script de hook Git pour ajouter automatiquement une entrée au journal
  * des modifications lors d'un commit modifiant le cahier des charges
- * 
- * Installation : 
+ *
+ * Installation :
  * - Ajoutez ce script comme pre-commit hook dans .git/hooks/
  * - Rendez-le exécutable : chmod +x .git/hooks/pre-commit
  */
@@ -25,30 +25,32 @@ async function main() {
   try {
     // Vérifier si des fichiers du cahier des charges ont été modifiés
     const changedFiles = getChangedFiles();
-    const cdcFiles = changedFiles.filter(file => file.startsWith('cahier-des-charges/'));
-    
+    const cdcFiles = changedFiles.filter((file) => file.startsWith('cahier-des-charges/'));
+
     if (cdcFiles.length === 0) {
       // Aucun fichier du cahier des charges modifié, continuer le commit
       process.exit(0);
     }
-    
+
     // Vérifier si le fichier journal existe
     try {
       await fs.access(JOURNAL_FILE);
-    } catch (error) {
-      console.log(chalk.yellow('⚠️ Le fichier journal des modifications n\'existe pas encore, création ignorée'));
+    } catch (_error) {
+      console.log(
+        chalk.yellow("⚠️ Le fichier journal des modifications n'existe pas encore, création ignorée")
+      );
       process.exit(0);
     }
-    
+
     // Obtenir le message de commit
     const commitMsg = await getCommitMessage();
-    
+
     // Identifier les sections modifiées
     const sections = identifySections(cdcFiles);
-    
+
     // Déterminer le type de modification (basé sur le message de commit)
     const type = determineModificationType(commitMsg);
-    
+
     // Créer l'entrée de journal
     const entry = {
       date: new Date().toISOString().replace('T', ' ').substring(0, 19),
@@ -56,12 +58,12 @@ async function main() {
       sections,
       type,
       summary: commitMsg,
-      tickets: extractTickets(commitMsg)
+      tickets: extractTickets(commitMsg),
     };
-    
+
     // Ajouter l'entrée au journal
     await addEntryToJournal(entry);
-    
+
     console.log(chalk.green('✅ Entrée ajoutée au journal des modifications'));
     process.exit(0);
   } catch (error) {
@@ -80,7 +82,9 @@ function getChangedFiles() {
     const output = execSync('git diff --cached --name-only', { encoding: 'utf8' });
     return output.trim().split('\n').filter(Boolean);
   } catch (error) {
-    console.error(chalk.red(`❌ Erreur lors de la récupération des fichiers modifiés: ${error.message}`));
+    console.error(
+      chalk.red(`❌ Erreur lors de la récupération des fichiers modifiés: ${error.message}`)
+    );
     return [];
   }
 }
@@ -93,8 +97,11 @@ async function getCommitMessage() {
     // Essayer de lire depuis COMMIT_EDITMSG
     const msgFile = path.join(process.cwd(), '.git', 'COMMIT_EDITMSG');
     const msg = await fs.readFile(msgFile, 'utf8');
-    return msg.split('\n').filter(line => !line.startsWith('#'))[0].trim();
-  } catch (error) {
+    return msg
+      .split('\n')
+      .filter((line) => !line.startsWith('#'))[0]
+      .trim();
+  } catch (_error) {
     // Fallback: utiliser un message générique
     return 'Mise à jour du cahier des charges';
   }
@@ -105,7 +112,7 @@ async function getCommitMessage() {
  */
 function identifySections(files) {
   // Extraire les noms de fichiers sans l'extension
-  return files.map(file => {
+  return files.map((file) => {
     const basename = path.basename(file, path.extname(file));
     // Enlever les numéros de section au début (ex: 01-introduction -> introduction)
     return basename.replace(/^\d+-/, '');
@@ -117,21 +124,24 @@ function identifySections(files) {
  */
 function determineModificationType(commitMsg) {
   const lowerMsg = commitMsg.toLowerCase();
-  
+
   if (lowerMsg.includes('ajout') || lowerMsg.includes('add')) {
     return 'ajout';
-  } else if (lowerMsg.includes('correc') || lowerMsg.includes('fix')) {
+  }
+  if (lowerMsg.includes('correc') || lowerMsg.includes('fix')) {
     return 'correction';
-  } else if (lowerMsg.includes('restructur') || lowerMsg.includes('réorgan')) {
+  }
+  if (lowerMsg.includes('restructur') || lowerMsg.includes('réorgan')) {
     return 'restructuration';
-  } else if (lowerMsg.includes('mise à jour') || lowerMsg.includes('update')) {
-    return 'mise à jour';
-  } else if (lowerMsg.includes('suppr') || lowerMsg.includes('remov')) {
-    return 'suppression';
-  } else {
-    // Type par défaut
+  }
+  if (lowerMsg.includes('mise à jour') || lowerMsg.includes('update')) {
     return 'mise à jour';
   }
+  if (lowerMsg.includes('suppr') || lowerMsg.includes('remov')) {
+    return 'suppression';
+  }
+  // Type par défaut
+  return 'mise à jour';
 }
 
 /**
@@ -140,7 +150,7 @@ function determineModificationType(commitMsg) {
 function getAuthor() {
   try {
     return execSync('git config user.name', { encoding: 'utf8' }).trim();
-  } catch (error) {
+  } catch (_error) {
     return 'Système';
   }
 }
@@ -161,25 +171,23 @@ function extractTickets(commitMsg) {
 async function addEntryToJournal(entry) {
   // Lire le contenu actuel du journal
   const content = await fs.readFile(JOURNAL_FILE, 'utf8');
-  
+
   // Rechercher la section "Journal des modifications"
   const journalSectionRegex = /## 📜 Journal des modifications\s*\n/;
   const match = content.match(journalSectionRegex);
-  
+
   if (!match) {
     throw new Error('Section "Journal des modifications" non trouvée dans le fichier');
   }
-  
+
   // Formater l'entrée
   const formattedEntry = formatEntry(entry);
-  
+
   // Insérer l'entrée après le titre de la section
   const insertPosition = match.index + match[0].length;
-  const updatedContent = 
-    content.substring(0, insertPosition) + 
-    formattedEntry + 
-    content.substring(insertPosition);
-  
+  const updatedContent =
+    content.substring(0, insertPosition) + formattedEntry + content.substring(insertPosition);
+
   // Écrire le contenu mis à jour
   await fs.writeFile(JOURNAL_FILE, updatedContent, 'utf8');
 }
@@ -193,13 +201,13 @@ function formatEntry(entry) {
   formattedEntry += `**Sections**: ${entry.sections.join(', ')}  \n`;
   formattedEntry += `**Type**: ${capitalizeFirstLetter(entry.type)}  \n`;
   formattedEntry += `**Résumé**: ${entry.summary}  \n`;
-  
+
   if (entry.tickets && entry.tickets.length > 0) {
     formattedEntry += `**Tickets**: ${entry.tickets.join(', ')}  \n`;
   }
-  
+
   formattedEntry += '\n';
-  
+
   return formattedEntry;
 }
 

@@ -1,14 +1,14 @@
-import * as fs from 'fs-extra';
 import * as path from 'path';
-import { IAgent, AgentResult } from './BaseAgent';
+import * as fs from 'fs-extra';
+import { loadConfig } from '../config/config';
+import { AssemblerAgent } from './AssemblerAgent';
+import { AgentResult, IAgent } from './BaseAgent';
 import { BusinessAgent } from './BusinessAgent';
-import { StructureAgent } from './StructureAgent';
 import { DataAgent } from './DataAgent';
 import { DependencyAgent } from './DependencyAgent';
 import { QualityAgent } from './QualityAgent';
 import { StrategyAgent } from './StrategyAgent';
-import { AssemblerAgent } from './AssemblerAgent';
-import { loadConfig } from '../config/config';
+import { StructureAgent } from './StructureAgent';
 
 // Charger la configuration centralisée
 const config = loadConfig();
@@ -29,7 +29,7 @@ interface CoordinatorConfig {
   dashboardEnabled?: boolean;
   dashboardUrl?: string;
   advancedMessaging?: boolean; // Nouveau paramètre pour la messagerie avancée
-  realTimeUpdates?: boolean;   // Nouveau paramètre pour les mises à jour en temps réel
+  realTimeUpdates?: boolean; // Nouveau paramètre pour les mises à jour en temps réel
   hooks?: {
     beforeAgent?: (agentName: string) => Promise<void>;
     afterAgent?: (agentName: string, result: AgentResult) => Promise<void>;
@@ -92,7 +92,7 @@ interface ExecutionCheckpoint {
 export class CoordinatorAgent {
   private config: CoordinatorConfig;
   private results: AgentExecutionResult[] = [];
-  private startTime: number = 0;
+  private startTime = 0;
   private agentRegistry: Map<string, new (filePath: string) => IAgent> = new Map();
   private artifacts: string[] = [];
   private messageQueue: InterAgentMessage[] = []; // File d'attente des messages
@@ -107,15 +107,24 @@ export class CoordinatorAgent {
       agentsToRun: config.agentsToRun || AGENTS.DEFAULT_ORDER,
       parallel: config.parallel || ORCHESTRATOR.PARALLEL_EXECUTION,
       forceRerun: config.forceRerun || ORCHESTRATOR.FORCE_RERUN,
-      dependencyCheck: config.dependencyCheck !== undefined ? config.dependencyCheck : ORCHESTRATOR.DEPENDENCY_CHECK,
-      validateCahierDesCharges: config.validateCahierDesCharges !== undefined ? config.validateCahierDesCharges : ORCHESTRATOR.VALIDATE_CAHIER,
+      dependencyCheck:
+        config.dependencyCheck !== undefined
+          ? config.dependencyCheck
+          : ORCHESTRATOR.DEPENDENCY_CHECK,
+      validateCahierDesCharges:
+        config.validateCahierDesCharges !== undefined
+          ? config.validateCahierDesCharges
+          : ORCHESTRATOR.VALIDATE_CAHIER,
       cahierDesChargesPath: config.cahierDesChargesPath || PATHS.CAHIER_DES_CHARGES,
-      dashboardEnabled: config.dashboardEnabled !== undefined ? config.dashboardEnabled : ORCHESTRATOR.DASHBOARD_ENABLED,
+      dashboardEnabled:
+        config.dashboardEnabled !== undefined
+          ? config.dashboardEnabled
+          : ORCHESTRATOR.DASHBOARD_ENABLED,
       dashboardUrl: config.dashboardUrl || ORCHESTRATOR.DASHBOARD_URL,
       hooks: config.hooks || {},
-      ...config
+      ...config,
     };
-    
+
     // Enregistrement des agents disponibles
     this.registerAgents();
 
@@ -127,7 +136,7 @@ export class CoordinatorAgent {
     // Initialiser le fichier de points de contrôle
     const baseFilename = path.basename(this.config.phpFilePath);
     this.checkpointFile = path.join(this.config.outputDir, `${baseFilename}.checkpoints.json`);
-    
+
     // Charger les points de contrôle existants si on ne force pas la réexécution
     if (!this.config.forceRerun) {
       this.loadCheckpoints();
@@ -156,7 +165,7 @@ export class CoordinatorAgent {
     } catch (error) {
       throw new Error(`Le fichier PHP n'existe pas: ${this.config.phpFilePath}`);
     }
-    
+
     // Vérifier que le fichier est bien un fichier PHP
     if (!this.config.phpFilePath.toLowerCase().endsWith('.php')) {
       throw new Error(`Le fichier doit être un fichier PHP: ${this.config.phpFilePath}`);
@@ -184,7 +193,7 @@ export class CoordinatorAgent {
     try {
       // Vérifier si le fichier existe déjà
       await fs.access(sectionsPath);
-      
+
       // Si on force la réexécution, réinitialiser le fichier
       if (this.config.forceRerun) {
         await fs.writeFile(sectionsPath, '[]', 'utf8');
@@ -213,7 +222,7 @@ export class CoordinatorAgent {
         duration: 0,
         status: 'skipped',
         error: new Error(`Agent ${agentName} non trouvé dans le registre`),
-        messages: []
+        messages: [],
       };
     }
 
@@ -232,7 +241,7 @@ export class CoordinatorAgent {
         to: 'all',
         type: 'info',
         priority: 'medium',
-        content: `Agent ${agentName} a démarré`
+        content: `Agent ${agentName} a démarré`,
       });
     }
 
@@ -240,21 +249,23 @@ export class CoordinatorAgent {
       // Créer et exécuter l'agent
       const AgentClass = this.agentRegistry.get(agentName).agent;
       const agentInstance = new AgentClass(this.config.phpFilePath);
-      
+
       // Stocker l'instance pour la messagerie inter-agents
-      this.agentRegistry.set(agentName, { 
-        agent: AgentClass, 
-        instance: agentInstance 
+      this.agentRegistry.set(agentName, {
+        agent: AgentClass,
+        instance: agentInstance,
       });
-      
+
       // Injecter la fonction d'envoi de messages si l'agent implémente IMessagingAgent
       if (this.config.advancedMessaging && 'receiveMessage' in agentInstance) {
-        agentInstance.setMessageCallback((message: Omit<InterAgentMessage, 'timestamp' | 'from'>) => {
-          this.sendMessage({
-            ...message,
-            from: agentName
-          });
-        });
+        agentInstance.setMessageCallback(
+          (message: Omit<InterAgentMessage, 'timestamp' | 'from'>) => {
+            this.sendMessage({
+              ...message,
+              from: agentName,
+            });
+          }
+        );
       }
 
       const result = await agentInstance.process();
@@ -278,7 +289,7 @@ export class CoordinatorAgent {
           to: 'all',
           type: 'info',
           priority: 'medium',
-          content: `Agent ${agentName} a terminé avec succès`
+          content: `Agent ${agentName} a terminé avec succès`,
         });
       }
 
@@ -290,14 +301,14 @@ export class CoordinatorAgent {
         status: result.success ? 'success' : 'error',
         result,
         dependencies: agentInstance.getDependencies(),
-        messages: this.messageQueue.filter(m => m.from === agentName || m.to === agentName)
+        messages: this.messageQueue.filter((m) => m.from === agentName || m.to === agentName),
       };
 
       return executionResult;
     } catch (error) {
       const endTime = Date.now();
       const duration = endTime - startTime;
-      
+
       // Notification en cas d'erreur
       if (this.config.hooks?.onError) {
         await this.config.hooks.onError(agentName, error);
@@ -310,7 +321,7 @@ export class CoordinatorAgent {
           to: 'all',
           type: 'error',
           priority: 'high',
-          content: `Agent ${agentName} a échoué: ${error.message}`
+          content: `Agent ${agentName} a échoué: ${error.message}`,
         });
       }
 
@@ -321,7 +332,7 @@ export class CoordinatorAgent {
         duration,
         status: 'error',
         error,
-        messages: this.messageQueue.filter(m => m.from === agentName || m.to === agentName)
+        messages: this.messageQueue.filter((m) => m.from === agentName || m.to === agentName),
       };
 
       return executionResult;
@@ -335,49 +346,49 @@ export class CoordinatorAgent {
     if (!this.config.dependencyCheck) {
       return agentsToRun;
     }
-    
+
     // Utiliser les dépendances définies dans la configuration centralisée
     const graph: Record<string, string[]> = {};
     const visited = new Set<string>();
     const result: string[] = [];
-    
+
     // Initialiser le graphe avec les dépendances de la configuration
-    agentsToRun.forEach(agentType => {
+    agentsToRun.forEach((agentType) => {
       if (AGENTS.METADATA[agentType]) {
-        graph[agentType] = AGENTS.METADATA[agentType].dependencies.filter(dep => 
-          agentsToRun.includes(dep) && this.agentRegistry.has(dep)
+        graph[agentType] = AGENTS.METADATA[agentType].dependencies.filter(
+          (dep) => agentsToRun.includes(dep) && this.agentRegistry.has(dep)
         );
       } else if (this.agentRegistry.has(agentType)) {
         // Fallback sur la méthode getDependencies de l'agent
         const AgentClass = this.agentRegistry.get(agentType);
         const agent = new AgentClass(this.config.phpFilePath);
-        graph[agentType] = agent.getDependencies().filter(dep => 
-          agentsToRun.includes(dep) && this.agentRegistry.has(dep)
-        );
+        graph[agentType] = agent
+          .getDependencies()
+          .filter((dep) => agentsToRun.includes(dep) && this.agentRegistry.has(dep));
       } else {
         graph[agentType] = [];
       }
     });
-    
+
     // Fonction récursive pour parcourir le graphe en profondeur
     const visit = (agentType: string) => {
       if (visited.has(agentType)) return;
       visited.add(agentType);
-      
-      graph[agentType].forEach(dep => {
+
+      graph[agentType].forEach((dep) => {
         visit(dep);
       });
-      
+
       result.push(agentType);
     };
-    
+
     // Parcourir tous les agents
-    agentsToRun.forEach(agentType => {
+    agentsToRun.forEach((agentType) => {
       if (!visited.has(agentType)) {
         visit(agentType);
       }
     });
-    
+
     return result;
   }
 
@@ -388,11 +399,11 @@ export class CoordinatorAgent {
     // Résoudre les dépendances et obtenir l'ordre d'exécution
     const orderedAgents = this.resolveDependencies(this.config.agentsToRun);
     console.log(`📝 Ordre d'exécution des agents: ${orderedAgents.join(', ')}`);
-    
+
     for (const agentType of orderedAgents) {
       const result = await this.executeAgent(agentType);
       this.results.push(result);
-      
+
       // Si un agent échoue et que c'est critique, on s'arrête
       if (!result.success && agentType === 'assembler') {
         throw new Error(`L'agent assembleur a échoué. Arrêt du processus.`);
@@ -407,53 +418,56 @@ export class CoordinatorAgent {
     // Résoudre les dépendances et obtenir l'ordre d'exécution
     const orderedAgents = this.resolveDependencies(this.config.agentsToRun);
     console.log(`📝 Ordre d'exécution basé sur les dépendances: ${orderedAgents.join(', ')}`);
-    
+
     // Identifier les agents indépendants pour exécution parallèle
     const dependencyMap = new Map<string, string[]>();
-    orderedAgents.forEach(agentType => {
+    orderedAgents.forEach((agentType) => {
       if (this.agentRegistry.has(agentType)) {
         const AgentClass = this.agentRegistry.get(agentType);
         const agent = new AgentClass(this.config.phpFilePath);
-        dependencyMap.set(agentType, agent.getDependencies().filter(dep => 
-          orderedAgents.includes(dep) && this.agentRegistry.has(dep)
-        ));
+        dependencyMap.set(
+          agentType,
+          agent
+            .getDependencies()
+            .filter((dep) => orderedAgents.includes(dep) && this.agentRegistry.has(dep))
+        );
       } else {
         dependencyMap.set(agentType, []);
       }
     });
-    
+
     // Exécuter les agents en groupes parallèles en fonction des dépendances
     const completedAgents = new Set<string>();
-    let remainingAgents = new Set(orderedAgents);
-    
+    const remainingAgents = new Set(orderedAgents);
+
     while (remainingAgents.size > 0) {
       // Identifier les agents qui peuvent être exécutés en parallèle
-      const readyAgents = Array.from(remainingAgents).filter(agentType => {
+      const readyAgents = Array.from(remainingAgents).filter((agentType) => {
         const deps = dependencyMap.get(agentType) || [];
-        return deps.every(dep => completedAgents.has(dep));
+        return deps.every((dep) => completedAgents.has(dep));
       });
-      
+
       if (readyAgents.length === 0) {
-        throw new Error('Cycle de dépendances détecté, impossible de résoudre l\'ordre d\'exécution');
+        throw new Error("Cycle de dépendances détecté, impossible de résoudre l'ordre d'exécution");
       }
-      
+
       console.log(`🔄 Exécution en parallèle de: ${readyAgents.join(', ')}`);
-      
+
       // Exécuter ces agents en parallèle
-      const promises = readyAgents.map(agentType => this.executeAgent(agentType));
+      const promises = readyAgents.map((agentType) => this.executeAgent(agentType));
       const results = await Promise.all(promises);
-      
+
       // Mettre à jour les agents terminés
-      results.forEach(result => {
+      results.forEach((result) => {
         completedAgents.add(result.agentName);
         remainingAgents.delete(result.agentName);
       });
-      
+
       // Stocker les résultats
       this.results.push(...results);
-      
+
       // Vérifier si tous les agents ont réussi
-      const failedCriticalAgent = results.find(r => !r.success && r.agentName === 'assembler');
+      const failedCriticalAgent = results.find((r) => !r.success && r.agentName === 'assembler');
       if (failedCriticalAgent) {
         throw new Error(`L'agent assembleur a échoué. Arrêt du processus.`);
       }
@@ -466,39 +480,39 @@ export class CoordinatorAgent {
   public async execute(): Promise<AgentExecutionResult[]> {
     this.startTime = Date.now();
     console.log(`🚀 Démarrage de l'audit pour ${this.config.phpFilePath}`);
-    
+
     try {
       // Préparation
       await this.validateFile();
       await this.ensureOutputDirectory();
       await this.initializeAuditSections();
-      
+
       // Envoyer les données initiales au tableau de bord si activé
       if (this.config.dashboardEnabled) {
         await this.updateDashboard('init', {
           filePath: this.config.phpFilePath,
           status: 'started',
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         });
       }
-      
+
       // Exécution des agents
       if (this.config.parallel) {
         await this.executeInParallel();
       } else {
         await this.executeSerially();
       }
-      
+
       // Calculer le temps total
       const totalTime = Date.now() - this.startTime;
       console.log(`✅ Audit terminé en ${totalTime}ms`);
-      
+
       // Générer le rapport HTML du tableau de bord
       const dashboardReportPath = await this.generateDashboardReport();
       if (dashboardReportPath) {
         this.artifacts.push(dashboardReportPath);
       }
-      
+
       // Mettre à jour le tableau de bord avec les résultats finaux
       if (this.config.dashboardEnabled) {
         await this.updateDashboard('complete', {
@@ -507,20 +521,20 @@ export class CoordinatorAgent {
           results: this.results,
           executionTime: totalTime,
           timestamp: new Date().toISOString(),
-          artifacts: this.artifacts
+          artifacts: this.artifacts,
         });
       }
-      
+
       // Hook de fin de processus
       if (this.config.hooks?.onComplete) {
         await this.config.hooks.onComplete(this.results);
       }
-      
+
       return this.results;
     } catch (error) {
       const totalTime = Date.now() - this.startTime;
       console.error(`❌ Audit échoué après ${totalTime}ms: ${error.message}`);
-      
+
       // Mettre à jour le tableau de bord en cas d'erreur
       if (this.config.dashboardEnabled) {
         await this.updateDashboard('error', {
@@ -528,10 +542,10 @@ export class CoordinatorAgent {
           status: 'failed',
           error: error.message,
           executionTime: totalTime,
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         });
       }
-      
+
       throw error;
     }
   }
@@ -539,7 +553,11 @@ export class CoordinatorAgent {
   /**
    * Met à jour le tableau de bord pour un agent spécifique
    */
-  private async updateAgentProgress(agentName: string, status: 'started' | 'completed' | 'failed', result?: AgentExecutionResult): Promise<void> {
+  private async updateAgentProgress(
+    agentName: string,
+    status: 'started' | 'completed' | 'failed',
+    result?: AgentExecutionResult
+  ): Promise<void> {
     if (!this.config.dashboardEnabled) return;
 
     try {
@@ -558,8 +576,8 @@ export class CoordinatorAgent {
         progress: {
           totalAgents: this.config.agentsToRun.length,
           completedAgents: this.results.length,
-          currentAgent: agentName
-        }
+          currentAgent: agentName,
+        },
       };
 
       // Envoyer les données au tableau de bord via l'API
@@ -582,7 +600,7 @@ export class CoordinatorAgent {
         data,
         timestamp: new Date().toISOString(),
         version: '2.0', // Nouvelle version du schéma de données
-        source: 'coordinator-agent'
+        source: 'coordinator-agent',
       };
 
       // Version améliorée utilisant fetch au lieu de http.request
@@ -590,13 +608,15 @@ export class CoordinatorAgent {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'X-Agent-Version': this.getVersion()
+          'X-Agent-Version': this.getVersion(),
         },
-        body: JSON.stringify(payload)
+        body: JSON.stringify(payload),
       });
 
       if (!response.ok) {
-        throw new Error(`Échec de la mise à jour du tableau de bord: ${response.status} ${response.statusText}`);
+        throw new Error(
+          `Échec de la mise à jour du tableau de bord: ${response.status} ${response.statusText}`
+        );
       }
     } catch (error) {
       console.warn(`⚠️ Erreur lors de la mise à jour du tableau de bord: ${error.message}`);
@@ -614,7 +634,7 @@ export class CoordinatorAgent {
 
     const fullMessage: InterAgentMessage = {
       ...message,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     };
 
     // Ajouter le message à la file d'attente
@@ -626,7 +646,7 @@ export class CoordinatorAgent {
     // Si le message est destiné à un agent spécifique et qu'il est actif, le transmettre
     if (fullMessage.to !== 'all' && this.agentRegistry.has(fullMessage.to)) {
       const targetAgent = this.agentRegistry.get(fullMessage.to)?.instance;
-      
+
       if (targetAgent && 'receiveMessage' in targetAgent) {
         try {
           targetAgent.receiveMessage(fullMessage);
@@ -650,7 +670,12 @@ export class CoordinatorAgent {
   /**
    * Envoie un message inter-agent
    */
-  private async sendInterAgentMessage(fromAgent: string, toAgent: string, messageType: string, payload: any): Promise<void> {
+  private async sendInterAgentMessage(
+    fromAgent: string,
+    toAgent: string,
+    messageType: string,
+    payload: any
+  ): Promise<void> {
     try {
       // Préparer le message
       const message = {
@@ -659,7 +684,7 @@ export class CoordinatorAgent {
         messageType,
         payload,
         timestamp: new Date().toISOString(),
-        correlationId: `msg-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`
+        correlationId: `msg-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`,
       };
 
       // Enregistrer le message pour le suivi et la traçabilité
@@ -688,7 +713,7 @@ export class CoordinatorAgent {
   public async getMessagesForAgent(agentName: string): Promise<any[]> {
     try {
       const messagesDir = path.join(this.config.outputDir, 'agent-messages');
-      
+
       // Vérifier si le répertoire existe
       try {
         await fs.access(messagesDir);
@@ -696,26 +721,28 @@ export class CoordinatorAgent {
         // Le répertoire n'existe pas, aucun message
         return [];
       }
-      
+
       // Lister tous les fichiers de messages
       const files = await fs.readdir(messagesDir);
-      const messageFiles = files.filter(file => file.endsWith('.json'));
-      
+      const messageFiles = files.filter((file) => file.endsWith('.json'));
+
       // Lire et filtrer les messages pour cet agent
       const messages = [];
       for (const file of messageFiles) {
         const filePath = path.join(messagesDir, file);
         const content = await fs.readFile(filePath, 'utf8');
         const message = JSON.parse(content);
-        
+
         if (message.toAgent === agentName && !message.processed) {
           messages.push(message);
         }
       }
-      
+
       return messages;
     } catch (error) {
-      console.warn(`⚠️ Erreur lors de la récupération des messages pour ${agentName}: ${error.message}`);
+      console.warn(
+        `⚠️ Erreur lors de la récupération des messages pour ${agentName}: ${error.message}`
+      );
       return [];
     }
   }
@@ -727,7 +754,7 @@ export class CoordinatorAgent {
     try {
       const messagesDir = path.join(this.config.outputDir, 'agent-messages');
       const filePath = path.join(messagesDir, `${messageId}.json`);
-      
+
       // Vérifier si le fichier existe
       try {
         await fs.access(filePath);
@@ -735,15 +762,15 @@ export class CoordinatorAgent {
         console.warn(`⚠️ Message introuvable: ${messageId}`);
         return;
       }
-      
+
       // Lire le message
       const content = await fs.readFile(filePath, 'utf8');
       const message = JSON.parse(content);
-      
+
       // Marquer comme traité
       message.processed = true;
       message.processedAt = new Date().toISOString();
-      
+
       // Enregistrer le message mis à jour
       await fs.writeFile(filePath, JSON.stringify(message, null, 2), 'utf8');
     } catch (error) {
@@ -758,7 +785,7 @@ export class CoordinatorAgent {
     // Nom de fichier basé sur le nom du fichier PHP analysé
     const baseFilename = path.basename(this.config.phpFilePath, '.php');
     const reportPath = path.join(this.config.outputDir, `${baseFilename}_dashboard_report.html`);
-    
+
     try {
       // Générer le contenu HTML
       const htmlContent = `<!DOCTYPE html>
@@ -799,15 +826,19 @@ export class CoordinatorAgent {
     <p>Date de l'analyse: ${new Date().toLocaleString()}</p>
     <p>Durée totale: ${(Date.now() - this.startTime) / 1000} secondes</p>
     <p>Agents exécutés: ${this.results.length} / ${this.config.agentsToRun.length}</p>
-    <p>Résultat global: ${this.results.every(r => r.success) ? '✅ Succès' : '❌ Échec'}</p>
+    <p>Résultat global: ${this.results.every((r) => r.success) ? '✅ Succès' : '❌ Échec'}</p>
     
     <div class="progress-bar">
-      <div class="progress-bar-inner" style="width: ${(this.results.length / this.config.agentsToRun.length) * 100}%"></div>
+      <div class="progress-bar-inner" style="width: ${
+        (this.results.length / this.config.agentsToRun.length) * 100
+      }%"></div>
     </div>
   </div>
   
   <h2>Détails des agents</h2>
-  ${this.results.map(result => `
+  ${this.results
+    .map(
+      (result) => `
     <div class="agent ${result.success ? 'success' : 'failure'}">
       <h3>${result.agentName}</h3>
       <p>Statut: ${result.success ? '✅ Succès' : '❌ Échec'}</p>
@@ -815,41 +846,69 @@ export class CoordinatorAgent {
       
       ${result.error ? `<p>Erreur: ${result.error.message}</p>` : ''}
       
-      ${result.result?.metrics ? `
+      ${
+        result.result?.metrics
+          ? `
         <div class="metrics">
           <div class="metric">
             <strong>Temps d'exécution</strong>
             <p>${result.result.metrics.executionTimeMs} ms</p>
           </div>
-          ${result.result.metrics.itemsProcessed ? `
+          ${
+            result.result.metrics.itemsProcessed
+              ? `
             <div class="metric">
               <strong>Éléments traités</strong>
               <p>${result.result.metrics.itemsProcessed}</p>
             </div>
-          ` : ''}
-          ${result.result.metrics.resourcesUsed ? Object.entries(result.result.metrics.resourcesUsed).map(([key, value]) => `
+          `
+              : ''
+          }
+          ${
+            result.result.metrics.resourcesUsed
+              ? Object.entries(result.result.metrics.resourcesUsed)
+                  .map(
+                    ([key, value]) => `
             <div class="metric">
               <strong>${key}</strong>
               <p>${value}</p>
             </div>
-          `).join('') : ''}
+          `
+                  )
+                  .join('')
+              : ''
+          }
         </div>
-      ` : ''}
+      `
+          : ''
+      }
       
-      ${result.result?.sections ? `
+      ${
+        result.result?.sections
+          ? `
         <div class="sections">
           <h4>Sections (${result.result.sections.length})</h4>
-          ${result.result.sections.map(section => `
+          ${result.result.sections
+            .map(
+              (section) => `
             <div class="section">
               <h5>${section.title}</h5>
               <p>${section.content}</p>
-              <p class="timestamp">Généré le ${new Date(section.timestamp || Date.now()).toLocaleString()}</p>
+              <p class="timestamp">Généré le ${new Date(
+                section.timestamp || Date.now()
+              ).toLocaleString()}</p>
             </div>
-          `).join('')}
+          `
+            )
+            .join('')}
         </div>
-      ` : ''}
+      `
+          : ''
+      }
     </div>
-  `).join('')}
+  `
+    )
+    .join('')}
   
   <script>
     // Script pour actualiser le rapport toutes les 30 secondes pendant l'exécution
@@ -862,11 +921,11 @@ export class CoordinatorAgent {
   </script>
 </body>
 </html>`;
-      
+
       // Enregistrer le rapport HTML
       await fs.writeFile(reportPath, htmlContent, 'utf8');
       console.log(`✅ Rapport HTML généré: ${reportPath}`);
-      
+
       return reportPath;
     } catch (error) {
       console.warn(`⚠️ Erreur lors de la génération du rapport HTML: ${error.message}`);
@@ -879,53 +938,53 @@ export class CoordinatorAgent {
    */
   public generateExecutionReport(): string {
     const totalTime = Date.now() - this.startTime;
-    const successCount = this.results.filter(r => r.success).length;
-    const failCount = this.results.filter(r => !r.success).length;
-    
+    const successCount = this.results.filter((r) => r.success).length;
+    const failCount = this.results.filter((r) => !r.success).length;
+
     let report = `# Rapport d'exécution des agents\n\n`;
     report += `- **Fichier**: ${this.config.phpFilePath}\n`;
     report += `- **Date**: ${new Date().toLocaleString()}\n`;
     report += `- **Durée totale**: ${totalTime}ms\n`;
     report += `- **Agents exécutés**: ${this.results.length} (${successCount} réussis, ${failCount} échoués)\n\n`;
-    
+
     report += `## Détail des exécutions\n\n`;
     report += `| Agent | Statut | Durée (ms) | Erreur |\n`;
     report += `|-------|--------|------------|--------|\n`;
-    
-    this.results.forEach(result => {
+
+    this.results.forEach((result) => {
       const status = result.success ? '✅ Réussi' : '❌ Échoué';
       const error = result.error ? result.error.message : '';
       report += `| ${result.agentName} | ${status} | ${result.executionTime} | ${error} |\n`;
     });
-    
+
     // Ajouter des informations sur les artefacts générés
     report += `\n## Artefacts générés\n\n`;
     report += `| Agent | Artefact |\n`;
     report += `|-------|----------|\n`;
-    
-    this.results.forEach(result => {
+
+    this.results.forEach((result) => {
       if (result.result?.artifacts && result.result.artifacts.length > 0) {
-        result.result.artifacts.forEach(artifact => {
+        result.result.artifacts.forEach((artifact) => {
           report += `| ${result.agentName} | ${artifact} |\n`;
         });
       } else {
         report += `| ${result.agentName} | Aucun artefact |\n`;
       }
     });
-    
+
     // Ajouter des métriques
     report += `\n## Métriques\n\n`;
     report += `| Agent | Temps d'exécution | Éléments traités |\n`;
     report += `|-------|-------------------|------------------|\n`;
-    
-    this.results.forEach(result => {
+
+    this.results.forEach((result) => {
       const metrics = result.result?.metrics;
       const executionTime = metrics?.executionTimeMs || result.executionTime;
       const itemsProcessed = metrics?.itemsProcessed || 'N/A';
-      
+
       report += `| ${result.agentName} | ${executionTime}ms | ${itemsProcessed} |\n`;
     });
-    
+
     return report;
   }
 
@@ -934,14 +993,14 @@ export class CoordinatorAgent {
    */
   public async saveExecutionReport(): Promise<string> {
     const baseFilename = path.basename(this.config.phpFilePath);
-    
+
     // Utiliser le dossier de rapports d'exécution de la configuration centralisée
     fs.mkdirSync(PATHS.EXECUTION_REPORTS, { recursive: true });
     const reportPath = path.join(PATHS.EXECUTION_REPORTS, `${baseFilename}.execution_report.md`);
-    
+
     const report = this.generateExecutionReport();
     await fs.writeFile(reportPath, report, 'utf8');
-    
+
     console.log(`📝 Rapport d'exécution enregistré: ${reportPath}`);
     return reportPath;
   }
@@ -976,7 +1035,7 @@ export class CoordinatorAgent {
         messages: this.messageQueue.slice(-50), // Limiter aux 50 derniers messages
         progress: this.calculateProgress(),
         status: this.calculateOverallStatus(),
-        metrics: this.calculateMetrics()
+        metrics: this.calculateMetrics(),
       };
 
       // Écrire les données dans un fichier JSON pour le tableau de bord
@@ -996,18 +1055,18 @@ export class CoordinatorAgent {
    * @private
    */
   private calculateMetrics(): Record<string, any> {
-    const successfulAgents = this.results.filter(r => r.status === 'success').length;
-    const failedAgents = this.results.filter(r => r.status === 'error').length;
-    const skippedAgents = this.results.filter(r => r.status === 'skipped').length;
+    const successfulAgents = this.results.filter((r) => r.status === 'success').length;
+    const failedAgents = this.results.filter((r) => r.status === 'error').length;
+    const skippedAgents = this.results.filter((r) => r.status === 'skipped').length;
     const totalDuration = this.results.reduce((acc, r) => acc + (r.duration || 0), 0);
-    
+
     return {
       successRate: this.results.length ? (successfulAgents / this.results.length) * 100 : 0,
       failureRate: this.results.length ? (failedAgents / this.results.length) * 100 : 0,
       totalDuration,
       averageDuration: this.results.length ? totalDuration / this.results.length : 0,
       messagesExchanged: this.messageQueue.length,
-      criticalMessages: this.messageQueue.filter(m => m.priority === 'critical').length
+      criticalMessages: this.messageQueue.filter((m) => m.priority === 'critical').length,
     };
   }
 
@@ -1017,11 +1076,11 @@ export class CoordinatorAgent {
    */
   private calculateProgress(): number {
     if (!this.config.agentsToRun.length) return 0;
-    
-    const completedAgents = this.results.filter(r => 
-      r.status === 'success' || r.status === 'error'
+
+    const completedAgents = this.results.filter(
+      (r) => r.status === 'success' || r.status === 'error'
     ).length;
-    
+
     return (completedAgents / this.config.agentsToRun.length) * 100;
   }
 
@@ -1031,15 +1090,15 @@ export class CoordinatorAgent {
    */
   private calculateOverallStatus(): 'pending' | 'running' | 'completed' | 'failed' {
     if (!this.results.length) return 'pending';
-    
+
     if (this.results.length < this.config.agentsToRun.length) {
       return 'running';
     }
-    
-    if (this.results.some(r => r.status === 'error')) {
+
+    if (this.results.some((r) => r.status === 'error')) {
       return 'failed';
     }
-    
+
     return 'completed';
   }
 
@@ -1050,16 +1109,16 @@ export class CoordinatorAgent {
   public sendMessage(message: Omit<InterAgentMessage, 'timestamp'>): void {
     const fullMessage: InterAgentMessage = {
       ...message,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     };
-    
+
     this.messageQueue.push(fullMessage);
-    
+
     // Traiter le message immédiatement si nécessaire
     if (message.priority === 'critical' || message.priority === 'high') {
       this.processMessage(fullMessage);
     }
-    
+
     // Mettre à jour le tableau de bord si le mode temps réel est activé
     if (this.config.dashboardEnabled && this.config.realTimeUpdates) {
       this.updateDashboard();
@@ -1088,7 +1147,10 @@ export class CoordinatorAgent {
         }
       }
     } catch (error) {
-      console.error(`Erreur lors du traitement du message de ${message.from} à ${message.to}:`, error);
+      console.error(
+        `Erreur lors du traitement du message de ${message.from} à ${message.to}:`,
+        error
+      );
     }
   }
 
@@ -1101,28 +1163,28 @@ export class CoordinatorAgent {
     try {
       const checkpointsDir = path.join(this.config.outputDir, 'checkpoints');
       await fs.mkdir(checkpointsDir, { recursive: true });
-      
+
       const checkpointFile = path.join(checkpointsDir, `${agentName}-checkpoint.json`);
       const checkpointData = {
         agentName,
         state,
         timestamp: new Date().toISOString(),
         progress: this.calculateProgress(),
-        completedAgents: this.results.map(r => r.agentName)
+        completedAgents: this.results.map((r) => r.agentName),
       };
-      
+
       await fs.writeFile(checkpointFile, JSON.stringify(checkpointData, null, 2));
-      
+
       // Mise à jour du tableau de bord si activé
       if (this.config.dashboardEnabled) {
         this.updateDashboard({
           type: 'checkpoint',
           agentName,
           timestamp: checkpointData.timestamp,
-          progress: checkpointData.progress
+          progress: checkpointData.progress,
         });
       }
-      
+
       console.log(`✅ Point de contrôle créé pour l'agent ${agentName}`);
     } catch (error) {
       console.error(`❌ Erreur lors de la création du point de contrôle pour ${agentName}:`, error);
@@ -1138,31 +1200,34 @@ export class CoordinatorAgent {
     try {
       const checkpointsDir = path.join(this.config.outputDir, 'checkpoints');
       const checkpointFile = path.join(checkpointsDir, `${agentName}-checkpoint.json`);
-      
+
       // Vérifier si le fichier de point de contrôle existe
       try {
         await fs.access(checkpointFile);
       } catch {
         return null; // Aucun point de contrôle trouvé
       }
-      
+
       // Lire et analyser le point de contrôle
       const checkpointData = JSON.parse(await fs.readFile(checkpointFile, 'utf8'));
-      
+
       console.log(`🔄 Restauration du point de contrôle pour l'agent ${agentName}`);
-      
+
       // Mise à jour du tableau de bord si activé
       if (this.config.dashboardEnabled) {
         this.updateDashboard({
           type: 'restore',
           agentName,
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         });
       }
-      
+
       return checkpointData.state;
     } catch (error) {
-      console.error(`❌ Erreur lors de la restauration du point de contrôle pour ${agentName}:`, error);
+      console.error(
+        `❌ Erreur lors de la restauration du point de contrôle pour ${agentName}:`,
+        error
+      );
       return null;
     }
   }
@@ -1176,19 +1241,25 @@ export class CoordinatorAgent {
     try {
       const checkpointDir = path.join(process.cwd(), 'logs', 'checkpoints');
       await fs.promises.mkdir(checkpointDir, { recursive: true });
-      
+
       const checkpointPath = path.join(checkpointDir, `${agentName}-checkpoint.json`);
-      const checkpointContent = JSON.stringify({
-        timestamp: new Date().toISOString(),
-        agentName,
-        data: checkpointData
-      }, null, 2);
-      
+      const checkpointContent = JSON.stringify(
+        {
+          timestamp: new Date().toISOString(),
+          agentName,
+          data: checkpointData,
+        },
+        null,
+        2
+      );
+
       await fs.promises.writeFile(checkpointPath, checkpointContent, 'utf8');
-      
+
       this.logger.debug(`Point de contrôle sauvegardé pour l'agent ${agentName}`);
     } catch (error) {
-      this.logger.error(`Erreur lors de la sauvegarde du point de contrôle pour l'agent ${agentName}: ${error.message}`);
+      this.logger.error(
+        `Erreur lors de la sauvegarde du point de contrôle pour l'agent ${agentName}: ${error.message}`
+      );
     }
   }
 
@@ -1199,19 +1270,26 @@ export class CoordinatorAgent {
    */
   private async loadCheckpoint(agentName: string): Promise<any | null> {
     try {
-      const checkpointPath = path.join(process.cwd(), 'logs', 'checkpoints', `${agentName}-checkpoint.json`);
-      
+      const checkpointPath = path.join(
+        process.cwd(),
+        'logs',
+        'checkpoints',
+        `${agentName}-checkpoint.json`
+      );
+
       if (!fs.existsSync(checkpointPath)) {
         return null;
       }
-      
+
       const checkpointContent = await fs.promises.readFile(checkpointPath, 'utf8');
       const checkpoint = JSON.parse(checkpointContent);
-      
+
       this.logger.debug(`Point de contrôle chargé pour l'agent ${agentName}`);
       return checkpoint.data;
     } catch (error) {
-      this.logger.error(`Erreur lors du chargement du point de contrôle pour l'agent ${agentName}: ${error.message}`);
+      this.logger.error(
+        `Erreur lors du chargement du point de contrôle pour l'agent ${agentName}: ${error.message}`
+      );
       return null;
     }
   }
@@ -1222,14 +1300,21 @@ export class CoordinatorAgent {
    */
   private async clearCheckpoint(agentName: string): Promise<void> {
     try {
-      const checkpointPath = path.join(process.cwd(), 'logs', 'checkpoints', `${agentName}-checkpoint.json`);
-      
+      const checkpointPath = path.join(
+        process.cwd(),
+        'logs',
+        'checkpoints',
+        `${agentName}-checkpoint.json`
+      );
+
       if (fs.existsSync(checkpointPath)) {
         await fs.promises.unlink(checkpointPath);
         this.logger.debug(`Point de contrôle supprimé pour l'agent ${agentName}`);
       }
     } catch (error) {
-      this.logger.error(`Erreur lors de la suppression du point de contrôle pour l'agent ${agentName}: ${error.message}`);
+      this.logger.error(
+        `Erreur lors de la suppression du point de contrôle pour l'agent ${agentName}: ${error.message}`
+      );
     }
   }
 
@@ -1258,7 +1343,7 @@ export class CoordinatorAgent {
       this.checkpoints = [];
     }
   }
-  
+
   /**
    * Sauvegarde les points de contrôle dans le fichier
    */
@@ -1269,42 +1354,49 @@ export class CoordinatorAgent {
       console.warn(`Impossible de sauvegarder les points de contrôle: ${error.message}`);
     }
   }
-  
+
   /**
    * Ajoute un point de contrôle
    */
-  private addCheckpoint(agentName: string, stage: 'before' | 'after' | 'error', status: 'pending' | 'completed' | 'failed', data?: any): ExecutionCheckpoint {
+  private addCheckpoint(
+    agentName: string,
+    stage: 'before' | 'after' | 'error',
+    status: 'pending' | 'completed' | 'failed',
+    data?: any
+  ): ExecutionCheckpoint {
     const checkpoint: ExecutionCheckpoint = {
       id: `${agentName}-${stage}-${Date.now()}`,
       timestamp: Date.now(),
       agentName,
       stage,
       status,
-      data
+      data,
     };
-    
+
     this.checkpoints.push(checkpoint);
     this.saveCheckpoints();
-    
+
     return checkpoint;
   }
-  
+
   /**
    * Vérifie si un agent a déjà été exécuté avec succès
    */
   private hasCompletedCheckpoint(agentName: string): boolean {
     return this.checkpoints.some(
-      cp => cp.agentName === agentName && 
-            cp.stage === 'after' && 
-            cp.status === 'completed'
+      (cp) => cp.agentName === agentName && cp.stage === 'after' && cp.status === 'completed'
     );
   }
-  
+
   /**
    * Met à jour le statut d'un point de contrôle existant
    */
-  private updateCheckpoint(checkpointId: string, status: 'pending' | 'completed' | 'failed', data?: any): void {
-    const checkpoint = this.checkpoints.find(cp => cp.id === checkpointId);
+  private updateCheckpoint(
+    checkpointId: string,
+    status: 'pending' | 'completed' | 'failed',
+    data?: any
+  ): void {
+    const checkpoint = this.checkpoints.find((cp) => cp.id === checkpointId);
     if (checkpoint) {
       checkpoint.status = status;
       if (data) {
@@ -1322,7 +1414,13 @@ export class CoordinatorAgent {
    * @param data Données associées au point de contrôle
    * @param metadata Métadonnées additionnelles pour le point de contrôle
    */
-  public saveCheckpoint(agentName: string, stage: 'before' | 'after' | 'error', status: 'pending' | 'completed' | 'failed', data?: any, metadata?: any): string {
+  public saveCheckpoint(
+    agentName: string,
+    stage: 'before' | 'after' | 'error',
+    status: 'pending' | 'completed' | 'failed',
+    data?: any,
+    metadata?: any
+  ): string {
     const id = `${agentName}_${stage}_${Date.now()}`;
     const checkpoint: ExecutionCheckpoint = {
       id,
@@ -1331,16 +1429,16 @@ export class CoordinatorAgent {
       stage,
       status,
       data,
-      metadata
+      metadata,
     };
-    
+
     // Supprimer les anciens checkpoints du même agent et stage
-    this.checkpoints = this.checkpoints.filter(cp => 
-      !(cp.agentName === agentName && cp.stage === stage)
+    this.checkpoints = this.checkpoints.filter(
+      (cp) => !(cp.agentName === agentName && cp.stage === stage)
     );
-    
+
     this.checkpoints.push(checkpoint);
-    
+
     // Sauvegarder les points de contrôle dans le fichier
     try {
       fs.writeFileSync(this.checkpointFile, JSON.stringify(this.checkpoints, null, 2), 'utf8');
@@ -1348,7 +1446,7 @@ export class CoordinatorAgent {
     } catch (error) {
       console.error(`❌ Erreur lors de la sauvegarde du point de contrôle: ${error.message}`);
     }
-    
+
     // Mettre à jour le tableau de bord si activé
     if (this.config.dashboardEnabled) {
       this.updateDashboard('checkpoint', {
@@ -1356,13 +1454,13 @@ export class CoordinatorAgent {
         agentName,
         stage,
         status,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     }
-    
+
     return id;
   }
-  
+
   /**
    * Charge les points de contrôle précédemment sauvegardés
    */
@@ -1371,7 +1469,9 @@ export class CoordinatorAgent {
       if (fs.existsSync(this.checkpointFile)) {
         const data = fs.readFileSync(this.checkpointFile, 'utf8');
         this.checkpoints = JSON.parse(data);
-        console.log(`ℹ️ Chargement de ${this.checkpoints.length} points de contrôle depuis ${this.checkpointFile}`);
+        console.log(
+          `ℹ️ Chargement de ${this.checkpoints.length} points de contrôle depuis ${this.checkpointFile}`
+        );
       } else {
         this.checkpoints = [];
         console.log(`ℹ️ Aucun point de contrôle trouvé, démarrage d'une nouvelle exécution`);
@@ -1381,31 +1481,27 @@ export class CoordinatorAgent {
       this.checkpoints = [];
     }
   }
-  
+
   /**
    * Vérifie si un agent a déjà été exécuté avec succès
    * @param agentName Nom de l'agent à vérifier
    */
   public hasCompletedCheckpoint(agentName: string): boolean {
-    return this.checkpoints.some(cp => 
-      cp.agentName === agentName && 
-      cp.stage === 'after' && 
-      cp.status === 'completed'
+    return this.checkpoints.some(
+      (cp) => cp.agentName === agentName && cp.stage === 'after' && cp.status === 'completed'
     );
   }
-  
+
   /**
    * Récupère les résultats précédents d'un agent depuis les points de contrôle
    * @param agentName Nom de l'agent
    */
   public getPreviousAgentResult(agentName: string): AgentExecutionResult | null {
-    const checkpoint = this.checkpoints.find(cp => 
-      cp.agentName === agentName && 
-      cp.stage === 'after' && 
-      cp.status === 'completed' &&
-      cp.data
+    const checkpoint = this.checkpoints.find(
+      (cp) =>
+        cp.agentName === agentName && cp.stage === 'after' && cp.status === 'completed' && cp.data
     );
-    
+
     return checkpoint ? checkpoint.data : null;
   }
 
@@ -1415,32 +1511,38 @@ export class CoordinatorAgent {
    */
   public cleanupCheckpoints(maxAge: number = 7 * 24 * 60 * 60 * 1000): void {
     const now = Date.now();
-    this.checkpoints = this.checkpoints.filter(cp => now - cp.timestamp < maxAge);
+    this.checkpoints = this.checkpoints.filter((cp) => now - cp.timestamp < maxAge);
     this.saveCheckpoints();
-    console.log(`🧹 Nettoyage des points de contrôle obsolètes terminé (${this.checkpoints.length} restants)`);
+    console.log(
+      `🧹 Nettoyage des points de contrôle obsolètes terminé (${this.checkpoints.length} restants)`
+    );
   }
 
   /**
    * Liste tous les points de contrôle disponibles
    * @param filter Critères de filtrage optionnels
    */
-  public listCheckpoints(filter?: { agentName?: string, stage?: 'before' | 'after' | 'error', status?: 'pending' | 'completed' | 'failed' }): ExecutionCheckpoint[] {
+  public listCheckpoints(filter?: {
+    agentName?: string;
+    stage?: 'before' | 'after' | 'error';
+    status?: 'pending' | 'completed' | 'failed';
+  }): ExecutionCheckpoint[] {
     let filteredCheckpoints = [...this.checkpoints];
-    
+
     if (filter) {
       if (filter.agentName) {
-        filteredCheckpoints = filteredCheckpoints.filter(cp => cp.agentName === filter.agentName);
+        filteredCheckpoints = filteredCheckpoints.filter((cp) => cp.agentName === filter.agentName);
       }
-      
+
       if (filter.stage) {
-        filteredCheckpoints = filteredCheckpoints.filter(cp => cp.stage === filter.stage);
+        filteredCheckpoints = filteredCheckpoints.filter((cp) => cp.stage === filter.stage);
       }
-      
+
       if (filter.status) {
-        filteredCheckpoints = filteredCheckpoints.filter(cp => cp.status === filter.status);
+        filteredCheckpoints = filteredCheckpoints.filter((cp) => cp.status === filter.status);
       }
     }
-    
+
     return filteredCheckpoints.sort((a, b) => b.timestamp - a.timestamp);
   }
 
@@ -1451,16 +1553,18 @@ export class CoordinatorAgent {
   public async restoreFromLastCheckpoint(): Promise<boolean> {
     // Trouver tous les agents complétés
     const completedAgents = this.checkpoints
-      .filter(cp => cp.stage === 'after' && cp.status === 'completed')
-      .map(cp => cp.agentName);
-    
+      .filter((cp) => cp.stage === 'after' && cp.status === 'completed')
+      .map((cp) => cp.agentName);
+
     if (completedAgents.length === 0) {
       console.log(`ℹ️ Aucun point de contrôle valide trouvé pour la reprise`);
       return false;
     }
-    
-    console.log(`🔄 Reprise à partir des derniers points de contrôle (${completedAgents.length} agents terminés)`);
-    
+
+    console.log(
+      `🔄 Reprise à partir des derniers points de contrôle (${completedAgents.length} agents terminés)`
+    );
+
     // Restaurer les résultats précédents
     for (const agentName of completedAgents) {
       const result = this.getPreviousAgentResult(agentName);
@@ -1469,16 +1573,16 @@ export class CoordinatorAgent {
         this.results.push(result);
       }
     }
-    
+
     // Mettre à jour le tableau de bord
     if (this.config.dashboardEnabled) {
       await this.updateDashboard('restore', {
         timestamp: new Date().toISOString(),
         completedAgents,
-        progress: this.calculateProgress()
+        progress: this.calculateProgress(),
       });
     }
-    
+
     return true;
   }
 
@@ -1508,79 +1612,85 @@ export class CoordinatorAgent {
     try {
       // Initialiser l'agent en fonction de son type
       const agent = this.initializeAgent(agentName);
-      
+
       // Exécuter l'agent avec les arguments fournis
       const result = await agent.execute(args);
-      
+
       // Calculer la durée d'exécution
       const duration = Date.now() - startTime;
-      
+
       // Créer un point de contrôle après l'exécution réussie
       if (this.config.useCheckpoints) {
         this.saveCheckpoint(agentName, 'after', 'completed', result, {
           duration,
-          resources: agent.getResourceUsage?.() || {}
+          resources: agent.getResourceUsage?.() || {},
         });
       }
-      
+
       // Enregistrer le résultat
       this.results.push({
         agentName,
         timestamp: new Date().toISOString(),
         status: 'success',
         data: result,
-        duration
+        duration,
       });
-      
+
       console.log(`✅ Agent ${agentName} terminé en ${duration}ms`);
-      
+
       // Mettre à jour le tableau de bord
       if (this.config.dashboardEnabled) {
         await this.updateDashboard('agentComplete', {
           agentName,
           status: 'success',
           duration,
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         });
       }
-      
+
       return result;
     } catch (error) {
       const duration = Date.now() - startTime;
       console.error(`❌ Erreur lors de l'exécution de l'agent ${agentName}: ${error.message}`);
-      
+
       // Créer un point de contrôle d'erreur
       if (this.config.useCheckpoints) {
-        this.saveCheckpoint(agentName, 'error', 'failed', { error: error.message }, {
-          duration,
-          errorStack: error.stack
-        });
+        this.saveCheckpoint(
+          agentName,
+          'error',
+          'failed',
+          { error: error.message },
+          {
+            duration,
+            errorStack: error.stack,
+          }
+        );
       }
-      
+
       // Enregistrer l'erreur
       this.results.push({
         agentName,
         timestamp: new Date().toISOString(),
         status: 'error',
         error: error.message,
-        duration
+        duration,
       });
-      
+
       // Mettre à jour le tableau de bord
       if (this.config.dashboardEnabled) {
         await this.updateDashboard('agentError', {
           agentName,
           error: error.message,
           duration,
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         });
       }
-      
+
       // Tenter une reprise automatique si configuré
       if (this.config.autoRetry && this.config.maxRetries > 0) {
         return this.handleRetry(agentName, args, error);
       }
-      
+
       throw error;
     }
   }
@@ -1591,27 +1701,35 @@ export class CoordinatorAgent {
    * @param args Arguments de l'agent
    * @param originalError Erreur originale
    */
-  private async handleRetry(agentName: string, args: any, originalError: Error): Promise<AgentExecutionResult> {
+  private async handleRetry(
+    agentName: string,
+    args: any,
+    originalError: Error
+  ): Promise<AgentExecutionResult> {
     const retryCount = this.getRetryCount(agentName);
-    
+
     if (retryCount >= this.config.maxRetries) {
       console.error(`❌ Nombre maximum de tentatives atteint pour l'agent ${agentName}`);
       throw originalError;
     }
-    
+
     // Attendre avant de réessayer (backoff exponentiel)
     const delayMs = this.calculateRetryDelay(retryCount);
-    console.log(`⏱️ Nouvelle tentative pour l'agent ${agentName} dans ${delayMs}ms (tentative ${retryCount + 1}/${this.config.maxRetries})`);
-    
-    await new Promise(resolve => setTimeout(resolve, delayMs));
-    
+    console.log(
+      `⏱️ Nouvelle tentative pour l'agent ${agentName} dans ${delayMs}ms (tentative ${
+        retryCount + 1
+      }/${this.config.maxRetries})`
+    );
+
+    await new Promise((resolve) => setTimeout(resolve, delayMs));
+
     // Incrémenter le compteur de tentatives
     this.incrementRetryCount(agentName);
-    
+
     // Réessayer l'exécution
     return this.executeAgent(agentName, args);
   }
-  
+
   /**
    * Récupère le nombre de tentatives pour un agent
    * @param agentName Nom de l'agent
@@ -1622,7 +1740,7 @@ export class CoordinatorAgent {
     }
     return this.retries[agentName];
   }
-  
+
   /**
    * Incrémente le compteur de tentatives pour un agent
    * @param agentName Nom de l'agent
@@ -1633,7 +1751,7 @@ export class CoordinatorAgent {
     }
     this.retries[agentName]++;
   }
-  
+
   /**
    * Calcule le délai avant une nouvelle tentative (backoff exponentiel)
    * @param retryCount Nombre de tentatives actuelles
@@ -1642,12 +1760,9 @@ export class CoordinatorAgent {
     // Backoff exponentiel avec une limite maximale
     const baseDelay = this.config.retryBaseDelay || 1000;
     const maxDelay = this.config.retryMaxDelay || 30000;
-    
-    const delay = Math.min(
-      maxDelay,
-      baseDelay * Math.pow(2, retryCount) + Math.random() * 1000
-    );
-    
+
+    const delay = Math.min(maxDelay, baseDelay * Math.pow(2, retryCount) + Math.random() * 1000);
+
     return Math.round(delay);
   }
 
@@ -1658,21 +1773,26 @@ export class CoordinatorAgent {
    * @param status Statut de l'exécution (pending, completed, failed)
    * @param data Données à sauvegarder
    */
-  private saveCheckpoint(agentName: string, phase: 'before' | 'after' | 'error', status: 'pending' | 'completed' | 'failed', data: any): void {
+  private saveCheckpoint(
+    agentName: string,
+    phase: 'before' | 'after' | 'error',
+    status: 'pending' | 'completed' | 'failed',
+    data: any
+  ): void {
     if (!this.config.useCheckpoints || !this.config.checkpointDir) {
       return;
     }
-    
+
     try {
       // Créer le répertoire des checkpoints s'il n'existe pas
       if (!fs.existsSync(this.config.checkpointDir)) {
         fs.mkdirSync(this.config.checkpointDir, { recursive: true });
       }
-      
+
       const timestamp = new Date().toISOString();
       const checkpointId = `${agentName}_${phase}_${timestamp.replace(/[:.]/g, '-')}`;
       const checkpointPath = path.join(this.config.checkpointDir, `${checkpointId}.json`);
-      
+
       // Créer le contenu du checkpoint
       const checkpoint = {
         id: checkpointId,
@@ -1680,21 +1800,21 @@ export class CoordinatorAgent {
         phase,
         status,
         timestamp,
-        data
+        data,
       };
-      
+
       // Écrire le checkpoint
       fs.writeFileSync(checkpointPath, JSON.stringify(checkpoint, null, 2));
-      
+
       // Mettre à jour l'index des checkpoints
       this.updateCheckpointIndex(checkpoint, checkpointPath);
-      
+
       console.log(`💾 Point de contrôle créé: ${checkpointId}`);
     } catch (error) {
       console.error(`❌ Erreur lors de la création du point de contrôle: ${error.message}`);
     }
   }
-  
+
   /**
    * Met à jour l'index des points de contrôle
    * @param checkpoint Informations du checkpoint
@@ -1704,10 +1824,10 @@ export class CoordinatorAgent {
     if (!this.config.checkpointDir) {
       return;
     }
-    
+
     const indexPath = path.join(this.config.checkpointDir, 'checkpoint-index.json');
     let index: Record<string, any> = {};
-    
+
     // Charger l'index existant s'il existe
     if (fs.existsSync(indexPath)) {
       try {
@@ -1717,20 +1837,20 @@ export class CoordinatorAgent {
         console.error(`⚠️ Erreur lors de la lecture de l'index des checkpoints: ${error.message}`);
       }
     }
-    
+
     // Ajouter ou mettre à jour l'entrée pour cet agent
     index[checkpoint.agentName] = {
       agentName: checkpoint.agentName,
       lastPhase: checkpoint.phase,
       status: checkpoint.status,
       timestamp: checkpoint.timestamp,
-      path: checkpointPath
+      path: checkpointPath,
     };
-    
+
     // Écrire l'index mis à jour
     fs.writeFileSync(indexPath, JSON.stringify(index, null, 2));
   }
-  
+
   /**
    * Vérifie si un agent a un checkpoint complet
    * @param agentName Nom de l'agent
@@ -1740,16 +1860,16 @@ export class CoordinatorAgent {
     if (!this.config.useCheckpoints || !this.config.checkpointDir) {
       return false;
     }
-    
+
     const indexPath = path.join(this.config.checkpointDir, 'checkpoint-index.json');
     if (!fs.existsSync(indexPath)) {
       return false;
     }
-    
+
     try {
       const indexContent = fs.readFileSync(indexPath, 'utf8');
       const index = JSON.parse(indexContent);
-      
+
       // Vérifier si l'agent a un checkpoint et s'il est complet
       return index[agentName]?.status === 'completed' && index[agentName]?.lastPhase === 'after';
     } catch (error) {
@@ -1757,7 +1877,7 @@ export class CoordinatorAgent {
       return false;
     }
   }
-  
+
   /**
    * Récupère le résultat précédent d'un agent à partir d'un checkpoint
    * @param agentName Nom de l'agent
@@ -1767,37 +1887,37 @@ export class CoordinatorAgent {
     if (!this.config.useCheckpoints || !this.config.checkpointDir) {
       return null;
     }
-    
+
     const indexPath = path.join(this.config.checkpointDir, 'checkpoint-index.json');
     if (!fs.existsSync(indexPath)) {
       return null;
     }
-    
+
     try {
       const indexContent = fs.readFileSync(indexPath, 'utf8');
       const index = JSON.parse(indexContent);
-      
+
       // Vérifier si l'agent a un checkpoint complet
       if (!(index[agentName]?.status === 'completed' && index[agentName]?.lastPhase === 'after')) {
         return null;
       }
-      
+
       // Charger le checkpoint
       const checkpointPath = index[agentName].path;
       if (!fs.existsSync(checkpointPath)) {
         return null;
       }
-      
+
       const checkpointContent = fs.readFileSync(checkpointPath, 'utf8');
       const checkpoint = JSON.parse(checkpointContent);
-      
+
       return checkpoint.data as AgentExecutionResult;
     } catch (error) {
       console.error(`⚠️ Erreur lors de la récupération du résultat précédent: ${error.message}`);
       return null;
     }
   }
-  
+
   /**
    * Nettoie les checkpoints obsolètes
    * @param maxAge Âge maximum des checkpoints en millisecondes
@@ -1806,43 +1926,43 @@ export class CoordinatorAgent {
     if (!this.config.useCheckpoints || !this.config.checkpointDir) {
       return;
     }
-    
+
     console.log(`🧹 Nettoyage des points de contrôle obsolètes (âge max: ${maxAge}ms)...`);
-    
+
     try {
       if (!fs.existsSync(this.config.checkpointDir)) {
         return;
       }
-      
+
       const now = new Date().getTime();
       const files = fs.readdirSync(this.config.checkpointDir);
       let deletedCount = 0;
-      
+
       for (const file of files) {
         // Ignorer l'index
         if (file === 'checkpoint-index.json') {
           continue;
         }
-        
+
         const filePath = path.join(this.config.checkpointDir, file);
         const stats = fs.statSync(filePath);
         const fileAge = now - stats.mtimeMs;
-        
+
         if (fileAge > maxAge) {
           fs.unlinkSync(filePath);
           deletedCount++;
         }
       }
-      
+
       // Mettre à jour l'index après le nettoyage
       this.rebuildCheckpointIndex();
-      
+
       console.log(`✅ Nettoyage terminé: ${deletedCount} point(s) de contrôle supprimé(s)`);
     } catch (error) {
       console.error(`❌ Erreur lors du nettoyage des points de contrôle: ${error.message}`);
     }
   }
-  
+
   /**
    * Reconstruit l'index des checkpoints à partir des fichiers existants
    */
@@ -1850,39 +1970,41 @@ export class CoordinatorAgent {
     if (!this.config.checkpointDir) {
       return;
     }
-    
+
     try {
       const indexPath = path.join(this.config.checkpointDir, 'checkpoint-index.json');
       const files = fs.readdirSync(this.config.checkpointDir);
       const index: Record<string, any> = {};
-      
+
       for (const file of files) {
         // Ignorer l'index
         if (file === 'checkpoint-index.json') {
           continue;
         }
-        
+
         const filePath = path.join(this.config.checkpointDir, file);
         try {
           const content = fs.readFileSync(filePath, 'utf8');
           const checkpoint = JSON.parse(content);
-          
+
           // Ne conserver que le checkpoint le plus récent pour chaque agent
-          if (!index[checkpoint.agentName] || 
-              new Date(checkpoint.timestamp) > new Date(index[checkpoint.agentName].timestamp)) {
+          if (
+            !index[checkpoint.agentName] ||
+            new Date(checkpoint.timestamp) > new Date(index[checkpoint.agentName].timestamp)
+          ) {
             index[checkpoint.agentName] = {
               agentName: checkpoint.agentName,
               lastPhase: checkpoint.phase,
               status: checkpoint.status,
               timestamp: checkpoint.timestamp,
-              path: filePath
+              path: filePath,
             };
           }
         } catch (error) {
           console.error(`⚠️ Erreur lors de la lecture du checkpoint ${file}: ${error.message}`);
         }
       }
-      
+
       // Écrire l'index mis à jour
       fs.writeFileSync(indexPath, JSON.stringify(index, null, 2));
     } catch (error) {
@@ -1903,10 +2025,14 @@ async function main() {
     console.error('  --parallel                  Exécuter les agents en parallèle');
     console.error('  --force                     Forcer la réexécution même si déjà audité');
     console.error('  --no-deps                   Désactiver la vérification des dépendances');
-    console.error('  --agents <liste>            Liste d\'agents à exécuter (séparés par des virgules)');
+    console.error(
+      "  --agents <liste>            Liste d'agents à exécuter (séparés par des virgules)"
+    );
     console.error('  --output <dir>              Dossier de sortie des rapports');
     console.error('  --cahier <path>             Chemin vers le cahier des charges');
-    console.error('  --no-cahier                 Désactiver la validation avec le cahier des charges');
+    console.error(
+      '  --no-cahier                 Désactiver la validation avec le cahier des charges'
+    );
     process.exit(1);
   }
 
@@ -1915,7 +2041,7 @@ async function main() {
   const forceRerun = args.includes('--force');
   const dependencyCheck = !args.includes('--no-deps');
   const validateCahierDesCharges = !args.includes('--no-cahier');
-  
+
   let agentsToRun;
   let outputDir;
   let cahierDesChargesPath;
@@ -1931,7 +2057,7 @@ async function main() {
   if (outputIndex !== -1 && outputIndex < args.length - 1) {
     outputDir = args[outputIndex + 1];
   }
-  
+
   // Extraire le chemin du cahier des charges
   const cahierIndex = args.indexOf('--cahier');
   if (cahierIndex !== -1 && cahierIndex < args.length - 1) {
@@ -1953,17 +2079,21 @@ async function main() {
           console.log(`⏳ Préparation de l'agent ${agentName}...`);
         },
         afterAgent: async (agentName, result) => {
-          console.log(`🏁 Finalisation de l'agent ${agentName} avec ${result.sections.length} sections...`);
+          console.log(
+            `🏁 Finalisation de l'agent ${agentName} avec ${result.sections.length} sections...`
+          );
         },
         onError: async (agentName, error) => {
           console.error(`🚨 Erreur avec l'agent ${agentName}: ${error.message}`);
         },
         onComplete: async (results) => {
-          const successCount = results.filter(r => r.success).length;
+          const successCount = results.filter((r) => r.success).length;
           const totalCount = results.length;
-          console.log(`🎉 Terminé! ${successCount}/${totalCount} agents ont réussi leur exécution.`);
-        }
-      }
+          console.log(
+            `🎉 Terminé! ${successCount}/${totalCount} agents ont réussi leur exécution.`
+          );
+        },
+      },
     });
 
     await coordinator.execute();

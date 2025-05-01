@@ -1,6 +1,6 @@
 /**
  * Interface de la couche de coordination
- * 
+ *
  * Cette interface définit les fonctionnalités de la couche de coordination qui est responsable
  * de la communication entre la couche d'orchestration et la couche métier, ainsi que de la
  * gestion des flux de travail complexes.
@@ -298,7 +298,11 @@ export interface CoordinationLayer {
    * @param eventType Type d'événement
    * @param callback Fonction de rappel à exécuter
    */
-  subscribeToProcessEvents(processId: string, eventType: string, callback: (data: any) => void): Promise<void>;
+  subscribeToProcessEvents(
+    processId: string,
+    eventType: string,
+    callback: (data: any) => void
+  ): Promise<void>;
 
   /**
    * Ferme la couche de coordination

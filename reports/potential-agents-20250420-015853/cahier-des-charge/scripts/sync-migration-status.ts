@@ -7,12 +7,12 @@
  * détectés dans schema_migration_diff.json, et génère migration_warnings.json
  */
 
+import { execSync } from 'child_process';
+import * as crypto from 'crypto';
 import * as fs from 'fs';
 import * as path from 'path';
-import * as glob from 'glob';
 import { program } from 'commander';
-import * as crypto from 'crypto';
-import { execSync } from 'child_process';
+import * as glob from 'glob';
 
 // Types
 
@@ -100,7 +100,7 @@ program
   .option('-o, --output <path>', 'Path for migration_warnings.json', './migration_warnings.json')
   .option('-c, --commit', 'Create aDoDoDoDotgit commit with changes', false)
   .option('-s, --slack', 'Send Slack notification for critical changes', false)
-  .option('-g, -DoDoDoDoDoDotgithub', 'Create GitHub issues for warnings', false);
+  .option('-g, -DoDoDoDogithub', 'Create GitHub issues for warnings', false);
 
 program.parse();
 const options = program.opts();

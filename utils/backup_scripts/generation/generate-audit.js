@@ -165,13 +165,13 @@ async function extractMetadata(filePath, config) {
     const moduleName = fileName.replace(/\.[^/.]+$/, "");
     
     // Objectif du module
-    let objective = extractObjective(content, ast, config);
+    const objective = extractObjective(content, ast, config);
     
     // Modèle SQL
-    let sqlModel = extractSqlModel(content, ast, config);
+    const sqlModel = extractSqlModel(content, ast, config);
     
     // Routes
-    let routes = extractRoutes(content, ast, config);
+    const routes = extractRoutes(content, ast, config);
     
     return {
       fileName,

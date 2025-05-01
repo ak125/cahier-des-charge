@@ -8,20 +8,20 @@
  * Usage: ts-node scripts/migrate-agents-to-abstracts.ts --type=analyzer --dry-run
  */
 
-import * as fs from fsstructure-agent';
-import * as path from pathstructure-agent';
-import * as glob from globstructure-agent';
-import * as yargs from yargsstructure-agent';
-import { hideBin } from yargs/helpersstructure-agent';
+import * as fs from 'fsstructure-agent'
+import * as glob from 'globstructure-agent'
+import * as path from 'pathstructure-agent'
+import * as yargs from 'yargsstructure-agent'
+import { hideBin } from './yargs/helpersstructure-agent'
 
 // Configuration du script
 const MCP_AGENTS_ROOT = path.resolve(__dirname, '../packagesDoDotmcp-agents');
 const AGENT_TYPES = ['analyzer', 'validator', 'generator', 'orchestrator'];
 const TYPE_PLURALS: Record<string, string> = {
-  'analyzer': 'analyzers',
-  'validator': 'validators',
-  'generator': 'generators',
-  'orchestrator': 'orchestrators',
+  analyzer: 'analyzers',
+  validator: 'validators',
+  generator: 'generators',
+  orchestrator: 'orchestrators',
 };
 
 // Options du script
@@ -34,10 +34,10 @@ interface ScriptOptions {
 
 // Modèles d'importation et d'extension
 const IMPORT_PATTERNS = {
-  analyzer: "import { AbstractAnalyzerAgent } from ../AbstractAnalyzer';structure-agent",
-  validator: "import { AbstractValidatorAgent } from ../AbstractValidator';structure-agent",
-  generator: "import { AbstractGeneratorAgent } from ../AbstractGenerator';structure-agent",
-  orchestrator: "import { AbstractOrchestratorAgent } from ../AbstractOrchestrator';structure-agent"
+  analyzer: "import { AbstractAnalyzerAgent } from '../AbstractAnalyzer';structure-agent',
+  validator: "import { AbstractValidatorAgent } from '../AbstractValidator';structure-agent',
+  generator: "import { AbstractGeneratorAgent } from '../AbstractGenerator';structure-agent',
+  orchestrator: "import { AbstractOrchestratorAgent } from '../AbstractOrchestrator';structure-agent'
 };
 
 // Journalisation avec niveaux
@@ -45,9 +45,9 @@ function log(message: string, options: ScriptOptions, level: 'info' | 'warning' 
   if (!options.verbose && level === 'info') return;
   
   const prefix = {
-    'info': '📝 INFO:',
-    'warning': '⚠️ ATTENTION:',
-    'error': '❌ ERREUR:'
+    info: '📝 INFO:',
+    warning: '⚠️ ATTENTION:',
+    error: '❌ ERREUR:'
   }[level];
   
   console.log(`${prefix} ${message}`);
@@ -142,7 +142,7 @@ async function transformAgentFile(
   
   // Ajouter l'import pour la classe abstraite s'il n'existe pas déjà
   if (!content.includes(IMPORT_PATTERNS[agentType as keyof typeof IMPORT_PATTERNS])) {
-    content = IMPORT_PATTERNS[agentType as keyof typeof IMPORT_PATTERNS] + '\n' + content;
+    content = `${IMPORT_PATTERNS[agentType as keyof typeof IMPORT_PATTERNS]}\n${content}`;
   }
   
   // Modifier la déclaration de classe pour étendre la classe abstraite
@@ -154,19 +154,19 @@ async function transformAgentFile(
   
   // Remplacer les anciennes méthodes par les nouvelles signatures
   const methodsMap: Record<string, { oldPattern: RegExp, newMethod: string }> = {
-    'analyzer': {
+    analyzer: {
       oldPattern: /\b(async\s+)?(process|analyze)\s*\(\s*([^:)]+)\s*:\s*([^)]+)\)\s*:[^{]+{/,
       newMethod: 'public async analyze'
     },
-    'validator': {
+    validator: {
       oldPattern: /\b(async\s+)?(process|validate)\s*\(\s*([^:)]+)\s*:\s*([^)]+)\)\s*:[^{]+{/,
       newMethod: 'public async validate'
     },
-    'generator': {
+    generator: {
       oldPattern: /\b(async\s+)?(process|generate)\s*\(\s*([^:)]+)\s*:\s*([^)]+)\)\s*:[^{]+{/,
       newMethod: 'public async generate'
     },
-    'orchestrator': {
+    orchestrator: {
       oldPattern: /\b(async\s+)?(process|orchestrate)\s*\(\s*([^:)]+)\s*:\s*([^)]+)\)\s*:[^{]+{/,
       newMethod: 'public async orchestrate'
     }
@@ -207,7 +207,7 @@ async function transformAgentFile(
       // Ajouter une méthode de nettoyage minimale
       content = content.replace(
         /{(\s*)/,
-        `{\n  protected async cleanupInternal(): Promise<void> {\n    // Nettoyage des ressources\n  }\n$1`
+        "{\n  protected async cleanupInternal(): Promise<void> {\n    // Nettoyage des ressources\n  }\n$1"
       );
     }
   }

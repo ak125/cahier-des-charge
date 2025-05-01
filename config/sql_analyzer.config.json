@@ -104,11 +104,7 @@
         "identifyDomains": true,
         "suggestGroupings": true
       },
-      "skipTables": [
-        "schema_migrations",
-        "migrations",
-        "ar_internal_metadata"
-      ],
+      "skipTables": ["schema_migrations", "migrations", "ar_internal_metadata"],
       "junctionTablePatterns": [
         {
           "pattern": "^(\\w+)_(\\w+)$",
@@ -150,27 +146,89 @@
       "entityPatterns": [
         {
           "category": "USER",
-          "patterns": ["users", "user", "accounts", "account", "profiles", "profile", "members", "member", "customers", "customer"]
+          "patterns": [
+            "users",
+            "user",
+            "accounts",
+            "account",
+            "profiles",
+            "profile",
+            "members",
+            "member",
+            "customers",
+            "customer"
+          ]
         },
         {
           "category": "CONTENT",
-          "patterns": ["posts", "post", "articles", "article", "contents", "content", "pages", "page", "media", "attachments"]
+          "patterns": [
+            "posts",
+            "post",
+            "articles",
+            "article",
+            "contents",
+            "content",
+            "pages",
+            "page",
+            "media",
+            "attachments"
+          ]
         },
         {
           "category": "COMMERCE",
-          "patterns": ["products", "product", "orders", "order", "payments", "payment", "invoices", "invoice", "carts", "cart"]
+          "patterns": [
+            "products",
+            "product",
+            "orders",
+            "order",
+            "payments",
+            "payment",
+            "invoices",
+            "invoice",
+            "carts",
+            "cart"
+          ]
         },
         {
           "category": "COMMUNICATION",
-          "patterns": ["messages", "message", "comments", "comment", "notifications", "notification", "emails", "email"]
+          "patterns": [
+            "messages",
+            "message",
+            "comments",
+            "comment",
+            "notifications",
+            "notification",
+            "emails",
+            "email"
+          ]
         },
         {
           "category": "LOCATION",
-          "patterns": ["addresses", "address", "locations", "location", "places", "place", "countries", "cities", "regions"]
+          "patterns": [
+            "addresses",
+            "address",
+            "locations",
+            "location",
+            "places",
+            "place",
+            "countries",
+            "cities",
+            "regions"
+          ]
         },
         {
           "category": "METADATA",
-          "patterns": ["tags", "tag", "categories", "category", "labels", "label", "types", "status", "metadata"]
+          "patterns": [
+            "tags",
+            "tag",
+            "categories",
+            "category",
+            "labels",
+            "label",
+            "types",
+            "status",
+            "metadata"
+          ]
         }
       ],
       "contextRules": [

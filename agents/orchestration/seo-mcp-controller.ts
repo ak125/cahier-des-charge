@@ -6,22 +6,21 @@
 import { BaseOrchestrationAgent } from './base-orchestration-agent';
 
 // Original content (commented)
-/*
 /**
- * SEOMCPController
- * Agent export file
- */
+ * Le code ci-dessous était l'original. Il est commenté pour référence.
+ 
+// SEOMCPController
+// Agent export file
 
-import { SEOMCPController } from ./seoDoDotmcp-controllerstructure-agent';
-
-export { SEOMCPController };
-export default SEOMCPController;
+// import { SEOMCPController } from './seo-controller-structure-agent';
+// export { SEOMCPController };
+// export default SEOMCPController;
 */
 
 /**
  * Agent seo-mcp-controller
  */
-export class seo-mcp-controllerAgent extends BaseOrchestrationAgent {
+export class SeoMcpControllerAgent extends BaseOrchestrationAgent {
   constructor(options?: any) {
     super(options);
   }

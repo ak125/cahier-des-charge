@@ -1,3 +1,0 @@
-2025-04-19 23:58:16 - 📁 Répertoire de sauvegarde créé: /workspaces/cahier-des-charge/backups/agents-duplicates-20250419-235816
-2025-04-19 23:58:16 - 📝 Fichier de log créé: /workspaces/cahier-des-charge/backups/agents-duplicates-20250419-235816/cleanup-log.txt
-2025-04-19 23:58:16 - ✅ Répertoire principal des agents trouvé: /workspaces/cahier-des-charge/packages/mcp-agents

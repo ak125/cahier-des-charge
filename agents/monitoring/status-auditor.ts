@@ -1,5 +1,5 @@
-import * as fs from 'fs/promises';
 import * as path from 'path';
+import * as fs from 'fs/promises';
 import glob from 'glob';
 
 interface MCPManifest {
@@ -39,10 +39,13 @@ interface AuditReport {
 
 interface PipelineConfig {
   version: string;
-  migrationTypes: Record<string, {
-    requiredSteps: string[];
-    statusSequence: string[];
-  }>;
+  migrationTypes: Record<
+    string,
+    {
+      requiredSteps: string[];
+      statusSequence: string[];
+    }
+  >;
   timeouts: Record<string, number>;
   metrics: {
     requiredForDashboard: string[];
@@ -60,46 +63,46 @@ async function loadPipelineConfig(): Promise<PipelineConfig> {
     console.error('Erreur lors du chargement de la configuration du pipeline:', error);
     // Configuration par défaut
     return {
-      version: "1.0.0",
+      version: '1.0.0',
       migrationTypes: {
-        "standard": {
+        standard: {
           requiredSteps: [
-            "php-analyzer",
-            "structure-classifier-agent",
-            "remix-generator",
-            "qa-analyzer",
-            "seo-checker",
-            "pr-creator"
+            'php-analyzer',
+            'structure-classifier-agent',
+            'remix-generator',
+            'qa-analyzer',
+            'seo-checker',
+            'pr-creator',
           ],
           statusSequence: [
-            "planned",
-            "detected",
-            "analyzed",
-            "structured",
-            "generated",
-            "validated",
-            "integrated",
-            "completed"
-          ]
-        }
+            'planned',
+            'detected',
+            'analyzed',
+            'structured',
+            'generated',
+            'validated',
+            'integrated',
+            'completed',
+          ],
+        },
       },
       timeouts: {
-        "planned": 14,
-        "detected": 7,
-        "analyzed": 5,
-        "structured": 3,
-        "generated": 3,
-        "validated": 5,
-        "integrated": 2
+        planned: 14,
+        detected: 7,
+        analyzed: 5,
+        structured: 3,
+        generated: 3,
+        validated: 5,
+        integrated: 2,
       },
       metrics: {
         requiredForDashboard: [
-          "completion_rate",
-          "missing_agents_count",
-          "blocked_migrations_count",
-          "age_distribution"
-        ]
-      }
+          'completion_rate',
+          'missing_agents_count',
+          'blocked_migrations_count',
+          'age_distribution',
+        ],
+      },
     };
   }
 }
@@ -112,7 +115,11 @@ export async function auditMCPStatus(): Promise<AuditReport> {
 
   // Charger la configuration
   const config = await loadPipelineConfig();
-  console.log(`📝 Configuration chargée: ${config.migrationTypes ? Object.keys(config.migrationTypes).length : 0} types de migration définis`);
+  console.log(
+    `📝 Configuration chargée: ${
+      config.migrationTypes ? Object.keys(config.migrationTypes).length : 0
+    } types de migration définis`
+  );
 
   // Rechercher tous les fichiers MCPManifest.json
   const manifestFiles = await glob('**/MCPManifest.json', { ignore: 'node_modules/**' });
@@ -127,9 +134,9 @@ export async function auditMCPStatus(): Promise<AuditReport> {
       'Moins de 3 jours': 0,
       '3-7 jours': 0,
       '7-14 jours': 0,
-      '14+ jours': 0
+      '14+ jours': 0,
     } as Record<string, number>,
-    completionRate: 0
+    completionRate: 0,
   };
 
   let completedMigrations = 0;
@@ -179,12 +186,12 @@ export async function auditMCPStatus(): Promise<AuditReport> {
       const requiredAgents = getRequiredAgentsByStatus(manifest.status, typeConfig);
 
       // Vérifier les agents manquants
-      const missingAgents = requiredAgents.filter(agent =>
-        !manifest.agentsExecuted || !manifest.agentsExecuted.includes(agent)
+      const missingAgents = requiredAgents.filter(
+        (agent) => !manifest.agentsExecuted || !manifest.agentsExecuted.includes(agent)
       );
 
       // Comptabiliser les agents manquants pour les statistiques
-      missingAgents.forEach(agent => {
+      missingAgents.forEach((agent) => {
         statistics.missingAgents[agent] = (statistics.missingAgents[agent] || 0) + 1;
       });
 
@@ -199,7 +206,7 @@ export async function auditMCPStatus(): Promise<AuditReport> {
           status: manifest.status,
           type: migrationType,
           generatedFiles: manifest.generatedFiles,
-          lastUpdated: manifest.lastUpdated
+          lastUpdated: manifest.lastUpdated,
         };
 
         if (missingAgents.length > 0) {
@@ -229,8 +236,8 @@ export async function auditMCPStatus(): Promise<AuditReport> {
   }
 
   // Calculer le taux de complétion
-  statistics.completionRate = manifestFiles.length > 0 ?
-    Math.round((completedMigrations / manifestFiles.length) * 100) : 0;
+  statistics.completionRate =
+    manifestFiles.length > 0 ? Math.round((completedMigrations / manifestFiles.length) * 100) : 0;
 
   // Trier les problèmes par ancienneté
   issues.sort((a, b) => {
@@ -243,7 +250,7 @@ export async function auditMCPStatus(): Promise<AuditReport> {
     timestamp: new Date().toISOString(),
     totalManifests: manifestFiles.length,
     issues,
-    statistics
+    statistics,
   };
 
   await fs.writeFile('status-audit-report.json', JSON.stringify(report, null, 2));
@@ -257,7 +264,7 @@ export async function auditMCPStatus(): Promise<AuditReport> {
  */
 function getRequiredAgentsByStatus(
   status: string,
-  typeConfig: { requiredSteps: string[], statusSequence: string[] }
+  typeConfig: { requiredSteps: string[]; statusSequence: string[] }
 ): string[] {
   const statusIndex = typeConfig.statusSequence.indexOf(status);
   if (statusIndex === -1) return [];
@@ -269,14 +276,26 @@ function getRequiredAgentsByStatus(
 
   // Calculer les agents requis en fonction de la position dans la séquence
   const agentsForStatus: Record<string, string[]> = {
-    'planned': [],
-    'detected': [],
-    'analyzed': ['php-analyzer'],
-    'structured': ['php-analyzer', 'structure-classifier-agent'],
-    'generated': ['php-analyzer', 'structure-classifier-agent', 'remix-generator', 'nestjs-generator'],
-    'validated': ['php-analyzer', 'structure-classifier-agent', 'remix-generator', 'nestjs-generator', 'qa-analyzer', 'seo-checker'],
-    'integrated': typeConfig.requiredSteps.filter(agent => agent !== 'pr-creator'),
-    'completed': typeConfig.requiredSteps
+    planned: [],
+    detected: [],
+    analyzed: ['php-analyzer'],
+    structured: ['php-analyzer', 'structure-classifier-agent'],
+    generated: [
+      'php-analyzer',
+      'structure-classifier-agent',
+      'remix-generator',
+      'nestjs-generator',
+    ],
+    validated: [
+      'php-analyzer',
+      'structure-classifier-agent',
+      'remix-generator',
+      'nestjs-generator',
+      'qa-analyzer',
+      'seo-checker',
+    ],
+    integrated: typeConfig.requiredSteps.filter((agent) => agent !== 'pr-creator'),
+    completed: typeConfig.requiredSteps,
   };
 
   // Utiliser la configuration spécifique au type de migration ou la configuration par défaut
@@ -286,6 +305,6 @@ function getRequiredAgentsByStatus(
 // Exécuter si appelé directement
 if (require.main === module) {
   auditMCPStatus()
-    .then(report => console.log(`🎯 Audit terminé: ${report.issues.length} problèmes identifiés`))
-    .catch(error => console.error('❌ Erreur pendant l\'audit:', error));
+    .then((report) => console.log(`🎯 Audit terminé: ${report.issues.length} problèmes identifiés`))
+    .catch((error) => console.error("❌ Erreur pendant l'audit:", error));
 }

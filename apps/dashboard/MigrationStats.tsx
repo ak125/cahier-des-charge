@@ -1,45 +1,51 @@
-import React, { useState, useEffect } from 'react';
 import {
+  Badge,
   Box,
-  Heading,
-  Text,
-  Grid,
+  Card,
+  CardBody,
+  CardHeader,
   Flex,
+  Grid,
+  Heading,
+  Progress,
+  SimpleGrid,
   Stat,
-  StatLabel,
-  StatNumber,
-  StatHelpText,
   StatArrow,
   StatGroup,
-  Badge,
+  StatHelpText,
+  StatLabel,
+  StatNumber,
   Table,
-  Thead,
   Tbody,
-  Tr,
-  Th,
   Td,
-  Progress,
-  Card,
-  CardHeader,
-  CardBody,
-  SimpleGrid,
+  Text,
+  Th,
+  Thead,
   Tooltip,
-  useColorModeValue
+  Tr,
+  useColorModeValue,
 } from '@chakra-ui/react';
-import { FiTrendingUp, FiTrendingDown, FiAlertCircle, FiCheckCircle, FiClock } from 'react-icons/fi';
-import { Bar, Pie, Line } from 'react-chartjs-2';
 import {
-  Chart as ChartJS,
+  ArcElement,
+  BarElement,
   CategoryScale,
+  Chart as ChartJS,
+  Legend,
+  LineElement,
   LinearScale,
   PointElement,
-  LineElement,
-  BarElement,
-  ArcElement,
   Title,
   Tooltip as ChartTooltip,
-  Legend,
 } from 'chart.js';
+import React, { useEffect, useState } from 'react';
+import { Bar, Line, Pie } from 'react-chartjs-2';
+import {
+  FiAlertCircle,
+  FiCheckCircle,
+  FiClock,
+  FiTrendingDown,
+  FiTrendingUp,
+} from 'react-icons/fi';
 
 // Enregistrement des composants Chart.js nécessaires
 ChartJS.register(
@@ -109,7 +115,7 @@ const demoSummary: MigrationSummary = {
   errorFiles: 80,
   averageCompletionTime: 12.5,
   completionRate: 69.6,
-  lastMigration: new Date().toISOString()
+  lastMigration: new Date().toISOString(),
 };
 
 const demoTrends: MigrationTrend[] = [
@@ -119,7 +125,7 @@ const demoTrends: MigrationTrend[] = [
   { date: '2025-03-22', filesProcessed: 95, successRate: 91 },
   { date: '2025-03-29', filesProcessed: 110, successRate: 93 },
   { date: '2025-04-05', filesProcessed: 125, successRate: 94 },
-  { date: '2025-04-11', filesProcessed: 89, successRate: 92 }
+  { date: '2025-04-11', filesProcessed: 89, successRate: 92 },
 ];
 
 const demoComponentTypes: ComponentTypeData[] = [
@@ -127,28 +133,55 @@ const demoComponentTypes: ComponentTypeData[] = [
   { type: 'View', count: 456, migratedCount: 342, errorCount: 28 },
   { type: 'Model', count: 178, migratedCount: 145, errorCount: 9 },
   { type: 'Service', count: 132, migratedCount: 89, errorCount: 15 },
-  { type: 'Helper', count: 245, migratedCount: 104, errorCount: 16 }
+  { type: 'Helper', count: 245, migratedCount: 104, errorCount: 16 },
 ];
 
 const demoWaves: WaveData[] = [
-  { waveName: 'Wave 1: Core Authentication', totalFiles: 120, completedFiles: 120, status: 'completed', startDate: '2025-01-10', endDate: '2025-02-15' },
-  { waveName: 'Wave 2: Product Catalog', totalFiles: 245, completedFiles: 232, status: 'in-progress', startDate: '2025-02-20', endDate: '2025-04-25' },
-  { waveName: 'Wave 3: Order Management', totalFiles: 310, completedFiles: 180, status: 'in-progress', startDate: '2025-03-15', endDate: '2025-05-30' },
-  { waveName: 'Wave 4: Reporting', totalFiles: 175, completedFiles: 0, status: 'planned', startDate: '2025-05-10' }
+  {
+    waveName: 'Wave 1: Core Authentication',
+    totalFiles: 120,
+    completedFiles: 120,
+    status: 'completed',
+    startDate: '2025-01-10',
+    endDate: '2025-02-15',
+  },
+  {
+    waveName: 'Wave 2: Product Catalog',
+    totalFiles: 245,
+    completedFiles: 232,
+    status: 'in-progress',
+    startDate: '2025-02-20',
+    endDate: '2025-04-25',
+  },
+  {
+    waveName: 'Wave 3: Order Management',
+    totalFiles: 310,
+    completedFiles: 180,
+    status: 'in-progress',
+    startDate: '2025-03-15',
+    endDate: '2025-05-30',
+  },
+  {
+    waveName: 'Wave 4: Reporting',
+    totalFiles: 175,
+    completedFiles: 0,
+    status: 'planned',
+    startDate: '2025-05-10',
+  },
 ];
 
 // Composant principal
-const MigrationStats: React.FC<MigrationStatsProps> = ({ 
-  summary = demoSummary, 
-  trends = demoTrends, 
-  componentTypes = demoComponentTypes, 
-  waves = demoWaves, 
-  isLoading = false 
+const MigrationStats: React.FC<MigrationStatsProps> = ({
+  summary = demoSummary,
+  trends = demoTrends,
+  componentTypes = demoComponentTypes,
+  waves = demoWaves,
+  isLoading = false,
 }) => {
   const [progressChartData, setProgressChartData] = useState<any>(null);
   const [componentChartData, setComponentChartData] = useState<any>(null);
   const [trendChartData, setTrendChartData] = useState<any>(null);
-  
+
   const cardBg = useColorModeValue('white', 'gray.700');
   const borderColor = useColorModeValue('gray.200', 'gray.600');
 
@@ -157,29 +190,29 @@ const MigrationStats: React.FC<MigrationStatsProps> = ({
     // Graphique pour les types de composants
     if (componentTypes.length > 0) {
       setComponentChartData({
-        labels: componentTypes.map(item => item.type),
+        labels: componentTypes.map((item) => item.type),
         datasets: [
           {
             label: 'Total',
-            data: componentTypes.map(item => item.count),
+            data: componentTypes.map((item) => item.count),
             backgroundColor: 'rgba(54, 162, 235, 0.6)',
             borderColor: 'rgba(54, 162, 235, 1)',
             borderWidth: 1,
           },
           {
             label: 'Migrés',
-            data: componentTypes.map(item => item.migratedCount),
+            data: componentTypes.map((item) => item.migratedCount),
             backgroundColor: 'rgba(75, 192, 192, 0.6)',
             borderColor: 'rgba(75, 192, 192, 1)',
             borderWidth: 1,
           },
           {
             label: 'Erreurs',
-            data: componentTypes.map(item => item.errorCount),
+            data: componentTypes.map((item) => item.errorCount),
             backgroundColor: 'rgba(255, 99, 132, 0.6)',
             borderColor: 'rgba(255, 99, 132, 1)',
             borderWidth: 1,
-          }
+          },
         ],
       });
     }
@@ -195,11 +228,7 @@ const MigrationStats: React.FC<MigrationStatsProps> = ({
             'rgba(255, 206, 86, 0.6)',
             'rgba(255, 99, 132, 0.6)',
           ],
-          borderColor: [
-            'rgba(75, 192, 192, 1)',
-            'rgba(255, 206, 86, 1)',
-            'rgba(255, 99, 132, 1)',
-          ],
+          borderColor: ['rgba(75, 192, 192, 1)', 'rgba(255, 206, 86, 1)', 'rgba(255, 99, 132, 1)'],
           borderWidth: 1,
         },
       ],
@@ -208,11 +237,11 @@ const MigrationStats: React.FC<MigrationStatsProps> = ({
     // Graphique pour les tendances
     if (trends.length > 0) {
       setTrendChartData({
-        labels: trends.map(trend => formatDate(trend.date)),
+        labels: trends.map((trend) => formatDate(trend.date)),
         datasets: [
           {
             label: 'Fichiers traités',
-            data: trends.map(trend => trend.filesProcessed),
+            data: trends.map((trend) => trend.filesProcessed),
             backgroundColor: 'rgba(54, 162, 235, 0.4)',
             borderColor: 'rgba(54, 162, 235, 1)',
             borderWidth: 2,
@@ -221,7 +250,7 @@ const MigrationStats: React.FC<MigrationStatsProps> = ({
           },
           {
             label: 'Taux de réussite (%)',
-            data: trends.map(trend => trend.successRate),
+            data: trends.map((trend) => trend.successRate),
             backgroundColor: 'rgba(75, 192, 192, 0.4)',
             borderColor: 'rgba(75, 192, 192, 1)',
             borderWidth: 2,
@@ -239,13 +268,13 @@ const MigrationStats: React.FC<MigrationStatsProps> = ({
     responsive: true,
     scales: {
       x: {
-        grid: { display: false }
+        grid: { display: false },
       },
       y: {
         beginAtZero: true,
         title: {
           display: true,
-          text: 'Fichiers traités'
+          text: 'Fichiers traités',
         },
       },
       y1: {
@@ -254,7 +283,7 @@ const MigrationStats: React.FC<MigrationStatsProps> = ({
         max: 100,
         title: {
           display: true,
-          text: 'Taux de réussite (%)'
+          text: 'Taux de réussite (%)',
         },
         grid: {
           drawOnChartArea: false,
@@ -280,7 +309,7 @@ const MigrationStats: React.FC<MigrationStatsProps> = ({
       },
       title: {
         display: true,
-        text: 'Répartition de l\'état des fichiers',
+        text: "Répartition de l'état des fichiers",
       },
     },
   };
@@ -324,25 +353,29 @@ const MigrationStats: React.FC<MigrationStatsProps> = ({
   // Calcul des indicateurs depuis le résumé
   const completionPercentage = (summary.migratedFiles / summary.totalFiles) * 100;
   const errorPercentage = (summary.errorFiles / summary.totalFiles) * 100;
-  
+
   // Tendance par rapport à la semaine précédente (simulation)
-  const trendPercentage = trends.length >= 2 
-    ? ((trends[trends.length - 1].filesProcessed - trends[trends.length - 2].filesProcessed) 
-       / trends[trends.length - 2].filesProcessed) * 100
-    : 0;
+  const trendPercentage =
+    trends.length >= 2
+      ? ((trends[trends.length - 1].filesProcessed - trends[trends.length - 2].filesProcessed) /
+          trends[trends.length - 2].filesProcessed) *
+        100
+      : 0;
 
   return (
     <Box p={4}>
-      <Heading size="lg" mb={6}>Statistiques de Migration</Heading>
+      <Heading size="lg" mb={6}>
+        Statistiques de Migration
+      </Heading>
 
       {/* Résumé */}
-      <StatGroup 
-        mb={8} 
-        p={4} 
-        bg={cardBg} 
-        borderRadius="lg" 
-        boxShadow="md" 
-        borderWidth="1px" 
+      <StatGroup
+        mb={8}
+        p={4}
+        bg={cardBg}
+        borderRadius="lg"
+        boxShadow="md"
+        borderWidth="1px"
         borderColor={borderColor}
       >
         <Stat p={3}>
@@ -353,7 +386,7 @@ const MigrationStats: React.FC<MigrationStatsProps> = ({
             {formatPercentage(completionPercentage)}
           </StatHelpText>
         </Stat>
-        
+
         <Stat p={3}>
           <StatLabel fontSize="md">En attente</StatLabel>
           <StatNumber>{formatNumber(summary.pendingFiles)}</StatNumber>
@@ -361,21 +394,21 @@ const MigrationStats: React.FC<MigrationStatsProps> = ({
             {formatPercentage((summary.pendingFiles / summary.totalFiles) * 100)} du total
           </StatHelpText>
         </Stat>
-        
+
         <Stat p={3}>
           <StatLabel fontSize="md">Erreurs</StatLabel>
           <StatNumber>{formatNumber(summary.errorFiles)}</StatNumber>
           <StatHelpText>
-            <StatArrow type={errorPercentage > 5 ? "increase" : "decrease"} />
+            <StatArrow type={errorPercentage > 5 ? 'increase' : 'decrease'} />
             {formatPercentage(errorPercentage)}
           </StatHelpText>
         </Stat>
-        
+
         <Stat p={3}>
           <StatLabel fontSize="md">Temps moyen</StatLabel>
           <StatNumber>{summary.averageCompletionTime} min</StatNumber>
           <StatHelpText>
-            <StatArrow type={trendPercentage >= 0 ? "increase" : "decrease"} />
+            <StatArrow type={trendPercentage >= 0 ? 'increase' : 'decrease'} />
             {Math.abs(Math.round(trendPercentage))}% cette semaine
           </StatHelpText>
         </Stat>
@@ -383,24 +416,24 @@ const MigrationStats: React.FC<MigrationStatsProps> = ({
 
       {/* Graphiques */}
       <SimpleGrid columns={{ base: 1, md: 2 }} spacing={6} mb={8}>
-        <Box 
-          p={4} 
-          bg={cardBg} 
-          borderRadius="lg" 
-          boxShadow="md" 
-          borderWidth="1px" 
+        <Box
+          p={4}
+          bg={cardBg}
+          borderRadius="lg"
+          boxShadow="md"
+          borderWidth="1px"
           borderColor={borderColor}
           height="300px"
         >
           {progressChartData && <Pie data={progressChartData} options={pieOptions} />}
         </Box>
-        
-        <Box 
-          p={4} 
-          bg={cardBg} 
-          borderRadius="lg" 
-          boxShadow="md" 
-          borderWidth="1px" 
+
+        <Box
+          p={4}
+          bg={cardBg}
+          borderRadius="lg"
+          boxShadow="md"
+          borderWidth="1px"
           borderColor={borderColor}
           height="300px"
         >
@@ -408,13 +441,13 @@ const MigrationStats: React.FC<MigrationStatsProps> = ({
         </Box>
       </SimpleGrid>
 
-      <Box 
-        p={4} 
-        mb={8} 
-        bg={cardBg} 
-        borderRadius="lg" 
-        boxShadow="md" 
-        borderWidth="1px" 
+      <Box
+        p={4}
+        mb={8}
+        bg={cardBg}
+        borderRadius="lg"
+        boxShadow="md"
+        borderWidth="1px"
         borderColor={borderColor}
         height="350px"
       >
@@ -422,16 +455,18 @@ const MigrationStats: React.FC<MigrationStatsProps> = ({
       </Box>
 
       {/* Tableau des vagues de migration */}
-      <Box 
-        p={4} 
-        mb={8} 
-        bg={cardBg} 
-        borderRadius="lg" 
-        boxShadow="md" 
-        borderWidth="1px" 
+      <Box
+        p={4}
+        mb={8}
+        bg={cardBg}
+        borderRadius="lg"
+        boxShadow="md"
+        borderWidth="1px"
         borderColor={borderColor}
       >
-        <Heading size="md" mb={4}>Progrès des Vagues de Migration</Heading>
+        <Heading size="md" mb={4}>
+          Progrès des Vagues de Migration
+        </Heading>
         <Table variant="simple">
           <Thead>
             <Tr>
@@ -449,14 +484,16 @@ const MigrationStats: React.FC<MigrationStatsProps> = ({
                 <Td>
                   <Flex align="center">
                     <Box flex="1" mr={4}>
-                      <Progress 
-                        value={(wave.completedFiles / wave.totalFiles) * 100} 
-                        size="sm" 
+                      <Progress
+                        value={(wave.completedFiles / wave.totalFiles) * 100}
+                        size="sm"
                         colorScheme={
-                          wave.status === 'completed' ? 'green' : 
-                          wave.status === 'in-progress' ? 'blue' : 
-                          'yellow'
-                        } 
+                          wave.status === 'completed'
+                            ? 'green'
+                            : wave.status === 'in-progress'
+                              ? 'blue'
+                              : 'yellow'
+                        }
                         borderRadius="md"
                       />
                     </Box>

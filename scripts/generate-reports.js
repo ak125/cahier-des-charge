@@ -3,7 +3,7 @@
 /**
  * Script de génération de rapports périodiques pour le suivi du pipeline MCP
  * Génère des rapports quotidiens et hebdomadaires sur l'état des migrations
- * 
+ *
  * Usage:
  *   node generate-reports.js --type=daily|weekly
  */
@@ -20,10 +20,10 @@ const CONFIG = {
   statusPath: path.resolve(__dirname, '../status.json'),
   logsPath: path.resolve(__dirname, '../logs/error.log'),
   redisJobsPath: path.resolve(__dirname, '../logs/jobs.redis.json'),
-  
+
   // Dossier de sortie pour les rapports générés
   reportsOutputDir: path.resolve(__dirname, '../reports'),
-  
+
   // Configuration des emails
   email: {
     enabled: process.env.EMAIL_ENABLED === 'true',
@@ -37,7 +37,7 @@ const CONFIG = {
     from: process.env.EMAIL_FROM || 'mcp-pipeline@example.com',
     to: process.env.EMAIL_TO || 'team@example.com',
   },
-  
+
   // Configuration Supabase (optionnelle)
   supabase: {
     enabled: process.env.SUPABASE_URL && process.env.SUPABASE_KEY,
@@ -52,16 +52,18 @@ const CONFIG = {
 async function main() {
   try {
     const reportType = getReportType();
-    console.log(`Génération d'un rapport ${reportType === 'daily' ? 'quotidien' : 'hebdomadaire'}...`);
-    
+    console.log(
+      `Génération d'un rapport ${reportType === 'daily' ? 'quotidien' : 'hebdomadaire'}...`
+    );
+
     // Charger les données
     const statusData = await loadStatusData();
     const errorLogs = await loadErrorLogs();
     const jobsData = await loadJobsData();
-    
+
     // Générer les métriques
     const metrics = generateMetrics(statusData, jobsData);
-    
+
     // Générer le rapport
     const reportData = {
       type: reportType,
@@ -71,23 +73,23 @@ async function main() {
       metrics,
       period: reportType === 'daily' ? 'dernières 24h' : '7 derniers jours',
     };
-    
+
     // Assembler le rapport
     const report = await generateReport(reportData);
-    
+
     // Sauvegarder le rapport dans un fichier
     await saveReport(report, reportType);
-    
+
     // Envoyer le rapport par email si configuré
     if (CONFIG.email.enabled) {
       await emailReport(report, reportType);
     }
-    
+
     // Synchroniser avec Supabase si configuré
     if (CONFIG.supabase.enabled) {
       await syncReportToSupabase(reportData);
     }
-    
+
     console.log(`Rapport ${reportType} généré avec succès!`);
   } catch (error) {
     console.error('Erreur lors de la génération du rapport:', error);
@@ -100,15 +102,15 @@ async function main() {
  */
 function getReportType() {
   const args = process.argv.slice(2);
-  const typeArg = args.find(arg => arg.startsWith('--type='));
-  
+  const typeArg = args.find((arg) => arg.startsWith('--type='));
+
   if (typeArg) {
     const type = typeArg.split('=')[1];
     if (['daily', 'weekly'].includes(type)) {
       return type;
     }
   }
-  
+
   const today = new Date();
   // Par défaut, rapport hebdomadaire le dimanche, quotidien les autres jours
   return today.getDay() === 0 ? 'weekly' : 'daily';
@@ -126,7 +128,7 @@ async function loadStatusData() {
     return {
       lastUpdated: new Date().toISOString(),
       summary: { total: 0, pending: 0, done: 0, invalid: 0 },
-      files: {}
+      files: {},
     };
   }
 }
@@ -162,57 +164,62 @@ async function loadJobsData() {
  */
 function generateMetrics(statusData, jobsData) {
   const files = Object.values(statusData.files);
-  const now = Date.now();
-  
+  const _now = Date.now();
+
   // Temps de traitement moyen
   const completedJobs = jobsData.completed || [];
   let avgProcessingTime = 0;
-  
+
   if (completedJobs.length > 0) {
     const processingTimes = completedJobs
-      .filter(job => job.timestamp && job.completedOn)
-      .map(job => (job.completedOn - job.timestamp) / 1000); // en secondes
-    
+      .filter((job) => job.timestamp && job.completedOn)
+      .map((job) => (job.completedOn - job.timestamp) / 1000); // en secondes
+
     if (processingTimes.length > 0) {
-      avgProcessingTime = processingTimes.reduce((sum, time) => sum + time, 0) / processingTimes.length;
+      avgProcessingTime =
+        processingTimes.reduce((sum, time) => sum + time, 0) / processingTimes.length;
     }
   }
-  
+
   // Taux de succès
-  const successRate = statusData.summary.done / (statusData.summary.total || 1) * 100;
-  
+  const successRate = (statusData.summary.done / (statusData.summary.total || 1)) * 100;
+
   // Identifier les agents les plus chargés et leurs erreurs
   const agentStats = {};
-  files.forEach(file => {
+  files.forEach((file) => {
     if (!agentStats[file.agent]) {
       agentStats[file.agent] = { total: 0, done: 0, invalid: 0 };
     }
-    
+
     agentStats[file.agent].total++;
-    
+
     if (file.status === 'done') {
       agentStats[file.agent].done++;
     } else if (file.status === 'invalid') {
       agentStats[file.agent].invalid++;
     }
   });
-  
-  const agentsMetrics = Object.entries(agentStats).map(([agent, stats]) => ({
-    agent,
-    total: stats.total,
-    successRate: (stats.done / (stats.total || 1)) * 100,
-    errorRate: (stats.invalid / (stats.total || 1)) * 100
-  })).sort((a, b) => b.errorRate - a.errorRate);
-  
+
+  const agentsMetrics = Object.entries(agentStats)
+    .map(([agent, stats]) => ({
+      agent,
+      total: stats.total,
+      successRate: (stats.done / (stats.total || 1)) * 100,
+      errorRate: (stats.invalid / (stats.total || 1)) * 100,
+    }))
+    .sort((a, b) => b.errorRate - a.errorRate);
+
   // Déterminer le taux de progression par jour
   const migrationsPerDay = statusData.summary.total / 7; // Estimation simpliste
-  
+
   return {
     avgProcessingTime,
     successRate,
     agentsMetrics,
     migrationsPerDay,
-    estimatedCompletionDays: Math.ceil((files.length - statusData.summary.done) / (migrationsPerDay || 1))
+    estimatedCompletionDays: Math.ceil(
+      (files.length - statusData.summary.done) / (migrationsPerDay || 1)
+    ),
   };
 }
 
@@ -362,7 +369,7 @@ async function generateReport(reportData) {
     </body>
     </html>
   `;
-  
+
   // Utiliser EJS pour le rendu
   try {
     return ejs.render(template, reportData);
@@ -379,7 +386,7 @@ async function saveReport(reportContent, reportType) {
   const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
   const filename = `${reportType}-migration-report-${timestamp}.html`;
   const outputPath = path.join(CONFIG.reportsOutputDir, filename);
-  
+
   // Créer le dossier de rapports s'il n'existe pas
   try {
     await fs.mkdir(CONFIG.reportsOutputDir, { recursive: true });
@@ -388,10 +395,10 @@ async function saveReport(reportContent, reportType) {
       throw error;
     }
   }
-  
+
   await fs.writeFile(outputPath, reportContent);
   console.log(`Rapport sauvegardé dans: ${outputPath}`);
-  
+
   // Créer un lien symbolique vers le dernier rapport
   const latestLinkPath = path.join(CONFIG.reportsOutputDir, `latest-${reportType}-report.html`);
   try {
@@ -403,7 +410,7 @@ async function saveReport(reportContent, reportType) {
   } catch (error) {
     console.warn(`Impossible de créer le lien symbolique: ${error.message}`);
   }
-  
+
   return outputPath;
 }
 
@@ -415,7 +422,7 @@ async function emailReport(report, reportType) {
     console.warn('Configuration email incomplète, email non envoyé');
     return;
   }
-  
+
   try {
     const transporter = nodemailer.createTransport({
       host: CONFIG.email.host,
@@ -423,17 +430,19 @@ async function emailReport(report, reportType) {
       secure: CONFIG.email.secure,
       auth: CONFIG.email.auth,
     });
-    
+
     const info = await transporter.sendMail({
       from: CONFIG.email.from,
       to: CONFIG.email.to,
-      subject: `Rapport ${reportType === 'daily' ? 'quotidien' : 'hebdomadaire'} de migration PHP -> Remix`,
+      subject: `Rapport ${
+        reportType === 'daily' ? 'quotidien' : 'hebdomadaire'
+      } de migration PHP -> Remix`,
       html: report,
     });
-    
+
     console.log(`Email envoyé: ${info.messageId}`);
   } catch (error) {
-    console.error('Erreur lors de l\'envoi de l\'email:', error);
+    console.error("Erreur lors de l'envoi de l'email:", error);
   }
 }
 
@@ -444,10 +453,10 @@ async function syncReportToSupabase(reportData) {
   if (!CONFIG.supabase.enabled) {
     return;
   }
-  
+
   try {
     const supabase = createClient(CONFIG.supabase.url, CONFIG.supabase.key);
-    
+
     // Convertir les données pour Supabase
     const report = {
       type: reportData.type,
@@ -462,33 +471,32 @@ async function syncReportToSupabase(reportData) {
       estimated_completion_days: reportData.metrics.estimatedCompletionDays,
       created_at: new Date().toISOString(),
     };
-    
-    const { data, error } = await supabase
-      .from('migration_reports')
-      .insert(report);
-    
+
+    const { data, error } = await supabase.from('migration_reports').insert(report);
+
     if (error) {
       console.error('Erreur lors de la synchronisation avec Supabase:', error);
     } else {
       console.log('Rapport synchronisé avec Supabase');
     }
-    
+
     // Synchroniser également les métriques d'agents
     for (const agentMetric of reportData.metrics.agentsMetrics) {
-      const { data: agentData, error: agentError } = await supabase
-        .from('agent_metrics')
-        .insert({
-          report_date: reportData.date,
-          report_type: reportData.type,
-          agent_name: agentMetric.agent,
-          total_files: agentMetric.total,
-          success_rate: agentMetric.successRate,
-          error_rate: agentMetric.errorRate,
-          created_at: new Date().toISOString(),
-        });
-      
+      const { data: agentData, error: agentError } = await supabase.from('agent_metrics').insert({
+        report_date: reportData.date,
+        report_type: reportData.type,
+        agent_name: agentMetric.agent,
+        total_files: agentMetric.total,
+        success_rate: agentMetric.successRate,
+        error_rate: agentMetric.errorRate,
+        created_at: new Date().toISOString(),
+      });
+
       if (agentError) {
-        console.error(`Erreur lors de la synchronisation des métriques de l'agent ${agentMetric.agent}:`, agentError);
+        console.error(
+          `Erreur lors de la synchronisation des métriques de l'agent ${agentMetric.agent}:`,
+          agentError
+        );
       }
     }
   } catch (error) {

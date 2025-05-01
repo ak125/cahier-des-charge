@@ -3,17 +3,11 @@
  */
 
 import { Pool, PoolClient, QueryResult } from 'pg';
-import { 
-  PostgresConnectionOptions, 
-  parseConnectionString 
+import { ColumnInfo, ForeignKeyInfo, IndexInfo, SchemaMap, TableInfo } from '../types';
+import {
+  PostgresConnectionOptions,
+  parseConnectionString,
 } from '../utils/connection-string-parser';
-import { 
-  TableInfo, 
-  ColumnInfo, 
-  IndexInfo,
-  ForeignKeyInfo,
-  SchemaMap
-} from '../types';
 
 export class PostgresService {
   private pool: Pool | null = null;
@@ -50,13 +44,13 @@ export class PostgresService {
         ssl: ssl ? { rejectUnauthorized: false } : undefined,
         max: 20, // Nombre maximum de clients dans le pool
         idleTimeoutMillis: 30000, // Délai d'inactivité avant fermeture d'un client
-        connectionTimeoutMillis: 2000 // Délai avant échec de la connexion
+        connectionTimeoutMillis: 2000, // Délai avant échec de la connexion
       });
 
       // Test de connexion
       const client = await this.pool.connect();
       client.release();
-      
+
       console.log(`Connexion réussie à PostgreSQL: ${host}:${port}/${database}`);
     } catch (error) {
       throw new Error(`Échec de la connexion à PostgreSQL: ${error.message}`);
@@ -82,7 +76,7 @@ export class PostgresService {
    */
   async query<T = any>(query: string, params: any[] = []): Promise<QueryResult<T>> {
     if (!this.pool) {
-      throw new Error('La connexion PostgreSQL n\'est pas initialisée');
+      throw new Error("La connexion PostgreSQL n'est pas initialisée");
     }
 
     try {
@@ -98,7 +92,7 @@ export class PostgresService {
    */
   async getClient(): Promise<PoolClient> {
     if (!this.pool) {
-      throw new Error('La connexion PostgreSQL n\'est pas initialisée');
+      throw new Error("La connexion PostgreSQL n'est pas initialisée");
     }
 
     try {
@@ -122,7 +116,7 @@ export class PostgresService {
     `;
 
     const result = await this.query(query, [this.schema]);
-    return result.rows.map(row => row.table_name);
+    return result.rows.map((row) => row.table_name);
   }
 
   /**
@@ -139,7 +133,7 @@ export class PostgresService {
 
     // Obtenir les informations sur les colonnes
     const columns = await this.getTableColumns(tableName);
-    
+
     // Obtenir les informations sur les index
     const indexes = await this.getTableIndexes(tableName);
 
@@ -147,7 +141,7 @@ export class PostgresService {
       name: tableName,
       columns,
       indexes,
-      schema: this.schema
+      schema: this.schema,
     };
   }
 
@@ -211,9 +205,9 @@ export class PostgresService {
     `;
 
     const result = await this.query(query, [this.schema, tableName]);
-    
+
     const columns: Record<string, ColumnInfo> = {};
-    
+
     for (const row of result.rows) {
       columns[row.column_name] = {
         name: row.column_name,
@@ -221,10 +215,10 @@ export class PostgresService {
         nullable: row.is_nullable,
         defaultValue: row.column_default,
         isPrimary: row.is_primary,
-        isUnique: row.is_unique
+        isUnique: row.is_unique,
       };
     }
-    
+
     return columns;
   }
 
@@ -266,12 +260,12 @@ export class PostgresService {
     `;
 
     const result = await this.query(query, [tableName, this.schema]);
-    
-    return result.rows.map(row => ({
+
+    return result.rows.map((row) => ({
       name: row.index_name,
       type: row.index_type,
       columns: row.column_names,
-      isUnique: row.is_unique
+      isUnique: row.is_unique,
     }));
   }
 
@@ -307,20 +301,20 @@ export class PostgresService {
 
     const params = tableName ? [this.schema, tableName] : [this.schema];
     const result = await this.query(query, params);
-    
+
     // Regrouper les colonnes par contrainte
     const fkMap = new Map<string, ForeignKeyInfo>();
-    
+
     for (const row of result.rows) {
       const { constraint_name, source_table, source_column, target_table, target_column } = row;
-      
+
       if (!fkMap.has(constraint_name)) {
         fkMap.set(constraint_name, {
           name: constraint_name,
           sourceTable: source_table,
           sourceColumns: [source_column],
           targetTable: target_table,
-          targetColumns: [target_column]
+          targetColumns: [target_column],
         });
       } else {
         const fk = fkMap.get(constraint_name)!;
@@ -328,7 +322,7 @@ export class PostgresService {
         fk.targetColumns.push(target_column);
       }
     }
-    
+
     return Array.from(fkMap.values());
   }
 
@@ -340,21 +334,21 @@ export class PostgresService {
     try {
       // Obtenir la liste des tables
       const tableNames = await this.getTables();
-      
+
       // Obtenir les informations détaillées pour chaque table
       const tables: Record<string, TableInfo> = {};
       for (const tableName of tableNames) {
         tables[tableName] = await this.getTableInfo(tableName);
       }
-      
+
       // Obtenir toutes les clés étrangères
       const foreignKeys = await this.getForeignKeys();
-      
+
       return {
         name: `PostgreSQL Schema (${this.connectionOptions.database})`,
         schema: this.schema,
         tables,
-        foreignKeys
+        foreignKeys,
       };
     } catch (error) {
       throw new Error(`Échec de la génération de la carte du schéma: ${error.message}`);
@@ -372,10 +366,10 @@ export class PostgresService {
       return {
         rowCount: result.rowCount,
         rows: result.rows,
-        fields: result.fields.map(field => ({
+        fields: result.fields.map((field) => ({
           name: field.name,
-          dataTypeID: field.dataTypeID
-        }))
+          dataTypeID: field.dataTypeID,
+        })),
       };
     } catch (error) {
       throw new Error(`Échec de l'exécution de la requête: ${error.message}`);

@@ -8,10 +8,7 @@
       "name": "Read Config File",
       "type": "n8n-nodes-base.readBinaryFile",
       "typeVersion": 1,
-      "position": [
-        240,
-        300
-      ]
+      "position": [240, 300]
     },
     {
       "parameters": {
@@ -21,10 +18,7 @@
       "name": "Parse Config",
       "type": "n8n-nodes-base.set",
       "typeVersion": 1,
-      "position": [
-        420,
-        300
-      ]
+      "position": [420, 300]
     },
     {
       "parameters": {
@@ -33,10 +27,7 @@
       "name": "Validate Config",
       "type": "n8n-nodes-base.function",
       "typeVersion": 1,
-      "position": [
-        600,
-        300
-      ]
+      "position": [600, 300]
     },
     {
       "parameters": {
@@ -53,10 +44,7 @@
       "name": "Config Valid?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
-      "position": [
-        780,
-        300
-      ]
+      "position": [780, 300]
     },
     {
       "parameters": {
@@ -65,10 +53,7 @@
       "name": "Execute Cartographer",
       "type": "n8n-nodes-base.executeCommand",
       "typeVersion": 1,
-      "position": [
-        980,
-        240
-      ]
+      "position": [980, 240]
     },
     {
       "parameters": {
@@ -79,10 +64,7 @@
       "name": "Error Response",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1,
-      "position": [
-        980,
-        400
-      ]
+      "position": [980, 400]
     },
     {
       "parameters": {
@@ -91,10 +73,7 @@
       "name": "Read Classification",
       "type": "n8n-nodes-base.readBinaryFile",
       "typeVersion": 1,
-      "position": [
-        1180,
-        240
-      ]
+      "position": [1180, 240]
     },
     {
       "parameters": {
@@ -104,10 +83,7 @@
       "name": "Parse Classification",
       "type": "n8n-nodes-base.set",
       "typeVersion": 1,
-      "position": [
-        1380,
-        240
-      ]
+      "position": [1380, 240]
     },
     {
       "parameters": {
@@ -116,10 +92,7 @@
       "name": "Read Entity Graph",
       "type": "n8n-nodes-base.readBinaryFile",
       "typeVersion": 1,
-      "position": [
-        1180,
-        400
-      ]
+      "position": [1180, 400]
     },
     {
       "parameters": {
@@ -129,10 +102,7 @@
       "name": "Parse Entity Graph",
       "type": "n8n-nodes-base.set",
       "typeVersion": 1,
-      "position": [
-        1380,
-        400
-      ]
+      "position": [1380, 400]
     },
     {
       "parameters": {
@@ -141,10 +111,7 @@
       "name": "Compile Results",
       "type": "n8n-nodes-base.function",
       "typeVersion": 1,
-      "position": [
-        1580,
-        320
-      ]
+      "position": [1580, 320]
     },
     {
       "parameters": {
@@ -155,10 +122,7 @@
       "name": "Success Response",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1,
-      "position": [
-        1780,
-        320
-      ]
+      "position": [1780, 320]
     },
     {
       "parameters": {
@@ -170,10 +134,7 @@
       "name": "Webhook",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 1,
-      "position": [
-        60,
-        300
-      ]
+      "position": [60, 300]
     }
   ],
   "connections": {

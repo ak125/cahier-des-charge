@@ -8,13 +8,9 @@ import { AgentOptions, AgentResult } from '../core/types';
 /**
  * Options spécifiques aux agents migration
  */
-export interface MigrationAgentOptions extends AgentOptions {
-  // Options spécifiques à cette catégorie
-}
+export type MigrationAgentOptions = AgentOptions;
 
 /**
  * Résultat spécifique aux agents migration
  */
-export interface MigrationResult extends AgentResult {
-  // Données spécifiques à cette catégorie
-}
+export type MigrationResult = AgentResult;

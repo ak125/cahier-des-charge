@@ -1,34 +1,42 @@
-import { ArgumentMetadata, BadRequestException, Injectable, PipeTransform } from '@nestjs/common';
-import { ZodError, ZodSchema } from 'zod';
+import { Injectable, ArgumentMetadata, PipeTransform, BadRequestException } from '@nestjs/common';
+import { ZodSchema, ZodError } from 'zod';
 
 /**
- * Pipe de validation basé sur Zod pour NestJS
- * 
- * Ce pipe permet d'utiliser les schémas Zod directement dans vos contrôleurs NestJS
- * pour la validation des données entrantes (body, params, query).
- * 
- * @example
- * ```typescript
- * @Post()
- * createProduct(@Body(new ZodValidationPipe(ProductCreateSchema)) product: ProductCreate) {
- *   return this.productsService.create(product);
- * }
- * ```
+ * Un pipe de validation NestJS qui utilise Zod pour valider les données entrantes
  */
 @Injectable()
 export class ZodValidationPipe implements PipeTransform {
-  constructor(private schema: ZodSchema) {}
+  /**
+   * Transforme et valide la valeur d'entrée en utilisant le schéma Zod approprié
+   * @param value La valeur à transformer/valider
+   * @param metadata Les métadonnées du paramètre
+   * @returns La valeur validée et transformée
+   * @throws BadRequestException si la validation échoue
+   */
+  async transform(value: any, metadata: ArgumentMetadata) {
+    if (!value) {
+      return value;
+    }
 
-  transform(value: unknown, metadata: ArgumentMetadata) {
+    // Si nous avons un DTO typé, essayer de trouver le schéma Zod correspondant
+    const { metatype } = metadata;
+    if (!metatype || !this.hasZodSchema(metatype)) {
+      return value;
+    }
+
     try {
-      // Parse la valeur avec le schéma Zod
-      return this.schema.parse(value);
+      // Récupérer le schéma Zod à partir du DTO
+      const schema = this.getZodSchema(metatype);
+
+      // Valider et transformer la valeur
+      return await schema.parseAsync(value);
     } catch (error) {
       if (error instanceof ZodError) {
-        // Formatage des erreurs Zod pour NestJS
+        // Formatter l'erreur de validation pour une meilleure lisibilité
+        const formattedErrors = this.formatZodError(error);
         throw new BadRequestException({
-          message: 'Validation échouée',
-          errors: this.formatZodError(error),
+          message: 'Erreur de validation',
+          errors: formattedErrors,
         });
       }
       throw error;
@@ -36,19 +44,49 @@ export class ZodValidationPipe implements PipeTransform {
   }
 
   /**
-   * Formate les erreurs Zod pour les rendre plus lisibles dans une API REST
+   * Vérifie si un type possède un schéma Zod associé
+   * @param metatype Le type à vérifier
+   * @returns true si le type a un schéma Zod, false sinon
    */
-  private formatZodError(error: ZodError) {
-    return error.errors.map((err) => ({
-      field: err.path.join('.'),
-      message: err.message,
+  private hasZodSchema(metatype: any): boolean {
+    return metatype.prototype && typeof metatype.prototype.zodSchema === 'function';
+  }
+
+  /**
+   * Récupère le schéma Zod associé à un type
+   * @param metatype Le type dont on veut extraire le schéma Zod
+   * @returns Le schéma Zod associé au type
+   */
+  private getZodSchema(metatype: any): ZodSchema {
+    return metatype.prototype.zodSchema();
+  }
+
+  /**
+   * Formate une erreur de validation Zod pour une meilleure lisibilité
+   * @param error L'erreur Zod à formater
+   * @returns Un tableau d'objets représentant les erreurs
+   */
+  private formatZodError(error: ZodError): { field: string; errors: string[] }[] {
+    const formattedErrors = new Map<string, string[]>();
+
+    error.errors.forEach((err) => {
+      const path = err.path.join('.');
+      if (!formattedErrors.has(path)) {
+        formattedErrors.set(path, []);
+      }
+      formattedErrors.get(path)!.push(err.message);
+    });
+
+    return Array.from(formattedErrors.entries()).map(([field, messages]) => ({
+      field,
+      errors: messages,
     }));
   }
 }
 
 /**
  * Décorateur pour valider les données avec un schéma Zod
- * 
+ *
  * @example
  * ```typescript
  * @Post()
@@ -59,7 +97,7 @@ export class ZodValidationPipe implements PipeTransform {
  * ```
  */
 export function UseZodValidation(schema: ZodSchema) {
-  return function (target: any, key: string, descriptor: PropertyDescriptor) {
+  return (_target: any, _key: string, descriptor: PropertyDescriptor) => {
     // Sauvegarde de la méthode originale
     const originalMethod = descriptor.value;
 
@@ -72,10 +110,10 @@ export function UseZodValidation(schema: ZodSchema) {
       try {
         // Validation avec Zod
         const validatedData = schema.parse(body);
-        
+
         // Remplacement du body avec les données validées
         req.body = validatedData;
-        
+
         // Appel de la méthode originale
         return await originalMethod.apply(this, args);
       } catch (error) {
@@ -108,12 +146,12 @@ export interface ZodDto<T extends ZodSchema> {
  * Fonction pour créer une classe DTO à partir d'un schéma Zod
  * Utile pour maintenir la compatibilité avec les librairies qui exigent des classes DTO
  * comme Swagger/OpenAPI
- * 
+ *
  * @example
  * ```typescript
  * // Création d'une classe DTO pour Swagger
  * export class ProductCreateDto extends createZodDto(ProductCreateSchema) {}
- * 
+ *
  * @ApiBody({ type: ProductCreateDto })
  * @Post()
  * createProduct(@Body(new ZodValidationPipe(ProductCreateSchema)) product: ProductCreate) {

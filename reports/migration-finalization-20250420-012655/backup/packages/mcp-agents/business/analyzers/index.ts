@@ -14,7 +14,7 @@ export * from './QaAnalyzer';
 export const analyzersIds = [
   'PhpAnalyzer',
   'MysqlAnalyzer',
-  'SqlAnalyzer', 
+  'SqlAnalyzer',
   'HtaccessRouterAnalyzer',
-  'QaAnalyzer'
+  'QaAnalyzer',
 ];

@@ -1,3 +1,0 @@
-/workspaces/cahier-des-charge/agents/orchestration/seo-mcp-controller.ts|function|BaseOrchestrationAgent
-/workspaces/cahier-des-charge/agents/orchestration/mcp-manifest-manager.ts|function|BaseOrchestrationAgent
-/workspaces/cahier-des-charge/agents/utils/caddy-generator.ts|function|BaseUtilsAgent

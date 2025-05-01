@@ -4,9 +4,9 @@
  * Date: 2025-04-13
  */
 
+import { execSync } from 'child_process';
 import * as fs from 'fs';
 import * as path from 'path';
-import { execSync } from 'child_process';
 import * as glob from 'glob';
 
 // Types pour le suivi des modifications
@@ -80,14 +80,19 @@ function findRemixFiles(modelName: string): string[] {
     `${CONFIG.remixRoutesDir}/**/*${modelName}*/loader.ts`,
     `${CONFIG.remixRoutesDir}/**/*${modelName}*/action.ts`,
   ];
-  
-  return patterns.flatMap(pattern => glob.sync(pattern));
+
+  return patterns.flatMap((pattern) => glob.sync(pattern));
 }
 
 /**
  * Met à jour un fichier DTO avec les nouveaux champs
  */
-function updateDtoFile(filePath: string, fieldsAdded: string[], fieldsRemoved: string[], fieldsTypeChanged: Record<string, { from: string; to: string }>): CodeUpdate {
+function updateDtoFile(
+  filePath: string,
+  fieldsAdded: string[],
+  fieldsRemoved: string[],
+  fieldsTypeChanged: Record<string, { from: string; to: string }>
+): CodeUpdate {
   const content = fs.readFileSync(filePath, 'utf8');
   const lines = content.split('\n');
   const changes: CodeUpdate['changes'] = [];
@@ -100,18 +105,18 @@ function updateDtoFile(filePath: string, fieldsAdded: string[], fieldsRemoved: s
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i];
-    
+
     // Détecter le début de la classe
     if (!inClass && line.includes('class') && line.includes('Dto')) {
       inClass = true;
       classStartLine = i;
       if (line.includes('{')) classBraceCount++;
-    } 
+    }
     // Compter les accolades pour déterminer la fin de la classe
     else if (inClass) {
       if (line.includes('{')) classBraceCount++;
       if (line.includes('}')) classBraceCount--;
-      
+
       if (classBraceCount === 0) {
         classEndLine = i;
         break;
@@ -127,30 +132,30 @@ function updateDtoFile(filePath: string, fieldsAdded: string[], fieldsRemoved: s
   // Ajouter les nouveaux champs avant la fin de la classe
   if (fieldsAdded.length > 0) {
     let newFieldsContent = '\n';
-    fieldsAdded.forEach(field => {
+    for (const field of fieldsAdded) {
       let fieldType = 'string'; // Type par défaut
-      
+
       // Déterminer le type à partir du nom du champ (heuristique simple)
       if (field.endsWith('Id')) fieldType = 'number';
       else if (field.endsWith('At')) fieldType = 'Date';
       else if (field.endsWith('Count') || field.endsWith('Total')) fieldType = 'number';
       else if (field.startsWith('is') || field.startsWith('has')) fieldType = 'boolean';
-      
+
       newFieldsContent += `  @ApiProperty({ description: '${field}' })\n`;
       newFieldsContent += `  ${field}: ${fieldType};\n\n`;
-    });
-    
+    }
+
     changes.push({
       type: 'add',
       lineStart: classEndLine,
-      content: newFieldsContent
+      content: newFieldsContent,
     });
   }
 
   // Modifier les types de champs changés
   if (Object.keys(fieldsTypeChanged).length > 0) {
     const classContent = lines.slice(classStartLine, classEndLine + 1).join('\n');
-    
+
     for (const [field, change] of Object.entries(fieldsTypeChanged)) {
       // Recherche basique du champ et de son type
       const fieldRegex = new RegExp(`(\\s+${field}\\s*:\\s*)${change.from}(\\s*;)`, 'g');
@@ -162,7 +167,7 @@ function updateDtoFile(filePath: string, fieldsAdded: string[], fieldsRemoved: s
               type: 'modify',
               lineStart: i,
               lineEnd: i,
-              content: lines[i].replace(change.from, change.to)
+              content: lines[i].replace(change.from, change.to),
             });
             break;
           }
@@ -175,21 +180,22 @@ function updateDtoFile(filePath: string, fieldsAdded: string[], fieldsRemoved: s
   if (fieldsRemoved.length > 0) {
     for (let i = classStartLine; i <= classEndLine; i++) {
       for (const field of fieldsRemoved) {
-        if (lines[i].includes(`${field}:`) || 
-            (lines[i].includes(field) && lines[i-1]?.includes('@ApiProperty'))) {
-          
+        if (
+          lines[i].includes(`${field}:`) ||
+          (lines[i].includes(field) && lines[i - 1]?.includes('@ApiProperty'))
+        ) {
           // Si c'est une ligne avec @ApiProperty, supprimer aussi cette ligne
-          if (lines[i].includes(field) && lines[i-1]?.includes('@ApiProperty')) {
+          if (lines[i].includes(field) && lines[i - 1]?.includes('@ApiProperty')) {
             changes.push({
               type: 'remove',
-              lineStart: i-1,
-              lineEnd: i
+              lineStart: i - 1,
+              lineEnd: i,
             });
           } else {
             changes.push({
               type: 'remove',
               lineStart: i,
-              lineEnd: i
+              lineEnd: i,
             });
           }
         }
@@ -203,7 +209,12 @@ function updateDtoFile(filePath: string, fieldsAdded: string[], fieldsRemoved: s
 /**
  * Met à jour un fichier service NestJS avec les changements de schéma
  */
-function updateServiceFile(filePath: string, modelName: string, fieldsAdded: string[], fieldsRemoved: string[]): CodeUpdate {
+function updateServiceFile(
+  filePath: string,
+  _modelName: string,
+  fieldsAdded: string[],
+  fieldsRemoved: string[]
+): CodeUpdate {
   const content = fs.readFileSync(filePath, 'utf8');
   const changes: CodeUpdate['changes'] = [];
 
@@ -213,41 +224,45 @@ function updateServiceFile(filePath: string, modelName: string, fieldsAdded: str
 
   if (selectMatches) {
     const lines = content.split('\n');
-    
+
     for (let i = 0; i < lines.length; i++) {
       if (lines[i].includes('select:') && lines[i].includes('{')) {
         let braceCount = (lines[i].match(/{/g) || []).length - (lines[i].match(/}/g) || []).length;
-        let selectStartLine = i;
+        const selectStartLine = i;
         let j = i;
-        
+
         // Trouver la fin du bloc select
         while (braceCount > 0 && j < lines.length - 1) {
           j++;
           braceCount += (lines[j].match(/{/g) || []).length;
           braceCount -= (lines[j].match(/}/g) || []).length;
         }
-        
-        let selectEndLine = j;
-        
+
+        const selectEndLine = j;
+
         // Ajouter les nouveaux champs au bloc select
         if (fieldsAdded.length > 0) {
           let addContent = '';
-          fieldsAdded.forEach(field => {
-            if (!lines.slice(selectStartLine, selectEndLine + 1).some(line => line.includes(`${field}:`))) {
+          for (const field of fieldsAdded) {
+            if (
+              !lines
+                .slice(selectStartLine, selectEndLine + 1)
+                .some((line) => line.includes(`${field}:`))
+            ) {
               addContent += `      ${field}: true,\n`;
             }
-          });
-          
+          }
+
           if (addContent) {
             const insertLine = selectEndLine;
             changes.push({
               type: 'add',
               lineStart: insertLine,
-              content: addContent
+              content: addContent,
             });
           }
         }
-        
+
         // Rechercher les champs à supprimer du bloc select
         for (const field of fieldsRemoved) {
           for (let k = selectStartLine; k <= selectEndLine; k++) {
@@ -255,7 +270,7 @@ function updateServiceFile(filePath: string, modelName: string, fieldsAdded: str
               changes.push({
                 type: 'remove',
                 lineStart: k,
-                lineEnd: k
+                lineEnd: k,
               });
             }
           }
@@ -270,7 +285,12 @@ function updateServiceFile(filePath: string, modelName: string, fieldsAdded: str
 /**
  * Met à jour un fichier loader/action Remix avec les changements de schéma
  */
-function updateRemixFile(filePath: string, modelName: string, fieldsAdded: string[], fieldsRemoved: string[]): CodeUpdate {
+function updateRemixFile(
+  filePath: string,
+  modelName: string,
+  fieldsAdded: string[],
+  fieldsRemoved: string[]
+): CodeUpdate {
   const content = fs.readFileSync(filePath, 'utf8');
   const changes: CodeUpdate['changes'] = [];
   const lines = content.split('\n');
@@ -278,45 +298,52 @@ function updateRemixFile(filePath: string, modelName: string, fieldsAdded: strin
   // Rechercher les requêtes prisma dans les loaders ou actions
   for (let i = 0; i < lines.length; i++) {
     // Détecter le début d'une requête prisma pour ce modèle
-    if ((lines[i].includes('prisma.') && 
-         lines[i].toLowerCase().includes(modelName.toLowerCase())) ||
-        (lines[i].includes('db.') && 
-         lines[i].toLowerCase().includes(modelName.toLowerCase()))) {
-      
+    if (
+      (lines[i].includes('prisma.') && lines[i].toLowerCase().includes(modelName.toLowerCase())) ||
+      (lines[i].includes('db.') && lines[i].toLowerCase().includes(modelName.toLowerCase()))
+    ) {
       // Chercher des blocs select ou include
       for (let j = i; j < Math.min(i + 20, lines.length); j++) {
-        if ((lines[j].includes('select:') || lines[j].includes('include:')) && lines[j].includes('{')) {
-          let braceCount = (lines[j].match(/{/g) || []).length - (lines[j].match(/}/g) || []).length;
-          let blockStartLine = j;
+        if (
+          (lines[j].includes('select:') || lines[j].includes('include:')) &&
+          lines[j].includes('{')
+        ) {
+          let braceCount =
+            (lines[j].match(/{/g) || []).length - (lines[j].match(/}/g) || []).length;
+          const blockStartLine = j;
           let k = j;
-          
+
           // Trouver la fin du bloc
           while (braceCount > 0 && k < lines.length - 1) {
             k++;
             braceCount += (lines[k].match(/{/g) || []).length;
             braceCount -= (lines[k].match(/}/g) || []).length;
           }
-          
-          let blockEndLine = k;
-          
+
+          const blockEndLine = k;
+
           // Ajouter les nouveaux champs
           if (fieldsAdded.length > 0) {
             let addContent = '';
-            fieldsAdded.forEach(field => {
-              if (!lines.slice(blockStartLine, blockEndLine + 1).some(line => line.includes(`${field}:`))) {
+            for (const field of fieldsAdded) {
+              if (
+                !lines
+                  .slice(blockStartLine, blockEndLine + 1)
+                  .some((line) => line.includes(`${field}:`))
+              ) {
                 addContent += `      ${field}: true,\n`;
               }
-            });
-            
+            }
+
             if (addContent) {
               changes.push({
                 type: 'add',
                 lineStart: blockEndLine,
-                content: addContent
+                content: addContent,
               });
             }
           }
-          
+
           // Supprimer les champs retirés
           for (const field of fieldsRemoved) {
             for (let m = blockStartLine; m <= blockEndLine; m++) {
@@ -324,12 +351,12 @@ function updateRemixFile(filePath: string, modelName: string, fieldsAdded: strin
                 changes.push({
                   type: 'remove',
                   lineStart: m,
-                  lineEnd: m
+                  lineEnd: m,
                 });
               }
             }
           }
-          
+
           // Avancer j pour éviter de traiter deux fois le même bloc
           j = blockEndLine;
         }
@@ -368,11 +395,12 @@ function applyChanges(update: CodeUpdate): void {
         // Insérer du contenu à une ligne spécifique
         lines.splice(change.lineStart, 0, change.content || '');
         break;
-      case 'remove':
+      case 'remove': {
         // Supprimer des lignes
         const endLine = change.lineEnd || change.lineStart;
         lines.splice(change.lineStart, endLine - change.lineStart + 1);
         break;
+      }
       case 'modify':
         // Remplacer une ligne par une autre
         lines[change.lineStart] = change.content || '';
@@ -390,89 +418,97 @@ function applyChanges(update: CodeUpdate): void {
  */
 async function main() {
   console.log('🔄 Démarrage de la synchronisation du schéma Prisma avec le code...');
-  
+
   // Vérifier si le fichier de différences existe
   if (!fs.existsSync(CONFIG.schemaDiffPath)) {
     console.error(`❌ Fichier de différences non trouvé: ${CONFIG.schemaDiffPath}`);
-    console.error('Exécutez d\'abord prisma-pg-sync.sh --analyze-only pour générer les différences');
+    console.error("Exécutez d'abord prisma-pg-sync.sh --analyze-only pour générer les différences");
     process.exit(1);
   }
-  
+
   // Lire les différences de schéma
   const schemaDiff = readSchemaDiff();
-  
+
   console.log('\n📊 Résumé des modifications à appliquer au code:');
   console.log(`- Modèles ajoutés: ${schemaDiff.summary.modelsAdded.length}`);
   console.log(`- Modèles supprimés: ${schemaDiff.summary.modelsRemoved.length}`);
-  console.log(`- Modèles avec champs ajoutés: ${Object.keys(schemaDiff.summary.fieldsAdded).length}`);
-  console.log(`- Modèles avec champs supprimés: ${Object.keys(schemaDiff.summary.fieldsRemoved).length}`);
-  console.log(`- Modèles avec types de champs modifiés: ${Object.keys(schemaDiff.summary.fieldsTypeChanged).length}`);
+  console.log(
+    `- Modèles avec champs ajoutés: ${Object.keys(schemaDiff.summary.fieldsAdded).length}`
+  );
+  console.log(
+    `- Modèles avec champs supprimés: ${Object.keys(schemaDiff.summary.fieldsRemoved).length}`
+  );
+  console.log(
+    `- Modèles avec types de champs modifiés: ${
+      Object.keys(schemaDiff.summary.fieldsTypeChanged).length
+    }`
+  );
   console.log(`- Relations modifiées: ${Object.keys(schemaDiff.summary.relationsChanged).length}`);
-  
+
   // Suivre toutes les mises à jour
   const updates: CodeUpdate[] = [];
-  
+
   // Traiter les modèles modifiés
   for (const modelName of [
     ...Object.keys(schemaDiff.summary.fieldsAdded),
     ...Object.keys(schemaDiff.summary.fieldsRemoved),
-    ...Object.keys(schemaDiff.summary.fieldsTypeChanged)
+    ...Object.keys(schemaDiff.summary.fieldsTypeChanged),
   ]) {
     console.log(`\n🔍 Traitement du modèle: ${modelName}`);
-    
+
     // Trouver les fichiers DTOs associés à ce modèle
     const dtoFiles = findDtoFiles(modelName);
     console.log(`- DTOs trouvés: ${dtoFiles.length}`);
-    
+
     for (const dtoFile of dtoFiles) {
       const fieldsAdded = schemaDiff.summary.fieldsAdded[modelName] || [];
       const fieldsRemoved = schemaDiff.summary.fieldsRemoved[modelName] || [];
       const fieldsTypeChanged = schemaDiff.summary.fieldsTypeChanged[modelName] || {};
-      
+
       const dtoUpdate = updateDtoFile(dtoFile, fieldsAdded, fieldsRemoved, fieldsTypeChanged);
       if (dtoUpdate.changes.length > 0) {
         updates.push(dtoUpdate);
       }
     }
-    
+
     // Trouver les fichiers de services associés à ce modèle
     const serviceFiles = findServiceFiles(modelName);
     console.log(`- Services trouvés: ${serviceFiles.length}`);
-    
+
     for (const serviceFile of serviceFiles) {
       const fieldsAdded = schemaDiff.summary.fieldsAdded[modelName] || [];
       const fieldsRemoved = schemaDiff.summary.fieldsRemoved[modelName] || [];
-      
+
       const serviceUpdate = updateServiceFile(serviceFile, modelName, fieldsAdded, fieldsRemoved);
       if (serviceUpdate.changes.length > 0) {
         updates.push(serviceUpdate);
       }
     }
-    
+
     // Trouver les fichiers Remix associés à ce modèle
     const remixFiles = findRemixFiles(modelName);
     console.log(`- Fichiers Remix trouvés: ${remixFiles.length}`);
-    
+
     for (const remixFile of remixFiles) {
       const fieldsAdded = schemaDiff.summary.fieldsAdded[modelName] || [];
       const fieldsRemoved = schemaDiff.summary.fieldsRemoved[modelName] || [];
-      
+
       const remixUpdate = updateRemixFile(remixFile, modelName, fieldsAdded, fieldsRemoved);
       if (remixUpdate.changes.length > 0) {
         updates.push(remixUpdate);
       }
     }
   }
-  
+
   // Appliquer toutes les mises à jour
   console.log(`\n✏️ Application de ${updates.length} mises à jour au code...`);
-  
+
   for (const update of updates) {
     applyChanges(update);
   }
-  
+
   console.log('\n✅ Synchronisation du schéma Prisma avec le code terminée avec succès!');
-  
+
   // Proposer des prochaines étapes
   console.log('\n📝 Prochaines étapes recommandées:');
   console.log('1. Vérifiez les modifications apportées aux fichiers');
@@ -482,7 +518,7 @@ async function main() {
 }
 
 // Exécuter la fonction principale
-main().catch(error => {
+main().catch((error) => {
   console.error('❌ Erreur lors de la synchronisation:', error);
   process.exit(1);
 });

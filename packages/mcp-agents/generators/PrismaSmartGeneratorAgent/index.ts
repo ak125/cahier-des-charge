@@ -5,7 +5,4 @@
 
 import { PrismaSmartGeneratorAgent } from './PrismaSmartGeneratorAgent';
 
-export {
-  PrismaSmartGeneratorAgent,
-};
-
+export { PrismaSmartGeneratorAgent };

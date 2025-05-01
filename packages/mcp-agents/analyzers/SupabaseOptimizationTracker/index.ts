@@ -5,7 +5,4 @@
 
 import { SupabaseOptimizationTracker } from './SupabaseOptimizationTracker';
 
-export {
-  SupabaseOptimizationTracker,
-};
-
+export { SupabaseOptimizationTracker };

@@ -3,8 +3,8 @@
  * Agent export file
  */
 
-import { StructureAgent } from './agent-structure';
 import { BusinessAgent } from '../../core/interfaces';
+import { StructureAgent } from './agent-structure';
 
 export { StructureAgent };
 export default StructureAgent;

@@ -200,7 +200,7 @@ async function extractRoutesFromPhpFiles(phpFiles: string[], existingRoutes: Rou
   for (const phpFile of phpFiles) {
     const relativePath = getRelativePath(phpFile);
     const originalPath = phpPathToUrl(relativePath);
-    let newPath = getNewPath(originalPath);
+    const newPath = getNewPath(originalPath);
     
     // Vérifier si cette route existe déjà
     const existingRoute = existingRouteMap.get(phpFile);
@@ -421,7 +421,7 @@ function updateRoutesStatus(routes: Route[], remixRoutes: string[], nestjsContro
 // Déterminer le chemin attendu pour un fichier Remix
 function getExpectedRemixPath(newPath: string): string {
   // Nettoyer le chemin
-  let path = newPath.replace(/^\//, ''); // Enlever le / initial
+  const path = newPath.replace(/^\//, ''); // Enlever le / initial
   
   // Gérer les cas spéciaux
   if (path === '') {
@@ -436,7 +436,7 @@ function getExpectedRemixPath(newPath: string): string {
 // Déterminer le chemin attendu pour un contrôleur NestJS
 function getExpectedNestjsPath(newPath: string): string {
   // Nettoyer le chemin
-  let path = newPath.replace(/^\//, ''); // Enlever le / initial
+  const path = newPath.replace(/^\//, ''); // Enlever le / initial
   
   // Extraire la ressource principale
   const segments = path.split('/');

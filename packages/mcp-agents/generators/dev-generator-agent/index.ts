@@ -3,9 +3,6 @@
  * Generated automatically on 2025-04-20
  */
 
-import { DevGeneratorAgent } from ./DevGeneratorAgentstructure-agent';
+import { DevGeneratorAgent } from './DevGeneratorAgent';
 
-export {
-  DevGeneratorAgent,
-};
-
+export { DevGeneratorAgent };

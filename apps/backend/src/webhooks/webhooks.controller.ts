@@ -1,13 +1,16 @@
-import { Controller, Post, Body, Logger } from '@nestjs/common';
-import { McpJobsService } from '../jobsDoDotmcp-jobs.service';
+import { Body, Controller, Logger, Post } from '@nestjs/common';
+import { McpJobsService } from '../jobs/mcp-jobs.service';
 
 @Controller('webhooks')
 export class WebhooksController {
   private readonly logger = new Logger(WebhooksController.name);
+  private readonly mcpJobsService: McpJobsService;
 
-  constructor(privateDoDotmcpJobsService: McpJobsService) {}
+  constructor(mcpJobsService: McpJobsService) {
+    this.mcpJobsService = mcpJobsService;
+  }
 
-  @Post(DoDotmcp-job')
+  @Post('mcp-job')
   async createMcpJob(@Body() data: {
     jobId?: string;
     filePath: string;
@@ -16,12 +19,12 @@ export class WebhooksController {
     metadata?: Record<string, any>;
   }) {
     this.logger.log(`📥 Webhook reçu pour lancer un job MCP: ${data.filePath}`);
-    
+
     // Générer un jobId s'il n'est pas fourni
     const jobId = data.jobId || `job-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`;
-    
+
     // Créer le job dans la base de données
-    const job = await thisDoDotmcpJobsService.createJob({
+    const job = await this.mcpJobsService.createJob({
       jobId,
       status: 'pending',
       filePath: data.filePath,

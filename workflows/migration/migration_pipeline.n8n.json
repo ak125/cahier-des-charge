@@ -14,10 +14,7 @@
       "name": "Webhook Trigger",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 1,
-      "position": [
-        240,
-        300
-      ],
+      "position": [240, 300],
       "webhookId": "migration-pipeline-trigger",
       "id": "1f75df9a-5c10-4b4d-8e5a-9a5a08e0cd9a"
     },
@@ -28,10 +25,7 @@
       "name": "Initialisation",
       "type": "n8n-nodes-base.code",
       "typeVersion": 1,
-      "position": [
-        460,
-        300
-      ],
+      "position": [460, 300],
       "id": "eb7eb8b3-81df-4320-adba-aa4254fbb8a1"
     },
     {
@@ -41,10 +35,7 @@
       "name": "Configuration Docker",
       "type": "n8n-nodes-base.functionItem",
       "typeVersion": 1,
-      "position": [
-        680,
-        180
-      ],
+      "position": [680, 180],
       "id": "9e7f8de1-d5f4-4a4e-b4a6-6f7c1a2d56d9",
       "executeOnce": false,
       "alwaysOutputData": true,
@@ -57,10 +48,7 @@
       "name": "Import des dumps SQL",
       "type": "n8n-nodes-base.functionItem",
       "typeVersion": 1,
-      "position": [
-        680,
-        340
-      ],
+      "position": [680, 340],
       "id": "4b936312-a7a4-4c5a-b4dc-34e1b4b1d02c",
       "alwaysOutputData": true,
       "functionCode": "// Mettre à jour l'état\nconst item = $input.item.json;\nitem.logs.push(`[INFO] Démarrage de l'étape: Import des dumps SQL`);\n\n// Ignorer si configuré pour être ignoré\nif (item.config.skipDumpImport) {\n  item.logs.push(`[INFO] Étape Import des dumps SQL ignorée (skipDumpImport=true)`);\n  \n  // Mettre à jour le statut de l'étape\n  const stageIndex = item.stages.findIndex(s => s.id === 'dump-import');\n  if (stageIndex !== -1) {\n    item.stages[stageIndex].status = 'skipped';\n  }\n  \n  return item;\n}\n\ntry {\n  // Simuler l'import des dumps SQL\n  item.logs.push(`[INFO] Recherche des fichiers de dump SQL...`);\n  item.logs.push(`[INFO] Import des dumps dans MySQL...`);\n  \n  // Simuler un délai pour l'import\n  await new Promise(resolve => setTimeout(resolve, 1500));\n  \n  // Mettre à jour le statut de l'étape\n  const stageIndex = item.stages.findIndex(s => s.id === 'dump-import');\n  if (stageIndex !== -1) {\n    item.stages[stageIndex].status = 'completed';\n  }\n  \n  item.logs.push(`[SUCCESS] Import des dumps SQL terminé avec succès`);\n  return item;\n} catch (error) {\n  // En cas d'erreur\n  item.logs.push(`[ERROR] Erreur lors de l'import des dumps SQL: ${error.message}`);\n  \n  // Mettre à jour le statut de l'étape\n  const stageIndex = item.stages.findIndex(s => s.id === 'dump-import');\n  if (stageIndex !== -1) {\n    item.stages[stageIndex].status = 'failed';\n  }\n  \n  item.status = 'failed';\n  throw error;\n}"
@@ -73,10 +61,7 @@
       "name": "Exécuter mysql-to-pg",
       "type": "n8n-nodes-base.executeCommand",
       "typeVersion": 1,
-      "position": [
-        900,
-        500
-      ],
+      "position": [900, 500],
       "id": "5c9fb8e5-c9a7-472c-962d-efed5e16731e"
     },
     {
@@ -86,10 +71,7 @@
       "name": "Analyse du schéma",
       "type": "n8n-nodes-base.functionItem",
       "typeVersion": 1,
-      "position": [
-        680,
-        500
-      ],
+      "position": [680, 500],
       "id": "1582d73d-1b5c-487f-8b9b-a6a4c9a2a2d0",
       "alwaysOutputData": true,
       "functionCode": "// Mettre à jour l'état\nconst item = $input.item.json;\nitem.logs.push(`[INFO] Démarrage de l'étape: Analyse du schéma`);\n\n// Ignorer si configuré pour être ignoré\nif (item.config.skipSchemaAnalysis) {\n  item.logs.push(`[INFO] Étape Analyse du schéma ignorée (skipSchemaAnalysis=true)`);\n  \n  // Mettre à jour le statut de l'étape\n  const stageIndex = item.stages.findIndex(s => s.id === 'schema-analysis');\n  if (stageIndex !== -1) {\n    item.stages[stageIndex].status = 'skipped';\n  }\n  \n  return item;\n}\n\ntry {\n  // On va exécuter l'agent mysql-to-pg via le nœud Execute Command\n  // Le résultat sera traité par le nœud suivant\n  \n  // Mettre à jour le statut de l'étape pour indiquer qu'elle est en cours\n  const stageIndex = item.stages.findIndex(s => s.id === 'schema-analysis');\n  if (stageIndex !== -1) {\n    item.stages[stageIndex].status = 'running';\n  }\n  \n  item.logs.push(`[INFO] Exécution de l'agent mysql-to-pg pour l'analyse du schéma...`);\n  \n  // Les tables à inclure\n  const tablesInfo = item.config.tables ? `(tables: ${item.config.tables})` : '(toutes les tables)';\n  item.logs.push(`[INFO] Analyse des tables MySQL ${tablesInfo}`);\n  \n  return item;\n} catch (error) {\n  // En cas d'erreur\n  item.logs.push(`[ERROR] Erreur lors de l'analyse du schéma: ${error.message}`);\n  \n  // Mettre à jour le statut de l'étape\n  const stageIndex = item.stages.findIndex(s => s.id === 'schema-analysis');\n  if (stageIndex !== -1) {\n    item.stages[stageIndex].status = 'failed';\n  }\n  \n  item.status = 'failed';\n  throw error;\n}"
@@ -101,10 +83,7 @@
       "name": "Traitement résultat mysql-to-pg",
       "type": "n8n-nodes-base.code",
       "typeVersion": 1,
-      "position": [
-        1120,
-        500
-      ],
+      "position": [1120, 500],
       "id": "18bda3ca-9f56-4a34-acf4-e3d9cc53ac0d"
     },
     {
@@ -115,10 +94,7 @@
       "name": "Générer schéma Prisma",
       "type": "n8n-nodes-base.executeCommand",
       "typeVersion": 1,
-      "position": [
-        900,
-        660
-      ],
+      "position": [900, 660],
       "id": "b4c7a05c-f8a5-4366-807c-bfc73cdf6a25"
     },
     {
@@ -128,10 +104,7 @@
       "name": "Migration des données",
       "type": "n8n-nodes-base.functionItem",
       "typeVersion": 1,
-      "position": [
-        680,
-        660
-      ],
+      "position": [680, 660],
       "id": "3efe0d2a-9ee4-417a-aa4d-d71d4a4e5e80",
       "alwaysOutputData": true,
       "functionCode": "// Mettre à jour l'état\nconst item = $input.item.json;\nitem.logs.push(`[INFO] Démarrage de l'étape: Migration des données`);\n\n// Ignorer si configuré pour être ignoré\nif (item.config.skipDataMigration) {\n  item.logs.push(`[INFO] Étape Migration des données ignorée (skipDataMigration=true)`);\n  \n  // Mettre à jour le statut de l'étape\n  const stageIndex = item.stages.findIndex(s => s.id === 'data-migration');\n  if (stageIndex !== -1) {\n    item.stages[stageIndex].status = 'skipped';\n  }\n  \n  return item;\n}\n\ntry {\n  // Mettre à jour le statut de l'étape pour indiquer qu'elle est en cours\n  const stageIndex = item.stages.findIndex(s => s.id === 'data-migration');\n  if (stageIndex !== -1) {\n    item.stages[stageIndex].status = 'running';\n  }\n  \n  // Générer d'abord le schéma Prisma\n  item.logs.push(`[INFO] Génération du schéma Prisma...`);\n  \n  // La génération du schéma Prisma sera effectuée par le nœud suivant (Execute Command)\n  \n  return item;\n} catch (error) {\n  // En cas d'erreur\n  item.logs.push(`[ERROR] Erreur lors de la migration des données: ${error.message}`);\n  \n  // Mettre à jour le statut de l'étape\n  const stageIndex = item.stages.findIndex(s => s.id === 'data-migration');\n  if (stageIndex !== -1) {\n    item.stages[stageIndex].status = 'failed';\n  }\n  \n  item.status = 'failed';\n  throw error;\n}"
@@ -143,10 +116,7 @@
       "name": "Traitement migration données",
       "type": "n8n-nodes-base.code",
       "typeVersion": 1,
-      "position": [
-        1120,
-        660
-      ],
+      "position": [1120, 660],
       "id": "b75e5473-8cb9-4c8e-8a2e-46fa5e2b1a00"
     },
     {
@@ -156,10 +126,7 @@
       "name": "Validation des données",
       "type": "n8n-nodes-base.functionItem",
       "typeVersion": 1,
-      "position": [
-        680,
-        820
-      ],
+      "position": [680, 820],
       "id": "95bf68c2-fd70-4ffc-b5ca-9d1f0afdf73c",
       "alwaysOutputData": true,
       "functionCode": "// Mettre à jour l'état\nconst item = $input.item.json;\nitem.logs.push(`[INFO] Démarrage de l'étape: Validation des données`);\n\n// Ignorer si configuré pour être ignoré\nif (item.config.skipValidation) {\n  item.logs.push(`[INFO] Étape Validation des données ignorée (skipValidation=true)`);\n  \n  // Mettre à jour le statut de l'étape\n  const stageIndex = item.stages.findIndex(s => s.id === 'data-validation');\n  if (stageIndex !== -1) {\n    item.stages[stageIndex].status = 'skipped';\n  }\n  \n  return item;\n}\n\ntry {\n  // Mettre à jour le statut de l'étape\n  const stageIndex = item.stages.findIndex(s => s.id === 'data-validation');\n  if (stageIndex !== -1) {\n    item.stages[stageIndex].status = 'running';\n  }\n  \n  item.logs.push(`[INFO] Exécution de la validation des données...`);\n  item.logs.push(`[INFO] Vérification de la correspondance des enregistrements...`);\n  \n  // Simuler un traitement de validation\n  await new Promise(resolve => setTimeout(resolve, 2000));\n  \n  // Générer des statistiques fictives de validation\n  const totalTables = item.schemaMapInfo?.tableCount || 0;\n  const mismatchedTables = Math.floor(Math.random() * 2); // 0 ou 1 table avec des différences\n  const tablesMatched = totalTables - mismatchedTables;\n  const recordsChecked = item.migrationStats?.rowsCopied || 1000;\n  const mismatchedRecords = mismatchedTables > 0 ? Math.floor(Math.random() * 10) + 1 : 0;\n  \n  item.validationResults = {\n    tablesChecked: totalTables,\n    tablesMatched,\n    tablesWithIssues: mismatchedTables,\n    recordsChecked,\n    mismatchedRecords,\n    issues: []\n  };\n  \n  // Si des différences ont été trouvées, générer des exemples fictifs\n  if (mismatchedTables > 0) {\n    item.validationResults.issues.push({\n      table: 'example_table',\n      column: 'datetime_field',\n      mysqlValue: '2025-04-12 10:30:00',\n      postgresValue: '2025-04-12T10:30:00.000Z',\n      severity: 'warning',\n      message: 'Différence de format pour les dates'\n    });\n  }\n  \n  // Mettre à jour le statut de l'étape\n  if (stageIndex !== -1) {\n    item.stages[stageIndex].status = 'completed';\n    \n    // Si des problèmes ont été détectés, marquer avec un avertissement\n    if (mismatchedTables > 0) {\n      item.stages[stageIndex].warning = true;\n    }\n  }\n  \n  // Journalisation des résultats\n  item.logs.push(`[INFO] Validation terminée: ${recordsChecked} enregistrements vérifiés dans ${totalTables} tables`);\n  \n  if (mismatchedTables > 0) {\n    item.logs.push(`[WARNING] ${mismatchedRecords} différences trouvées dans ${mismatchedTables} tables`);\n  } else {\n    item.logs.push(`[SUCCESS] Aucune différence trouvée. Toutes les tables correspondent.`);\n  }\n  \n  return item;\n} catch (error) {\n  // En cas d'erreur\n  item.logs.push(`[ERROR] Erreur lors de la validation des données: ${error.message}`);\n  \n  // Mettre à jour le statut de l'étape\n  const stageIndex = item.stages.findIndex(s => s.id === 'data-validation');\n  if (stageIndex !== -1) {\n    item.stages[stageIndex].status = 'failed';\n  }\n  \n  item.status = 'failed';\n  throw error;\n}"
@@ -171,10 +138,7 @@
       "name": "Push vers Supabase",
       "type": "n8n-nodes-base.functionItem",
       "typeVersion": 1,
-      "position": [
-        900,
-        820
-      ],
+      "position": [900, 820],
       "id": "65cfb15c-6f08-4d9a-adc5-e1dbbf24c5cf",
       "alwaysOutputData": true,
       "functionCode": "// Mettre à jour l'état\nconst item = $input.item.json;\nitem.logs.push(`[INFO] Démarrage de l'étape: Push vers Supabase`);\n\n// Ignorer en mode dry-run ou si configuré pour être ignoré\nif (item.config.dryRun) {\n  item.logs.push(`[INFO] Étape Push vers Supabase ignorée (mode dry-run actif)`);\n  \n  // Mettre à jour le statut de l'étape\n  const stageIndex = item.stages.findIndex(s => s.id === 'supabase-push');\n  if (stageIndex !== -1) {\n    item.stages[stageIndex].status = 'skipped';\n  }\n  \n  return item;\n}\n\nif (item.config.skipSupabasePush) {\n  item.logs.push(`[INFO] Étape Push vers Supabase ignorée (skipSupabasePush=true)`);\n  \n  // Mettre à jour le statut de l'étape\n  const stageIndex = item.stages.findIndex(s => s.id === 'supabase-push');\n  if (stageIndex !== -1) {\n    item.stages[stageIndex].status = 'skipped';\n  }\n  \n  return item;\n}\n\ntry {\n  // Vérifier les variables requises pour Supabase\n  const supabaseProjectId = item.config.supabaseProjectId;\n  const supabaseDbPassword = item.config.supabaseDbPassword;\n  \n  if (!supabaseProjectId || !supabaseDbPassword) {\n    item.logs.push(`[WARNING] Variables Supabase manquantes (supabaseProjectId ou supabaseDbPassword)`);\n    \n    // Mettre à jour le statut de l'étape\n    const stageIndex = item.stages.findIndex(s => s.id === 'supabase-push');\n    if (stageIndex !== -1) {\n      item.stages[stageIndex].status = 'skipped';\n    }\n    \n    return item;\n  }\n  \n  // Mettre à jour le statut de l'étape\n  const stageIndex = item.stages.findIndex(s => s.id === 'supabase-push');\n  if (stageIndex !== -1) {\n    item.stages[stageIndex].status = 'running';\n  }\n  \n  item.logs.push(`[INFO] Génération du script SQL pour Supabase...`);\n  item.logs.push(`[INFO] Push vers le projet Supabase: ${supabaseProjectId}...`);\n  \n  // Simuler un traitement\n  await new Promise(resolve => setTimeout(resolve, 3000));\n  \n  // Mettre à jour le statut de l'étape\n  if (stageIndex !== -1) {\n    item.stages[stageIndex].status = 'completed';\n  }\n  \n  item.supabasePush = {\n    projectId: supabaseProjectId,\n    timestamp: new Date().toISOString(),\n    success: true\n  };\n  \n  item.logs.push(`[SUCCESS] Push vers Supabase terminé avec succès`);\n  \n  return item;\n} catch (error) {\n  // En cas d'erreur\n  item.logs.push(`[ERROR] Erreur lors du push vers Supabase: ${error.message}`);\n  \n  // Mettre à jour le statut de l'étape\n  const stageIndex = item.stages.findIndex(s => s.id === 'supabase-push');\n  if (stageIndex !== -1) {\n    item.stages[stageIndex].status = 'failed';\n  }\n  \n  item.status = 'failed';\n  throw error;\n}"
@@ -186,10 +150,7 @@
       "name": "Transformation du code",
       "type": "n8n-nodes-base.functionItem",
       "typeVersion": 1,
-      "position": [
-        1120,
-        820
-      ],
+      "position": [1120, 820],
       "id": "75e77d03-3c8a-454c-9c6b-ab7431b74d1d",
       "alwaysOutputData": true,
       "functionCode": "// Mettre à jour l'état\nconst item = $input.item.json;\nitem.logs.push(`[INFO] Démarrage de l'étape: Transformation du code`);\n\n// Ignorer si configuré pour être ignoré\nif (item.config.skipCodeTransform) {\n  item.logs.push(`[INFO] Étape Transformation du code ignorée (skipCodeTransform=true)`);\n  \n  // Mettre à jour le statut de l'étape\n  const stageIndex = item.stages.findIndex(s => s.id === 'code-transform');\n  if (stageIndex !== -1) {\n    item.stages[stageIndex].status = 'skipped';\n  }\n  \n  return item;\n}\n\ntry {\n  // Mettre à jour le statut de l'étape\n  const stageIndex = item.stages.findIndex(s => s.id === 'code-transform');\n  if (stageIndex !== -1) {\n    item.stages[stageIndex].status = 'running';\n  }\n  \n  item.logs.push(`[INFO] Analyse du code PHP...`);\n  item.logs.push(`[INFO] Génération des modèles NestJS...`);\n  item.logs.push(`[INFO] Génération des composants Remix...`);\n  \n  // Simuler un traitement\n  await new Promise(resolve => setTimeout(resolve, 4000));\n  \n  // Générer des statistiques fictives\n  item.codeTransformation = {\n    phpFilesAnalyzed: 25,\n    nestjsModelsGenerated: 8,\n    remixComponentsGenerated: 12,\n    timestamp: new Date().toISOString()\n  };\n  \n  // Mettre à jour le statut de l'étape\n  if (stageIndex !== -1) {\n    item.stages[stageIndex].status = 'completed';\n  }\n  \n  item.logs.push(`[SUCCESS] Transformation du code terminée avec succès`);\n  item.logs.push(`[INFO] ${item.codeTransformation.nestjsModelsGenerated} modèles NestJS générés`);\n  item.logs.push(`[INFO] ${item.codeTransformation.remixComponentsGenerated} composants Remix générés`);\n  \n  return item;\n} catch (error) {\n  // En cas d'erreur\n  item.logs.push(`[ERROR] Erreur lors de la transformation du code: ${error.message}`);\n  \n  // Mettre à jour le statut de l'étape\n  const stageIndex = item.stages.findIndex(s => s.id === 'code-transform');\n  if (stageIndex !== -1) {\n    item.stages[stageIndex].status = 'failed';\n  }\n  \n  item.status = 'failed';\n  throw error;\n}"
@@ -201,10 +162,7 @@
       "name": "Finalisation du rapport",
       "type": "n8n-nodes-base.code",
       "typeVersion": 1,
-      "position": [
-        1340,
-        660
-      ],
+      "position": [1340, 660],
       "id": "8dc9f72a-f8cb-45d1-bde6-6e6bb2ab3bae"
     },
     {
@@ -282,10 +240,7 @@
       "name": "Résultat de la migration",
       "type": "n8n-nodes-base.set",
       "typeVersion": 3,
-      "position": [
-        1560,
-        660
-      ],
+      "position": [1560, 660],
       "id": "1ebcc05a-d6ed-4eb0-8517-efb20aa8cdc9"
     },
     {
@@ -298,10 +253,7 @@
       "name": "Sauvegarder le rapport",
       "type": "n8n-nodes-base.writeBinaryFile",
       "typeVersion": 1,
-      "position": [
-        1560,
-        820
-      ],
+      "position": [1560, 820],
       "id": "16f647c8-0dba-4ccf-a73d-f3a74c2aab88"
     },
     {
@@ -316,10 +268,7 @@
       "name": "Réponse Webhook",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1,
-      "position": [
-        1780,
-        660
-      ],
+      "position": [1780, 660],
       "id": "7a3e6de7-5dd9-413d-b752-00a5c7c70fd3"
     },
     {
@@ -338,10 +287,7 @@
       "name": "Notification",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.1,
-      "position": [
-        1780,
-        820
-      ],
+      "position": [1780, 820],
       "id": "6eae2f5d-e6dd-4a8c-96df-dbf64b2d8bf5",
       "continueOnFail": true
     }

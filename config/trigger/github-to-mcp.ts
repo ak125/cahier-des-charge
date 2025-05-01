@@ -1,14 +1,8 @@
 import { Trigger, customEvent } from "@trigger.dev/sdk";
 import { Github, GithubWorkflow } from "@trigger.devDoDoDoDoDoDotgithub";
-import { Client as TemporalClient } from "@temporalio/client";
 import Redis from "ioredis";
-
-// Configuration du client Temporal
-const getTemporalClient = async () => {
-  return await TemporalClient.connect({
-    address: process.env.TEMPORAL_ADDRESS || "localhost:7233",
-  });
-};
+// Importer l'orchestrateur standardisé à la place du client Temporal
+import { TaskType, standardizedOrchestrator } from "../src/orchestration/standardized-orchestrator";
 
 // Configuration du client Redis
 const getRedisClient = () => {
@@ -17,15 +11,15 @@ const getRedisClient = () => {
 
 // Configuration GitHub
 constDoDoDoDoDoDotgithub = new Github({
-  id: DoDoDoDoDoDotgithubDoDotmcp-integration",
+  id: DoDoDoDoDoDotgithubDoDotmcp - integration",
   token: process.env.GITHUB_TOKEN || "yourDoDoDoDoDoDotgithub-token",
 });
 
 // Définition du workflow Trigger.dev
 export constDoDoDoDoDoDotgithubToMcpTrigger = new Trigger({
-  id: DoDoDoDoDoDotgithub-PhpToRemix-migration",
+  id: DoDoDoDoDoDotgithub - PhpToRemix - migration",
   name: "GitHub PHP to Remix Migration",
-  on:DoDoDoDoDoDotgithub.events.repo.push,
+  on: DoDoDoDoDoDotgithub.events.repo.push,
   run: async (event, ctx) => {
     // Filtrer pour ne prendre en compte que les commits sur la branche principale
     if (event.payload.ref !== "refs/heads/main" && event.payload.ref !== "refs/heads/master") {
@@ -54,8 +48,7 @@ export constDoDoDoDoDoDotgithubToMcpTrigger = new Trigger({
     await ctx.logger.info(`Detected ${phpFiles.length} PHP files to migrate`);
     await ctx.logger.info("Files:", { files: phpFiles });
 
-    // Initialiser le client Temporal
-    const temporalClient = await getTemporalClient();
+    // Initialiser le client Redis
     const redisClient = getRedisClient();
 
     // Traiter chaque fichier PHP
@@ -72,24 +65,31 @@ export constDoDoDoDoDoDotgithubToMcpTrigger = new Trigger({
         // Marquer le fichier comme en cours de traitement
         await redisClient.set(`processing:${file}`, "true", "EX", 3600); // expire après 1h
 
-        // Lancer le workflow Temporal
-        const handle = await temporalClient.workflow.start("phpToRemixMigrationWorkflow", {
-          args: [{ file, createPR: true, generateTests: true, qaThreshold: 90 }],
-          taskQueue: "migration-queue",
-          workflowId: `migrate-${file.replace(/[^a-zA-Z0-9]/g, "-")}-${Date.now()}`,
-        });
+        // Utiliser l'orchestrateur standardisé au lieu de Temporal directement
+        const workflowId = `migrate-${file.replace(/[^a-zA-Z0-9]/g, "-")}-${Date.now()}`;
+        const taskId = await standardizedOrchestrator.scheduleTask(
+          "phpToRemixMigration",
+          { file, createPR: true, generateTests: true, qaThreshold: 90 },
+          {
+            taskType: TaskType.COMPLEX,
+            temporal: {
+              workflowType: "phpToRemixMigrationWorkflow",
+              workflowArgs: [{ file, createPR: true, generateTests: true, qaThreshold: 90 }],
+              taskQueue: "migration-queue",
+              workflowId: workflowId
+            }
+          }
+        );
 
         await ctx.logger.info(`Started migration workflow for ${file}`, {
-          workflowId: handle.workflowId,
-          runId: handle.firstExecutionRunId,
+          workflowId: taskId
         });
 
         // Stocker l'ID du workflow dans Redis pour la traçabilité
         await redisClient.set(
           `migration:${file}`,
           JSON.stringify({
-            workflowId: handle.workflowId,
-            runId: handle.firstExecutionRunId,
+            workflowId: taskId,
             startTime: new Date().toISOString(),
           }),
           "EX",
@@ -98,7 +98,7 @@ export constDoDoDoDoDoDotgithubToMcpTrigger = new Trigger({
 
         migrationResults.push({
           file,
-          workflowId: handle.workflowId,
+          workflowId: taskId,
           status: "started",
         });
       } catch (error) {
@@ -131,7 +131,7 @@ export constDoDoDoDoDoDotgithubToMcpTrigger = new Trigger({
 export const ciTrigger = new Trigger({
   id: "ci-migration-verification",
   name: "CI Migration Verification",
-  on:DoDoDoDoDoDotgithub.events.pullRequest.opened,
+  on: DoDoDoDoDoDotgithub.events.pullRequest.opened,
   run: async (event, ctx) => {
     // Vérifier si c'est une PR de migration
     const prTitle = event.payload.pull_request.title.toLowerCase();
@@ -241,26 +241,31 @@ export const migrationValidationTrigger = new Trigger({
         body: `## Validation en cours pour ${file}\n\nLes résultats de validation seront ajoutés à ce commentaire.`,
       });
 
-      // Initialiser le client Temporal pour lancer la validation
-      const temporalClient = await getTemporalClient();
-
-      // Lancer le workflow de validation
-      const handle = await temporalClient.workflow.start("validateMigrationWorkflow", {
-        args: [{ file, qaFile, prNumber, repository }],
-        taskQueue: "validation-queue",
-        workflowId: `validate-${file.replace(/[^a-zA-Z0-9]/g, "-")}-${Date.now()}`,
-      });
+      // Utiliser l'orchestrateur standardisé au lieu de Temporal directement
+      const workflowId = `validate-${file.replace(/[^a-zA-Z0-9]/g, "-")}-${Date.now()}`;
+      const taskId = await standardizedOrchestrator.scheduleTask(
+        "validateMigration",
+        { file, qaFile, prNumber, repository },
+        {
+          taskType: TaskType.COMPLEX,
+          temporal: {
+            workflowType: "validateMigrationWorkflow",
+            workflowArgs: [{ file, qaFile, prNumber, repository }],
+            taskQueue: "validation-queue",
+            workflowId: workflowId
+          }
+        }
+      );
 
       await ctx.logger.info(`Started validation workflow for ${file}`, {
-        workflowId: handle.workflowId,
-        runId: handle.firstExecutionRunId,
+        workflowId: taskId,
       });
 
       return {
         status: "success",
         validation: {
           file,
-          workflowId: handle.workflowId,
+          workflowId: taskId,
           status: "started",
         },
       };

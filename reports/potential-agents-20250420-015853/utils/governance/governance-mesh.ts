@@ -15,7 +15,7 @@ export enum GovernanceEvent {
   ESCALATION = 'escalation',
   POLICY_VIOLATION = 'policy-violation',
   CONFLICT_DETECTED = 'conflict-detected',
-  CONFLICT_RESOLVED = 'conflict-resolved'
+  CONFLICT_RESOLVED = 'conflict-resolved',
 }
 
 // Types de décisions supportées
@@ -27,7 +27,7 @@ export enum DecisionType {
   QUALITY_GATE = 'quality-gate',
   DOMAIN_ROUTING = 'domain-routing',
   MIGRATION_APPROVAL = 'migration-approval',
-  ERROR_HANDLING = 'error-handling'
+  ERROR_HANDLING = 'error-handling',
 }
 
 // Niveaux de sévérité des décisions
@@ -35,7 +35,7 @@ export enum DecisionSeverity {
   LOW = 'low',
   MEDIUM = 'medium',
   HIGH = 'high',
-  CRITICAL = 'critical'
+  CRITICAL = 'critical',
 }
 
 // Interface pour les règles de décision
@@ -109,16 +109,16 @@ export class GovernanceMesh extends EventEmitter {
   private conflicts: DecisionConflict[] = [];
   private evaluationContext: Map<string, any> = new Map();
   private traceabilityService: TraceabilityService;
-  private enabled: boolean = true;
-  
+  private enabled = true;
+
   private constructor() {
     super();
     this.logger = new Logger('GovernanceMesh');
     this.traceabilityService = new TraceabilityService({
-      layer: 'orchestration',  // Le Mesh opère principalement au niveau orchestration
+      layer: 'orchestration', // Le Mesh opère principalement au niveau orchestration
       enabled: true,
       idFormat: 'governance-{timestamp}-{random}',
-      storageStrategy: 'hybrid'
+      storageStrategy: 'hybrid',
     });
   }
 
@@ -140,12 +140,12 @@ export class GovernanceMesh extends EventEmitter {
       // Charger la configuration
       const config = configManager.getConfig();
       this.enabled = config.governance.enabled;
-      
+
       if (!this.enabled) {
         this.logger.log('Governance Mesh is disabled in configuration');
         return;
       }
-      
+
       // Transformer les règles de la configuration en règles de décision
       this.rules = config.governance.decisionRules.map((rule, index) => ({
         id: `rule-${index + 1}`,
@@ -156,13 +156,13 @@ export class GovernanceMesh extends EventEmitter {
         conditions: rule.conditions,
         actions: rule.actions,
         scope: {
-          layers: ['orchestration', 'agents', 'business'] // Par défaut toutes les couches
+          layers: ['orchestration', 'agents', 'business'], // Par défaut toutes les couches
         },
-        enabled: true
+        enabled: true,
       }));
-      
+
       this.logger.log(`Governance Mesh initialized with ${this.rules.length} rules`);
-      
+
       // Journaliser l'initialisation
       const traceId = await this.traceabilityService.generateTraceId();
       await this.traceabilityService.logTrace({
@@ -170,7 +170,7 @@ export class GovernanceMesh extends EventEmitter {
         event: 'governance:initialized',
         context: { rulesCount: this.rules.length },
         timestamp: new Date(),
-        success: true
+        success: true,
       });
     } catch (error: any) {
       this.logger.error(`Error initializing governance mesh: ${error.message}`);
@@ -185,7 +185,7 @@ export class GovernanceMesh extends EventEmitter {
   private inferDecisionType(ruleName: string, actions: string[]): DecisionType {
     const name = ruleName.toLowerCase();
     const actionsStr = actions.join(' ').toLowerCase();
-    
+
     if (name.includes('circuit') || actionsStr.includes('circuit')) {
       return DecisionType.CIRCUIT_BREAKER_ACTION;
     }
@@ -207,7 +207,7 @@ export class GovernanceMesh extends EventEmitter {
     if (name.includes('resource') || actionsStr.includes('resource')) {
       return DecisionType.RESOURCE_ALLOCATION;
     }
-    
+
     // Par défaut
     return DecisionType.ERROR_HANDLING;
   }
@@ -218,10 +218,10 @@ export class GovernanceMesh extends EventEmitter {
    */
   public async addRule(rule: DecisionRule): Promise<void> {
     if (!this.enabled) return;
-    
+
     // Vérifier si la règle existe déjà
-    const existingRuleIndex = this.rules.findIndex(r => r.id === rule.id);
-    
+    const existingRuleIndex = this.rules.findIndex((r) => r.id === rule.id);
+
     if (existingRuleIndex >= 0) {
       // Mettre à jour la règle existante
       this.rules[existingRuleIndex] = rule;
@@ -231,7 +231,7 @@ export class GovernanceMesh extends EventEmitter {
       this.rules.push(rule);
       this.logger.log(`Rule ${rule.id} added: ${rule.name}`);
     }
-    
+
     // Journaliser la modification
     const traceId = await this.traceabilityService.generateTraceId();
     await this.traceabilityService.logTrace({
@@ -239,9 +239,9 @@ export class GovernanceMesh extends EventEmitter {
       event: 'governance:rule:updated',
       context: { ruleId: rule.id, ruleName: rule.name },
       timestamp: new Date(),
-      success: true
+      success: true,
     });
-    
+
     // Émettre l'événement
     this.emit('rule-updated', { rule });
   }
@@ -252,12 +252,12 @@ export class GovernanceMesh extends EventEmitter {
    */
   public async disableRule(ruleId: string): Promise<boolean> {
     if (!this.enabled) return false;
-    
-    const ruleIndex = this.rules.findIndex(r => r.id === ruleId);
+
+    const ruleIndex = this.rules.findIndex((r) => r.id === ruleId);
     if (ruleIndex >= 0) {
       this.rules[ruleIndex].enabled = false;
       this.logger.log(`Rule ${ruleId} disabled`);
-      
+
       // Journaliser la désactivation
       const traceId = await this.traceabilityService.generateTraceId();
       await this.traceabilityService.logTrace({
@@ -265,12 +265,12 @@ export class GovernanceMesh extends EventEmitter {
         event: 'governance:rule:disabled',
         context: { ruleId },
         timestamp: new Date(),
-        success: true
+        success: true,
       });
-      
+
       return true;
     }
-    
+
     this.logger.warn(`Rule ${ruleId} not found, cannot disable`);
     return false;
   }
@@ -283,10 +283,10 @@ export class GovernanceMesh extends EventEmitter {
     if (!this.enabled) {
       return this.createNullDecision(request, 'Governance disabled');
     }
-    
+
     const startTime = Date.now();
-    const traceId = request.traceId || await this.traceabilityService.generateTraceId();
-    
+    const traceId = request.traceId || (await this.traceabilityService.generateTraceId());
+
     try {
       // Journaliser la demande de décision
       await this.traceabilityService.logTrace({
@@ -296,79 +296,79 @@ export class GovernanceMesh extends EventEmitter {
           type: request.type,
           layer: request.layer,
           severity: request.severity,
-          requestedBy: request.requestedBy
+          requestedBy: request.requestedBy,
         },
-        timestamp: new Date()
+        timestamp: new Date(),
       });
-      
+
       // Filtrer les règles applicables
-      const applicableRules = this.rules.filter(rule => {
+      const applicableRules = this.rules.filter((rule) => {
         // Vérifier si la règle est activée
         if (!rule.enabled) return false;
-        
+
         // Vérifier si le type correspond
         if (rule.type !== request.type && rule.type !== '*') return false;
-        
+
         // Vérifier si la couche est dans le scope
         if (!rule.scope.layers.includes(request.layer)) return false;
-        
+
         // Vérifier les scopes spécifiques si définis
         if (rule.scope.specific) {
           if (
             (request.layer === 'orchestration' &&
-             rule.scope.specific.workflows &&
-             rule.scope.specific.workflows.length > 0 &&
-             request.context.workflowId &&
-             !rule.scope.specific.workflows.includes(request.context.workflowId)) ||
+              rule.scope.specific.workflows &&
+              rule.scope.specific.workflows.length > 0 &&
+              request.context.workflowId &&
+              !rule.scope.specific.workflows.includes(request.context.workflowId)) ||
             (request.layer === 'agents' &&
-             rule.scope.specific.agents &&
-             rule.scope.specific.agents.length > 0 &&
-             request.context.agentId &&
-             !rule.scope.specific.agents.includes(request.context.agentId)) ||
+              rule.scope.specific.agents &&
+              rule.scope.specific.agents.length > 0 &&
+              request.context.agentId &&
+              !rule.scope.specific.agents.includes(request.context.agentId)) ||
             (request.layer === 'business' &&
-             rule.scope.specific.domains &&
-             rule.scope.specific.domains.length > 0 &&
-             request.context.domainId &&
-             !rule.scope.specific.domains.includes(request.context.domainId))
+              rule.scope.specific.domains &&
+              rule.scope.specific.domains.length > 0 &&
+              request.context.domainId &&
+              !rule.scope.specific.domains.includes(request.context.domainId))
           ) {
             return false;
           }
         }
-        
+
         return true;
       });
-      
+
       // Trier les règles par priorité (plus haute en premier)
       const sortedRules = applicableRules.sort((a, b) => b.priority - a.priority);
-      
+
       // Préparer le contexte d'évaluation
       const evaluationContext = {
         ...request.context,
         layer: request.layer,
         severity: request.severity,
         timestamp: new Date(),
-        requestedBy: request.requestedBy
+        requestedBy: request.requestedBy,
       };
-      
+
       // Évaluer les règles
       const matchedRules: DecisionRule[] = [];
       for (const rule of sortedRules) {
         if (this.evaluateConditions(rule.conditions, evaluationContext)) {
           matchedRules.push(rule);
-          
+
           // Émettre l'événement d'évaluation
           this.emit(GovernanceEvent.RULE_EVALUATION, {
             rule,
             matched: true,
-            context: evaluationContext
+            context: evaluationContext,
           });
         }
       }
-      
+
       if (matchedRules.length === 0) {
         // Aucune règle ne correspond, décision par défaut
         const nullDecision = this.createNullDecision(request, 'No matching rules');
-        
+
         await this.traceabilityService.logTrace({
           traceId,
           event: 'governance:decision:default',
@@ -376,20 +376,20 @@ export class GovernanceMesh extends EventEmitter {
             type: request.type,
             layer: request.layer,
             severity: request.severity,
-            decision: nullDecision.decision
+            decision: nullDecision.decision,
           },
           timestamp: new Date(),
           duration: Date.now() - startTime,
-          success: true
+          success: true,
         });
-        
+
         return nullDecision;
       }
-      
+
       // Extraire les actions de la règle la plus prioritaire
       const highestPriorityRule = matchedRules[0];
       const actions = highestPriorityRule.actions;
-      
+
       // Construire la réponse
       const decisionId = `decision-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
       const decision: DecisionResponse = {
@@ -397,18 +397,18 @@ export class GovernanceMesh extends EventEmitter {
         decision: this.inferDecisionFromActions(actions),
         actions,
         reasoning: `Based on rule "${highestPriorityRule.name}" with priority ${highestPriorityRule.priority}`,
-        appliedRules: matchedRules.map(r => r.id),
+        appliedRules: matchedRules.map((r) => r.id),
         timestamp: new Date(),
         traceId,
-        escalated: false
+        escalated: false,
       };
-      
+
       // Stocker la décision
       this.decisions.set(decisionId, decision);
-      
+
       // Vérifier les conflits potentiels
       await this.checkForConflicts(decision, request);
-      
+
       // Journaliser la décision prise
       await this.traceabilityService.logTrace({
         traceId,
@@ -419,24 +419,24 @@ export class GovernanceMesh extends EventEmitter {
           severity: request.severity,
           decision: decision.decision,
           actions: decision.actions,
-          appliedRules: decision.appliedRules
+          appliedRules: decision.appliedRules,
         },
         timestamp: new Date(),
         duration: Date.now() - startTime,
-        success: true
+        success: true,
       });
-      
+
       // Émettre l'événement de décision
       this.emit(GovernanceEvent.DECISION_MADE, {
         decision,
         request,
-        matchedRules
+        matchedRules,
       });
-      
+
       return decision;
     } catch (error: any) {
       this.logger.error(`Error making decision: ${error.message}`);
-      
+
       // Journaliser l'erreur
       await this.traceabilityService.logTrace({
         traceId,
@@ -445,14 +445,14 @@ export class GovernanceMesh extends EventEmitter {
           type: request.type,
           layer: request.layer,
           severity: request.severity,
-          error: error.message
+          error: error.message,
         },
         timestamp: new Date(),
         duration: Date.now() - startTime,
         success: false,
-        error: error.message
+        error: error.message,
       });
-      
+
       return this.createNullDecision(request, `Error: ${error.message}`);
     }
   }
@@ -464,14 +464,14 @@ export class GovernanceMesh extends EventEmitter {
    */
   private evaluateConditions(conditions: string[], context: Record<string, any>): boolean {
     if (conditions.length === 0) return true;
-    
+
     try {
       // Préparer les variables pour l'évaluation
       const contextWithThis = {
         ...context,
-        this: context // Permettre l'accès via this.xyz
+        this: context, // Permettre l'accès via this.xyz
       };
-      
+
       // Évaluer chaque condition
       for (const condition of conditions) {
         // Créer une fonction d'évaluation sécurisée
@@ -479,15 +479,15 @@ export class GovernanceMesh extends EventEmitter {
           ...Object.keys(contextWithThis),
           `try { return Boolean(${condition}); } catch (e) { return false; }`
         );
-        
+
         // Exécuter la fonction avec le contexte
         const result = evalFn(...Object.values(contextWithThis));
-        
+
         if (!result) {
           return false; // Une condition non satisfaite suffit
         }
       }
-      
+
       return true; // Toutes les conditions sont satisfaites
     } catch (error: any) {
       this.logger.error(`Error evaluating conditions: ${error.message}`);
@@ -502,14 +502,14 @@ export class GovernanceMesh extends EventEmitter {
    */
   private createNullDecision(request: DecisionRequest, reason: string): DecisionResponse {
     const decisionId = `null-decision-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
-    
+
     let defaultDecision = 'proceed';
     if (request.severity === DecisionSeverity.CRITICAL) {
       defaultDecision = 'abort';
     } else if (request.severity === DecisionSeverity.HIGH) {
       defaultDecision = 'warn';
     }
-    
+
     const nullDecision: DecisionResponse = {
       requestId: decisionId,
       decision: defaultDecision,
@@ -518,9 +518,9 @@ export class GovernanceMesh extends EventEmitter {
       appliedRules: [],
       timestamp: new Date(),
       traceId: request.traceId || `governance-${Date.now()}`,
-      escalated: false
+      escalated: false,
     };
-    
+
     return nullDecision;
   }
 
@@ -530,7 +530,7 @@ export class GovernanceMesh extends EventEmitter {
    */
   private inferDecisionFromActions(actions: string[]): string {
     const actionsStr = actions.join(' ').toLowerCase();
-    
+
     if (actionsStr.includes('abort') || actionsStr.includes('reject')) {
       return 'abort';
     }
@@ -546,7 +546,7 @@ export class GovernanceMesh extends EventEmitter {
     if (actionsStr.includes('isolate')) {
       return 'isolate';
     }
-    
+
     return 'proceed';
   }
 
@@ -555,28 +555,31 @@ export class GovernanceMesh extends EventEmitter {
    * @param decision Nouvelle décision
    * @param request Requête associée
    */
-  private async checkForConflicts(decision: DecisionResponse, request: DecisionRequest): Promise<void> {
+  private async checkForConflicts(
+    decision: DecisionResponse,
+    request: DecisionRequest
+  ): Promise<void> {
     if (!this.enabled) return;
-    
+
     // Rechercher les décisions récentes contradictoires
-    const recentDecisions = Array.from(this.decisions.values())
-      .filter(d => 
+    const recentDecisions = Array.from(this.decisions.values()).filter(
+      (d) =>
         // Même type et couche
         d.timestamp.getTime() > Date.now() - 1000 * 60 * 5 && // 5 dernières minutes
         d.requestId !== decision.requestId &&
         // Avec contexte similaire mais décision différente
         this.hasRelatedContext(request.context, d)
-      );
-    
+    );
+
     if (recentDecisions.length === 0) return;
-    
+
     // Vérifier les conflits directs (décisions opposées)
-    const conflictingDecisions = recentDecisions.filter(d => 
+    const conflictingDecisions = recentDecisions.filter((d) =>
       this.areDecisionsConflicting(decision.decision, d.decision)
     );
-    
+
     if (conflictingDecisions.length === 0) return;
-    
+
     // Créer un conflit
     const conflict: DecisionConflict = {
       id: `conflict-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`,
@@ -585,11 +588,11 @@ export class GovernanceMesh extends EventEmitter {
       severity: request.severity,
       status: 'detected',
       timestamp: new Date(),
-      traceId: decision.traceId
+      traceId: decision.traceId,
     };
-    
+
     this.conflicts.push(conflict);
-    
+
     // Journaliser le conflit
     await this.traceabilityService.logTrace({
       traceId: decision.traceId,
@@ -598,16 +601,19 @@ export class GovernanceMesh extends EventEmitter {
         conflictId: conflict.id,
         type: conflict.conflictType,
         severity: conflict.severity,
-        decisionsCount: conflict.decisions.length
+        decisionsCount: conflict.decisions.length,
       },
-      timestamp: new Date()
+      timestamp: new Date(),
     });
-    
+
     // Émettre l'événement de conflit
     this.emit(GovernanceEvent.CONFLICT_DETECTED, { conflict });
-    
+
     // Si critique, escalader automatiquement
-    if (request.severity === DecisionSeverity.CRITICAL || request.severity === DecisionSeverity.HIGH) {
+    if (
+      request.severity === DecisionSeverity.CRITICAL ||
+      request.severity === DecisionSeverity.HIGH
+    ) {
       await this.escalateConflict(conflict.id);
     }
   }
@@ -622,12 +628,13 @@ export class GovernanceMesh extends EventEmitter {
     const conflictPairs = [
       ['abort', 'proceed'],
       ['isolate', 'proceed'],
-      ['escalate', 'proceed']
+      ['escalate', 'proceed'],
     ];
-    
-    return conflictPairs.some(pair => 
-      (pair[0] === decision1 && pair[1] === decision2) || 
-      (pair[0] === decision2 && pair[1] === decision1)
+
+    return conflictPairs.some(
+      (pair) =>
+        (pair[0] === decision1 && pair[1] === decision2) ||
+        (pair[0] === decision2 && pair[1] === decision1)
     );
   }
 
@@ -639,23 +646,23 @@ export class GovernanceMesh extends EventEmitter {
   private hasRelatedContext(context1: Record<string, any>, decision: DecisionResponse): boolean {
     // Extrait les clés importantes du contexte
     const importantKeys = ['workflowId', 'agentId', 'domainId', 'migrationId'];
-    
+
     // Si aucune des clés importantes n'est présente, considérer non-lié
-    const hasImportantKey = importantKeys.some(key => key in context1);
+    const hasImportantKey = importantKeys.some((key) => key in context1);
     if (!hasImportantKey) return false;
-    
+
     // Vérifier si le contexte de la décision contient des clés similaires
     if (!decision.metadata || !decision.metadata.context) return false;
-    
+
     const context2 = decision.metadata.context;
-    
+
     // Vérifier les correspondances sur les clés importantes
     for (const key of importantKeys) {
       if (context1[key] && context2[key] && context1[key] === context2[key]) {
         return true;
       }
     }
-    
+
     return false;
   }
 
@@ -665,32 +672,32 @@ export class GovernanceMesh extends EventEmitter {
    */
   public async escalateConflict(conflictId: string): Promise<boolean> {
     if (!this.enabled) return false;
-    
-    const conflictIndex = this.conflicts.findIndex(c => c.id === conflictId);
+
+    const conflictIndex = this.conflicts.findIndex((c) => c.id === conflictId);
     if (conflictIndex < 0) {
       this.logger.warn(`Conflict ${conflictId} not found, cannot escalate`);
       return false;
     }
-    
+
     // Mettre à jour le statut du conflit
     this.conflicts[conflictIndex].status = 'escalated';
-    
+
     // Journaliser l'escalade
     await this.traceabilityService.logTrace({
       traceId: this.conflicts[conflictIndex].traceId,
       event: 'governance:conflict:escalated',
       context: {
         conflictId,
-        severity: this.conflicts[conflictIndex].severity
+        severity: this.conflicts[conflictIndex].severity,
       },
-      timestamp: new Date()
+      timestamp: new Date(),
     });
-    
+
     // Émettre l'événement d'escalade
     this.emit(GovernanceEvent.ESCALATION, {
-      conflict: this.conflicts[conflictIndex]
+      conflict: this.conflicts[conflictIndex],
     });
-    
+
     return true;
   }
 
@@ -701,23 +708,23 @@ export class GovernanceMesh extends EventEmitter {
    * @param resolvedBy Identifiant de la personne/système ayant résolu
    */
   public async resolveConflict(
-    conflictId: string, 
-    resolution: string, 
+    conflictId: string,
+    resolution: string,
     resolvedBy: string
   ): Promise<boolean> {
     if (!this.enabled) return false;
-    
-    const conflictIndex = this.conflicts.findIndex(c => c.id === conflictId);
+
+    const conflictIndex = this.conflicts.findIndex((c) => c.id === conflictId);
     if (conflictIndex < 0) {
       this.logger.warn(`Conflict ${conflictId} not found, cannot resolve`);
       return false;
     }
-    
+
     // Mettre à jour le conflit
     this.conflicts[conflictIndex].status = 'resolved';
     this.conflicts[conflictIndex].resolvedBy = resolvedBy;
     this.conflicts[conflictIndex].resolution = resolution;
-    
+
     // Journaliser la résolution
     await this.traceabilityService.logTrace({
       traceId: this.conflicts[conflictIndex].traceId,
@@ -725,18 +732,18 @@ export class GovernanceMesh extends EventEmitter {
       context: {
         conflictId,
         resolution,
-        resolvedBy
+        resolvedBy,
       },
-      timestamp: new Date()
+      timestamp: new Date(),
     });
-    
+
     // Émettre l'événement de résolution
     this.emit(GovernanceEvent.CONFLICT_RESOLVED, {
       conflict: this.conflicts[conflictIndex],
       resolution,
-      resolvedBy
+      resolvedBy,
     });
-    
+
     return true;
   }
 
@@ -751,25 +758,22 @@ export class GovernanceMesh extends EventEmitter {
    * Obtient l'historique des décisions
    * @param limit Limite du nombre de décisions
    */
-  public getDecisionHistory(limit: number = 50): DecisionResponse[] {
+  public getDecisionHistory(limit = 50): DecisionResponse[] {
     const decisions = Array.from(this.decisions.values());
-    return decisions
-      .sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime())
-      .slice(0, limit);
+    return decisions.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime()).slice(0, limit);
   }
 
   /**
    * Obtient les conflits actifs
    * @param includeResolved Inclure les conflits résolus
    */
-  public getConflicts(includeResolved: boolean = false): DecisionConflict[] {
+  public getConflicts(includeResolved = false): DecisionConflict[] {
     if (includeResolved) {
-      return [...this.conflicts]
-        .sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
+      return [...this.conflicts].sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
     }
-    
+
     return this.conflicts
-      .filter(c => c.status !== 'resolved')
+      .filter((c) => c.status !== 'resolved')
       .sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
   }
 }

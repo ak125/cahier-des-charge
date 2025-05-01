@@ -8,13 +8,9 @@ import { AgentOptions, AgentResult } from '../core/types';
 /**
  * Options spécifiques aux agents monitoring
  */
-export interface MonitoringAgentOptions extends AgentOptions {
-  // Options spécifiques à cette catégorie
-}
+export type MonitoringAgentOptions = AgentOptions;
 
 /**
  * Résultat spécifique aux agents monitoring
  */
-export interface MonitoringResult extends AgentResult {
-  // Données spécifiques à cette catégorie
-}
+export type MonitoringResult = AgentResult;

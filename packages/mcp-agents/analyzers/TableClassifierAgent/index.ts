@@ -5,7 +5,4 @@
 
 import { TableClassifierAgent } from './TableClassifierAgent';
 
-export {
-  TableClassifierAgent,
-};
-
+export { TableClassifierAgent };

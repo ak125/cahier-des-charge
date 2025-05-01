@@ -10,11 +10,11 @@
  * - obsoletes.json: Fichiers et composants obsolètes ou non utilisés
  */
 
-import * as fs from fs-extrastructure-agent';
-import * as path from pathstructure-agent';
-import * as glob from globstructure-agent';
-import { exec } from child_processstructure-agent';
-import { promisify } from utilstructure-agent';
+import * as fs from 'fs-extrastructure-agent'
+import * as glob from 'globstructure-agent'
+import * as path from 'pathstructure-agent'
+import { exec } from './child_processstructure-agent'
+import { promisify } from './utilstructure-agent'
 
 // Utilitaires
 const execAsync = promisify(exec);
@@ -28,9 +28,9 @@ const logger = {
 // Constantes
 const WORKSPACE_ROOT = process.cwd();
 const REPORT_DIR = path.join(WORKSPACE_ROOT, 'reports');
-const SRC_DIR = path.join(WORKSPACE_ROOT, 'src');
-const AGENTS_DIR = path.join(WORKSPACE_ROOT, 'agents');
-const PACKAGES_DIR = path.join(WORKSPACE_ROOT, 'packages');
+const _SRC_DIR = path.join(WORKSPACE_ROOT, 'src');
+const _AGENTS_DIR = path.join(WORKSPACE_ROOT, 'agents');
+const _PACKAGES_DIR = path.join(WORKSPACE_ROOT, 'packages');
 
 // Types pour l'indexation
 interface ProjectFile {
@@ -114,45 +114,45 @@ async function analyzeFile(filePath: string): Promise<ProjectFile> {
   // Lire le contenu du fichier
   const content = await fs.readFile(filePath, 'utf-8');
   const lines = content.split('\n');
-  const relativePath = path.relative(WORKSPACE_ROOT, filePath);
-  const stats = await fs.stat(filePath);
+  const _relativePath = path.relative(WORKSPACE_ROOT, filePath);
+  const _stats = await fs.stat(filePath);
   
   // Déterminer le type de fichier
-  let type = 'unknown';
+  let _type = 'unknown';
   if (path.basename(filePath).includes('.test.') || path.basename(filePath).includes('.spec.')) {
-    type = 'test';
+    _type = 'test';
   } else if (filePath.includes('interface') || filePath.includes('type') || (content.includes('interface ') && content.includes('export'))) {
-    type = 'interface';
+    _type = 'interface';
   } else if (content.includes('class ') && content.includes('extends BaseAgent')) {
-    type = 'agent';
+    _type = 'agent';
   } else if (content.includes('class ') && content.includes('component')) {
-    type = 'component';
+    _type = 'component';
   } else if (content.includes('function ') && !content.includes('class ')) {
-    type = 'utility';
+    _type = 'utility';
   } else {
     // Déterminer par l'extension
     const ext = path.extname(filePath).toLowerCase();
     if (['.ts', '.tsx', '.js', '.jsx'].includes(ext)) {
-      type = 'script';
+      _type = 'script';
     } else if (['.json', '.yaml', '.yml'].includes(ext)) {
-      type = 'config';
+      _type = 'config';
     } else if (['.md', '.txt'].includes(ext)) {
-      type = 'documentation';
+      _type = 'documentation';
     }
   }
   
   // Déterminer la couche (layer)
-  let layer = 'unknown' as ProjectFile['layer'];
+  let _layer = 'unknown' as ProjectFile['layer'];
   if (filePath.includes('/orchestration/') || filePath.includes('orchestrator')) {
-    layer = 'orchestration';
+    _layer = 'orchestration';
   } else if (filePath.includes('/coordination/') || filePath.includes('bridge') || filePath.includes('registry')) {
-    layer = 'coordination';
+    _layer = 'coordination';
   } else if (filePath.includes('/business/') || filePath.includes('analyzer') || filePath.includes('validator')) {
-    layer = 'business';
+    _layer = 'business';
   } else if (filePath.includes('/core/')) {
-    layer = 'core';
+    _layer = 'core';
   } else if (filePath.includes('/utils/')) {
-    layer = 'utils';
+    _layer = 'utils';
   }
   
   // Extraire les imports et exports
@@ -160,12 +160,12 @@ async function analyzeFile(filePath: string): Promise<ProjectFile> {
     .filter(line => line.trim().startsWith('import '))
     .map(line => line.trim());
   
-  const exports = lines
+  const _exports = lines
     .filter(line => line.trim().startsWith('export '))
     .map(line => line.trim());
   
   // Déterminer les dépendances
-  const dependencies = imports
+  const _dependencies = imports
     .filter(imp => imp.includes('from'))
     .map(imp => {
       const match = imp.match(/from\s+['"](.*?)['"]/);
@@ -174,9 +174,9 @@ async function analyzeFile(filePath: string): Promise<ProjectFile> {
     .filter(dep => dep && !dep.startsWith('.'));
   
   // Compter les utilisations
-  let usageCount = 0;
+  const _usageCount = 0;
   try {
-    const fileName = path.basename(filePath, path.extname(filePath));
+    const _fileName = path.basename(filePath, path.extname(filePath));
     const { stdout } = await execAsync(DoDoDoDotgit grep -l "${fileName}" --exclude="${path.basename(filePath)}" | wc -l`);
     usageCount = parseInt(stdout.trim(), 10);
   } catch (error) {

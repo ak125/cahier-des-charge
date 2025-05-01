@@ -10,8 +10,8 @@ import { AnalyzerAgent } from '@workspaces/cahier-des-charge/src/core/interfaces
 
 import * as fs from 'fs';
 import * as path from 'path';
-import { MySQLSchema, TableInfo, ColumnInfo, TypeConversionMap } from '../models/schema';
 import { BaseAgent, BusinessAgent } from '../core/interfaces/BaseAgent';
+import { ColumnInfo, MySQLSchema, TableInfo, TypeConversionMap } from '../models/schema';
 
 
 export class TypeAuditor implements BaseAgent, BusinessAgent, BaseAgent, BusinessAgent , AnalyzerAgent{
@@ -53,9 +53,9 @@ export class TypeAuditor implements BaseAgent, BusinessAgent, BaseAgent, Busines
     'UUID': { postgresType: 'UUID', prismaType: 'String' }
 
   id: string = '';
-  name: string = '';
-  type: string = '';
-  version: string = '1.0.0';
+  name = '';
+  type = '';
+  version = '1.0.0';
 
   /**
    * Initialise l'agent avec des options spécifiques
@@ -101,15 +101,15 @@ export class TypeAuditor implements BaseAgent, BusinessAgent, BaseAgent, Busines
     };
   }
 
-  id: string = '';
-  name: string = '';
-  type: string = '';
-  version: string = '1.0.0';
+  id = '';
+  name = '';
+  type = '';
+  version = '1.0.0';
 
-  id: string = '';
-  name: string = '';
-  type: string = '';
-  version: string = '1.0.0';
+  id = '';
+  name = '';
+  type = '';
+  version = '1.0.0';
   };
 
   /**
@@ -246,7 +246,7 @@ export class TypeAuditor implements BaseAgent, BusinessAgent, BaseAgent, Busines
     if (this.typeMapping[baseType]) {
       const mapping = this.typeMapping[baseType];
       let postgresType = mapping.postgresType;
-      let prismaType = mapping.prismaType;
+      const prismaType = mapping.prismaType;
       let adjustedLength: number | undefined = undefined;
       let isTypeIssue = false;
       let reason = `Conversion standard de MySQL vers PostgreSQL`;

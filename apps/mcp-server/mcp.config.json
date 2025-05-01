@@ -1,8 +1,5 @@
 {
-  "agents": [
-    "php-analyzer",
-    "component-generator"
-  ],
+  "agents": ["php-analyzer", "component-generator"],
   "sourceDir": "../../src/legacy",
   "outputDir": "outputs",
   "filters": {

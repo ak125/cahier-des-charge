@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { Queue } from 'bullmq';
-import { BullQueueService } from './bullmq.service';
 import { BullBoardService } from './bull-board.service';
+import { BullQueueService } from './bullmq.service';
 
 @Module({
   providers: [
@@ -9,9 +9,9 @@ import { BullBoardService } from './bull-board.service';
       provide: 'PHP_ANALYZER_QUEUE',
       useFactory: () => {
         return new Queue('PhpAnalyzer', {
-          connection: { 
-            host: process.env.REDIS_HOST || 'localhost', 
-            port: parseInt(process.env.REDIS_PORT || '6379') 
+          connection: {
+            host: process.env.REDIS_HOST || 'localhost',
+            port: parseInt(process.env.REDIS_PORT || '6379'),
           },
         });
       },
@@ -20,9 +20,9 @@ import { BullBoardService } from './bull-board.service';
       provide: 'JS_ANALYZER_QUEUE',
       useFactory: () => {
         return new Queue('js-analyzer', {
-          connection: { 
-            host: process.env.REDIS_HOST || 'localhost', 
-            port: parseInt(process.env.REDIS_PORT || '6379') 
+          connection: {
+            host: process.env.REDIS_HOST || 'localhost',
+            port: parseInt(process.env.REDIS_PORT || '6379'),
           },
         });
       },
@@ -31,9 +31,9 @@ import { BullBoardService } from './bull-board.service';
       provide: 'MIGRATION_QUEUE',
       useFactory: () => {
         return new Queue('migration', {
-          connection: { 
-            host: process.env.REDIS_HOST || 'localhost', 
-            port: parseInt(process.env.REDIS_PORT || '6379') 
+          connection: {
+            host: process.env.REDIS_HOST || 'localhost',
+            port: parseInt(process.env.REDIS_PORT || '6379'),
           },
         });
       },
@@ -42,9 +42,9 @@ import { BullBoardService } from './bull-board.service';
       provide: 'VERIFICATION_QUEUE',
       useFactory: () => {
         return new Queue('verification', {
-          connection: { 
-            host: process.env.REDIS_HOST || 'localhost', 
-            port: parseInt(process.env.REDIS_PORT || '6379') 
+          connection: {
+            host: process.env.REDIS_HOST || 'localhost',
+            port: parseInt(process.env.REDIS_PORT || '6379'),
           },
         });
       },
@@ -53,12 +53,12 @@ import { BullBoardService } from './bull-board.service';
     BullBoardService,
   ],
   exports: [
-    'PHP_ANALYZER_QUEUE', 
-    'JS_ANALYZER_QUEUE', 
-    'MIGRATION_QUEUE', 
-    'VERIFICATION_QUEUE', 
-    BullQueueService, 
-    BullBoardService
+    'PHP_ANALYZER_QUEUE',
+    'JS_ANALYZER_QUEUE',
+    'MIGRATION_QUEUE',
+    'VERIFICATION_QUEUE',
+    BullQueueService,
+    BullBoardService,
   ],
 })
 export class BullQueueModule {}

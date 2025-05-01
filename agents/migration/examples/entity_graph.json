@@ -12,9 +12,13 @@
       "displayName": "Utilisateurs",
       "type": "core",
       "fields": [
-        {"name": "id", "type": "UUID", "isPrimary": true},
-        {"name": "email", "type": "VARCHAR", "isUnique": true},
-        {"name": "status", "type": "ENUM", "values": ["ACTIVE", "INACTIVE", "SUSPENDED", "DELETED"]}
+        { "name": "id", "type": "UUID", "isPrimary": true },
+        { "name": "email", "type": "VARCHAR", "isUnique": true },
+        {
+          "name": "status",
+          "type": "ENUM",
+          "values": ["ACTIVE", "INACTIVE", "SUSPENDED", "DELETED"]
+        }
       ]
     },
     {
@@ -22,9 +26,9 @@
       "displayName": "Profils",
       "type": "detail",
       "fields": [
-        {"name": "id", "type": "INT", "isPrimary": true, "isAutoIncrement": true},
-        {"name": "user_id", "type": "UUID", "isUnique": true},
-        {"name": "metadata", "type": "JSONB"}
+        { "name": "id", "type": "INT", "isPrimary": true, "isAutoIncrement": true },
+        { "name": "user_id", "type": "UUID", "isUnique": true },
+        { "name": "metadata", "type": "JSONB" }
       ]
     },
     {
@@ -32,9 +36,9 @@
       "displayName": "Sessions",
       "type": "transactional",
       "fields": [
-        {"name": "id", "type": "VARCHAR(40)", "isPrimary": true},
-        {"name": "user_id", "type": "UUID", "isNullable": true},
-        {"name": "last_activity", "type": "INT"}
+        { "name": "id", "type": "VARCHAR(40)", "isPrimary": true },
+        { "name": "user_id", "type": "UUID", "isNullable": true },
+        { "name": "last_activity", "type": "INT" }
       ]
     },
     {
@@ -42,10 +46,10 @@
       "displayName": "Notifications",
       "type": "messaging",
       "fields": [
-        {"name": "id", "type": "UUID", "isPrimary": true},
-        {"name": "user_id", "type": "UUID"},
-        {"name": "type", "type": "ENUM", "values": ["EMAIL", "SMS", "PUSH", "SYSTEM"]},
-        {"name": "is_read", "type": "BOOLEAN", "default": false}
+        { "name": "id", "type": "UUID", "isPrimary": true },
+        { "name": "user_id", "type": "UUID" },
+        { "name": "type", "type": "ENUM", "values": ["EMAIL", "SMS", "PUSH", "SYSTEM"] },
+        { "name": "is_read", "type": "BOOLEAN", "default": false }
       ]
     },
     {
@@ -53,10 +57,14 @@
       "displayName": "Paiements",
       "type": "transactional",
       "fields": [
-        {"name": "id", "type": "UUID", "isPrimary": true},
-        {"name": "user_id", "type": "UUID"},
-        {"name": "amount", "type": "DECIMAL(10,2)"},
-        {"name": "status", "type": "ENUM", "values": ["PENDING", "COMPLETED", "FAILED", "REFUNDED", "CANCELLED"]}
+        { "name": "id", "type": "UUID", "isPrimary": true },
+        { "name": "user_id", "type": "UUID" },
+        { "name": "amount", "type": "DECIMAL(10,2)" },
+        {
+          "name": "status",
+          "type": "ENUM",
+          "values": ["PENDING", "COMPLETED", "FAILED", "REFUNDED", "CANCELLED"]
+        }
       ]
     }
   ],

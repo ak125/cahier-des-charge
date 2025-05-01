@@ -3,9 +3,6 @@
  * Generated automatically on 2025-04-20
  */
 
-import { CanonicalValidatorAgent } from ./CanonicalValidatorAgentstructure-agent';
+import { CanonicalValidatorAgent } from './CanonicalValidatorAgent';
 
-export {
-  CanonicalValidatorAgent,
-};
-
+export { CanonicalValidatorAgent };

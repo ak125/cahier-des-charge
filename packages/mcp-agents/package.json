@@ -1,23 +1,23 @@
 {
-  "name": "@mcp/agents",
+  "name": "@workspaces/mcp-agents",
   "version": "1.0.0",
-  "description": "Agents MCP pour la migration PHP vers Remix",
+  "description": "Agents et analyseurs pour le Model Context Protocol",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc",
     "test": "jest",
-    "lint": "eslint . --ext .ts"
+    "lint": "eslint src --ext .ts"
   },
   "dependencies": {
-    "bullmq": "^4.0.0",
-    "node-fetch": "^3.3.0",
-    "zod": "^3.21.4"
+    "@workspaces/mcp-types": "^1.0.0",
+    "@workspaces/mcp-config": "^1.0.0"
   },
   "devDependencies": {
-    "@types/jest": "^29.5.0",
-    "@types/node": "^18.15.11",
-    "jest": "^29.5.0",
-    "typescript": "^5.0.4"
+    "typescript": "^5.2.2",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.3.2",
+    "@types/jest": "^29.5.14",
+    "eslint": "^8.56.0"
   }
 }

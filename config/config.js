@@ -1,6 +1,6 @@
 /**
  * Configuration centralisée pour le système de migration
- * 
+ *
  * Ce fichier définit la configuration utilisée par tous les composants
  * du système de migration : agents, orchestrateur, tableau de bord, etc.
  */
@@ -19,13 +19,13 @@ export const PATHS = {
   CAHIER_DES_CHARGES: path.join(process.cwd(), 'cahier-des-charges-backup-20250410-113108'),
   DASHBOARD_DIR: path.join(process.cwd(), 'dashboard'),
   LOGS_DIR: path.join(process.cwd(), 'logs'),
-  
+
   // Sous-dossiers de rapports
   AUDIT_REPORTS: path.join(process.cwd(), 'reports', 'audits'),
   EXECUTION_REPORTS: path.join(process.cwd(), 'reports', 'execution'),
   MODULE_REPORTS: path.join(process.cwd(), 'reports', 'modules'),
   METRICS_REPORTS: path.join(process.cwd(), 'reports', 'metrics'),
-  
+
   // Fichiers de configuration
   MIGRATION_CONFIG: path.join(process.cwd(), 'migration-config.json'),
   AGENT_CONFIG: path.join(process.cwd(), 'config', 'agent-config.json'),
@@ -43,48 +43,56 @@ export const AGENTS = {
   QUALITY: 'quality',
   STRATEGY: 'strategy',
   ASSEMBLER: 'assembler',
-  
+
   // Ordre par défaut des agents
-  DEFAULT_ORDER: ['structure', 'business', 'data', 'dependency', 'quality', 'strategy', 'assembler'],
-  
+  DEFAULT_ORDER: [
+    'structure',
+    'business',
+    'data',
+    'dependency',
+    'quality',
+    'strategy',
+    'assembler',
+  ],
+
   // Métadonnées des agents
   METADATA: {
-    business: { 
-      name: 'BusinessAgent', 
+    business: {
+      name: 'BusinessAgent',
       description: 'Analyse le rôle fonctionnel métier du fichier PHP',
-      dependencies: []
+      dependencies: [],
     },
-    structure: { 
-      name: 'StructureAgent', 
+    structure: {
+      name: 'StructureAgent',
       description: 'Analyse la structure technique du fichier PHP',
-      dependencies: []
+      dependencies: [],
     },
-    data: { 
-      name: 'DataAgent', 
+    data: {
+      name: 'DataAgent',
       description: 'Analyse les données, SQL et entrées/sorties du fichier PHP',
-      dependencies: []
+      dependencies: [],
     },
-    dependency: { 
-      name: 'DependencyAgent', 
+    dependency: {
+      name: 'DependencyAgent',
       description: 'Analyse les dépendances externes du fichier PHP',
-      dependencies: ['structure']
+      dependencies: ['structure'],
     },
-    quality: { 
-      name: 'QualityAgent', 
+    quality: {
+      name: 'QualityAgent',
       description: 'Analyse la qualité du code et détecte les problèmes potentiels',
-      dependencies: ['structure', 'data']
+      dependencies: ['structure', 'data'],
     },
-    strategy: { 
-      name: 'StrategyAgent', 
+    strategy: {
+      name: 'StrategyAgent',
       description: 'Définit la stratégie de migration optimale pour le fichier',
-      dependencies: ['business', 'structure', 'data', 'dependency', 'quality']
+      dependencies: ['business', 'structure', 'data', 'dependency', 'quality'],
     },
-    assembler: { 
-      name: 'AssemblerAgent', 
+    assembler: {
+      name: 'AssemblerAgent',
       description: 'Génère le code TypeScript/NestJS/Remix équivalent',
-      dependencies: ['business', 'structure', 'data', 'dependency', 'quality', 'strategy']
-    }
-  }
+      dependencies: ['business', 'structure', 'data', 'dependency', 'quality', 'strategy'],
+    },
+  },
 };
 
 /**
@@ -117,55 +125,55 @@ export const MIGRATION = {
       name: 'Analyse initiale',
       description: 'Cartographie et audit du code legacy',
       agents: ['structure', 'business', 'data', 'dependency'],
-      priority: 'high'
+      priority: 'high',
     },
     {
       name: 'Planification',
       description: 'Définition de la stratégie de migration module par module',
       agents: ['quality', 'strategy'],
       priority: 'high',
-      dependsOn: ['Analyse initiale']
+      dependsOn: ['Analyse initiale'],
     },
     {
       name: 'Migration BDD',
       description: 'Migration de MySQL vers PostgreSQL avec Prisma',
       agents: ['data'],
       priority: 'high',
-      dependsOn: ['Analyse initiale']
+      dependsOn: ['Analyse initiale'],
     },
     {
       name: 'Migration code',
       description: 'Migration du code PHP vers TypeScript (NestJS/Remix)',
       agents: ['assembler'],
       priority: 'high',
-      dependsOn: ['Planification', 'Migration BDD']
+      dependsOn: ['Planification', 'Migration BDD'],
     },
     {
       name: 'Tests et validation',
       description: 'Vérification fonctionnelle et tests de qualité',
       agents: ['quality'],
       priority: 'medium',
-      dependsOn: ['Migration code']
-    }
+      dependsOn: ['Migration code'],
+    },
   ],
-  
+
   TECHNOLOGIES: {
     backend: {
       from: 'PHP',
       to: 'TypeScript/NestJS',
       framework: 'NestJS',
-      orm: 'Prisma'
+      orm: 'Prisma',
     },
     database: {
       from: 'MySQL',
-      to: 'PostgreSQL'
+      to: 'PostgreSQL',
     },
     frontend: {
       from: 'PHP/HTML/CSS',
       to: 'TypeScript/Remix',
-      framework: 'Remix'
-    }
-  }
+      framework: 'Remix',
+    },
+  },
 };
 
 /**
@@ -175,9 +183,9 @@ export const LOGS = {
   LEVEL: process.env.LOG_LEVEL || 'info',
   ROTATION: {
     frequency: 'daily',
-    maxFiles: 30
+    maxFiles: 30,
   },
-  FORMAT: '[:time] :level - :message'
+  FORMAT: '[:time] :level - :message',
 };
 
 /**
@@ -188,7 +196,7 @@ export function loadConfig() {
   try {
     if (fs.existsSync(PATHS.MIGRATION_CONFIG)) {
       const userConfig = JSON.parse(fs.readFileSync(PATHS.MIGRATION_CONFIG, 'utf8'));
-      
+
       // Fusionner la configuration personnalisée avec les valeurs par défaut
       return {
         PATHS: { ...PATHS, ...userConfig.paths },
@@ -196,13 +204,13 @@ export function loadConfig() {
         DASHBOARD: { ...DASHBOARD, ...userConfig.dashboard },
         ORCHESTRATOR: { ...ORCHESTRATOR, ...userConfig.orchestrator },
         MIGRATION: { ...MIGRATION, ...userConfig.migration },
-        LOGS: { ...LOGS, ...userConfig.logs }
+        LOGS: { ...LOGS, ...userConfig.logs },
       };
     }
   } catch (error) {
     console.error(`Erreur lors du chargement de la configuration: ${error.message}`);
   }
-  
+
   // Retourner la configuration par défaut si le chargement échoue
   return { PATHS, AGENTS, DASHBOARD, ORCHESTRATOR, MIGRATION, LOGS };
 }

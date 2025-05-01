@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
+import { SeoAuditReport, SeoHistory, SeoIssue, SeoPage, SeoRedirect } from '../entities';
 import { ISeoRepository } from '../interfaces/seo-repository.interface';
-import { SeoPage, SeoIssue, SeoHistory, SeoAuditReport, SeoRedirect } from '../entities';
 
 /**
  * Implémentation du repository SEO basée sur Prisma
@@ -22,14 +22,14 @@ export class PrismaSeoRepository implements ISeoRepository {
     offset?: number;
   }): Promise<{ pages: SeoPage[]; total: number; limit: number; offset: number }> {
     const { status, score, sort = 'url', dir = 'asc', limit = 100, offset = 0 } = filters;
-    
+
     // Construction des filtres
     const where: any = {};
-    
+
     if (status && status !== 'all') {
       where.status = status;
     }
-    
+
     if (score && score !== 'all') {
       const [min, max] = score.split('-').map(Number);
       where.score = {
@@ -37,12 +37,12 @@ export class PrismaSeoRepository implements ISeoRepository {
         lte: max,
       };
     }
-    
+
     // Obtenir le nombre total pour la pagination
     const total = await this.prisma.seoPage.count({ where });
-    
+
     // Récupérer les pages avec leurs problèmes associés
-    const pages = await this.prisma.seoPage.findMany({
+    const pages = (await this.prisma.seoPage.findMany({
       where,
       orderBy: {
         [sort]: dir.toLowerCase() === 'desc' ? 'desc' : 'asc',
@@ -52,8 +52,8 @@ export class PrismaSeoRepository implements ISeoRepository {
       },
       take: limit,
       skip: offset,
-    }) as unknown as SeoPage[];
-    
+    })) as unknown as SeoPage[];
+
     return {
       pages,
       total,
@@ -75,7 +75,7 @@ export class PrismaSeoRepository implements ISeoRepository {
         },
       },
     });
-    
+
     return result as unknown as SeoPage | null;
   }
 
@@ -121,23 +121,23 @@ export class PrismaSeoRepository implements ISeoRepository {
     offset?: number;
   }): Promise<{ issues: SeoIssue[]; total: number; limit: number; offset: number }> {
     const { severity, type, limit = 100, offset = 0 } = filters;
-    
+
     // Construction des filtres
     const where: any = { fixed: false };
-    
+
     if (severity && severity !== 'all') {
       where.severity = severity;
     }
-    
+
     if (type && type !== 'all') {
       where.type = type;
     }
-    
+
     // Obtenir le nombre total pour la pagination
     const total = await this.prisma.seoIssue.count({ where });
-    
+
     // Récupérer les problèmes avec leurs pages associées
-    const issues = await this.prisma.seoIssue.findMany({
+    const issues = (await this.prisma.seoIssue.findMany({
       where,
       include: {
         page: {
@@ -148,14 +148,11 @@ export class PrismaSeoRepository implements ISeoRepository {
           },
         },
       },
-      orderBy: [
-        { severity: 'desc' },
-        { createdAt: 'desc' },
-      ],
+      orderBy: [{ severity: 'desc' }, { createdAt: 'desc' }],
       take: limit,
       skip: offset,
-    }) as unknown as SeoIssue[];
-    
+    })) as unknown as SeoIssue[];
+
     return {
       issues,
       total,
@@ -176,13 +173,13 @@ export class PrismaSeoRepository implements ISeoRepository {
     });
   }
 
-  async deleteIssues(pageId: number, onlyUnfixed: boolean = true): Promise<{ count: number }> {
+  async deleteIssues(pageId: number, onlyUnfixed = true): Promise<{ count: number }> {
     const where: any = { pageId };
-    
+
     if (onlyUnfixed) {
       where.fixed = false;
     }
-    
+
     return this.prisma.seoIssue.deleteMany({
       where,
     });
@@ -204,7 +201,7 @@ export class PrismaSeoRepository implements ISeoRepository {
     }) as unknown as SeoHistory;
   }
 
-  async getHistory(limit: number = 50): Promise<SeoHistory[]> {
+  async getHistory(limit = 50): Promise<SeoHistory[]> {
     return this.prisma.seoHistory.findMany({
       orderBy: { date: 'desc' },
       take: limit,
@@ -227,16 +224,20 @@ export class PrismaSeoRepository implements ISeoRepository {
 
   async getRedirects(active?: boolean): Promise<SeoRedirect[]> {
     const where = active !== undefined ? { active } : {};
-    
+
     return this.prisma.seoRedirect.findMany({
       where,
       orderBy: { source: 'asc' },
     }) as unknown as SeoRedirect[];
   }
 
-  async addRedirect(data: { source: string; destination: string; statusCode?: number }): Promise<SeoRedirect> {
+  async addRedirect(data: {
+    source: string;
+    destination: string;
+    statusCode?: number;
+  }): Promise<SeoRedirect> {
     const { source, destination, statusCode = 301 } = data;
-    
+
     return this.prisma.seoRedirect.create({
       data: {
         source,
@@ -246,9 +247,11 @@ export class PrismaSeoRepository implements ISeoRepository {
     }) as unknown as SeoRedirect;
   }
 
-  async addManyRedirects(redirects: Array<{ source: string; destination: string; statusCode?: number }>): Promise<{ count: number }> {
+  async addManyRedirects(
+    redirects: Array<{ source: string; destination: string; statusCode?: number }>
+  ): Promise<{ count: number }> {
     return this.prisma.seoRedirect.createMany({
-      data: redirects.map(r => ({
+      data: redirects.map((r) => ({
         source: r.source,
         destination: r.destination,
         statusCode: r.statusCode || 301,
@@ -257,7 +260,12 @@ export class PrismaSeoRepository implements ISeoRepository {
     });
   }
 
-  async createJob(data: { jobId: string; status: string; filePath: string | null; result: any }): Promise<any> {
+  async createJob(data: {
+    jobId: string;
+    status: string;
+    filePath: string | null;
+    result: any;
+  }): Promise<any> {
     return this.prismaDoDotmcpJob.create({
       data,
     });

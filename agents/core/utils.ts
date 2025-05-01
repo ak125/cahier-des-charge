@@ -26,11 +26,7 @@ export async function measureExecutionTime<T>(
  * @param delay Délai entre les tentatives (en ms)
  * @returns Résultat de la fonction
  */
-export async function withRetry<T>(
-  fn: () => Promise<T>,
-  retries: number = 3,
-  delay: number = 1000
-): Promise<T> {
+export async function withRetry<T>(fn: () => Promise<T>, retries = 3, delay = 1000): Promise<T> {
   try {
     return await fn();
   } catch (error) {
@@ -49,10 +45,7 @@ export async function withRetry<T>(
  * @param duration Durée d'exécution
  * @returns Résultat d'agent
  */
-export function createSuccessResult<T>(
-  data: T,
-  duration?: number
-): AgentResult<T> {
+export function createSuccessResult<T>(data: T, duration?: number): AgentResult<T> {
   return {
     success: true,
     data,
@@ -67,10 +60,7 @@ export function createSuccessResult<T>(
  * @param duration Durée d'exécution
  * @returns Résultat d'agent
  */
-export function createErrorResult(
-  error: Error | string,
-  duration?: number
-): AgentResult<never> {
+export function createErrorResult(error: Error | string, duration?: number): AgentResult<never> {
   return {
     success: false,
     error,
@@ -89,9 +79,7 @@ export function toAgentFunction<TParams extends any[], TResult>(
 ): (...args: TParams) => Promise<AgentResult<TResult>> {
   return async (...args: TParams): Promise<AgentResult<TResult>> => {
     try {
-      const { result, duration } = await measureExecutionTime(() =>
-        fn(...args)
-      );
+      const { result, duration } = await measureExecutionTime(() => fn(...args));
       return createSuccessResult(result, duration);
     } catch (error) {
       return createErrorResult(error instanceof Error ? error : String(error));

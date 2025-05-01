@@ -3,8 +3,8 @@
  * Agent export file
  */
 
-import { agent } from './agent-donnees';
 import { BusinessAgent } from '../../core/interfaces';
+import { agent } from './agent-donnees';
 
 export { agent };
 export default agent;

@@ -15,20 +15,14 @@ const yaml = require('js-yaml');
 const JOURNAL_FILE = path.join(process.cwd(), 'cahier-des-charges', '38-journal-modifications.md');
 
 // Types de modifications disponibles
-const MODIFICATION_TYPES = [
-  'ajout',
-  'correction',
-  'restructuration',
-  'mise à jour',
-  'suppression'
-];
+const MODIFICATION_TYPES = ['ajout', 'correction', 'restructuration', 'mise à jour', 'suppression'];
 
 /**
  * Point d'entrée principal
  */
 async function main() {
   try {
-    console.log(chalk.blue('📝 Ajout d\'une entrée au journal des modifications'));
+    console.log(chalk.blue("📝 Ajout d'une entrée au journal des modifications"));
 
     // Vérifier si le fichier journal existe
     await checkJournalFile();
@@ -80,40 +74,49 @@ async function collectEntryInfo() {
       name: 'date',
       message: 'Date et heure de la modification (YYYY-MM-DD HH:MM:SS):',
       default: formattedDate,
-      validate: input => /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/.test(input) ? true : 'Format de date incorrect'
+      validate: (input) =>
+        /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/.test(input) ? true : 'Format de date incorrect',
     },
     {
       type: 'input',
       name: 'author',
       message: 'Auteur de la modification:',
       default: defaultAuthor,
-      validate: input => input.trim() !== '' ? true : 'L\'auteur est requis'
+      validate: (input) => (input.trim() !== '' ? true : "L'auteur est requis"),
     },
     {
       type: 'input',
       name: 'sections',
       message: 'Sections concernées (séparées par des virgules):',
-      validate: input => input.trim() !== '' ? true : 'Au moins une section est requise',
-      filter: input => input.split(',').map(s => s.trim()).filter(s => s !== '')
+      validate: (input) => (input.trim() !== '' ? true : 'Au moins une section est requise'),
+      filter: (input) =>
+        input
+          .split(',')
+          .map((s) => s.trim())
+          .filter((s) => s !== ''),
     },
     {
       type: 'list',
       name: 'type',
       message: 'Type de modification:',
-      choices: MODIFICATION_TYPES
+      choices: MODIFICATION_TYPES,
     },
     {
       type: 'editor',
       name: 'summary',
       message: 'Résumé de la modification:',
-      validate: input => input.trim() !== '' ? true : 'Le résumé est requis'
+      validate: (input) => (input.trim() !== '' ? true : 'Le résumé est requis'),
     },
     {
       type: 'input',
       name: 'tickets',
       message: 'Tickets associés (séparés par des virgules, laisser vide si aucun):',
-      filter: input => input.split(',').map(s => s.trim()).filter(s => s !== '')
-    }
+      filter: (input) =>
+        input
+          .split(',')
+          .map((s) => s.trim())
+          .filter((s) => s !== ''),
+    },
   ]);
 
   return {
@@ -122,7 +125,7 @@ async function collectEntryInfo() {
     sections: answers.sections,
     type: answers.type,
     summary: answers.summary.trim(),
-    tickets: answers.tickets
+    tickets: answers.tickets,
   };
 }
 
@@ -147,9 +150,7 @@ async function addEntryToJournal(entry) {
   // Insérer l'entrée après le titre de la section
   const insertPosition = match.index + match[0].length;
   const updatedContent =
-    content.substring(0, insertPosition) +
-    formattedEntry +
-    content.substring(insertPosition);
+    content.substring(0, insertPosition) + formattedEntry + content.substring(insertPosition);
 
   // Écrire le contenu mis à jour
   await fs.writeFile(JOURNAL_FILE, updatedContent, 'utf8');

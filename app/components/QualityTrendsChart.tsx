@@ -1,25 +1,25 @@
-import React from "react";
-import { 
-  Chart as ChartJS, 
-  CategoryScale, 
-  LinearScale, 
-  PointElement, 
-  LineElement, 
-  Title, 
-  Tooltip, 
+import {
+  CategoryScale,
+  Chart as ChartJS,
+  Filler,
   Legend,
-  Filler
+  LineElement,
+  LinearScale,
+  PointElement,
+  Title,
+  Tooltip,
 } from 'chart.js';
+import React from 'react';
 import { Line } from 'react-chartjs-2';
 
 // Enregistrer les composants nécessaires pour le graphique
 ChartJS.register(
-  CategoryScale, 
-  LinearScale, 
-  PointElement, 
-  LineElement, 
-  Title, 
-  Tooltip, 
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
   Legend,
   Filler
 );
@@ -41,7 +41,7 @@ export const QualityTrendsChart: React.FC<QualityTrendsChartProps> = ({
   accessibilityScores,
   bestPracticesScores,
   height = 400,
-  showLegend = true
+  showLegend = true,
 }) => {
   const datasets = [
     {
@@ -51,9 +51,9 @@ export const QualityTrendsChart: React.FC<QualityTrendsChartProps> = ({
       backgroundColor: 'rgba(54, 162, 235, 0.1)',
       fill: true,
       tension: 0.3,
-    }
+    },
   ];
-  
+
   // Ajouter les autres métriques si elles sont disponibles
   if (performanceScores && performanceScores.length > 0) {
     datasets.push({
@@ -65,7 +65,7 @@ export const QualityTrendsChart: React.FC<QualityTrendsChartProps> = ({
       tension: 0.3,
     });
   }
-  
+
   if (accessibilityScores && accessibilityScores.length > 0) {
     datasets.push({
       label: 'Accessibilité',
@@ -76,7 +76,7 @@ export const QualityTrendsChart: React.FC<QualityTrendsChartProps> = ({
       tension: 0.3,
     });
   }
-  
+
   if (bestPracticesScores && bestPracticesScores.length > 0) {
     datasets.push({
       label: 'Meilleures pratiques',
@@ -87,12 +87,12 @@ export const QualityTrendsChart: React.FC<QualityTrendsChartProps> = ({
       tension: 0.3,
     });
   }
-  
+
   const data = {
     labels: dates,
     datasets,
   };
-  
+
   const options = {
     responsive: true,
     maintainAspectRatio: false,
@@ -105,11 +105,9 @@ export const QualityTrendsChart: React.FC<QualityTrendsChartProps> = ({
         mode: 'index' as const,
         intersect: false,
         callbacks: {
-          label: function(context: any) {
-            return `${context.dataset.label}: ${context.raw}/100`;
-          }
-        }
-      }
+          label: (context: any) => `${context.dataset.label}: ${context.raw}/100`,
+        },
+      },
     },
     scales: {
       y: {
@@ -117,23 +115,23 @@ export const QualityTrendsChart: React.FC<QualityTrendsChartProps> = ({
         max: 100,
         title: {
           display: true,
-          text: 'Score'
-        }
+          text: 'Score',
+        },
       },
       x: {
         title: {
           display: true,
-          text: 'Date'
-        }
-      }
+          text: 'Date',
+        },
+      },
     },
     interaction: {
       mode: 'nearest' as const,
       axis: 'x' as const,
-      intersect: false
-    }
+      intersect: false,
+    },
   };
-  
+
   return (
     <div style={{ height }}>
       <Line data={data} options={options} />

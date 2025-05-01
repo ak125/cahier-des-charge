@@ -3,9 +3,6 @@
  * Generated automatically on 2025-04-20
  */
 
-import { MetricsServiceAgent } from ./MetricsServiceAgentstructure-agent';
+import { MetricsServiceAgent } from './MetricsServiceAgent';
 
-export {
-  MetricsServiceAgent,
-};
-
+export { MetricsServiceAgent };

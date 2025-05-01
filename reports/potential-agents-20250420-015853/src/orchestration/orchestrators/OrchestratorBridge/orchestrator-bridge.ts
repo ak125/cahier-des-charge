@@ -864,7 +864,7 @@ export class OrchestratorBridge implements BaseAgent, OrchestrationAgent, BaseAg
   /**
    * Écoute les signaux deDotn8N et les transmet à Temporal/BullMQ
    */
-  async listenToN8NSignals(webHandler: any, port: number = 3456) {
+  async listenToN8NSignals(webHandler: any, port = 3456) {
     // Configurer un mini serveur pour recevoir des signaux deDotn8N
     webHandler.post('Dotn8N-signal/:signalType', async (req: any, res: any) => {
       const { signalType } = req.params;
@@ -915,7 +915,7 @@ export class OrchestratorBridge implements BaseAgent, OrchestrationAgent, BaseAg
    * @param port Port d'écoute du serveur web
    * @returns L'instance du serveur web
    */
-  async createDashboardServer(port: number = 3500): Promise<any> {
+  async createDashboardServer(port = 3500): Promise<any> {
     const app = express();
     
     // Configuration du tableau de bord BullMQ
@@ -1231,7 +1231,7 @@ export class OrchestratorBridge implements BaseAgent, OrchestrationAgent, BaseAg
   /**
    * Expose les métriques au format Prometheus
    */
-  exposeMetricsEndpoint(app: any, path: string = '/metrics'): void {
+  exposeMetricsEndpoint(app: any, path = '/metrics'): void {
     if (!this.metricsService) {
       this.logger.warn('Service de métriques non activé, impossible d\'exposer les métriques');
       return;

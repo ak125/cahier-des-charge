@@ -3,8 +3,8 @@
  * Agent export file
  */
 
-import { DevChecker } from './dev-checker';
 import { BusinessAgent } from '../../core/interfaces';
+import { DevChecker } from './dev-checker';
 
 export { DevChecker };
 export default DevChecker;

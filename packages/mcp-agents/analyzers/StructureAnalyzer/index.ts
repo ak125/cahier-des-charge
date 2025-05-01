@@ -1,25 +1,24 @@
-import { StructureAnalyzer } from './structure-analyzer';
 import { AnalyzerAgent } from '../../interfaces/analyzeragent';
-
+import { StructureAnalyzer } from './structure-analyzer';
 
 /**
  * Agent StructureAnalyzer - Implémentation pour l'architecture MCP
- * 
+ *
  * Type: Analyzer
  * Rôle: Fait partie de la couche Business
- * 
+ *
  * @implements {AnalyzerAgent}
  */
 export class StructureAnalyzer implements AnalyzerAgent {
   name = 'StructureAnalyzer';
-  description = 'Agent StructureAnalyzer pour l\'architecture MCP';
+  description = "Agent StructureAnalyzer pour l'architecture MCP";
   version = '1.0.0';
-  
-  async initialize(config: any): Promise<void> {
+
+  async initialize(_config: any): Promise<void> {
     // Initialisation de l'agent
     console.log(`Initialisation de l'agent ${this.name}`);
   }
-  
+
   async execute(input: any): Promise<any> {
     // Implémentation de la logique principale
     console.log(`Exécution de l'agent ${this.name}`);
@@ -28,4 +27,3 @@ export class StructureAnalyzer implements AnalyzerAgent {
 }
 
 export default StructureAnalyzer;
-

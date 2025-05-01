@@ -4,8 +4,8 @@
 
 import { AnalyzerAgent, AnalyzerOptions, AnalyzerResult } from './analyzer/analyzer-agent';
 import { GeneratorAgent, GeneratorOptions, GeneratorResult } from './generator/generator-agent';
-import { ValidatorAgent, ValidatorOptions, ValidatorResult } from './validator/validator-agent';
 import { ParserAgent, ParserOptions, ParserResult } from './parser/parser-agent';
+import { ValidatorAgent, ValidatorOptions, ValidatorResult } from './validator/validator-agent';
 
 export {
   AnalyzerAgent,
@@ -19,5 +19,5 @@ export {
   ValidatorResult,
   ParserAgent,
   ParserOptions,
-  ParserResult
+  ParserResult,
 };

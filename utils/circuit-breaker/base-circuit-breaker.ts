@@ -5,9 +5,9 @@
 import { EventEmitter } from 'events';
 
 export enum CircuitState {
-  CLOSED = 'closed',   // Circuit fermé = fonctionnement normal
-  OPEN = 'open',       // Circuit ouvert = blocage des requêtes
-  HALF_OPEN = 'half-open' // Circuit semi-ouvert = test de rétablissement
+  CLOSED = 'closed', // Circuit fermé = fonctionnement normal
+  OPEN = 'open', // Circuit ouvert = blocage des requêtes
+  HALF_OPEN = 'half-open', // Circuit semi-ouvert = test de rétablissement
 }
 
 export enum CircuitEvent {
@@ -17,18 +17,18 @@ export enum CircuitEvent {
   TIMEOUT = 'timeout',
   REJECTED = 'rejected',
   FALLBACK_SUCCESS = 'fallback-success',
-  FALLBACK_FAILURE = 'fallback-failure'
+  FALLBACK_FAILURE = 'fallback-failure',
 }
 
 export interface CircuitBreakerOptions {
-  failureThreshold: number;  // Nombre d'échecs avant ouverture du circuit
-  resetTimeout: number;      // Temps en ms avant passage en semi-ouvert
-  monitorInterval?: number;  // Intervalle pour le monitoring
-  maxRetries?: number;       // Nombre maximum de tentatives
-  timeout?: number;          // Délai d'attente max en ms
-  volumeThreshold?: number;  // Nombre min de requêtes avant déclenchement
+  failureThreshold: number; // Nombre d'échecs avant ouverture du circuit
+  resetTimeout: number; // Temps en ms avant passage en semi-ouvert
+  monitorInterval?: number; // Intervalle pour le monitoring
+  maxRetries?: number; // Nombre maximum de tentatives
+  timeout?: number; // Délai d'attente max en ms
+  volumeThreshold?: number; // Nombre min de requêtes avant déclenchement
   errorPercentageThreshold?: number; // Pourcentage d'erreur déclenchant l'ouverture
-  enabled?: boolean;         // Circuit breaker actif ou non
+  enabled?: boolean; // Circuit breaker actif ou non
 }
 
 export interface CircuitBreakerStats {
@@ -70,7 +70,7 @@ export abstract class BaseCircuitBreaker extends EventEmitter {
       timeout: 30000,
       volumeThreshold: 5,
       errorPercentageThreshold: 50,
-      ...options
+      ...options,
     };
 
     this.stats = {
@@ -81,7 +81,7 @@ export abstract class BaseCircuitBreaker extends EventEmitter {
       consecutiveFailures: 0,
       consecutiveSuccesses: 0,
       totalRequests: 0,
-      errorRate: 0
+      errorRate: 0,
     };
   }
 
@@ -92,8 +92,8 @@ export abstract class BaseCircuitBreaker extends EventEmitter {
    * @param context Contexte d'exécution (pour logging, traçabilité, etc.)
    */
   public abstract execute<T>(
-    fn: () => Promise<T>, 
-    fallback?: (error: Error, context?: any) => Promise<T>, 
+    fn: () => Promise<T>,
+    fallback?: (error: Error, context?: any) => Promise<T>,
     context?: any
   ): Promise<CircuitBreakerResult<T>>;
 
@@ -133,7 +133,7 @@ export abstract class BaseCircuitBreaker extends EventEmitter {
       consecutiveFailures: 0,
       consecutiveSuccesses: 0,
       totalRequests: 0,
-      errorRate: 0
+      errorRate: 0,
     };
   }
 
@@ -165,7 +165,7 @@ export abstract class BaseCircuitBreaker extends EventEmitter {
    */
   protected transitionState(newState: CircuitState, reason: string): void {
     if (this.state === newState) return;
-    
+
     const previousState = this.state;
     this.state = newState;
     this.stats.state = newState;
@@ -175,7 +175,7 @@ export abstract class BaseCircuitBreaker extends EventEmitter {
       to: newState,
       reason,
       time: new Date(),
-      stats: this.getStats()
+      stats: this.getStats(),
     });
   }
 }

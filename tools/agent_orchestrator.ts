@@ -1,14 +1,14 @@
-import * as fs from 'fs/promises';
+import { exec as execCallback } from 'child_process';
 import * as path from 'path';
 import { promisify } from 'util';
-import { exec as execCallback } from 'child_process';
+import * as fs from 'fs/promises';
+import { AssemblerAgent } from '../agents/AssemblerAgent';
 import { BusinessAgent } from '../agents/BusinessAgent';
-import { StructureAgent } from '../agents/StructureAgent';
 import { DataAgent } from '../agents/DataAgent';
 import { DependencyAgent } from '../agents/DependencyAgent';
 import { QualityAgent } from '../agents/QualityAgent';
 import { StrategyAgent } from '../agents/StrategyAgent';
-import { AssemblerAgent } from '../agents/AssemblerAgent';
+import { StructureAgent } from '../agents/StructureAgent';
 
 const exec = promisify(execCallback);
 
@@ -26,28 +26,36 @@ interface AuditConfig {
  */
 class AgentOrchestrator {
   private config: AuditConfig;
-  
+
   constructor(config: AuditConfig) {
     this.config = {
       outputDir: path.dirname(config.phpFilePath),
       createGitHubIssue: false,
       assignee: undefined,
-      runAgents: ['business', 'structure', 'data', 'dependency', 'quality', 'strategy', 'assembler'],
-      ...config
+      runAgents: [
+        'business',
+        'structure',
+        'data',
+        'dependency',
+        'quality',
+        'strategy',
+        'assembler',
+      ],
+      ...config,
     };
   }
-  
+
   /**
    * Valide si le fichier PHP existe
    */
   private async validateFile(): Promise<void> {
     try {
       await fs.access(this.config.phpFilePath);
-    } catch (error) {
+    } catch (_error) {
       throw new Error(`Le fichier PHP spécifié n'existe pas: ${this.config.phpFilePath}`);
     }
   }
-  
+
   /**
    * Initialise le rapport d'audit avec un template vide si celui-ci n'existe pas
    */
@@ -56,83 +64,90 @@ class AgentOrchestrator {
     const outputDir = this.config.outputDir;
     const auditTemplateFilePath = path.join(__dirname, '../templates/audit_template.md');
     const auditSectionsFilePath = path.join(outputDir, `${baseFilename}.audit.sections.json`);
-    
+
     try {
       // Vérifier si le fichier de sections existe déjà
       await fs.access(auditSectionsFilePath);
       console.log(`Fichier de sections d'audit existant trouvé: ${auditSectionsFilePath}`);
-    } catch (error) {
+    } catch (_error) {
       // Créer un fichier de sections vide
       console.log(`Création d'un nouveau fichier de sections d'audit: ${auditSectionsFilePath}`);
       await fs.writeFile(auditSectionsFilePath, '[]', 'utf8');
     }
-    
+
     // Copier le template d'audit si nécessaire
     const auditFilePath = path.join(outputDir, `${baseFilename}.audit.md`);
     try {
       await fs.access(auditFilePath);
       console.log(`Fichier d'audit existant trouvé: ${auditFilePath}`);
-    } catch (error) {
+    } catch (_error) {
       console.log(`Création d'un nouveau fichier d'audit à partir du template: ${auditFilePath}`);
-      
+
       // Lire le contenu du template
       let templateContent = await fs.readFile(auditTemplateFilePath, 'utf8');
-      
+
       // Remplacer le placeholder du nom de fichier
       templateContent = templateContent.replace('${FILENAME}', baseFilename);
-      
+
       // Écrire le fichier d'audit
       await fs.writeFile(auditFilePath, templateContent, 'utf8');
     }
   }
-  
+
   /**
    * Exécute un agent d'audit spécifique
    */
   private async runAgent(agentType: string): Promise<void> {
     console.log(`Exécution de l'agent: ${agentType}`);
-    
+
     try {
       switch (agentType) {
-        case 'business':
+        case 'business': {
           const businessAgent = new BusinessAgent(this.config.phpFilePath);
           await businessAgent.process();
           break;
-        case 'structure':
+        }
+        case 'structure': {
           const structureAgent = new StructureAgent(this.config.phpFilePath);
           await structureAgent.process();
           break;
-        case 'data':
+        }
+        case 'data': {
           const dataAgent = new DataAgent(this.config.phpFilePath);
           await dataAgent.process();
           break;
-        case 'dependency':
+        }
+        case 'dependency': {
           const dependencyAgent = new DependencyAgent(this.config.phpFilePath);
           await dependencyAgent.process();
           break;
-        case 'quality':
+        }
+        case 'quality': {
           const qualityAgent = new QualityAgent(this.config.phpFilePath);
           await qualityAgent.process();
           break;
-        case 'strategy':
+        }
+        case 'strategy': {
           const strategyAgent = new StrategyAgent(this.config.phpFilePath);
           await strategyAgent.process();
           break;
-        case 'assembler':
+        }
+        case 'assembler': {
           const assemblerAgent = new AssemblerAgent(this.config.phpFilePath);
           await assemblerAgent.process();
           break;
+        }
         default:
           console.warn(`Agent inconnu: ${agentType}`);
       }
-      
+
       console.log(`✅ Agent ${agentType} terminé avec succès`);
     } catch (error) {
       console.error(`❌ Erreur lors de l'exécution de l'agent ${agentType}: ${error.message}`);
       throw error;
     }
   }
-  
+
   /**
    * Crée une issue GitHub pour le rapport d'audit
    */
@@ -140,23 +155,23 @@ class AgentOrchestrator {
     if (!this.config.createGitHubIssue) {
       return;
     }
-    
+
     const baseFilename = path.basename(this.config.phpFilePath);
-    
+
     try {
-      console.log('Création d\'une issue GitHub pour le rapport d\'audit...');
-      
+      console.log("Création d'une issue GitHub pour le rapport d'audit...");
+
       // Construire la commande pour créer l'issue
       let command = `gh issue create \
         --title "Audit PHP: ${baseFilename}" \
         --body "L'audit du fichier ${baseFilename} a été réalisé. Consultez les rapports générés." \
         --label "audit,migration,php"`;
-      
+
       // Ajouter l'assignee si spécifié
       if (this.config.assignee) {
         command += ` --assignee "${this.config.assignee}"`;
       }
-      
+
       // Exécuter la commande
       const { stdout } = await exec(command);
       console.log(`✅ Issue GitHub créée: ${stdout.trim()}`);
@@ -164,28 +179,28 @@ class AgentOrchestrator {
       console.error(`❌ Erreur lors de la création de l'issue GitHub: ${error.message}`);
     }
   }
-  
+
   /**
    * Exécute tous les agents d'audit
    */
   public async runAll(): Promise<void> {
     try {
       console.log(`Démarrage de l'audit pour ${this.config.phpFilePath}`);
-      
+
       // Valider si le fichier existe
       await this.validateFile();
-      
+
       // Initialiser le fichier d'audit
       await this.initializeAuditFile();
-      
+
       // Exécuter chaque agent dans l'ordre
       for (const agentType of this.config.runAgents) {
         await this.runAgent(agentType);
       }
-      
+
       // Créer une issue GitHub si demandé
       await this.createGitHubIssue();
-      
+
       console.log(`✅ Audit terminé pour ${this.config.phpFilePath}`);
     } catch (error) {
       console.error(`❌ Erreur lors de l'audit: ${error.message}`);
@@ -209,9 +224,9 @@ async function main(): Promise<void> {
   const config: AuditConfig = {
     phpFilePath,
     createGitHubIssue: args.includes('--create-issue'),
-    assignee: args.includes('--assignee') ? args[args.indexOf('--assignee') + 1] : undefined
+    assignee: args.includes('--assignee') ? args[args.indexOf('--assignee') + 1] : undefined,
   };
-  
+
   // Filtrer les agents à exécuter si spécifiés
   if (args.includes('--agents')) {
     const agentsIndex = args.indexOf('--agents');

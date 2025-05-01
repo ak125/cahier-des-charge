@@ -33,10 +33,7 @@
       "name": "Paramètres d'analyse",
       "type": "n8n-nodes-base.set",
       "typeVersion": 1,
-      "position": [
-        460,
-        300
-      ]
+      "position": [460, 300]
     },
     {
       "parameters": {
@@ -46,10 +43,7 @@
       "name": "Valider les paramètres",
       "type": "n8n-nodes-base.code",
       "typeVersion": 1,
-      "position": [
-        660,
-        300
-      ]
+      "position": [660, 300]
     },
     {
       "parameters": {
@@ -66,10 +60,7 @@
       "name": "Validation OK ?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
-      "position": [
-        860,
-        300
-      ]
+      "position": [860, 300]
     },
     {
       "parameters": {
@@ -79,10 +70,7 @@
       "name": "Exécuter l'analyse .htaccess",
       "type": "n8n-nodes-base.executeCommand",
       "typeVersion": 1,
-      "position": [
-        1060,
-        240
-      ]
+      "position": [1060, 240]
     },
     {
       "parameters": {
@@ -100,10 +88,7 @@
       "name": "Analyse réussie ?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
-      "position": [
-        1260,
-        240
-      ]
+      "position": [1260, 240]
     },
     {
       "parameters": {
@@ -113,10 +98,7 @@
       "name": "Analyser les résultats",
       "type": "n8n-nodes-base.code",
       "typeVersion": 1,
-      "position": [
-        1460,
-        140
-      ]
+      "position": [1460, 140]
     },
     {
       "parameters": {
@@ -130,10 +112,7 @@
       "name": "Notification de succès",
       "type": "n8n-nodes-base.emailSend",
       "typeVersion": 2,
-      "position": [
-        1640,
-        140
-      ]
+      "position": [1640, 140]
     },
     {
       "parameters": {
@@ -147,10 +126,7 @@
       "name": "Notification d'erreur",
       "type": "n8n-nodes-base.emailSend",
       "typeVersion": 2,
-      "position": [
-        1460,
-        340
-      ]
+      "position": [1460, 340]
     },
     {
       "parameters": {
@@ -193,10 +169,7 @@
       "name": "Notifier Remix WebHook",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4,
-      "position": [
-        1820,
-        140
-      ]
+      "position": [1820, 140]
     },
     {
       "parameters": {},
@@ -204,10 +177,7 @@
       "name": "Démarrer",
       "type": "n8n-nodes-base.start",
       "typeVersion": 1,
-      "position": [
-        300,
-        300
-      ]
+      "position": [300, 300]
     }
   ],
   "connections": {

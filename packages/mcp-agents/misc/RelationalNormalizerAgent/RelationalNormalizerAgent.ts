@@ -3,8 +3,8 @@
  * Agent export file
  */
 
-import { RelationalNormalizer } from './relational-normalizer';
 import { BusinessAgent } from '../../core/interfaces';
+import { RelationalNormalizer } from './relational-normalizer';
 
 export { RelationalNormalizer };
 export default RelationalNormalizer;

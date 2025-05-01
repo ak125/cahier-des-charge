@@ -1,1 +1,1 @@
-export * from ./seo-checker-agent';
+export * from './seo-checker-agent';

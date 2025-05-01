@@ -3,8 +3,8 @@
  * Agent export file
  */
 
-import { QualityAgent } from ./agent-qualitystructure-agent';
-import { BusinessAgent } from ../../core/interfacesstructure-agent';
+import { BusinessAgent } from '../../core/interfacesstructure-agent';
+import { QualityAgent } from './agent-qualitystructure-agent';
 
 export { QualityAgent };
 export default QualityAgent;

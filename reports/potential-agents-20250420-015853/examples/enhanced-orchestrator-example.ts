@@ -1,5 +1,5 @@
-import { createOrchestratorBridge } from '../agents/integration/OrchestratorBridge';
 import * as express from 'express';
+import { createOrchestratorBridge } from '../agents/integration/OrchestratorBridge';
 
 /**
  * Exemple d'utilisation des fonctionnalités étendues de l'OrchestratorBridge

@@ -1,21 +1,18 @@
 import { Module } from '@nestjs/common';
-import { SeoController } from './seo.controller';
-import { SeoService } from './services/seo.service';
-import { PrismaModule } from '../prisma/prisma.module';
 import { ConfigModule } from '@nestjs/config';
-import { SeoStrategyRegistry } from './services/seo-strategy.registry';
-import { MetaTagsStrategy } from './strategies/meta-tags.strategy';
-import { LinksAnalysisStrategy } from './strategies/links-analysis.strategy';
+import { PrismaModule } from '../prisma/prisma.module';
 import { PrismaSeoRepository } from './repositories/prisma-seo.repository';
+import { SeoController } from './seo.controller';
+import { SeoStrategyRegistry } from './services/seo-strategy.registry';
+import { SeoService } from './services/seo.service';
+import { LinksAnalysisStrategy } from './strategies/links-analysis.strategy';
+import { MetaTagsStrategy } from './strategies/meta-tags.strategy';
 
 /**
  * Module SEO utilisant une architecture en couches
  */
 @Module({
-  imports: [
-    PrismaModule,
-    ConfigModule,
-  ],
+  imports: [PrismaModule, ConfigModule],
   controllers: [SeoController],
   providers: [
     // Couche des repositories (données)
@@ -33,10 +30,7 @@ import { PrismaSeoRepository } from './repositories/prisma-seo.repository';
     MetaTagsStrategy,
     LinksAnalysisStrategy,
   ],
-  exports: [
-    'ISeoService',
-    SeoStrategyRegistry,
-  ],
+  exports: ['ISeoService', SeoStrategyRegistry],
 })
 export class SeoModule {
   /**
@@ -45,7 +39,7 @@ export class SeoModule {
   constructor(
     private registry: SeoStrategyRegistry,
     private metaTagsStrategy: MetaTagsStrategy,
-    private linksAnalysisStrategy: LinksAnalysisStrategy,
+    private linksAnalysisStrategy: LinksAnalysisStrategy
   ) {
     // Enregistrer les stratégies d'analyse SEO
     this.registry.registerStrategy(metaTagsStrategy);

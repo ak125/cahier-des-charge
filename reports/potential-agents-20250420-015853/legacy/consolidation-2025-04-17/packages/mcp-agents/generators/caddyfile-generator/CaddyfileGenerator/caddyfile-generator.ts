@@ -5,12 +5,12 @@ import { AbstractGeneratorAgent } from '../AbstractGenerator';
  * Date: 12 avril 2025
  */
 
-import { MCPAgent, AgentContext, FileContent } from '../coreDoDotmcp-agent';
-import { NginxConfigParser } from '../utils/NginxConfigParser';
-import { HtaccessParser } from '../utils/HtaccessParser';
-import { CaddyGenerator } from '../utils/CaddyGenerator';
 import * as fs from 'fs';
 import * as path from 'path';
+import { AgentContext, FileContent, MCPAgent } from '../coreDoDotmcp-agent';
+import { CaddyGenerator } from '../utils/CaddyGenerator';
+import { HtaccessParser } from '../utils/HtaccessParser';
+import { NginxConfigParser } from '../utils/NginxConfigParser';
 
 export interface ServerConfig {
   domain: string;
@@ -158,7 +158,7 @@ export class CaddyfileGenerator extends AbstractGeneratorAgent<any, any> impleme
    */
   private async generateDockerCompose(context: AgentContext): Promise<void> {
     const dockerComposePath = this.config.output.dockerComposePath!;
-    let dockerCompose: any = {
+    const dockerCompose: any = {
       version: '3.9',
       services: {
         caddy: {

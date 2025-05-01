@@ -1,18 +1,21 @@
-import React from "react";
+import React from 'react';
 
 interface TableSchema {
   name: string;
   category: string;
-  columns: Record<string, {
-    type: string;
-    nullable: boolean;
-    isPrimary: boolean;
-    isForeign: boolean;
-    references?: {
-      table: string;
-      column: string;
-    };
-  }>;
+  columns: Record<
+    string,
+    {
+      type: string;
+      nullable: boolean;
+      isPrimary: boolean;
+      isForeign: boolean;
+      references?: {
+        table: string;
+        column: string;
+      };
+    }
+  >;
 }
 
 interface TableStatus {
@@ -27,7 +30,7 @@ interface DebtInfo {
   issues: Array<{
     type: string;
     description: string;
-    severity: "low" | "medium" | "high";
+    severity: 'low' | 'medium' | 'high';
   }>;
   suggestions: string[];
 }
@@ -51,48 +54,66 @@ const TableCard: React.FC<TableCardProps> = ({
 }) => {
   const getStatusColor = (status?: string) => {
     switch (status) {
-      case "pending": return "bg-gray-200";
-      case "blocked": return "bg-red-200";
-      case "in_progress": return "bg-yellow-200";
-      case "migrated": return "bg-blue-200";
-      case "validated": return "bg-green-200";
-      case "ignored": return "bg-purple-200";
-      default: return "bg-gray-100";
+      case 'pending':
+        return 'bg-gray-200';
+      case 'blocked':
+        return 'bg-red-200';
+      case 'in_progress':
+        return 'bg-yellow-200';
+      case 'migrated':
+        return 'bg-blue-200';
+      case 'validated':
+        return 'bg-green-200';
+      case 'ignored':
+        return 'bg-purple-200';
+      default:
+        return 'bg-gray-100';
     }
   };
-  
+
   const getStatusLabel = (status?: string) => {
     switch (status) {
-      case "pending": return "En attente";
-      case "blocked": return "Bloquée";
-      case "in_progress": return "En cours";
-      case "migrated": return "Migrée";
-      case "validated": return "Validée";
-      case "ignored": return "Ignorée";
-      default: return "Non défini";
+      case 'pending':
+        return 'En attente';
+      case 'blocked':
+        return 'Bloquée';
+      case 'in_progress':
+        return 'En cours';
+      case 'migrated':
+        return 'Migrée';
+      case 'validated':
+        return 'Validée';
+      case 'ignored':
+        return 'Ignorée';
+      default:
+        return 'Non défini';
     }
   };
-  
+
   const getCategoryLabel = (category?: string) => {
     switch (category) {
-      case "business": return "Métier";
-      case "pivot": return "Pivot (N:N)";
-      case "technical": return "Technique";
-      default: return category || "Non défini";
+      case 'business':
+        return 'Métier';
+      case 'pivot':
+        return 'Pivot (N:N)';
+      case 'technical':
+        return 'Technique';
+      default:
+        return category || 'Non défini';
     }
   };
-  
+
   const getDebtLabel = (score: number) => {
-    if (score > 70) return "Élevée";
-    if (score > 30) return "Moyenne";
-    return "Faible";
+    if (score > 70) return 'Élevée';
+    if (score > 30) return 'Moyenne';
+    return 'Faible';
   };
-  
+
   // Compter les relations
-  const relationCount = Object.values(schema.columns || {}).filter(c => c.isForeign).length;
-  
+  const relationCount = Object.values(schema.columns || {}).filter((c) => c.isForeign).length;
+
   return (
-    <div 
+    <div
       className={`table-card ${isSelected ? 'selected' : ''} ${getStatusColor(status?.status)}`}
       onClick={onSelect}
     >
@@ -100,7 +121,7 @@ const TableCard: React.FC<TableCardProps> = ({
         <h3>{tableName}</h3>
         <span className="category-badge">{getCategoryLabel(schema.category)}</span>
       </div>
-      
+
       <div className="table-card-body">
         <div className="table-stats">
           <div className="stat">
@@ -116,22 +137,21 @@ const TableCard: React.FC<TableCardProps> = ({
             <div className="stat-label">Dette</div>
           </div>
         </div>
-        
+
         <div className="table-status">
-          <div className="status-badge">
-            {getStatusLabel(status?.status)}
-          </div>
+          <div className="status-badge">{getStatusLabel(status?.status)}</div>
           {status?.assignedTo && (
             <div className="assigned-to">
               <span>Assigné à:</span> {status.assignedTo}
             </div>
           )}
         </div>
-        
+
         {debtInfo?.issues && debtInfo.issues.length > 0 && (
           <div className="debt-issues">
             <div className="debt-level">
-              Dette: <span className={`debt-level-${getDebtLabel(debtInfo.score).toLowerCase()}`}>
+              Dette:{' '}
+              <span className={`debt-level-${getDebtLabel(debtInfo.score).toLowerCase()}`}>
                 {getDebtLabel(debtInfo.score)}
               </span>
             </div>
@@ -142,7 +162,7 @@ const TableCard: React.FC<TableCardProps> = ({
           </div>
         )}
       </div>
-      
+
       <div className="table-card-footer">
         {status?.lastUpdated && (
           <div className="last-updated">

@@ -8,13 +8,9 @@ import { AgentOptions, AgentResult } from '../core/types';
 /**
  * Options spécifiques aux agents utils
  */
-export interface UtilsAgentOptions extends AgentOptions {
-  // Options spécifiques à cette catégorie
-}
+export type UtilsAgentOptions = AgentOptions;
 
 /**
  * Résultat spécifique aux agents utils
  */
-export interface UtilsResult extends AgentResult {
-  // Données spécifiques à cette catégorie
-}
+export type UtilsResult = AgentResult;

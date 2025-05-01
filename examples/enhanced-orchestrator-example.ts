@@ -1,92 +1,147 @@
-import { createOrchestratorBridge } from '../agents/integration/OrchestratorBridge';
 import * as express from 'express';
+import { TaskType, standardizedOrchestrator } from '../src/orchestration/standardized-orchestrator';
 
 /**
- * Exemple d'utilisation des fonctionnalités étendues de l'OrchestratorBridge
+ * Exemple d'utilisation de l'orchestrateur standardisé
  */
 async function main() {
-  console.log('🚀 Démarrage de l'exemple d\'utilisation avancée de OrchestratorBridge');
-  
-  // Création de l'application Express pourDotn8N signals et le dashboard
+  console.log("🚀 Démarrage de l'exemple d'utilisation de l'orchestrateur standardisé");
+
+  // Création de l'application Express pour n8n signals et le dashboard
   const app = express();
   app.use(express.json());
-  
-  // Initialisation du pont d'orchestration avec configuration complète
-  const bridge = await createOrchestratorBridge({
-    redisUrl: 'redis://localhost:6379',
-    temporalAddress: 'localhost:7233',
-   Dotn8NWebhookUrl: 'http://localhost:5678/webhook',
-    queueNames: [DoDotmcp-queue', 'transformation-queue', 'validation-queue'],
-    statusFilePath: './status.json',
-    // Ces propriétés seront ignorées par la fonction createOrchestratorBridge
-    // mais seront utilisées par notre code étendu
-    temporalUIAddress: 'http://localhost:8088',
-   Dotn8NUIAddress: 'http://localhost:5678',
+
+  // Configuration du tableau de bord unifié
+  const dashboardPort = 3500;
+
+  // Configurer un endpoint simple pour le tableau de bord
+  app.get('/', (_req, res) => {
+    res.send(`
+      <html>
+        <head>
+          <title>Tableau de bord unifié d'orchestration</title>
+          <style>
+            body { font-family: Arial, sans-serif; margin: 20px; }
+            h1 { color: #2c3e50; }
+            .card { border: 1px solid #ddd; padding: 15px; margin: 10px 0; border-radius: 5px; }
+            .info { color: #3498db; }
+          </style>
+        </head>
+        <body>
+          <h1>Tableau de bord unifié d'orchestration</h1>
+          <div class="card">
+            <h2>Services disponibles</h2>
+            <p>Interface Temporal: <a href="http://localhost:8088" target="_blank">http://localhost:8088</a></p>
+            <p>Interface n8n: <a href="http://localhost:5678" target="_blank">http://localhost:5678</a></p>
+          </div>
+          <div class="card">
+            <h2>API Documentation</h2>
+            <p>Accès à l'API de l'orchestrateur standardisé: <span class="info">/api/tasks</span></p>
+          </div>
+        </body>
+      </html>
+    `);
   });
-  
-  // Configuration du tableau de bord unifié (nouvelle fonctionnalité)
-  await bridge.createDashboardServer(3500);
-  console.log('✅ Tableau de bord unifié disponible sur http://localhost:3500');
-  
-  // Configuration de la gestion automatique des erreurs pour Temporal (nouvelle fonctionnalité)
-  await bridge.setupTemporalErrorHandling({
-    taskQueue: DoDotmcp-task-queue',
-    retryOptions: {
-      maxAttempts: 5,
-      initialInterval: 5000,  // 5 secondes
-      backoffCoefficient: 1.5,
-      maximumInterval: 300000,  // 5 minutes maximum
-      nonRetryableErrors: ['ValidationError', 'ConfigurationError', 'AuthorizationError']
-    },
-    notifyOnFailure: true
+
+  // Démarrer le serveur de tableau de bord
+  app.listen(dashboardPort, () => {
+    console.log(`✅ Tableau de bord unifié disponible sur http://localhost:${dashboardPort}`);
   });
-  console.log('✅ Gestion des erreurs Temporal configurée');
-  
-  // Configuration de l'écoute des signauxDotn8N
-  await bridge.listenToN8NSignals(app, 3456);
-  console.log('✅ Serveur d\'écoute des signauxDotn8N démarré sur http://localhost:3456');
-  
-  // Exemple de démarrage d'un workflow avec suivi BullMQ
+
+  // Configurer un endpoint pour les signaux n8n
+  app.post('/n8n-signal/:signalType', express.json(), async (req, res) => {
+    try {
+      const { signalType } = req.params;
+      console.log(`✅ Signal n8n reçu: ${signalType}`, req.body);
+      // Traitement du signal...
+      res.json({ success: true });
+    } catch (error) {
+      console.error('❌ Erreur lors du traitement du signal:', error);
+      res.status(500).json({ success: false, error: error.message });
+    }
+  });
+
+  // Démarrer le serveur d'écoute n8n
+  const n8nPort = 3456;
+  app.listen(n8nPort, () => {
+    console.log(`✅ Serveur d'écoute des signaux n8n démarré sur http://localhost:${n8nPort}`);
+  });
+
+  console.log('✅ Configuration terminée');
+
+  // Exemple de planification d'une tâche simple (BullMQ)
   try {
-    const result = await bridge.startTemporalWorkflowWithBullMQTracking({
-      workflowType: 'codeTransformationWorkflow',
-      workflowArgs: ['/path/to/source/code'],
-      taskQueue: DoDotmcp-task-queue',
-      bullMQQueue: 'transformation-queue',
-      bullMQJobData: {
+    // Tâche simple via BullMQ
+    const simpleTaskId = await standardizedOrchestrator.scheduleTask(
+      'transformation-queue',
+      {
         sourceDir: '/path/to/source/code',
         metadata: {
           projectName: 'exemple-project',
           initiatedBy: 'system',
-          priority: 'high'
-        }
+          priority: 'high',
+        },
+      },
+      {
+        taskType: TaskType.SIMPLE,
+        priority: 1,
+        attempts: 3,
       }
-    });
-    
-    console.log('✅ Workflow démarré:', result);
-    
+    );
+
+    console.log('✅ Tâche simple planifiée:', simpleTaskId);
+
+    // Workflow complexe via Temporal
+    const complexTaskId = await standardizedOrchestrator.scheduleTask(
+      'codeTransformation',
+      {
+        sourceDir: '/path/to/source/code',
+        metadata: {
+          projectName: 'exemple-project',
+          initiatedBy: 'system',
+          priority: 'high',
+        },
+      },
+      {
+        taskType: TaskType.COMPLEX,
+        temporal: {
+          workflowType: 'codeTransformationWorkflow',
+          workflowArgs: ['/path/to/source/code'],
+          taskQueue: 'mcp-task-queue',
+          trackingQueue: 'transformation-queue', // Utiliser BullMQ pour suivre le workflow
+        },
+      }
+    );
+
+    console.log('✅ Workflow complexe planifié:', complexTaskId);
+
     // Démarrer un workflow qui échouera intentionnellement pour tester la gestion des erreurs
-    console.log('🔄 Démarrage d\'un workflow avec erreur (pour tester la reprise)...');
-    await bridge.startTemporalWorkflowWithBullMQTracking({
-      workflowType: 'failingWorkflow',
-      workflowArgs: ['will-fail'],
-      taskQueue: DoDotmcp-task-queue',
-      bullMQQueue: 'transformation-queue',
-      bullMQJobData: {
+    console.log("🔄 Démarrage d'un workflow avec erreur (pour tester la reprise)...");
+    await standardizedOrchestrator.scheduleTask(
+      'failingWorkflow',
+      {
         reason: 'test-error-handling',
-        shouldFail: true
+        shouldFail: true,
+      },
+      {
+        taskType: TaskType.COMPLEX,
+        temporal: {
+          workflowType: 'failingWorkflow',
+          workflowArgs: ['will-fail'],
+          taskQueue: 'mcp-task-queue',
+          trackingQueue: 'transformation-queue',
+        },
       }
-    });
-    
+    );
   } catch (error) {
     console.error('❌ Erreur lors du démarrage des workflows:', error);
   }
-  
+
   console.log('\n🔍 Services disponibles:');
   console.log('- Tableau de bord unifié: http://localhost:3500');
   console.log('- Interface Temporal: http://localhost:8088');
-  console.log('- InterfaceDotn8N: http://localhost:5678');
-  console.log('- API pour signauxDotn8N: http://localhost:3456Dotn8N-signal/:signalType (POST)');
+  console.log('- Interface n8n: http://localhost:5678');
+  console.log('- API pour signaux n8n: http://localhost:3456/n8n-signal/:signalType (POST)');
   console.log('\nAppuyez sur Ctrl+C pour arrêter...');
 }
 
@@ -97,7 +152,7 @@ process.on('SIGINT', async () => {
 });
 
 // Démarrer l'application
-main().catch(err => {
+main().catch((err) => {
   console.error('Erreur fatale:', err);
   process.exit(1);
 });

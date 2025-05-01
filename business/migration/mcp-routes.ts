@@ -5,8 +5,8 @@
  * en utilisant le registre d'agents comme source de vérité.
  */
 
-import { Controller, Post, Body, Get, Param, Logger, Injectable } from '@nestjs/common';
-import { agentRegistry, AgentName, AgentRegistryManager } from './agentRegistry';
+import { Body, Controller, Get, Injectable, Logger, Param, Post } from '@nestjs/common';
+import { AgentName, AgentRegistryManager, agentRegistry } from './agentRegistry';
 
 /**
  * Type de base pour les requêtes MCP

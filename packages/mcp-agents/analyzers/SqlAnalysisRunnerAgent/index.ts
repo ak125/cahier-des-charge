@@ -5,7 +5,4 @@
 
 import { SqlAnalysisRunnerAgent } from './SqlAnalysisRunnerAgent';
 
-export {
-  SqlAnalysisRunnerAgent,
-};
-
+export { SqlAnalysisRunnerAgent };

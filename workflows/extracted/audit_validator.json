@@ -17,10 +17,7 @@
       },
       "name": "Schedule Trigger",
       "type": "n8n-nodes-base.scheduleTrigger",
-      "position": [
-        100,
-        200
-      ]
+      "position": [100, 200]
     },
     {
       "parameters": {
@@ -28,10 +25,7 @@
       },
       "name": "Run Audit Validation",
       "type": "n8n-nodes-base.function",
-      "position": [
-        300,
-        200
-      ]
+      "position": [300, 200]
     },
     {
       "parameters": {
@@ -46,10 +40,7 @@
       },
       "name": "Has Issues?",
       "type": "n8n-nodes-base.if",
-      "position": [
-        500,
-        200
-      ]
+      "position": [500, 200]
     },
     {
       "parameters": {
@@ -57,10 +48,7 @@
       },
       "name": "Auto-Fix Issues",
       "type": "n8n-nodes-base.function",
-      "position": [
-        700,
-        140
-      ]
+      "position": [700, 140]
     },
     {
       "parameters": {
@@ -73,10 +61,7 @@
       },
       "name": "Send Alert",
       "type": "n8n-nodes-base.telegram",
-      "position": [
-        900,
-        140
-      ]
+      "position": [900, 140]
     },
     {
       "parameters": {
@@ -88,10 +73,7 @@
       },
       "name": "Save Status",
       "type": "n8n-nodes-base.writeBinaryFile",
-      "position": [
-        700,
-        300
-      ]
+      "position": [700, 300]
     },
     {
       "parameters": {
@@ -104,10 +86,7 @@
       },
       "name": "Send Success",
       "type": "n8n-nodes-base.telegram",
-      "position": [
-        900,
-        300
-      ]
+      "position": [900, 300]
     }
   ],
   "connections": {

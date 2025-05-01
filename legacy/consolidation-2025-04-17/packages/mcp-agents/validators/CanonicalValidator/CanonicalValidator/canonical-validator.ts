@@ -6,12 +6,12 @@ import { AbstractValidatorAgent } from '../AbstractValidator';
  * des URL canoniques dans l'architecture Remix
  */
 
-import { MCPAgent, AgentContext, AgentConfig } from '../packagesDoDotmcp-core';
-import fs from 'fs-extra';
 import path from 'path';
-import glob from 'glob';
 import axios from 'axios';
+import fs from 'fs-extra';
+import glob from 'glob';
 import { Database } from '../packages/shared/DbConnector';
+import { AgentConfig, AgentContext, MCPAgent } from '../packagesDoDotmcp-core';
 
 interface CanonicalValidatorConfig extends AgentConfig {
   remixDir: string;

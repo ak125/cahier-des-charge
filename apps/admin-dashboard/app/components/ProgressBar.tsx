@@ -7,7 +7,7 @@ interface ProgressBarProps {
 
 export default function ProgressBar({ value, max = 100 }: ProgressBarProps) {
   const percentage = Math.min(Math.round((value / max) * 100), 100);
-  
+
   // Détermine la couleur de la barre en fonction du pourcentage
   let colorClass = 'bg-red-500'; // Par défaut, rouge si faible
   if (percentage >= 90) {
@@ -33,7 +33,7 @@ export default function ProgressBar({ value, max = 100 }: ProgressBarProps) {
         <div
           style={{ width: `${percentage}%` }}
           className={`flex flex-col justify-center text-center text-white shadow-none whitespace-nowrap ${colorClass}`}
-        ></div>
+        />
       </div>
     </div>
   );

@@ -1,10 +1,14 @@
-/**
- *DoDotmcp
- * Agent export file
+/**/
+ * McpVerifier Worker Agent
+ * Version: 1.0.0
  */
 
-import {DoDotmcp } from './McpVerifierDotworker';
-import { OrchestratorAgent } from '../../core/interfaces';
+import { OrchestratorAgent } from '../../core/interfaces';'/'/'/
+// Importations/
+import { DoDotmcp } from './McpVerifierDotworker';'/'/'/
 
-export {DoDotmcp };
-export defaultDoDotmcp;
+// Code principal de l'agent'/'/'/
+// .../
+
+export { DoDotmcp };
+export default /* defaultDoDotmcp */;/

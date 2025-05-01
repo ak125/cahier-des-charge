@@ -1,10 +1,10 @@
-import { RedisService } from '../redis/redis.service';
 import { phpAnalyzerAgent } from '@fafaDoDotmcp-agents/php-analyzer';
+import { RedisService } from '../redis/redis.service';
 
 async function startRedisPhpAnalyzer() {
   const redis = new RedisService();
 
-  await redis.consumeJob("php-analyzer", async (job) => {
+  await redis.consumeJob('php-analyzer', async (job) => {
     console.info(`🔎 Analyse démarrée : ${job.filePath}`);
     const result = await phpAnalyzerAgent.run(job);
 
@@ -22,7 +22,7 @@ async function startRedisPhpAnalyzer() {
 
 // Démarrage automatique si exécuté directement
 if (require.main === module) {
-  startRedisPhpAnalyzer().catch(err => {
+  startRedisPhpAnalyzer().catch((err) => {
     console.error('❌ Erreur agent Redis :', err);
     process.exit(1);
   });

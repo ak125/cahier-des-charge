@@ -125,9 +125,9 @@ class CahierDesChargesVerifier {
   private discoveryMap: DiscoveryMapItem[] = [];
 
   constructor(
-    legacyDir: string = '/workspaces/cahier-des-charge/legacy',
-    cahierDir: string = '/workspaces/cahier-des-charge',
-    discoveryMapPath: string = '/workspaces/cahier-des-charge/discovery_map.json'
+    legacyDir = '/workspaces/cahier-des-charge/legacy',
+    cahierDir = '/workspaces/cahier-des-charge',
+    discoveryMapPath = '/workspaces/cahier-des-charge/discovery_map.json'
   ) {
     this.legacyDir = legacyDir;
     this.cahierDir = cahierDir;

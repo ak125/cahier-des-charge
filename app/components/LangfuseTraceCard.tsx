@@ -14,7 +14,7 @@ export default function LangfuseTraceCard({ trace, compact = false }: LangfuseTr
     const start = new Date(trace.startTime).getTime();
     const end = new Date(trace.endTime).getTime();
     const durationMs = end - start;
-    
+
     if (durationMs < 1000) return `${durationMs}ms`;
     if (durationMs < 60000) return `${Math.round(durationMs / 1000)}s`;
     return `${Math.round(durationMs / 60000)}min ${Math.round((durationMs % 60000) / 1000)}s`;
@@ -24,12 +24,12 @@ export default function LangfuseTraceCard({ trace, compact = false }: LangfuseTr
   // Prix approximatifs pour gpt-4 en avril 2025
   const calculateCost = () => {
     if (!trace.promptTokens || !trace.completionTokens) return 'N/A';
-    
+
     let costPerPromptToken = 0;
     let costPerCompletionToken = 0;
-    
+
     // Définir les coûts selon le modèle
-    switch(trace.modelName) {
+    switch (trace.modelName) {
       case 'gpt-4':
         costPerPromptToken = 0.00003;
         costPerCompletionToken = 0.00006;
@@ -42,11 +42,11 @@ export default function LangfuseTraceCard({ trace, compact = false }: LangfuseTr
         costPerPromptToken = 0.000005;
         costPerCompletionToken = 0.000015;
     }
-    
+
     const promptCost = trace.promptTokens * costPerPromptToken;
     const completionCost = trace.completionTokens * costPerCompletionToken;
     const totalCost = promptCost + completionCost;
-    
+
     return `$${totalCost.toFixed(4)}`;
   };
 
@@ -66,7 +66,7 @@ export default function LangfuseTraceCard({ trace, compact = false }: LangfuseTr
             <div className="text-xs text-indigo-500">{trace.modelName || 'AI Model'}</div>
           </div>
         </div>
-        <button 
+        <button
           onClick={handleViewTrace}
           className="px-2 py-1 bg-indigo-500 text-white text-xs rounded hover:bg-indigo-600"
         >
@@ -92,7 +92,7 @@ export default function LangfuseTraceCard({ trace, compact = false }: LangfuseTr
           {trace.modelName || 'AI Model'}
         </span>
       </div>
-      
+
       <div className="p-3">
         <div className="grid grid-cols-2 gap-3 text-sm mb-3">
           <div>
@@ -112,13 +112,13 @@ export default function LangfuseTraceCard({ trace, compact = false }: LangfuseTr
             <span className="font-medium">{trace.projectId}</span>
           </div>
         </div>
-        
+
         {trace.tags && trace.tags.length > 0 && (
           <div className="mt-2">
             <div className="flex flex-wrap gap-1">
               {trace.tags.map((tag, index) => (
-                <span 
-                  key={index} 
+                <span
+                  key={index}
                   className="bg-indigo-50 text-indigo-600 px-2 py-0.5 rounded-full text-xs"
                 >
                   {tag}
@@ -127,9 +127,9 @@ export default function LangfuseTraceCard({ trace, compact = false }: LangfuseTr
             </div>
           </div>
         )}
-        
+
         <div className="mt-4 pt-2 border-t border-gray-100 flex justify-end">
-          <button 
+          <button
             onClick={handleViewTrace}
             className="px-3 py-1.5 bg-indigo-500 text-white text-sm rounded hover:bg-indigo-600 transition-colors"
           >

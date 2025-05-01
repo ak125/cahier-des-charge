@@ -8,10 +8,7 @@
       "name": "Read PHP File",
       "type": "n8n-nodes-base.readBinaryFile",
       "typeVersion": 1,
-      "position": [
-        240,
-        300
-      ]
+      "position": [240, 300]
     },
     {
       "parameters": {
@@ -20,10 +17,7 @@
       "name": "Prepare Content",
       "type": "n8n-nodes-base.function",
       "typeVersion": 1,
-      "position": [
-        400,
-        300
-      ]
+      "position": [400, 300]
     },
     {
       "parameters": {
@@ -32,10 +26,7 @@
       "name": "Business Agent",
       "type": "n8n-nodes-base.executeCommand",
       "typeVersion": 1,
-      "position": [
-        600,
-        100
-      ]
+      "position": [600, 100]
     },
     {
       "parameters": {
@@ -44,10 +35,7 @@
       "name": "Structure Agent",
       "type": "n8n-nodes-base.executeCommand",
       "typeVersion": 1,
-      "position": [
-        600,
-        250
-      ]
+      "position": [600, 250]
     },
     {
       "parameters": {
@@ -56,10 +44,7 @@
       "name": "Data Agent",
       "type": "n8n-nodes-base.executeCommand",
       "typeVersion": 1,
-      "position": [
-        600,
-        400
-      ]
+      "position": [600, 400]
     },
     {
       "parameters": {
@@ -68,10 +53,7 @@
       "name": "Dependency Agent",
       "type": "n8n-nodes-base.executeCommand",
       "typeVersion": 1,
-      "position": [
-        600,
-        550
-      ]
+      "position": [600, 550]
     },
     {
       "parameters": {
@@ -80,10 +62,7 @@
       "name": "Quality Agent",
       "type": "n8n-nodes-base.executeCommand",
       "typeVersion": 1,
-      "position": [
-        600,
-        700
-      ]
+      "position": [600, 700]
     },
     {
       "parameters": {
@@ -92,10 +71,7 @@
       "name": "Strategy Agent",
       "type": "n8n-nodes-base.executeCommand",
       "typeVersion": 1,
-      "position": [
-        600,
-        850
-      ]
+      "position": [600, 850]
     },
     {
       "parameters": {
@@ -104,10 +80,7 @@
       "name": "Assembler Agent",
       "type": "n8n-nodes-base.executeCommand",
       "typeVersion": 1,
-      "position": [
-        850,
-        450
-      ]
+      "position": [850, 450]
     },
     {
       "parameters": {
@@ -116,10 +89,7 @@
       "name": "Read Audit Result",
       "type": "n8n-nodes-base.readBinaryFile",
       "typeVersion": 1,
-      "position": [
-        1000,
-        450
-      ]
+      "position": [1000, 450]
     },
     {
       "parameters": {
@@ -128,10 +98,7 @@
       "name": "Read Backlog",
       "type": "n8n-nodes-base.readBinaryFile",
       "typeVersion": 1,
-      "position": [
-        1000,
-        600
-      ]
+      "position": [1000, 600]
     },
     {
       "parameters": {
@@ -150,10 +117,7 @@
       "name": "Notify Slack",
       "type": "n8n-nodes-base.slack",
       "typeVersion": 1,
-      "position": [
-        1200,
-        450
-      ]
+      "position": [1200, 450]
     },
     {
       "parameters": {
@@ -162,10 +126,7 @@
       "name": "Generate URLs",
       "type": "n8n-nodes-base.function",
       "typeVersion": 1,
-      "position": [
-        1200,
-        600
-      ]
+      "position": [1200, 600]
     },
     {
       "parameters": {
@@ -181,10 +142,7 @@
       "name": "Create GitHub Issue",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 1,
-      "position": [
-        1400,
-        600
-      ]
+      "position": [1400, 600]
     }
   ],
   "connections": {

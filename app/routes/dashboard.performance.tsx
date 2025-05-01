@@ -1,8 +1,30 @@
-import React, { useState, useEffect } from 'react';
-import { json, LoaderFunction } from '@remix-run/node';
+import { LoaderFunction, json } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import { Table, Badge, Progress, Tabs, Tab, Card, Metric, Text, Title, Button, AreaChart, DonutChart } from '@tremor/react';
+import {
+  AreaChart,
+  Badge,
+  Button,
+  Card,
+  DonutChart,
+  Metric,
+  Progress,
+  Tab,
+  Table,
+  Tabs,
+  Text,
+  Title,
+} from '@tremor/react';
+import React, { useEffect, useState } from 'react';
+import {
+  Bar,
+  BarChart,
+  CartesianGrid,
+  Legend,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from 'recharts';
 
 // Définir les types pour les données de performance
 type TablePerformanceData = {
@@ -61,7 +83,7 @@ export const loader: LoaderFunction = async () => {
       last_analyzed: '2025-04-10',
       partition_status: 'recommended',
       missing_indexes: ['idx_commandes_date', 'idx_commandes_client_id'],
-      redundant_indexes: []
+      redundant_indexes: [],
     },
     {
       id: '2',
@@ -80,7 +102,7 @@ export const loader: LoaderFunction = async () => {
       last_analyzed: '2025-04-10',
       partition_status: 'needed',
       missing_indexes: ['idx_lignes_commande_commande_id_produit_id'],
-      redundant_indexes: ['idx_old_reference']
+      redundant_indexes: ['idx_old_reference'],
     },
     {
       id: '3',
@@ -99,7 +121,7 @@ export const loader: LoaderFunction = async () => {
       last_analyzed: '2025-04-10',
       partition_status: 'not_needed',
       missing_indexes: [],
-      redundant_indexes: []
+      redundant_indexes: [],
     },
     {
       id: '4',
@@ -118,7 +140,7 @@ export const loader: LoaderFunction = async () => {
       last_analyzed: '2025-04-10',
       partition_status: 'not_needed',
       missing_indexes: [],
-      redundant_indexes: []
+      redundant_indexes: [],
     },
     {
       id: '5',
@@ -137,8 +159,8 @@ export const loader: LoaderFunction = async () => {
       last_analyzed: '2025-04-10',
       partition_status: 'needed',
       missing_indexes: ['idx_logs_date', 'idx_logs_level'],
-      redundant_indexes: []
-    }
+      redundant_indexes: [],
+    },
   ];
 
   const overview: PerformanceOverview = {
@@ -153,8 +175,8 @@ export const loader: LoaderFunction = async () => {
       { date: '2025-01-12', score: 62 },
       { date: '2025-02-12', score: 65 },
       { date: '2025-03-12', score: 69 },
-      { date: '2025-04-12', score: 73 }
-    ]
+      { date: '2025-04-12', score: 73 },
+    ],
   };
 
   return json({ tablesData, overview });
@@ -175,15 +197,18 @@ export default function DatabaseOptimizer() {
     const sorted = [...tablesData].sort((a, b) => {
       const aValue = a[sortField as keyof TablePerformanceData];
       const bValue = b[sortField as keyof TablePerformanceData];
-      
+
       if (typeof aValue === 'number' && typeof bValue === 'number') {
         return sortDirection === 'asc' ? aValue - bValue : bValue - aValue;
-      } else if (typeof aValue === 'string' && typeof bValue === 'string') {
-        return sortDirection === 'asc' ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue);
+      }
+      if (typeof aValue === 'string' && typeof bValue === 'string') {
+        return sortDirection === 'asc'
+          ? aValue.localeCompare(bValue)
+          : bValue.localeCompare(aValue);
       }
       return 0;
     });
-    
+
     setSortedData(sorted);
   }, [tablesData, sortField, sortDirection]);
 
@@ -205,27 +230,39 @@ export default function DatabaseOptimizer() {
 
   const getPartitionStatusColor = (status: string) => {
     switch (status) {
-      case 'needed': return 'rose';
-      case 'recommended': return 'amber';
-      case 'implemented': return 'emerald';
-      default: return 'gray';
+      case 'needed':
+        return 'rose';
+      case 'recommended':
+        return 'amber';
+      case 'implemented':
+        return 'emerald';
+      default:
+        return 'gray';
     }
   };
 
   const getPartitionStatusText = (status: string) => {
     switch (status) {
-      case 'needed': return 'Nécessaire';
-      case 'recommended': return 'Recommandé';
-      case 'implemented': return 'Implémenté';
-      default: return 'Non nécessaire';
+      case 'needed':
+        return 'Nécessaire';
+      case 'recommended':
+        return 'Recommandé';
+      case 'implemented':
+        return 'Implémenté';
+      default:
+        return 'Non nécessaire';
     }
   };
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">Agent 8 - Tableau de Bord d'Optimisation PostgreSQL/Prisma</h1>
-        <p className="text-gray-600">Optimiseur SQL & Performances - Dernière analyse: 12 avril 2025</p>
+        <h1 className="text-3xl font-bold mb-2">
+          Agent 8 - Tableau de Bord d'Optimisation PostgreSQL/Prisma
+        </h1>
+        <p className="text-gray-600">
+          Optimiseur SQL & Performances - Dernière analyse: 12 avril 2025
+        </p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-8">
@@ -247,14 +284,20 @@ export default function DatabaseOptimizer() {
           <Card>
             <Title>Score d'Optimisation</Title>
             <Metric>{overview.avg_optimization_score}/100</Metric>
-            <Progress value={overview.avg_optimization_score} color={getScoreColor(overview.avg_optimization_score)} className="mt-2" />
+            <Progress
+              value={overview.avg_optimization_score}
+              color={getScoreColor(overview.avg_optimization_score)}
+              className="mt-2"
+            />
           </Card>
         </div>
         <div className="lg:col-span-3">
           <Card>
             <Title>Recommandations</Title>
             <Metric>{overview.index_recommendations_count + overview.type_issues_count}</Metric>
-            <Text>{overview.index_recommendations_count} index, {overview.type_issues_count} types</Text>
+            <Text>
+              {overview.index_recommendations_count} index, {overview.type_issues_count} types
+            </Text>
           </Card>
         </div>
       </div>
@@ -266,8 +309,8 @@ export default function DatabaseOptimizer() {
             className="h-72 mt-4"
             data={overview.optimization_history}
             index="date"
-            categories={["score"]}
-            colors={["blue"]}
+            categories={['score']}
+            colors={['blue']}
             valueFormatter={(value) => `${value}%`}
           />
         </Card>
@@ -276,14 +319,17 @@ export default function DatabaseOptimizer() {
           <DonutChart
             className="h-72 mt-4"
             data={[
-              { name: 'Problèmes d\'index', value: overview.index_recommendations_count },
+              { name: "Problèmes d'index", value: overview.index_recommendations_count },
               { name: 'Problèmes de types', value: overview.type_issues_count },
               { name: 'Requêtes lentes', value: overview.slow_queries_count },
-              { name: 'Tables nécessitant partitionnement', value: sortedData.filter(t => t.partition_status === 'needed').length }
+              {
+                name: 'Tables nécessitant partitionnement',
+                value: sortedData.filter((t) => t.partition_status === 'needed').length,
+              },
             ]}
             category="value"
             index="name"
-            colors={["blue", "amber", "rose", "emerald"]}
+            colors={['blue', 'amber', 'rose', 'emerald']}
           />
         </Card>
       </div>
@@ -308,23 +354,38 @@ export default function DatabaseOptimizer() {
                   Lignes
                   {sortField === 'row_count' && (sortDirection === 'asc' ? ' ↑' : ' ↓')}
                 </th>
-                <th className="cursor-pointer px-4 py-2" onClick={() => handleSort('total_size_mb')}>
+                <th
+                  className="cursor-pointer px-4 py-2"
+                  onClick={() => handleSort('total_size_mb')}
+                >
                   Taille (MB)
                   {sortField === 'total_size_mb' && (sortDirection === 'asc' ? ' ↑' : ' ↓')}
                 </th>
-                <th className="cursor-pointer px-4 py-2" onClick={() => handleSort('seq_scan_rate')}>
+                <th
+                  className="cursor-pointer px-4 py-2"
+                  onClick={() => handleSort('seq_scan_rate')}
+                >
                   Taux de Scan. Séq.
                   {sortField === 'seq_scan_rate' && (sortDirection === 'asc' ? ' ↑' : ' ↓')}
                 </th>
-                <th className="cursor-pointer px-4 py-2" onClick={() => handleSort('avg_query_time_ms')}>
+                <th
+                  className="cursor-pointer px-4 py-2"
+                  onClick={() => handleSort('avg_query_time_ms')}
+                >
                   Temps Moy. (ms)
                   {sortField === 'avg_query_time_ms' && (sortDirection === 'asc' ? ' ↑' : ' ↓')}
                 </th>
-                <th className="cursor-pointer px-4 py-2" onClick={() => handleSort('partition_status')}>
+                <th
+                  className="cursor-pointer px-4 py-2"
+                  onClick={() => handleSort('partition_status')}
+                >
                   Partitionnement
                   {sortField === 'partition_status' && (sortDirection === 'asc' ? ' ↑' : ' ↓')}
                 </th>
-                <th className="cursor-pointer px-4 py-2" onClick={() => handleSort('optimization_score')}>
+                <th
+                  className="cursor-pointer px-4 py-2"
+                  onClick={() => handleSort('optimization_score')}
+                >
                   Score
                   {sortField === 'optimization_score' && (sortDirection === 'asc' ? ' ↑' : ' ↓')}
                 </th>
@@ -343,7 +404,15 @@ export default function DatabaseOptimizer() {
                     </Badge>
                   </td>
                   <td className="px-4 py-2">
-                    <Badge color={table.avg_query_time_ms > 500 ? 'rose' : table.avg_query_time_ms > 100 ? 'amber' : 'emerald'}>
+                    <Badge
+                      color={
+                        table.avg_query_time_ms > 500
+                          ? 'rose'
+                          : table.avg_query_time_ms > 100
+                            ? 'amber'
+                            : 'emerald'
+                      }
+                    >
                       {table.avg_query_time_ms.toFixed(0)} ms
                     </Badge>
                   </td>
@@ -353,13 +422,18 @@ export default function DatabaseOptimizer() {
                     </Badge>
                   </td>
                   <td className="px-4 py-2">
-                    <Progress value={table.optimization_score} color={getScoreColor(table.optimization_score)} />
+                    <Progress
+                      value={table.optimization_score}
+                      color={getScoreColor(table.optimization_score)}
+                    />
                   </td>
                   <td className="px-4 py-2">
                     {table.issues.length > 0 ? (
                       <div className="space-y-1">
                         {table.issues.map((issue, idx) => (
-                          <Badge key={idx} color="rose" className="mr-1">{issue}</Badge>
+                          <Badge key={idx} color="rose" className="mr-1">
+                            {issue}
+                          </Badge>
                         ))}
                       </div>
                     ) : (
@@ -376,7 +450,9 @@ export default function DatabaseOptimizer() {
       <Card>
         <Title>Répartition par Taille de Table</Title>
         <ResponsiveContainer width="100%" height={400} className="mt-6">
-          <BarChart data={sortedData.sort((a, b) => b.total_size_mb - a.total_size_mb).slice(0, 10)}>
+          <BarChart
+            data={sortedData.sort((a, b) => b.total_size_mb - a.total_size_mb).slice(0, 10)}
+          >
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="table_name" />
             <YAxis />

@@ -24,7 +24,7 @@ export default function DependencyGraph({
   nodes,
   edges,
   width = 800,
-  height = 500
+  height = 500,
 }: DependencyGraphProps) {
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -46,7 +46,7 @@ export default function DependencyGraph({
     container.appendChild(svg);
 
     // Positions des nœuds (dans un cas réel, on utiliserait un algorithme de force layout)
-    const nodePositions: Record<string, { x: number, y: number }> = {};
+    const nodePositions: Record<string, { x: number; y: number }> = {};
 
     // Création des cercles pour les nœuds
     const nodeGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
@@ -96,14 +96,14 @@ export default function DependencyGraph({
       text.setAttribute('text-anchor', 'middle');
       text.setAttribute('font-size', '12px');
       text.setAttribute('fill', '#374151');
-      text.textContent = node.label.length > 15 ? node.label.substring(0, 15) + '...' : node.label;
+      text.textContent = node.label.length > 15 ? `${node.label.substring(0, 15)}...` : node.label;
       nodeGroup.appendChild(text);
     });
 
     // Création des arêtes
     const edgeGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
 
-    edges.forEach(edge => {
+    edges.forEach((edge) => {
       const source = nodePositions[edge.source];
       const target = nodePositions[edge.target];
 
@@ -164,7 +164,6 @@ export default function DependencyGraph({
 
     // Dans une implémentation réelle, on ajouterait des gestionnaires d'événements
     // pour l'interaction (zoom, drag & drop, etc.)
-
   }, [nodes, edges, width, height]);
 
   return (
@@ -174,9 +173,7 @@ export default function DependencyGraph({
         ref={containerRef}
         className="w-full h-full min-h-[500px] flex justify-center items-center"
       >
-        {nodes.length === 0 && (
-          <p className="text-gray-500">Aucune donnée à afficher</p>
-        )}
+        {nodes.length === 0 && <p className="text-gray-500">Aucune donnée à afficher</p>}
       </div>
     </div>
   );

@@ -3,8 +3,8 @@
  * Agent export file
  */
 
-import { relation } from ./relation-analyzerstructure-agent';
-import { AnalyzerAgent } from ../../core/interfacesstructure-agent';
+import { AnalyzerAgent } from '../../core/interfacesstructure-agent';
+import { relation } from './relation-analyzerstructure-agent';
 
 export { relation };
 export default relation;

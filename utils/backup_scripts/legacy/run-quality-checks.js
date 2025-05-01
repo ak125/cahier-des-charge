@@ -193,7 +193,7 @@ function aggregateResults() {
   
   try {
     // Récupérer les données existantes si disponibles
-    let dashboardData = {
+    const dashboardData = {
       lastUpdate: new Date().toISOString(),
       results: {},
       stats: {

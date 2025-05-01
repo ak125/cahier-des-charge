@@ -1,5 +1,5 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
-import { Queue, JobsOptions } from 'bullmq';
+import { JobsOptions, Queue } from 'bullmq';
 
 // Interface pour les options personnalisées pour nos jobs
 export interface McpJobOptions {
@@ -18,10 +18,10 @@ export class BullQueueService {
   private readonly logger = new Logger(BullQueueService.name);
 
   constructor(
-    @Inject('PHP_ANALYZER_QUEUE') private readonly phpQueue: Queue,
-    @Inject('JS_ANALYZER_QUEUE') private readonly jsQueue: Queue,
-    @Inject('MIGRATION_QUEUE') private readonly migrationQueue: Queue,
-    @Inject('VERIFICATION_QUEUE') private readonly verificationQueue: Queue
+    @Inject('PHP_ANALYZER_QUEUE') private readonly _phpQueue: Queue,
+    @Inject('JS_ANALYZER_QUEUE') private readonly _jsQueue: Queue,
+    @Inject('MIGRATION_QUEUE') private readonly _migrationQueue: Queue,
+    @Inject('VERIFICATION_QUEUE') private readonly _verificationQueue: Queue
   ) {}
 
   /**

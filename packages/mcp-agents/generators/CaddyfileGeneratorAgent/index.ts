@@ -5,7 +5,4 @@
 
 import { CaddyfileGeneratorAgent } from './CaddyfileGeneratorAgent';
 
-export {
-  CaddyfileGeneratorAgent,
-};
-
+export { CaddyfileGeneratorAgent };

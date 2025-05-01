@@ -1,20 +1,20 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
 import { ConfigService } from '@nestjs/config';
 import { EventEmitter2 } from '@nestjs/event-emitter';
+import { InjectModel } from '@nestjs/mongoose';
 import { Cron } from '@nestjs/schedule';
+import { Model } from 'mongoose';
+import { DocumentService } from '../document/document.service';
 import { MismatchTrackerService } from '../mismatch/mismatch-tracker.service';
 import { NotificationService } from '../notification/notification.service';
-import { DocumentService } from '../document/document.service';
 
 import {
-  DesyncAlert,
-  AlertPriority,
-  AlertStatus,
   AlertChannel,
   AlertContext,
-  AlertType
+  AlertPriority,
+  AlertStatus,
+  AlertType,
+  DesyncAlert
 } from './interfaces';
 
 @Injectable()
@@ -23,7 +23,7 @@ export class DesyncAlertService {
   private readonly contextHistory: AlertContext[] = [];
   
   constructor(
-    @InjectModel('DesyncAlert') private alertModel: Model<DesyncAlert>,
+    @InjectModel('DesyncAlert') private _alertModel: Model<DesyncAlert>,
     private readonly configService: ConfigService,
     private readonly mismatchService: MismatchTrackerService,
     private readonly notificationService: NotificationService,
@@ -107,17 +107,17 @@ export class DesyncAlertService {
   private async createAlertFromMismatch(mismatch: any) {
     // Convertir la sévérité en priorité d'alerte
     const priorityMap = {
-      'critical': AlertPriority.CRITICAL,
-      'high': AlertPriority.HIGH,
-      'medium': AlertPriority.MEDIUM,
-      'low': AlertPriority.LOW
+      critical: AlertPriority.CRITICAL,
+      high: AlertPriority.HIGH,
+      medium: AlertPriority.MEDIUM,
+      low: AlertPriority.LOW
     };
     
     // Convertir le type de mismatch en type d'alerte
     const typeMap = {
-      'api_signature_mismatch': AlertType.API_DIVERGENT,
-      'missing_implementation': AlertType.API_DIVERGENT,
-      'data_model_mismatch': AlertType.MODEL_MODIFIE,
+      api_signature_mismatch: AlertType.API_DIVERGENT,
+      missing_implementation: AlertType.API_DIVERGENT,
+      data_model_mismatch: AlertType.MODEL_MODIFIE,
       // Autres mappings...
     };
     
@@ -318,16 +318,16 @@ export class DesyncAlertService {
     
     // Mapping de composants à des owners (dans un vrai système, chargé depuis la config)
     const componentOwners = {
-      'auth': 'auth-team',
-      'user': 'user-team',
-      'product': 'product-team',
-      'cart': 'cart-team',
-      'payment': 'payment-team',
-      'order': 'order-team',
-      'admin': 'admin-team',
-      'search': 'search-team',
-      'notification': 'notification-team',
-      'core': 'core-team'
+      auth: 'auth-team',
+      user: 'user-team',
+      product: 'product-team',
+      cart: 'cart-team',
+      payment: 'payment-team',
+      order: 'order-team',
+      admin: 'admin-team',
+      search: 'search-team',
+      notification: 'notification-team',
+      core: 'core-team'
     };
     
     return componentOwners[component] || 'documentation-team';
@@ -338,9 +338,9 @@ export class DesyncAlertService {
    */
   private generateAlertTitle(mismatch: any): string {
     const typeMap = {
-      'api_signature_mismatch': 'Signature API incompatible',
-      'missing_implementation': 'API documentée mais non implémentée',
-      'data_model_mismatch': 'Modèle de données divergent',
+      api_signature_mismatch: 'Signature API incompatible',
+      missing_implementation: 'API documentée mais non implémentée',
+      data_model_mismatch: 'Modèle de données divergent',
       // Autres mappings...
     };
     
@@ -352,9 +352,9 @@ export class DesyncAlertService {
     if (mismatch.type === 'api_signature_mismatch' && mismatch.details.diff) {
       const { missing, extra } = mismatch.details.diff;
       if (missing && missing.length > 0) {
-        context = `: paramètres manquants`;
+        context = ": paramètres manquants";
       } else if (extra && extra.length > 0) {
-        context = `: paramètres supplémentaires`;
+        context = ": paramètres supplémentaires";
       }
     }
     
@@ -665,15 +665,15 @@ export class DesyncAlertService {
   private async getComponentHealth() {
     // Dans une implémentation réelle, obtenir depuis un système de monitoring
     return {
-      'auth': { errorRate: 0.01, changeFrequency: 0.2 },
-      'user': { errorRate: 0.02, changeFrequency: 0.1 },
-      'product': { errorRate: 0.03, changeFrequency: 0.3 },
-      'cart': { errorRate: 0.05, changeFrequency: 0.4 },
-      'payment': { errorRate: 0.01, changeFrequency: 0.1 },
-      'order': { errorRate: 0.02, changeFrequency: 0.2 },
-      'admin': { errorRate: 0.01, changeFrequency: 0.1 },
-      'search': { errorRate: 0.03, changeFrequency: 0.2 },
-      'core': { errorRate: 0.01, changeFrequency: 0.1 }
+      auth: { errorRate: 0.01, changeFrequency: 0.2 },
+      user: { errorRate: 0.02, changeFrequency: 0.1 },
+      product: { errorRate: 0.03, changeFrequency: 0.3 },
+      cart: { errorRate: 0.05, changeFrequency: 0.4 },
+      payment: { errorRate: 0.01, changeFrequency: 0.1 },
+      order: { errorRate: 0.02, changeFrequency: 0.2 },
+      admin: { errorRate: 0.01, changeFrequency: 0.1 },
+      search: { errorRate: 0.03, changeFrequency: 0.2 },
+      core: { errorRate: 0.01, changeFrequency: 0.1 }
     };
   }
   

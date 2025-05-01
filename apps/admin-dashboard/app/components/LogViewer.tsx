@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState } from "react";
+import { useEffect, useRef, useState } from 'react';
 
 interface LogViewerProps {
   logs: string[];
@@ -12,7 +12,7 @@ interface LogViewerProps {
 
 export default function LogViewer({
   logs = [],
-  title = "Logs du système",
+  title = 'Logs du système',
   maxLines = 500,
   autoScroll = true,
   loading = false,
@@ -20,7 +20,7 @@ export default function LogViewer({
   onRefresh,
 }: LogViewerProps) {
   const logContainerRef = useRef<HTMLDivElement>(null);
-  const [filter, setFilter] = useState("");
+  const [filter, setFilter] = useState('');
   const [isAutoScrollEnabled, setIsAutoScrollEnabled] = useState(autoScroll);
 
   // Auto-scroll au bas des logs quand de nouvelles entrées sont ajoutées
@@ -66,12 +66,9 @@ export default function LogViewer({
 
     // Si un filtre est actif, mettre en évidence les termes recherchés
     if (filter) {
-      const escapedFilter = filter.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-      const filterRegex = new RegExp(`(${escapedFilter})`, "gi");
-      highlightedLog = highlightedLog.replace(
-        filterRegex,
-        '<span class="bg-yellow-200">$1</span>'
-      );
+      const escapedFilter = filter.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      const filterRegex = new RegExp(`(${escapedFilter})`, 'gi');
+      highlightedLog = highlightedLog.replace(filterRegex, '<span class="bg-yellow-200">$1</span>');
     }
 
     return highlightedLog;
@@ -124,7 +121,7 @@ export default function LogViewer({
       >
         {loading ? (
           <div className="flex items-center justify-center h-full">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-500"></div>
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-500" />
           </div>
         ) : displayedLogs.length > 0 ? (
           displayedLogs.map((log, index) => (
@@ -132,7 +129,7 @@ export default function LogViewer({
               key={index}
               className="py-1 border-b border-gray-800 last:border-0"
               dangerouslySetInnerHTML={{ __html: highlightKeywords(log) }}
-            ></div>
+            />
           ))
         ) : (
           <div className="flex items-center justify-center h-full text-gray-500">
@@ -143,8 +140,8 @@ export default function LogViewer({
 
       {filteredLogs.length > maxLines && (
         <div className="px-4 py-2 bg-gray-800 text-gray-400 text-xs">
-          Affichage limité aux {maxLines} dernières lignes sur un total de {filteredLogs.length} lignes
-          correspondantes.
+          Affichage limité aux {maxLines} dernières lignes sur un total de {filteredLogs.length}{' '}
+          lignes correspondantes.
         </div>
       )}
     </div>

@@ -1,6 +1,6 @@
+import { ArcElement, Chart as ChartJS, Legend, Tooltip } from 'chart.js';
 import React from 'react';
 import { Doughnut } from 'react-chartjs-2';
-import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -24,13 +24,13 @@ export const MigrationProgress: React.FC<MigrationProgressProps> = ({ stats }) =
           stats.filesAnalyzed,
           stats.nestjsFilesGenerated,
           stats.remixFilesGenerated,
-          Math.max(0, stats.filesAnalyzed - stats.nestjsFilesGenerated - stats.remixFilesGenerated)
+          Math.max(0, stats.filesAnalyzed - stats.nestjsFilesGenerated - stats.remixFilesGenerated),
         ],
         backgroundColor: [
           'rgba(54, 162, 235, 0.6)', // Bleu pour les fichiers analysés
-          'rgba(255, 99, 132, 0.6)',  // Rouge pour NestJS
-          'rgba(75, 192, 192, 0.6)',  // Turquoise pour Remix
-          'rgba(255, 206, 86, 0.6)',  // Jaune pour en attente
+          'rgba(255, 99, 132, 0.6)', // Rouge pour NestJS
+          'rgba(75, 192, 192, 0.6)', // Turquoise pour Remix
+          'rgba(255, 206, 86, 0.6)', // Jaune pour en attente
         ],
         borderColor: [
           'rgba(54, 162, 235, 1)',

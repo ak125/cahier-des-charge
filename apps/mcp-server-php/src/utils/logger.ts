@@ -2,7 +2,7 @@ import winston from 'winston';
 
 export function createLogger(service: string) {
   const logLevel = process.env.LOG_LEVEL || 'info';
-  
+
   return winston.createLogger({
     level: logLevel,
     format: winston.format.combine(

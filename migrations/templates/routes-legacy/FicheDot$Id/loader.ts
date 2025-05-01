@@ -1,5 +1,5 @@
-import { json, LoaderFunctionArgs } from @remix-run/nodestructure-agent";
-import { prisma } from ~/lib/db.serverstructure-agent";
+import { json, LoaderFunctionArgs  } from './@remix-run/nodestructure-agent'
+import { prisma } from './~/lib/db.serverstructure-agent'
 
 /**
  * Loader pour la route /fiche/:id

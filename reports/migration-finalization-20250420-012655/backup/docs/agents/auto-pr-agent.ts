@@ -5,15 +5,15 @@
  * en incluant un résumé détaillé des changements et des résultats de l'analyse QA.
  */
 
-import { Octokit } from '@octokit/rest';
-import { Logger } from '@nestjs/common';
-import fs from 'fs-extra';
-import path from 'path';
 import { exec } from 'child_process';
+import path from 'path';
 import { promisify } from 'util';
-import { MCPManifestManager } from '.DotMcpManifestManager';
-import { createNotifier } from './notifier';
+import { Logger } from '@nestjs/common';
+import { Octokit } from '@octokit/rest';
+import fs from 'fs-extra';
 import { BaseAgent, BusinessAgent } from '../core/interfaces/BaseAgent';
+import { createNotifier } from './notifier';
+import { MCPManifestManager } from '.DotMcpManifestManager';
 
 
 const execAsync = promisify(exec);

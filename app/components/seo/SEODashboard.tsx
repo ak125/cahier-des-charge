@@ -1,7 +1,7 @@
-import { SEOPagesList } from "./SEOPagesList";
-import { SEOIssuesList } from "./SEOIssuesList";
-import { SEOHistoryGraph } from "./SEOHistoryGraph";
-import { Form, Link } from "@remix-run/react";
+import { Form, Link } from '@remix-run/react';
+import { SEOHistoryGraph } from './SEOHistoryGraph';
+import { SEOIssuesList } from './SEOIssuesList';
+import { SEOPagesList } from './SEOPagesList';
 
 interface SEODashboardProps {
   data: Array<{
@@ -11,10 +11,10 @@ interface SEODashboardProps {
     canonical: string;
     score: number;
     lastChecked: string;
-    status: "success" | "warning" | "error" | "pending";
+    status: 'success' | 'warning' | 'error' | 'pending';
     issues: Array<{
       type: string;
-      severity: "error" | "warning" | "info";
+      severity: 'error' | 'warning' | 'info';
       message: string;
     }>;
     history?: Array<{
@@ -34,52 +34,48 @@ interface SEODashboardProps {
 
 export function SEODashboard({ data, activeTab, filters }: SEODashboardProps) {
   // Récupérer tous les problèmes pour l'onglet des issues
-  const allIssues = data.flatMap(item => 
-    item.issues.map(issue => ({
+  const allIssues = data.flatMap((item) =>
+    item.issues.map((issue) => ({
       ...issue,
       url: item.url,
       title: item.title,
-      score: item.score
+      score: item.score,
     }))
   );
-  
+
   // Récupérer les données historiques pour le graphique
   const historyData = {
     dates: [] as string[],
     scores: [] as number[],
-    events: [] as string[]
+    events: [] as string[],
   };
-  
+
   // Traiter les données d'historique pour le graphique (utiliser les 5 premières pages)
-  data.slice(0, 5).forEach(item => {
+  data.slice(0, 5).forEach((item) => {
     if (item.history) {
-      item.history.forEach(h => {
+      item.history.forEach((h) => {
         historyData.dates.push(h.date.split('T')[0]); // Formater la date
         historyData.scores.push(h.score);
         historyData.events.push(h.event);
       });
     }
   });
-  
+
   return (
     <div className="mt-4">
-      {activeTab === 'pages' && (
-        <SEOPagesList data={data} filters={filters} />
-      )}
-      
-      {activeTab === 'issues' && (
-        <SEOIssuesList issues={allIssues} />
-      )}
-      
+      {activeTab === 'pages' && <SEOPagesList data={data} filters={filters} />}
+
+      {activeTab === 'issues' && <SEOIssuesList issues={allIssues} />}
+
       {activeTab === 'history' && (
         <div>
           <h2 className="text-lg font-medium mb-4">Évolution du score SEO</h2>
-          <SEOHistoryGraph 
+          <SEOHistoryGraph
             dates={historyData.dates}
             scores={historyData.scores}
             events={historyData.events}
           />
-          
+
           <div className="mt-6">
             <h3 className="font-medium mb-2">Événements récents</h3>
             <div className="border rounded-md overflow-hidden">
@@ -101,44 +97,53 @@ export function SEODashboard({ data, activeTab, filters }: SEODashboardProps) {
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {data.flatMap(item => 
-                    item.history?.map((h, idx) => (
-                      <tr key={`${item.url}-${idx}`}>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {new Date(h.date).toLocaleDateString()}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {h.event}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${h.score >= 90 ? 'bg-green-100 text-green-800' : h.score >= 70 ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800'}`}>
-                            {h.score}
-                          </span>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-blue-500">
-                          <Link to={`/admin/seo/page?url=${encodeURIComponent(item.url)}`}>
-                            {item.url}
-                          </Link>
-                        </td>
-                      </tr>
-                    )) || []
-                  ).slice(0, 10)} {/* Afficher les 10 derniers événements */}
+                  {data
+                    .flatMap(
+                      (item) =>
+                        item.history?.map((h, idx) => (
+                          <tr key={`${item.url}-${idx}`}>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                              {new Date(h.date).toLocaleDateString()}
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                              {h.event}
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                              <span
+                                className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                                  h.score >= 90
+                                    ? 'bg-green-100 text-green-800'
+                                    : h.score >= 70
+                                      ? 'bg-yellow-100 text-yellow-800'
+                                      : 'bg-red-100 text-red-800'
+                                }`}
+                              >
+                                {h.score}
+                              </span>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-blue-500">
+                              <Link to={`/admin/seo/page?url=${encodeURIComponent(item.url)}`}>
+                                {item.url}
+                              </Link>
+                            </td>
+                          </tr>
+                        )) || []
+                    )
+                    .slice(0, 10)}{' '}
+                  {/* Afficher les 10 derniers événements */}
                 </tbody>
               </table>
             </div>
           </div>
         </div>
       )}
-      
+
       <div className="mt-6 flex justify-between">
         <span className="text-sm text-gray-500">
           Dernière vérification SEO: {new Date().toLocaleDateString()}
         </span>
         <Form method="post" action="/api/seo/refresh">
-          <button 
-            type="submit"
-            className="text-sm text-blue-500 hover:text-blue-700"
-          >
+          <button type="submit" className="text-sm text-blue-500 hover:text-blue-700">
             Actualiser les données
           </button>
         </Form>

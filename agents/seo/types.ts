@@ -8,13 +8,9 @@ import { AgentOptions, AgentResult } from '../core/types';
 /**
  * Options spécifiques aux agents seo
  */
-export interface SeoAgentOptions extends AgentOptions {
-  // Options spécifiques à cette catégorie
-}
+export type SeoAgentOptions = AgentOptions;
 
 /**
  * Résultat spécifique aux agents seo
  */
-export interface SeoResult extends AgentResult {
-  // Données spécifiques à cette catégorie
-}
+export type SeoResult = AgentResult;

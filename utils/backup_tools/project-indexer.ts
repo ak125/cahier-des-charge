@@ -174,7 +174,7 @@ async function analyzeFile(filePath: string): Promise<ProjectFile> {
     .filter(dep => dep && !dep.startsWith('.'));
   
   // Compter les utilisations
-  let usageCount = 0;
+  const usageCount = 0;
   try {
     const fileName = path.basename(filePath, path.extname(filePath));
     const { stdout } = await execAsync(DoDoDoDotgit grep -l "${fileName}" --exclude="${path.basename(filePath)}" | wc -l`);

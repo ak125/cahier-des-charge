@@ -5,13 +5,13 @@
  * pour les sites Remix migrés depuis PHP
  */
 
-import { MCPAgent, AgentContext, AgentConfig } from '../packagesDoDotmcp-core';
-import { SEOChecker } from '../packagesDoDotmcp-agents/seo-checker/seo-checker';
+import { execSync } from 'child_process';
 import path from 'path';
 import fs from 'fs-extra';
-import { execSync } from 'child_process';
-import { createTraceabilityService, TraceabilityService } from '../utils/traceability/traceability-service';
 import { BaseAgent, BusinessAgent } from '../core/interfaces/BaseAgent';
+import { SEOChecker } from '../packagesDoDotmcp-agents/seo-checker/seo-checker';
+import { AgentConfig, AgentContext, MCPAgent } from '../packagesDoDotmcp-core';
+import { TraceabilityService, createTraceabilityService } from '../utils/traceability/traceability-service';
 
 
 interface SEOCheckerConfig extends AgentConfig {

@@ -1,17 +1,8 @@
-import { LinksFunction } from "@remix-run/node";
-import {
-  Links,
-  Meta,
-  Outlet,
-  Scripts,
-  ScrollRestoration,
-  LiveReload
-} from "@remix-run/react";
-import styles from "./tailwind.css";
+import { LinksFunction } from '@remix-run/node';
+import { Links, LiveReload, Meta, Outlet, Scripts, ScrollRestoration } from '@remix-run/react';
+import styles from './tailwind.css';
 
-export const links: LinksFunction = () => [
-  { rel: "stylesheet", href: styles }
-];
+export const links: LinksFunction = () => [{ rel: 'stylesheet', href: styles }];
 
 export default function App() {
   return (
@@ -30,19 +21,29 @@ export default function App() {
             <nav>
               <ul className="space-y-2">
                 <li>
-                  <a href="/" className="block p-2 rounded hover:bg-gray-700">Dashboard</a>
+                  <a href="/" className="block p-2 rounded hover:bg-gray-700">
+                    Dashboard
+                  </a>
                 </li>
                 <li>
-                  <a href="/migrations" className="block p-2 rounded hover:bg-gray-700">Migrations</a>
+                  <a href="/migrations" className="block p-2 rounded hover:bg-gray-700">
+                    Migrations
+                  </a>
                 </li>
                 <li>
-                  <a href="/metrics" className="block p-2 rounded hover:bg-gray-700">Métriques</a>
+                  <a href="/metrics" className="block p-2 rounded hover:bg-gray-700">
+                    Métriques
+                  </a>
                 </li>
                 <li>
-                  <a href="/agents" className="block p-2 rounded hover:bg-gray-700">Agents</a>
+                  <a href="/agents" className="block p-2 rounded hover:bg-gray-700">
+                    Agents
+                  </a>
                 </li>
                 <li>
-                  <a href="/settings" className="block p-2 rounded hover:bg-gray-700">Paramètres</a>
+                  <a href="/settings" className="block p-2 rounded hover:bg-gray-700">
+                    Paramètres
+                  </a>
                 </li>
               </ul>
             </nav>

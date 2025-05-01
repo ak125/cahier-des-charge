@@ -174,7 +174,7 @@ function addInterfaceImports(content: string, filePath: string, layer: string): 
     content.includes('CoordinationAgent')
   );
 
-  let interfacesToImport = [];
+  const interfacesToImport = [];
   
   if (!importsBaseAgent) {
     interfacesToImport.push('BaseAgent');
@@ -404,7 +404,7 @@ function addRequiredMethods(content: string, layer: string): string {
   }
   
   // Ajouter les propriétés manquantes
-  let newMethods: string[] = [];
+  const newMethods: string[] = [];
   
   // Ajouter les propriétés et méthodes BaseAgent
   if (!hasMethod.id) newMethods.push(baseAgentMethods.id);

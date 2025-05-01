@@ -1,4 +1,4 @@
-import { Injectable, OnModuleInit, OnModuleDestroy, Logger } from '@nestjs/common';
+import { Injectable, Logger, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
 
 @Injectable()
@@ -26,7 +26,9 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
       const before = Date.now();
       const result = await next(params);
       const after = Date.now();
-      this.logger.debug(`🔍 Opération Prisma: ${params.model}.${params.action} - ${after - before}ms`);
+      this.logger.debug(
+        `🔍 Opération Prisma: ${params.model}.${params.action} - ${after - before}ms`
+      );
       return result;
     });
   }

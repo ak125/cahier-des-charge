@@ -3,8 +3,8 @@
  * Agent export file
  */
 
-import { MetaGenerator } from ./meta-generatorstructure-agent';
-import { GeneratorAgent } from ../../core/interfacesstructure-agent';
+import { GeneratorAgent } from '../../core/interfacesstructure-agent';
+import { MetaGenerator } from './meta-generatorstructure-agent';
 
 export { MetaGenerator };
 export default MetaGenerator;

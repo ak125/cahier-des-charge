@@ -17,10 +17,7 @@
       "id": "rule-trigger",
       "name": "Rule Trigger",
       "type": "n8n-nodes-base.rulesNode",
-      "position": [
-        100,
-        300
-      ]
+      "position": [100, 300]
     },
     {
       "parameters": {
@@ -37,10 +34,7 @@
       "id": "extract-module-name",
       "name": "Extract Module Name",
       "type": "n8n-nodes-base.function",
-      "position": [
-        280,
-        300
-      ]
+      "position": [280, 300]
     },
     {
       "parameters": {
@@ -51,10 +45,7 @@
       "id": "find-php-file",
       "name": "Find Original PHP File",
       "type": "n8n-nodes-base.executeCommand",
-      "position": [
-        460,
-        300
-      ]
+      "position": [460, 300]
     },
     {
       "parameters": {
@@ -70,10 +61,7 @@
       "id": "check-file-exists",
       "name": "PHP File Found?",
       "type": "n8n-nodes-base.if",
-      "position": [
-        640,
-        300
-      ]
+      "position": [640, 300]
     },
     {
       "parameters": {
@@ -84,10 +72,7 @@
       "id": "run-verification",
       "name": "Run Diff Verifier",
       "type": "n8n-nodes-base.executeCommand",
-      "position": [
-        820,
-        260
-      ]
+      "position": [820, 260]
     },
     {
       "parameters": {
@@ -103,10 +88,7 @@
       "id": "check-verification-success",
       "name": "Verification Success?",
       "type": "n8n-nodes-base.if",
-      "position": [
-        1000,
-        260
-      ]
+      "position": [1000, 260]
     },
     {
       "parameters": {
@@ -121,10 +103,7 @@
       "id": "send-success-email",
       "name": "Send Success Notification",
       "type": "n8n-nodes-base.emailSend",
-      "position": [
-        1180,
-        200
-      ]
+      "position": [1180, 200]
     },
     {
       "parameters": {
@@ -135,10 +114,7 @@
       "id": "read-verifier-index",
       "name": "Read Verifier Index",
       "type": "n8n-nodes-base.executeCommand",
-      "position": [
-        1180,
-        340
-      ]
+      "position": [1180, 340]
     },
     {
       "parameters": {
@@ -148,10 +124,7 @@
       "id": "parse-verifier-index",
       "name": "Parse Verifier Index",
       "type": "n8n-nodes-base.json",
-      "position": [
-        1360,
-        340
-      ]
+      "position": [1360, 340]
     },
     {
       "parameters": {
@@ -164,10 +137,7 @@
       "id": "slack-notification",
       "name": "Send Slack Notification",
       "type": "n8n-nodes-base.slack",
-      "position": [
-        1540,
-        340
-      ]
+      "position": [1540, 340]
     },
     {
       "parameters": {
@@ -182,10 +152,7 @@
       "id": "send-failure-email",
       "name": "Send Divergence Alert",
       "type": "n8n-nodes-base.emailSend",
-      "position": [
-        1180,
-        480
-      ]
+      "position": [1180, 480]
     },
     {
       "parameters": {
@@ -196,10 +163,7 @@
       "id": "read-report",
       "name": "Read Report File",
       "type": "n8n-nodes-base.executeCommand",
-      "position": [
-        1000,
-        480
-      ]
+      "position": [1000, 480]
     },
     {
       "parameters": {
@@ -209,10 +173,7 @@
       "id": "create-binary-report",
       "name": "Convert Report to Binary",
       "type": "n8n-nodes-base.moveBinaryData",
-      "position": [
-        1000,
-        600
-      ]
+      "position": [1000, 600]
     },
     {
       "parameters": {
@@ -223,10 +184,7 @@
       "id": "no-php-file-alert",
       "name": "No PHP File Alert",
       "type": "n8n-nodes-base.notification",
-      "position": [
-        820,
-        400
-      ]
+      "position": [820, 400]
     },
     {
       "parameters": {
@@ -257,20 +215,14 @@
       "id": "create-github-issue",
       "name": "Create GitHub Issue",
       "type": "n8n-nodes-base.httpRequest",
-      "position": [
-        1360,
-        480
-      ]
+      "position": [1360, 480]
     },
     {
       "parameters": {},
       "id": "error-trigger",
       "name": "Gestionnaire d'Erreur",
       "type": "n8n-nodes-base.errorTrigger",
-      "position": [
-        100,
-        800
-      ],
+      "position": [100, 800],
       "webhookId": "error-handler-diff-verifier"
     },
     {
@@ -280,10 +232,7 @@
       "id": "format-error",
       "name": "Formater Erreur",
       "type": "n8n-nodes-base.function",
-      "position": [
-        300,
-        800
-      ]
+      "position": [300, 800]
     },
     {
       "parameters": {
@@ -296,10 +245,7 @@
       "id": "error-slack",
       "name": "Notification Slack Erreur",
       "type": "n8n-nodes-base.slack",
-      "position": [
-        500,
-        750
-      ]
+      "position": [500, 750]
     },
     {
       "parameters": {
@@ -313,10 +259,7 @@
       "id": "log-error",
       "name": "Enregistrer Erreur",
       "type": "n8n-nodes-base.writeFile",
-      "position": [
-        500,
-        900
-      ]
+      "position": [500, 900]
     }
   ],
   "connections": {

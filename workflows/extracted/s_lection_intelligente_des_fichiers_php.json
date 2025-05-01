@@ -16,10 +16,7 @@
       },
       "name": "Déclencheur Quotidien",
       "type": "n8n-nodes-base.cron",
-      "position": [
-        100,
-        200
-      ],
+      "position": [100, 200],
       "typeVersion": 1
     },
     {
@@ -28,10 +25,7 @@
       },
       "name": "Trigger Manuel",
       "type": "n8n-nodes-base.manualTrigger",
-      "position": [
-        100,
-        340
-      ],
+      "position": [100, 340],
       "typeVersion": 1
     },
     {
@@ -43,10 +37,7 @@
       },
       "name": "Webhook GitHub",
       "type": "n8n-nodes-base.webhook",
-      "position": [
-        100,
-        480
-      ],
+      "position": [100, 480],
       "webhookId": "audit-php-files-webhook",
       "typeVersion": 1
     },
@@ -56,10 +47,7 @@
       },
       "name": "Merge Déclencheurs",
       "type": "n8n-nodes-base.merge",
-      "position": [
-        300,
-        340
-      ],
+      "position": [300, 340],
       "typeVersion": 2
     },
     {
@@ -70,10 +58,7 @@
       },
       "name": "Exécuter Discovery Agent",
       "type": "n8n-nodes-base.executeCommand",
-      "position": [
-        500,
-        340
-      ],
+      "position": [500, 340],
       "typeVersion": 1
     },
     {
@@ -84,10 +69,7 @@
       },
       "name": "Exécuter Audit Selector",
       "type": "n8n-nodes-base.executeCommand",
-      "position": [
-        700,
-        340
-      ],
+      "position": [700, 340],
       "typeVersion": 1
     },
     {
@@ -96,10 +78,7 @@
       },
       "name": "Traiter Liste Fichiers",
       "type": "n8n-nodes-base.code",
-      "position": [
-        900,
-        340
-      ],
+      "position": [900, 340],
       "typeVersion": 1
     },
     {
@@ -115,10 +94,7 @@
       },
       "name": "Fichiers Trouvés?",
       "type": "n8n-nodes-base.if",
-      "position": [
-        1100,
-        340
-      ],
+      "position": [1100, 340],
       "typeVersion": 1
     },
     {
@@ -132,10 +108,7 @@
       },
       "name": "Notifier Aucun Fichier",
       "type": "n8n-nodes-base.telegram",
-      "position": [
-        1300,
-        460
-      ],
+      "position": [1300, 460],
       "typeVersion": 1
     },
     {
@@ -144,10 +117,7 @@
       },
       "name": "Préparer pour Audit",
       "type": "n8n-nodes-base.function",
-      "position": [
-        1300,
-        240
-      ],
+      "position": [1300, 240],
       "typeVersion": 1
     },
     {
@@ -158,10 +128,7 @@
       },
       "name": "Exécuter Analyse d'Audit",
       "type": "n8n-nodes-base.executeCommand",
-      "position": [
-        1500,
-        240
-      ],
+      "position": [1500, 240],
       "typeVersion": 1
     },
     {
@@ -175,10 +142,7 @@
       },
       "name": "Notifier Analyse Terminée",
       "type": "n8n-nodes-base.telegram",
-      "position": [
-        1700,
-        240
-      ],
+      "position": [1700, 240],
       "typeVersion": 1
     },
     {
@@ -192,10 +156,7 @@
       },
       "name": "Notifier Fichier Sélectionné",
       "type": "n8n-nodes-base.telegram",
-      "position": [
-        1300,
-        120
-      ],
+      "position": [1300, 120],
       "typeVersion": 1
     }
   ],

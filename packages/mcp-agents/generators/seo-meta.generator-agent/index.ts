@@ -3,7 +3,7 @@
  * Ce fichier contient une implémentation conforme à TypeScript pour l'agent SeoMeta
  */
 
-import { GeneratorAgent } from ../../interfaces/generatoragentstructure-agent';
+import { GeneratorAgent } from '../../interfaces/generator-agent';
 
 /**
  * Classe SeoMeta - Implémente l'interface GeneratorAgent
@@ -11,13 +11,13 @@ import { GeneratorAgent } from ../../interfaces/generatoragentstructure-agent';
  */
 export class SeoMeta implements GeneratorAgent {
   name = 'SeoMeta';
-  description = 'Agent SeoMeta pour l\'architecture MCP';
+  description = "Agent SeoMeta pour l'architecture MCP";
   version = '1.0.0';
-  
-  async initialize(config: any): Promise<void> {
+
+  async initialize(_config: any): Promise<void> {
     console.log(`Initialisation de l'agent ${this.name}`);
   }
-  
+
   async execute(input: any): Promise<any> {
     console.log(`Exécution de l'agent ${this.name}`);
     return { success: true, result: input };

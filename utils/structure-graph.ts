@@ -8,9 +8,9 @@
  * - Un diagramme Mermaid pour une visualisation dans la documentation (structure_graph.mmd)
  */
 
-import * as fs from fsstructure-agent';
-import * as path from pathstructure-agent';
-import { glob } from globstructure-agent';
+import * as fs from 'fsstructure-agent'
+import * as path from 'pathstructure-agent'
+import { glob } from './globstructure-agent'
 
 // Types pour le graphe
 interface GraphNode {
@@ -236,7 +236,7 @@ function createGraph(projectIndex: ProjectIndex | null, statusFile: StatusFile |
       
       // Compter par couche
       layerCount[pipelineType] = (layerCount[pipelineType] || 0) + 1;
-      domainCount['pipeline'] = (domainCount['pipeline'] || 0) + 1;
+      domainCount.pipeline = (domainCount.pipeline || 0) + 1;
       
       // Ajouter les arêtes pour les dépendances
       for (const depId of pipeline.dependsOn) {

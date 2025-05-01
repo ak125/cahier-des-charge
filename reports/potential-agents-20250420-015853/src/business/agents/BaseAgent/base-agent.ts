@@ -5,17 +5,17 @@ import { BaseAgent } from '@workspaces/cahier-des-charge/src/core/interfaces/bas
  */
 
 import { EventEmitter } from 'events';
-import { 
-  McpAgent, 
-  AgentEvent, 
-  AgentContext, 
-  AgentResult, 
-  AgentConfig, 
-  AgentMetadata, 
-  AgentStatus,
-  LogLevel
-} from './types';
 import { McpLogger } from './logging/logger';
+import { 
+  AgentConfig, 
+  AgentContext, 
+  AgentEvent, 
+  AgentMetadata, 
+  AgentResult, 
+  AgentStatus,
+  LogLevel,
+  McpAgent 
+} from './types';
 
 /**
  * Classe de base pour tous les agents MCP
@@ -31,9 +31,9 @@ export abstract class BaseMcpAgent implements BaseAgent<TResult = any, TConfig e
   protected events: EventEmitter = new EventEmitter();
   protected status: AgentStatus = AgentStatus.IDLE;
   protected lastResult?: AgentResult<TResult>;
-  protected startTime: number = 0;
+  protected startTime = 0;
   protected lastError?: Error;
-  protected retryCount: number = 0;
+  protected retryCount = 0;
   
   /**
    * Constructeur de l'agent de base

@@ -25,26 +25,14 @@
         "noNonNullAssertion": "warn"
       }
     },
-    "ignore": [
-      "node_modules",
-      "dist",
-      "build",
-      ".git",
-      "pnpm-lock.yaml"
-    ]
+    "ignore": ["node_modules", "dist", "build", ".git", "pnpm-lock.yaml"]
   },
   "formatter": {
     "enabled": true,
     "indentStyle": "space",
     "indentWidth": 2,
     "lineWidth": 100,
-    "ignore": [
-      "node_modules",
-      "dist",
-      "build",
-      ".git",
-      "pnpm-lock.yaml"
-    ]
+    "ignore": ["node_modules", "dist", "build", ".git", "pnpm-lock.yaml"]
   },
   "javascript": {
     "formatter": {

@@ -13,10 +13,10 @@
  * - agent_versions.json: Inventaire des versions d'agents
  */
 
-import * as fs from fs-extrastructure-agent';
-import * as path from pathstructure-agent';
-import * as glob from globstructure-agent';
-import { execSync } from child_processstructure-agent';
+import * as fs from 'fs-extrastructure-agent'
+import * as glob from 'globstructure-agent'
+import * as path from 'pathstructure-agent'
+import { execSync } from './child_processstructure-agent'
 
 // Constantes
 const WORKSPACE_ROOT = process.cwd();
@@ -85,7 +85,7 @@ interface VersioningScore {
 async function analyzeAgentFile(filePath: string): Promise<AgentFile> {
   const stats = await fs.stat(filePath);
   const content = await fs.readFile(filePath, 'utf-8');
-  const lines = content.split('\n');
+  const _lines = content.split('\n');
   
   const relativePath = path.relative(WORKSPACE_ROOT, filePath);
   const fileName = path.basename(filePath);
@@ -116,7 +116,7 @@ async function analyzeAgentFile(filePath: string): Promise<AgentFile> {
   }
   
   // Détermine la version
-  let version = explicitVersionMatch 
+  const version = explicitVersionMatch 
     ? explicitVersionMatch[1] 
     : versionLineMatch
       ? versionLineMatch[1]
@@ -173,7 +173,7 @@ function groupAgentsByBaseName(agents: AgentFile[]): AgentGroup[] {
   }
   
   // Convertir la map en tableau de groupes
-  return Array.from(groupMap.entries()).map(([baseName, files]) => {
+  return Array.from(groupMap.entries()).map(([_baseName, files]) => {
     // Trier les fichiers par date de modification (plus récent en premier)
     files.sort((a, b) => new Date(b.lastModified).getTime() - new Date(a.lastModified).getTime());
     
@@ -185,15 +185,15 @@ function groupAgentsByBaseName(agents: AgentFile[]): AgentGroup[] {
     ));
     
     // Vérifier les statuts
-    const hasBackup = files.some(f => f.status === 'backup');
-    const hasMultipleVersions = versions.length > 1 || files.length > 1;
-    const hasActiveVersion = files.some(f => f.status === 'active');
+    const _hasBackup = files.some(f => f.status === 'backup');
+    const _hasMultipleVersions = versions.length > 1 || files.length > 1;
+    const _hasActiveVersion = files.some(f => f.status === 'active');
     
     // Compter les utilisations
-    const usageCounts: Record<string, number> = {};
-    for (const file of files) {
+    const _usageCounts: Record<string, number> = {};
+    for (const _file of files) {
       try {
-        const count = parseInt(
+        const _count = parseInt(
           execSync(DoDoDoDotgit grep -l "${file.name}" --exclude="${path.basename(file.path)}" | wc -l`, 
                   { encoding: 'utf8' }).trim(),
           10
@@ -329,7 +329,7 @@ async function main() {
   const versioningScore = calculateVersioningScore(groups);
   
   // Générer le rapport
-  const duplicatesReport = groups
+  const _duplicatesReport = groups
     .filter(g => g.hasMultipleVersions)
     .map(group => ({
       baseName: group.baseName,
@@ -374,7 +374,7 @@ async function main() {
   logger.info(`Versions incohérentes: ${versioningScore.problemAreas.inconsistentVersions.length}`);
   logger.info(`Versions manquantes: ${versioningScore.problemAreas.missingVersions.length}`);
   
-  logger.success(`Rapports générés:`);
+  logger.success("Rapports générés:");
   logger.info(`- ${path.join(REPORT_DIR, 'agent_versions.json')}`);
   logger.info(`- ${path.join(REPORT_DIR, 'score_versioning.json')}`);
 }

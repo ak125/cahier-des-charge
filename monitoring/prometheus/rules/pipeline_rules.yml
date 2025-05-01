@@ -1,0 +1,29 @@
+groups:
+  - name: pipeline
+    rules:
+      - alert: PipelineDown
+        expr: up{group="pipeline"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Pipeline down ({{ $labels.instance }})"
+          description: "Le pipeline est arrêté depuis plus d'une minute."
+
+      - alert: PipelineHighProcessingTime
+        expr: pipeline_processing_time_seconds{quantile="0.9"} > 10
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Temps de traitement élevé du pipeline ({{ $labels.instance }})"
+          description: "Le pipeline présente un temps de traitement élevé (> 10s au 90e percentile)."
+
+      - alert: PipelineQueueSize
+        expr: pipeline_queue_size > 100
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "File d'attente du pipeline trop grande ({{ $labels.instance }})"
+          description: "La taille de la file d'attente du pipeline dépasse 100 depuis 5 minutes."

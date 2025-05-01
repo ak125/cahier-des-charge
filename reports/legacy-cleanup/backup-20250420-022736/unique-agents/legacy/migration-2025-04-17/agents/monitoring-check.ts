@@ -1,18 +1,18 @@
 /**
  * monitoring-check.ts
  * Agent de surveillance post-migration
- * 
+ *
  * Cet agent vérifie la stabilité fonctionnelle, la performance et la cohérence visuelle
  * des routes migrées, après déploiement (en preview ou en production).
  */
 
-import * as fs from 'fs-extra';
+import { execSync } from 'child_process';
 import * as path from 'path';
 import axios from 'axios';
-import { execSync } from 'child_process';
 import * as chalk from 'chalk';
-import * as dotenv from 'dotenv';
 import { program } from 'commander';
+import * as dotenv from 'dotenv';
+import * as fs from 'fs-extra';
 
 // Chargement des variables d'environnement
 dotenv.config();
@@ -29,7 +29,7 @@ interface MonitoringConfig {
   screenshotComparison: boolean;
   outputDir: string;
   slackWebhook?: string;
- Dotn8NWebhook?: string;
+  Dotn8NWebhook?: string;
 }
 
 interface RouteStatus {
@@ -92,7 +92,7 @@ class MonitoringAgent {
       performanceThreshold: 20, // pourcentage de différence toléré
       domElementsToCheck: ['title', 'meta[name="description"]', 'main', 'header', 'footer'],
       screenshotComparison: true,
-      outputDir: path.join(process.cwd(), 'reports', 'monitoring')
+      outputDir: path.join(process.cwd(), 'reports', 'monitoring'),
     };
 
     // Initialisation des résultats
@@ -107,11 +107,11 @@ class MonitoringAgent {
         performanceImprovements: 0,
         performanceRegressions: 0,
         criticalDomIssues: 0,
-        warnings: 0
+        warnings: 0,
       },
       statusResults: [],
       performanceResults: [],
-      domIssues: []
+      domIssues: [],
     };
 
     // Charger les données de migration
@@ -151,23 +151,31 @@ class MonitoringAgent {
     if (environment === 'preview') {
       // Chercher l'URL de prévisualisation la plus récente
       try {
-        const previewDirs = fs.readdirSync(path.join(process.cwd(), '.preview'))
-          .filter(dir => dir.startsWith('fiche-'))
+        const previewDirs = fs
+          .readdirSync(path.join(process.cwd(), '.preview'))
+          .filter((dir) => dir.startsWith('fiche-'))
           .sort()
           .reverse();
-        
+
         if (previewDirs.length > 0) {
-          const previewUrlPath = path.join(process.cwd(), '.preview', previewDirs[0], 'preview_url.txt');
+          const previewUrlPath = path.join(
+            process.cwd(),
+            '.preview',
+            previewDirs[0],
+            'preview_url.txt'
+          );
           if (fs.existsSync(previewUrlPath)) {
             this.config.baseUrl = fs.readFileSync(previewUrlPath, 'utf8').trim();
           }
         }
-        
+
         if (!this.config.baseUrl) {
           this.config.baseUrl = process.env.PREVIEW_URL || 'http://localhost:3000';
         }
       } catch (error) {
-        console.error(chalk.red(`❌ Erreur lors de la recherche de l'URL de prévisualisation: ${error}`));
+        console.error(
+          chalk.red(`❌ Erreur lors de la recherche de l'URL de prévisualisation: ${error}`)
+        );
         this.config.baseUrl = process.env.PREVIEW_URL || 'http://localhost:3000';
       }
     } else if (environment === 'production') {
@@ -199,13 +207,13 @@ class MonitoringAgent {
 
     // Statuts HTTP attendus
     this.config.expectedStatuses = {};
-    this.config.routes.forEach(route => {
+    this.config.routes.forEach((route) => {
       this.config.expectedStatuses[route] = 200; // Par défaut, on attend un 200 OK
     });
-    
+
     // Pour les anciennes routes, on attend une redirection 301
     if (this.config.oldRoutes) {
-      Object.keys(this.config.oldRoutes).forEach(oldRoute => {
+      Object.keys(this.config.oldRoutes).forEach((oldRoute) => {
         this.config.expectedStatuses[oldRoute] = 301;
       });
     }
@@ -222,8 +230,8 @@ class MonitoringAgent {
     console.log(chalk.blue('🔍 Vérification des statuts HTTP...'));
 
     const allRoutes = [
-      ...this.config.routes, 
-      ...(this.config.oldRoutes ? Object.keys(this.config.oldRoutes) : [])
+      ...this.config.routes,
+      ...(this.config.oldRoutes ? Object.keys(this.config.oldRoutes) : []),
     ];
 
     const results: RouteStatus[] = [];
@@ -232,61 +240,65 @@ class MonitoringAgent {
       try {
         const url = new URL(route, this.config.baseUrl).toString();
         const startTime = Date.now();
-        
+
         console.log(chalk.blue(`  Vérification de: ${url}`));
-        
+
         const response = await axios.get(url, {
           maxRedirects: 0,
           validateStatus: () => true,
-          timeout: this.config.timeoutMs
+          timeout: this.config.timeoutMs,
         });
-        
+
         const endTime = Date.now();
         const responseTime = endTime - startTime;
-        
+
         const expectedStatus = this.config.expectedStatuses[route] || 200;
         const valid = this.validateStatus(route, response.status, response.headers.location);
-        
+
         const result: RouteStatus = {
           url: route,
           status: response.status,
           responseTime,
-          valid
+          valid,
         };
-        
+
         // Ajouter l'URL de redirection si c'est une redirection
         if (response.status >= 300 && response.status < 400 && response.headers.location) {
           result.location = response.headers.location;
         }
-        
+
         if (!valid) {
           result.error = `Statut attendu: ${expectedStatus}, reçu: ${response.status}`;
         }
-        
+
         results.push(result);
-        
+
         if (valid) {
           console.log(chalk.green(`  ✓ ${route} - ${response.status} (${responseTime}ms)`));
         } else {
-          console.log(chalk.red(`  ❌ ${route} - ${response.status} (${responseTime}ms) - Attendu: ${expectedStatus}`));
+          console.log(
+            chalk.red(
+              `  ❌ ${route} - ${response.status} (${responseTime}ms) - Attendu: ${expectedStatus}`
+            )
+          );
         }
       } catch (error: any) {
         console.error(chalk.red(`  ❌ Erreur pour ${route}: ${error.message}`));
-        
+
         results.push({
           url: route,
           status: 0,
           responseTime: 0,
           valid: false,
-          error: `Erreur de connexion: ${error.message}`
+          error: `Erreur de connexion: ${error.message}`,
         });
       }
     }
 
     // Mise à jour des statistiques du résumé
     this.results.summary.totalRoutes = results.length;
-    this.results.summary.validStatusCodes = results.filter(r => r.valid).length;
-    this.results.summary.invalidStatusCodes = results.filter(r => !r.valid).length;
+    this.results.summary.validStatusCodes = results.filter((r) => r.valid).length;
+    this.results.summary.invalidStatusCodes = results.filter((r) => !r.valid).length;
     this.results.statusResults = results;
 
     return results;
@@ -297,21 +309,21 @@ class MonitoringAgent {
    */
   private validateStatus(route: string, status: number, location?: string): boolean {
     const expectedStatus = this.config.expectedStatuses[route] || 200;
-    
+
     // Cas d'une redirection 301
     if (expectedStatus === 301) {
       if (status !== 301) return false;
-      
+
       // Vérifier aussi que la redirection pointe vers la bonne URL
       if (this.config.oldRoutes && this.config.oldRoutes[route]) {
         const expectedLocation = this.config.oldRoutes[route];
         // Vérification simplifiée: la redirection doit se terminer par le chemin attendu
         return location ? location.endsWith(expectedLocation) : false;
       }
-      
+
       return true;
     }
-    
+
     // Cas standard: le statut doit correspondre exactement
     return status === expectedStatus;
   }
@@ -326,40 +338,48 @@ class MonitoringAgent {
     const historicalData = this.loadHistoricalPerformanceData();
 
     // Analyse uniquement pour les nouvelles routes (pas les redirections)
-    for (const routeStatus of this.results.statusResults.filter(r => this.config.routes.includes(r.url))) {
+    for (const routeStatus of this.results.statusResults.filter((r) =>
+      this.config.routes.includes(r.url)
+    )) {
       const route = routeStatus.url;
       const newTime = routeStatus.responseTime;
-      
+
       const comparison: PerformanceComparison = {
         route,
         newTime,
-        improvement: false
+        improvement: false,
       };
-      
+
       // Chercher les données historiques pour cette route
       const historicalEntry = historicalData[route];
       if (historicalEntry) {
         comparison.oldTime = historicalEntry.responseTime;
         comparison.difference = newTime - comparison.oldTime;
-        comparison.percentChange = comparison.oldTime ? Math.round((comparison.difference / comparison.oldTime) * 100) : 0;
+        comparison.percentChange = comparison.oldTime
+          ? Math.round((comparison.difference / comparison.oldTime) * 100)
+          : 0;
         comparison.improvement = comparison.difference < 0;
-        
-        const changeText = comparison.improvement 
-          ? chalk.green(`${Math.abs(comparison.percentChange || 0)}% plus rapide`) 
+
+        const changeText = comparison.improvement
+          ? chalk.green(`${Math.abs(comparison.percentChange || 0)}% plus rapide`)
           : chalk.yellow(`${comparison.percentChange || 0}% plus lent`);
-        
-        console.log(chalk.blue(`  ${route}: ${newTime}ms vs ${comparison.oldTime}ms (${changeText})`));
+
+        console.log(
+          chalk.blue(`  ${route}: ${newTime}ms vs ${comparison.oldTime}ms (${changeText})`)
+        );
       } else {
         console.log(chalk.blue(`  ${route}: ${newTime}ms (pas de données historiques)`));
       }
-      
+
       results.push(comparison);
     }
 
     // Mise à jour des statistiques du résumé
     this.results.performanceResults = results;
-    this.results.summary.performanceImprovements = results.filter(r => r.improvement).length;
-    this.results.summary.performanceRegressions = results.filter(r => !r.improvement && r.percentChange !== undefined).length;
+    this.results.summary.performanceImprovements = results.filter((r) => r.improvement).length;
+    this.results.summary.performanceRegressions = results.filter(
+      (r) => !r.improvement && r.percentChange !== undefined
+    ).length;
 
     // Enregistrer les nouvelles données de performance
     this.savePerformanceData();
@@ -370,9 +390,11 @@ class MonitoringAgent {
   /**
    * Charge les données historiques de performance
    */
-  private loadHistoricalPerformanceData(): { [route: string]: { responseTime: number, timestamp: string } } {
+  private loadHistoricalPerformanceData(): {
+    [route: string]: { responseTime: number; timestamp: string };
+  } {
     const historyFile = path.join(this.config.outputDir, 'performance_history.json');
-    
+
     if (fs.existsSync(historyFile)) {
       try {
         return fs.readJsonSync(historyFile);
@@ -380,7 +402,7 @@ class MonitoringAgent {
         console.error(chalk.red(`❌ Erreur lors du chargement des données historiques: ${error}`));
       }
     }
-    
+
     return {};
   }
 
@@ -389,16 +411,16 @@ class MonitoringAgent {
    */
   private savePerformanceData(): void {
     const historyFile = path.join(this.config.outputDir, 'performance_history.json');
-    let history = this.loadHistoricalPerformanceData();
-    
+    const history = this.loadHistoricalPerformanceData();
+
     // Ajouter les nouvelles données
-    this.results.statusResults.forEach(status => {
+    this.results.statusResults.forEach((status) => {
       history[status.url] = {
         responseTime: status.responseTime,
-        timestamp: this.results.timestamp
+        timestamp: this.results.timestamp,
       };
     });
-    
+
     // Sauvegarder
     fs.writeJsonSync(historyFile, history, { spaces: 2 });
   }
@@ -520,40 +542,44 @@ class MonitoringAgent {
     try {
       // Exécuter Playwright
       execSync(`node ${scriptPath} ${this.config.baseUrl} ${snapshotsDir}`, { stdio: 'inherit' });
-      
+
       // Analyser les résultats
-      const issueFiles = fs.readdirSync(snapshotsDir).filter(file => file.startsWith('issues_'));
-      
+      const issueFiles = fs.readdirSync(snapshotsDir).filter((file) => file.startsWith('issues_'));
+
       for (const file of issueFiles) {
         const filePath = path.join(snapshotsDir, file);
         const fileData = fs.readJsonSync(filePath);
-        
+
         const routeIssues: string[] = [];
         let severity: 'critical' | 'warning' | 'info' = 'info';
-        
+
         // Analyser les éléments manquants
         if (fileData.missingElements && fileData.missingElements.length > 0) {
           fileData.missingElements.forEach((element: string) => {
             routeIssues.push(`missing-element: ${element}`);
-            if (element === 'title' || element === 'meta[name="description"]' || element === 'main') {
+            if (
+              element === 'title' ||
+              element === 'meta[name="description"]' ||
+              element === 'main'
+            ) {
               severity = 'critical';
             } else {
               severity = 'warning';
             }
           });
         }
-        
+
         // Ajouter les autres problèmes
         if (fileData.imagesWithoutAlt > 0) {
           routeIssues.push(`${fileData.imagesWithoutAlt} images sans attribut alt`);
           severity = severity === 'info' ? 'warning' : severity;
         }
-        
+
         if (fileData.emptyLinks > 0) {
           routeIssues.push(`${fileData.emptyLinks} liens vides ou sans texte`);
           severity = severity === 'info' ? 'warning' : severity;
         }
-        
+
         if (fileData.otherIssues && fileData.otherIssues.length > 0) {
           fileData.otherIssues.forEach((issue: string) => {
             routeIssues.push(issue);
@@ -562,14 +588,14 @@ class MonitoringAgent {
             }
           });
         }
-        
+
         if (routeIssues.length > 0) {
           issues.push({
             route: fileData.route,
             issues: routeIssues,
-            severity
+            severity,
           });
-          
+
           if (severity === 'critical') {
             console.log(chalk.red(`  ❌ ${fileData.route}: ${routeIssues.join(', ')}`));
           } else if (severity === 'warning') {
@@ -587,8 +613,10 @@ class MonitoringAgent {
 
     // Mise à jour des statistiques du résumé
     this.results.domIssues = issues;
-    this.results.summary.criticalDomIssues = issues.filter(issue => issue.severity === 'critical').length;
-    this.results.summary.warnings = issues.filter(issue => issue.severity === 'warning').length;
+    this.results.summary.criticalDomIssues = issues.filter(
+      (issue) => issue.severity === 'critical'
+    ).length;
+    this.results.summary.warnings = issues.filter((issue) => issue.severity === 'warning').length;
 
     return issues;
   }
@@ -599,7 +627,9 @@ class MonitoringAgent {
   async compareScreenshots(): Promise<void> {
     // Implémentation future pour la comparaison de captures d'écran
     // Nécessiterait des captures d'écran "avant migration" pour comparaison
-    console.log(chalk.blue('🖼️ La comparaison visuelle automatique n\'est pas implémentée dans cette version'));
+    console.log(
+      chalk.blue("🖼️ La comparaison visuelle automatique n'est pas implémentée dans cette version")
+    );
   }
 
   /**
@@ -626,11 +656,17 @@ class MonitoringAgent {
     timingReport += `| Route | Temps actuel | Temps précédent | Différence | % Change |\n`;
     timingReport += `| --- | ---: | ---: | ---: | ---: |\n`;
 
-    this.results.performanceResults.forEach(result => {
-      const diff = result.difference !== undefined ? `${result.difference > 0 ? '+' : ''}${result.difference}ms` : '-';
-      const percent = result.percentChange !== undefined ? `${result.percentChange > 0 ? '+' : ''}${result.percentChange}%` : '-';
+    this.results.performanceResults.forEach((result) => {
+      const diff =
+        result.difference !== undefined
+          ? `${result.difference > 0 ? '+' : ''}${result.difference}ms`
+          : '-';
+      const percent =
+        result.percentChange !== undefined
+          ? `${result.percentChange > 0 ? '+' : ''}${result.percentChange}%`
+          : '-';
       const oldTime = result.oldTime !== undefined ? `${result.oldTime}ms` : '-';
-      
+
       timingReport += `| ${result.route} | ${result.newTime}ms | ${oldTime} | ${diff} | ${percent} |\n`;
     });
 
@@ -646,10 +682,11 @@ class MonitoringAgent {
     if (this.results.domIssues.length === 0) {
       domReport += `✅ Aucun problème DOM détecté.\n\n`;
     } else {
-      this.results.domIssues.forEach(issue => {
-        const severityIcon = issue.severity === 'critical' ? '🔴' : issue.severity === 'warning' ? '🟠' : '🔵';
+      this.results.domIssues.forEach((issue) => {
+        const severityIcon =
+          issue.severity === 'critical' ? '🔴' : issue.severity === 'warning' ? '🟠' : '🔵';
         domReport += `### ${severityIcon} ${issue.route}\n\n`;
-        issue.issues.forEach(problem => {
+        issue.issues.forEach((problem) => {
           domReport += `- ${problem}\n`;
         });
         domReport += `\n`;
@@ -664,11 +701,12 @@ class MonitoringAgent {
     let summaryReport = `# Résumé de la Surveillance Post-Migration - ${this.environment}\n\n`;
     summaryReport += `Date: ${new Date().toLocaleString('fr-FR')}\n\n`;
     summaryReport += `Base URL: ${this.config.baseUrl}\n\n`;
-    
+
     const statuses = this.results.summary;
-    const totalIssues = statuses.invalidStatusCodes + statuses.performanceRegressions + statuses.criticalDomIssues;
+    const totalIssues =
+      statuses.invalidStatusCodes + statuses.performanceRegressions + statuses.criticalDomIssues;
     const statusIcon = totalIssues === 0 ? '✅' : totalIssues > 3 ? '❌' : '⚠️';
-    
+
     summaryReport += `## Statut global: ${statusIcon}\n\n`;
     summaryReport += `- Routes testées: ${statuses.totalRoutes}\n`;
     summaryReport += `- Codes HTTP valides: ${statuses.validStatusCodes}/${statuses.totalRoutes}\n`;
@@ -676,7 +714,7 @@ class MonitoringAgent {
     summaryReport += `- Régressions de performance: ${statuses.performanceRegressions}\n`;
     summaryReport += `- Problèmes DOM critiques: ${statuses.criticalDomIssues}\n`;
     summaryReport += `- Avertissements: ${statuses.warnings}\n\n`;
-    
+
     summaryReport += `## Liens vers les rapports détaillés\n\n`;
     summaryReport += `- [Statuts HTTP](./route_statuses.json)\n`;
     summaryReport += `- [Performances](./timing_comparison.md)\n`;
@@ -693,8 +731,9 @@ class MonitoringAgent {
     console.log(chalk.blue('📣 Envoi des notifications...'));
 
     const statuses = this.results.summary;
-    const totalIssues = statuses.invalidStatusCodes + statuses.performanceRegressions + statuses.criticalDomIssues;
-    
+    const totalIssues =
+      statuses.invalidStatusCodes + statuses.performanceRegressions + statuses.criticalDomIssues;
+
     if (totalIssues === 0) {
       console.log(chalk.green('  ✓ Aucun problème détecté, pas de notification nécessaire'));
       return;
@@ -705,42 +744,44 @@ class MonitoringAgent {
       text: `🚨 Surveillance post-migration: problèmes détectés sur ${this.environment}`,
       blocks: [
         {
-          type: "header",
+          type: 'header',
           text: {
-            type: "plain_text",
+            type: 'plain_text',
             text: `🚨 Problèmes post-migration détectés (${this.environment})`,
-            emoji: true
-          }
+            emoji: true,
+          },
         },
         {
-          type: "section",
+          type: 'section',
           text: {
-            type: "mrkdwn",
-            text: `*Base URL:* ${this.config.baseUrl}\n*Date:* ${new Date().toLocaleString('fr-FR')}`
-          }
+            type: 'mrkdwn',
+            text: `*Base URL:* ${this.config.baseUrl}\n*Date:* ${new Date().toLocaleString(
+              'fr-FR'
+            )}`,
+          },
         },
         {
-          type: "section",
+          type: 'section',
           fields: [
             {
-              type: "mrkdwn",
-              text: `*Routes testées:*\n${statuses.totalRoutes}`
+              type: 'mrkdwn',
+              text: `*Routes testées:*\n${statuses.totalRoutes}`,
             },
             {
-              type: "mrkdwn",
-              text: `*HTTP invalides:*\n${statuses.invalidStatusCodes}`
+              type: 'mrkdwn',
+              text: `*HTTP invalides:*\n${statuses.invalidStatusCodes}`,
             },
             {
-              type: "mrkdwn",
-              text: `*Régressions perf:*\n${statuses.performanceRegressions}`
+              type: 'mrkdwn',
+              text: `*Régressions perf:*\n${statuses.performanceRegressions}`,
             },
             {
-              type: "mrkdwn",
-              text: `*Problèmes DOM:*\n${statuses.criticalDomIssues}`
-            }
-          ]
-        }
-      ]
+              type: 'mrkdwn',
+              text: `*Problèmes DOM:*\n${statuses.criticalDomIssues}`,
+            },
+          ],
+        },
+      ],
     };
 
     // Envoyer à Slack si configuré
@@ -759,7 +800,7 @@ class MonitoringAgent {
         await axios.post(this.configDotn8NWebhook, {
           monitoring: this.results,
           environment: this.environment,
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         });
         console.log(chalk.green('  ✓ NotificationDotn8N envoyée'));
       } catch (error) {
@@ -772,7 +813,9 @@ class MonitoringAgent {
    * Exécute toutes les étapes de surveillance
    */
   async run(): Promise<MonitoringResult> {
-    console.log(chalk.blue(`🚀 Démarrage de la surveillance post-migration pour ${this.environment}`));
+    console.log(
+      chalk.blue(`🚀 Démarrage de la surveillance post-migration pour ${this.environment}`)
+    );
 
     try {
       // 1. Vérifier les statuts HTTP
@@ -809,26 +852,33 @@ if (require.main === module) {
   program
     .name('monitoring-check')
     .description('Agent de surveillance post-migration')
-    .option('-e, --env <environment>', 'Environnement cible (preview, production, ou URL personnalisée)', 'preview')
+    .option(
+      '-e, --env <environment>',
+      'Environnement cible (preview, production, ou URL personnalisée)',
+      'preview'
+    )
     .option('-t, --target <routes>', 'Routes spécifiques à surveiller (séparées par des virgules)')
     .option('-o, --output <dir>', 'Dossier de sortie des rapports')
     .parse(process.argv);
 
   const options = program.opts();
-  const targetRoutes = options.target ? options.target.split(',').map((r: string) => r.trim()) : undefined;
-  
+  const targetRoutes = options.target
+    ? options.target.split(',').map((r: string) => r.trim())
+    : undefined;
+
   const agent = new MonitoringAgent(options.env, targetRoutes);
-  
+
   if (options.output) {
     agent.config.outputDir = options.output;
   }
-  
-  agent.run()
+
+  agent
+    .run()
     .then(() => {
       console.log(chalk.green('✅ Monitoring terminé avec succès'));
       process.exit(0);
     })
-    .catch(error => {
+    .catch((error) => {
       console.error(chalk.red(`❌ Erreur: ${error.message}`));
       process.exit(1);
     });

@@ -11,12 +11,8 @@ import { MonitoringAgentOptions, MonitoringResult } from './types';
  */
 export abstract class BaseMonitoringAgent<
   TOptions extends MonitoringAgentOptions = MonitoringAgentOptions,
-  TResult = any
+  TResult = any,
 > extends BaseAgent<TOptions, TResult> {
-  constructor(options?: Partial<TOptions>) {
-    super(options);
-  }
-
   /**
    * Fonctions utilitaires spécifiques à la catégorie monitoring
    */

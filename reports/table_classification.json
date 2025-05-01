@@ -9,30 +9,21 @@
       "Contient des champs d'identification clairs",
       "Se trouve au centre de nombreuses relations"
     ],
-    "tags": [
-      "central",
-      "data:product"
-    ]
+    "tags": ["central", "data:product"]
   },
   {
     "table": "AUTO_MARQUE",
     "role": "entité_métier",
     "module": "catalogue",
     "confidence": 0.92,
-    "reasons": [
-      "Entité de référence avec peu de colonnes",
-      "Référencée par d'autres tables"
-    ]
+    "reasons": ["Entité de référence avec peu de colonnes", "Référencée par d'autres tables"]
   },
   {
     "table": "AUTO_MODELE",
     "role": "entité_métier",
     "module": "catalogue",
     "confidence": 0.93,
-    "reasons": [
-      "Entité de référence liée à AUTO_MARQUE",
-      "Structure typique d'une entité métier"
-    ]
+    "reasons": ["Entité de référence liée à AUTO_MARQUE", "Structure typique d'une entité métier"]
   },
   {
     "table": "USERS",
@@ -83,10 +74,7 @@
     "role": "liaison",
     "module": "produit",
     "confidence": 0.87,
-    "reasons": [
-      "Lié à l'entité PIECES",
-      "Structure suggérant une relation many-to-many"
-    ]
+    "reasons": ["Lié à l'entité PIECES", "Structure suggérant une relation many-to-many"]
   },
   {
     "table": "CONFIG_LOG",
@@ -134,30 +122,21 @@
     "role": "entité_métier",
     "module": "produit",
     "confidence": 0.84,
-    "reasons": [
-      "Lié à l'entité PIECES",
-      "Probablement une classification ou catégorisation"
-    ]
+    "reasons": ["Lié à l'entité PIECES", "Probablement une classification ou catégorisation"]
   },
   {
     "table": "PAIEMENTS",
     "role": "entité_métier",
     "module": "paiement",
     "confidence": 0.93,
-    "reasons": [
-      "Nom caractéristique d'une entité métier",
-      "Probablement liée aux COMMANDES"
-    ]
+    "reasons": ["Nom caractéristique d'une entité métier", "Probablement liée aux COMMANDES"]
   },
   {
     "table": "LIVRAISONS",
     "role": "entité_métier",
     "module": "livraison",
     "confidence": 0.91,
-    "reasons": [
-      "Nom caractéristique d'une entité métier",
-      "Probablement liée aux COMMANDES"
-    ]
+    "reasons": ["Nom caractéristique d'une entité métier", "Probablement liée aux COMMANDES"]
   },
   {
     "table": "OLD_CLIENTS_IMPORT",

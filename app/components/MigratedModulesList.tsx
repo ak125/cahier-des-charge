@@ -1,5 +1,5 @@
-import { Link } from "@remix-run/react";
-import type { MigratedModule } from "~/models/migration.server";
+import { Link } from '@remix-run/react';
+import type { MigratedModule } from '~/models/migration.server';
 
 interface MigratedModulesListProps {
   modules: MigratedModule[];
@@ -11,8 +11,8 @@ export default function MigratedModulesList({ modules }: MigratedModulesListProp
     const date = new Date(dateString);
     const now = new Date();
     const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
-    
-    if (diffInSeconds < 60) return 'À l\'instant';
+
+    if (diffInSeconds < 60) return "À l'instant";
     if (diffInSeconds < 3600) return `Il y a ${Math.floor(diffInSeconds / 60)} min`;
     if (diffInSeconds < 86400) return `Il y a ${Math.floor(diffInSeconds / 3600)} h`;
     return `Il y a ${Math.floor(diffInSeconds / 86400)} j`;
@@ -24,11 +24,11 @@ export default function MigratedModulesList({ modules }: MigratedModulesListProp
       success: { label: 'Succès', className: 'badge-success' },
       partial: { label: 'Partiel', className: 'badge-warning' },
       failed: { label: 'Échec', className: 'badge-danger' },
-      in_review: { label: 'En revue', className: 'badge-info' }
+      in_review: { label: 'En revue', className: 'badge-info' },
     };
-    
+
     const { label, className } = statusMap[status];
-    
+
     return <span className={`status-badge ${className}`}>{label}</span>;
   };
 
@@ -41,18 +41,18 @@ export default function MigratedModulesList({ modules }: MigratedModulesListProp
         </div>
         <div className="summary-card">
           <span className="summary-number">
-            {modules.filter(m => m.status === 'success').length}
+            {modules.filter((m) => m.status === 'success').length}
           </span>
           <span className="summary-label">Réussis</span>
         </div>
         <div className="summary-card">
           <span className="summary-number">
-            {modules.filter(m => m.testCoverage >= 80).length}
+            {modules.filter((m) => m.testCoverage >= 80).length}
           </span>
           <span className="summary-label">Bonne couverture</span>
         </div>
       </div>
-      
+
       <div className="modules-table-container">
         <table className="modules-table">
           <thead>
@@ -66,17 +66,19 @@ export default function MigratedModulesList({ modules }: MigratedModulesListProp
             </tr>
           </thead>
           <tbody>
-            {modules.map(module => (
+            {modules.map((module) => (
               <tr key={module.id}>
                 <td>
                   <div className="module-name">{module.name}</div>
                   <div className="module-path">{module.destinationPath}</div>
                 </td>
-                <td><StatusBadge status={module.status} /></td>
+                <td>
+                  <StatusBadge status={module.status} />
+                </td>
                 <td>
                   <div className="progress-bar">
-                    <div 
-                      className="progress-value" 
+                    <div
+                      className="progress-value"
                       style={{ width: `${module.testCoverage}%` }}
                       data-value={`${module.testCoverage}%`}
                     />
@@ -107,7 +109,7 @@ export default function MigratedModulesList({ modules }: MigratedModulesListProp
           </tbody>
         </table>
       </div>
-      
+
       <div className="modules-footer">
         <Link to="/admin/modules" className="view-all-link">
           Voir tous les modules

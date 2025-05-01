@@ -53,25 +53,25 @@ export class SecurityRiskAnalyzer {
   public async analyze(): Promise<QualityAnalysisResult> {
     // Détection des comportements dynamiques
     const dynamicBehaviors = this.detectDynamicBehaviors();
-    
+
     // Analyse de la complexité
     const complexityMetrics = this.analyzeComplexity();
-    
+
     // Détection des vulnérabilités
     const securityVulnerabilities = this.detectSecurityVulnerabilities();
-    
+
     // Calcul des scores
     const securityScore = this.calculateSecurityScore(securityVulnerabilities);
     const qualityScore = this.calculateQualityScore(complexityMetrics, dynamicBehaviors);
     const overallRiskScore = this.calculateOverallRiskScore(securityScore, qualityScore);
-    
+
     return {
       dynamicBehaviors,
       complexityMetrics,
       securityVulnerabilities,
       securityScore,
       qualityScore,
-      overallRiskScore
+      overallRiskScore,
     };
   }
 
@@ -80,47 +80,48 @@ export class SecurityRiskAnalyzer {
    */
   private detectDynamicBehaviors(): DynamicBehavior[] {
     const behaviors: DynamicBehavior[] = [];
-    
+
     // Patterns pour différents types de comportements dynamiques
     const patterns = [
       {
-        regex: /if\s*\(\s*\$_SESSION\[['"]?(\w+)['"]?\](?:\[['"]?(\w+)['"]?\])?\s*[=!><]=+\s*['"]?([^'")\s]+)['"]?\s*\)/g,
-        type: 'session'
+        regex:
+          /if\s*\(\s*\$_SESSION\[['"]?(\w+)['"]?\](?:\[['"]?(\w+)['"]?\])?\s*[=!><]=+\s*['"]?([^'")\s]+)['"]?\s*\)/g,
+        type: 'session',
       },
       {
         regex: /if\s*\(\s*\$_GET\[['"]?(\w+)['"]?\]\s*[=!><]=+\s*['"]?([^'")\s]+)['"]?\s*\)/g,
-        type: 'get'
+        type: 'get',
       },
       {
         regex: /if\s*\(\s*\$_POST\[['"]?(\w+)['"]?\]\s*[=!><]=+\s*['"]?([^'")\s]+)['"]?\s*\)/g,
-        type: 'post'
+        type: 'post',
       },
       {
         regex: /if\s*\(\s*\$_COOKIE\[['"]?(\w+)['"]?\]\s*[=!><]=+\s*['"]?([^'")\s]+)['"]?\s*\)/g,
-        type: 'cookie'
+        type: 'cookie',
       },
       {
         regex: /switch\s*\(\s*\$_(?:GET|POST|REQUEST|SESSION)\[['"]?(\w+)['"]?\]\s*\)/g,
-        type: 'switch'
+        type: 'switch',
       },
       {
         regex: /['"]?lang['"]?\s*[=!><]=+\s*['"]?([a-z]{2})['"]?/gi,
-        type: 'multilingual'
-      }
+        type: 'multilingual',
+      },
     ];
-    
+
     // Parcourir chaque ligne pour détecter les comportements
     for (let i = 0; i < this.lines.length; i++) {
       const line = this.lines[i];
-      
+
       for (const pattern of patterns) {
         const matches = Array.from(line.matchAll(pattern.regex));
-        
+
         for (const match of matches) {
           // Déterminer le type et la recommandation
-          let type = pattern.type as DynamicBehavior['type'];
+          const type = pattern.type as DynamicBehavior['type'];
           let recommendation = '';
-          
+
           switch (type) {
             case 'session':
               recommendation = 'Extraire la logique de vérification dans un Guard NestJS';
@@ -139,17 +140,17 @@ export class SecurityRiskAnalyzer {
               recommendation = 'Utiliser le système de session sécurisé de NestJS';
               break;
           }
-          
+
           behaviors.push({
             type,
             condition: match[0],
             line: i + 1,
-            recommendation
+            recommendation,
           });
         }
       }
     }
-    
+
     return behaviors;
   }
 
@@ -158,43 +159,43 @@ export class SecurityRiskAnalyzer {
    */
   private analyzeComplexity(): ComplexityMetric[] {
     const metrics: ComplexityMetric[] = [];
-    
+
     // 1. Profondeur des conditions imbriquées
     const maxNestingDepth = this.calculateNestingDepth();
     metrics.push({
       name: 'Profondeur max if',
       value: maxNestingDepth,
       threshold: 3,
-      status: maxNestingDepth <= 2 ? 'ok' : maxNestingDepth <= 3 ? 'warning' : 'critical'
+      status: maxNestingDepth <= 2 ? 'ok' : maxNestingDepth <= 3 ? 'warning' : 'critical',
     });
-    
+
     // 2. Fonctions imbriquées
     const nestedFunctions = this.countNestedFunctions();
     metrics.push({
       name: 'Fonctions imbriquées',
       value: nestedFunctions,
       threshold: 2,
-      status: nestedFunctions <= 1 ? 'ok' : nestedFunctions <= 2 ? 'warning' : 'critical'
+      status: nestedFunctions <= 1 ? 'ok' : nestedFunctions <= 2 ? 'warning' : 'critical',
     });
-    
+
     // 3. Lignes de code dans la racine (hors fonctions)
     const rootInstructions = this.countRootInstructions();
     metrics.push({
       name: 'Instructions dans la racine',
       value: rootInstructions,
       threshold: 30,
-      status: rootInstructions <= 20 ? 'ok' : rootInstructions <= 30 ? 'warning' : 'critical'
+      status: rootInstructions <= 20 ? 'ok' : rootInstructions <= 30 ? 'warning' : 'critical',
     });
-    
+
     // 4. Duplication de code
     const { count, blocks } = this.detectDuplicateBlocks();
     metrics.push({
       name: 'Duplication détectée',
       value: count,
       threshold: 1,
-      status: count === 0 ? 'ok' : count <= 1 ? 'warning' : 'critical'
+      status: count === 0 ? 'ok' : count <= 1 ? 'warning' : 'critical',
     });
-    
+
     return metrics;
   }
 
@@ -204,20 +205,24 @@ export class SecurityRiskAnalyzer {
   private calculateNestingDepth(): number {
     let maxDepth = 0;
     let currentDepth = 0;
-    
+
     for (const line of this.lines) {
       // Augmenter la profondeur à chaque ouverture de bloc
-      if (line.match(/if\s*\([^{]*\)\s*{|else\s*{|foreach\s*\([^{]*\)\s*{|while\s*\([^{]*\)\s*{|for\s*\([^{]*\)\s*{|switch\s*\([^{]*\)\s*{/)) {
+      if (
+        line.match(
+          /if\s*\([^{]*\)\s*{|else\s*{|foreach\s*\([^{]*\)\s*{|while\s*\([^{]*\)\s*{|for\s*\([^{]*\)\s*{|switch\s*\([^{]*\)\s*{/
+        )
+      ) {
         currentDepth++;
         maxDepth = Math.max(maxDepth, currentDepth);
       }
-      
+
       // Diminuer la profondeur à chaque fermeture de bloc
       if (line.match(/^\s*}\s*$/)) {
         currentDepth = Math.max(0, currentDepth - 1);
       }
     }
-    
+
     return maxDepth;
   }
 
@@ -227,20 +232,20 @@ export class SecurityRiskAnalyzer {
   private countNestedFunctions(): number {
     let maxNested = 0;
     let currentNest = 0;
-    
+
     for (const line of this.lines) {
       // Augmenter le nesting à chaque définition de fonction
       if (line.match(/function\s+\w+\s*\([^)]*\)\s*{/)) {
         currentNest++;
         maxNested = Math.max(maxNested, currentNest);
       }
-      
+
       // Diminuer le nesting à chaque fin de fonction
       if (line.match(/^\s*}\s*$/) && currentNest > 0) {
         currentNest--;
       }
     }
-    
+
     return maxNested;
   }
 
@@ -251,13 +256,18 @@ export class SecurityRiskAnalyzer {
     let inFunction = false;
     let inClass = false;
     let rootLines = 0;
-    
+
     for (const line of this.lines) {
       // Ignorer les lignes vides et commentaires
-      if (line.trim() === '' || line.trim().startsWith('//') || line.trim().startsWith('/*') || line.trim().startsWith('*')) {
+      if (
+        line.trim() === '' ||
+        line.trim().startsWith('//') ||
+        line.trim().startsWith('/*') ||
+        line.trim().startsWith('*')
+      ) {
         continue;
       }
-      
+
       // Détecter début/fin de fonction
       if (line.match(/function\s+\w+\s*\([^)]*\)\s*{/)) {
         inFunction = true;
@@ -265,7 +275,7 @@ export class SecurityRiskAnalyzer {
       if (line.match(/^\s*}\s*$/) && inFunction) {
         inFunction = false;
       }
-      
+
       // Détecter début/fin de classe
       if (line.match(/class\s+\w+/)) {
         inClass = true;
@@ -273,13 +283,13 @@ export class SecurityRiskAnalyzer {
       if (line.match(/^\s*}\s*$/) && inClass) {
         inClass = false;
       }
-      
+
       // Compter si on est à la racine
       if (!inFunction && !inClass) {
         rootLines++;
       }
     }
-    
+
     return rootLines;
   }
 
@@ -289,17 +299,18 @@ export class SecurityRiskAnalyzer {
   private detectDuplicateBlocks(): { count: number; blocks: string[] } {
     const blocks: string[] = [];
     const minBlockSize = 4; // Taille minimum d'un bloc dupliqué
-    
+
     // Générer tous les blocs possibles
     for (let i = 0; i <= this.lines.length - minBlockSize; i++) {
       for (let size = minBlockSize; i + size <= this.lines.length; size++) {
         const block = this.lines.slice(i, i + size).join('\n');
-        if (block.trim().length > 30) { // Ignorer les blocs trop petits
+        if (block.trim().length > 30) {
+          // Ignorer les blocs trop petits
           blocks.push(block);
         }
       }
     }
-    
+
     // Détecter les duplications
     const duplicateBlocks = new Set<string>();
     for (let i = 0; i < blocks.length; i++) {
@@ -309,10 +320,10 @@ export class SecurityRiskAnalyzer {
         }
       }
     }
-    
+
     return {
       count: duplicateBlocks.size,
-      blocks: Array.from(duplicateBlocks)
+      blocks: Array.from(duplicateBlocks),
     };
   }
 
@@ -321,22 +332,22 @@ export class SecurityRiskAnalyzer {
    */
   private detectSecurityVulnerabilities(): SecurityVulnerability[] {
     const vulnerabilities: SecurityVulnerability[] = [];
-    
+
     // Vulnérabilité : SQL Injection
     this.detectSqlInjection(vulnerabilities);
-    
+
     // Vulnérabilité : XSS
     this.detectXss(vulnerabilities);
-    
+
     // Vulnérabilité : Header Injection
     this.detectHeaderInjection(vulnerabilities);
-    
+
     // Vulnérabilité : File Inclusion
     this.detectFileInclusion(vulnerabilities);
-    
+
     // Autres vulnérabilités
     this.detectOtherVulnerabilities(vulnerabilities);
-    
+
     return vulnerabilities;
   }
 
@@ -352,21 +363,22 @@ export class SecurityRiskAnalyzer {
       /SELECT\s+.*\s+FROM\s+.*\s+WHERE\s+.*=\s*[\$_]/gi,
       /INSERT\s+INTO\s+.*\s+VALUES\s*\([^\)]*\$[^\)]*\)/gi,
       /UPDATE\s+.*\s+SET\s+.*=.*\$[^;]*/gi,
-      /DELETE\s+FROM\s+.*\s+WHERE\s+.*=\s*[\$_]/gi
+      /DELETE\s+FROM\s+.*\s+WHERE\s+.*=\s*[\$_]/gi,
     ];
-    
+
     for (let i = 0; i < this.lines.length; i++) {
       const line = this.lines[i];
-      
+
       for (const pattern of sqlInjectionPatterns) {
         const matches = line.match(pattern);
-        
+
         if (matches) {
           // Vérifier s'il y a une préparation préalable (prepared statements)
-          const isPrepared = line.includes('prepare(') || 
-                           this.phpContent.includes('bind_param') || 
-                           this.phpContent.includes('PDO::prepare');
-          
+          const isPrepared =
+            line.includes('prepare(') ||
+            this.phpContent.includes('bind_param') ||
+            this.phpContent.includes('PDO::prepare');
+
           if (!isPrepared) {
             vulnerabilities.push({
               type: 'SQL Injection',
@@ -374,7 +386,8 @@ export class SecurityRiskAnalyzer {
               description: `Requête SQL non préparée avec des variables utilisateur: ${matches[0]}`,
               severity: 'critical',
               code: line.trim(),
-              recommendation: 'Utiliser des requêtes préparées ou Prisma pour toutes les opérations de base de données'
+              recommendation:
+                'Utiliser des requêtes préparées ou Prisma pour toutes les opérations de base de données',
             });
           }
         }
@@ -390,21 +403,22 @@ export class SecurityRiskAnalyzer {
       /echo\s+[\$][^;]*;/g,
       /print\s+[\$][^;]*;/g,
       /\?>[^<]*<\?php/g,
-      /<\?=\s*\$[^>]*\?>/g
+      /<\?=\s*\$[^>]*\?>/g,
     ];
-    
+
     for (let i = 0; i < this.lines.length; i++) {
       const line = this.lines[i];
-      
+
       for (const pattern of xssPatterns) {
         const matches = line.match(pattern);
-        
+
         if (matches) {
           // Vérifier s'il y a un échappement (htmlspecialchars, htmlentities, etc.)
-          const isEscaped = line.includes('htmlspecialchars') || 
-                          line.includes('htmlentities') || 
-                          line.includes('strip_tags');
-          
+          const isEscaped =
+            line.includes('htmlspecialchars') ||
+            line.includes('htmlentities') ||
+            line.includes('strip_tags');
+
           if (!isEscaped) {
             vulnerabilities.push({
               type: 'Cross-Site Scripting (XSS)',
@@ -412,7 +426,8 @@ export class SecurityRiskAnalyzer {
               description: 'Sortie de données utilisateur sans échappement',
               severity: 'critical',
               code: line.trim(),
-              recommendation: 'Utiliser htmlspecialchars() ou les échappements automatiques de Remix'
+              recommendation:
+                'Utiliser htmlspecialchars() ou les échappements automatiques de Remix',
             });
           }
         }
@@ -426,15 +441,15 @@ export class SecurityRiskAnalyzer {
   private detectHeaderInjection(vulnerabilities: SecurityVulnerability[]): void {
     const headerPatterns = [
       /header\(["']?([^'"]*[\$][^'"]*)["']?\)/g,
-      /header\s*\(\s*['"]Location:\s*['"]\s*\.\s*\$/g
+      /header\s*\(\s*['"]Location:\s*['"]\s*\.\s*\$/g,
     ];
-    
+
     for (let i = 0; i < this.lines.length; i++) {
       const line = this.lines[i];
-      
+
       for (const pattern of headerPatterns) {
         const matches = line.match(pattern);
-        
+
         if (matches) {
           vulnerabilities.push({
             type: 'Header Injection',
@@ -442,7 +457,8 @@ export class SecurityRiskAnalyzer {
             description: 'En-tête HTTP construit avec des données utilisateur',
             severity: 'medium',
             code: line.trim(),
-            recommendation: 'Valider strictement les entrées utilisateur avant de les utiliser dans les en-têtes HTTP'
+            recommendation:
+              'Valider strictement les entrées utilisateur avant de les utiliser dans les en-têtes HTTP',
           });
         }
       }
@@ -453,16 +469,14 @@ export class SecurityRiskAnalyzer {
    * Détecte les inclusions de fichiers non sécurisées
    */
   private detectFileInclusion(vulnerabilities: SecurityVulnerability[]): void {
-    const inclusionPatterns = [
-      /(include|require|include_once|require_once)\s*\(\s*[\$][^)]*\)/g
-    ];
-    
+    const inclusionPatterns = [/(include|require|include_once|require_once)\s*\(\s*[\$][^)]*\)/g];
+
     for (let i = 0; i < this.lines.length; i++) {
       const line = this.lines[i];
-      
+
       for (const pattern of inclusionPatterns) {
         const matches = line.match(pattern);
-        
+
         if (matches) {
           vulnerabilities.push({
             type: 'File Inclusion',
@@ -470,7 +484,8 @@ export class SecurityRiskAnalyzer {
             description: 'Inclusion de fichier dynamique avec données utilisateur',
             severity: 'critical',
             code: line.trim(),
-            recommendation: 'Remplacer par un système de routage sécurisé ou une liste blanche stricte de fichiers'
+            recommendation:
+              'Remplacer par un système de routage sécurisé ou une liste blanche stricte de fichiers',
           });
         }
       }
@@ -485,15 +500,15 @@ export class SecurityRiskAnalyzer {
     const evalPatterns = [
       /eval\s*\(\s*[\$][^)]*\)/g,
       /\$\w+\s*\(\s*[\$][^)]*\)/g, // Variable functions
-      /create_function\s*\(\s*[^)]*\)/g
+      /create_function\s*\(\s*[^)]*\)/g,
     ];
-    
+
     for (let i = 0; i < this.lines.length; i++) {
       const line = this.lines[i];
-      
+
       for (const pattern of evalPatterns) {
         const matches = line.match(pattern);
-        
+
         if (matches) {
           vulnerabilities.push({
             type: 'Code Injection',
@@ -501,21 +516,26 @@ export class SecurityRiskAnalyzer {
             description: 'Exécution dynamique de code avec données potentiellement non fiables',
             severity: 'critical',
             code: line.trim(),
-            recommendation: 'Remplacer par des mécanismes plus sûrs comme une liste définie de fonctions ou expressions'
+            recommendation:
+              'Remplacer par des mécanismes plus sûrs comme une liste définie de fonctions ou expressions',
           });
         }
       }
     }
-    
+
     // Problèmes CSRF
-    if (this.phpContent.includes('$_POST') && !this.phpContent.includes('csrf') && !this.phpContent.includes('token')) {
+    if (
+      this.phpContent.includes('$_POST') &&
+      !this.phpContent.includes('csrf') &&
+      !this.phpContent.includes('token')
+    ) {
       vulnerabilities.push({
         type: 'CSRF',
         lines: [],
         description: 'Formulaire sans protection CSRF détecté',
         severity: 'medium',
         code: 'N/A',
-        recommendation: 'Implémenter des jetons CSRF dans tous les formulaires'
+        recommendation: 'Implémenter des jetons CSRF dans tous les formulaires',
       });
     }
   }
@@ -525,7 +545,7 @@ export class SecurityRiskAnalyzer {
    */
   private calculateSecurityScore(vulnerabilities: SecurityVulnerability[]): number {
     let score = 10.0;
-    
+
     // Appliquer des pénalités en fonction des vulnérabilités
     for (const vuln of vulnerabilities) {
       switch (vuln.severity) {
@@ -543,7 +563,7 @@ export class SecurityRiskAnalyzer {
           break;
       }
     }
-    
+
     // Garantir que le score est entre 0 et 10
     return Math.max(0, Math.min(10, Math.round(score * 10) / 10));
   }
@@ -553,7 +573,7 @@ export class SecurityRiskAnalyzer {
    */
   private calculateQualityScore(metrics: ComplexityMetric[], behaviors: DynamicBehavior[]): number {
     let score = 10.0;
-    
+
     // Pénalités basées sur les métriques de complexité
     for (const metric of metrics) {
       if (metric.status === 'warning') {
@@ -562,10 +582,10 @@ export class SecurityRiskAnalyzer {
         score -= 1.5;
       }
     }
-    
+
     // Pénalités pour les comportements dynamiques
     score -= behaviors.length * 0.4;
-    
+
     // Garantir que le score est entre 0 et 10
     return Math.max(0, Math.min(10, Math.round(score * 10) / 10));
   }
@@ -575,7 +595,7 @@ export class SecurityRiskAnalyzer {
    */
   private calculateOverallRiskScore(securityScore: number, qualityScore: number): number {
     // Pondération: 60% sécurité, 40% qualité
-    const weightedScore = (securityScore * 0.6) + (qualityScore * 0.4);
+    const weightedScore = securityScore * 0.6 + qualityScore * 0.4;
     return Math.round(weightedScore * 10) / 10;
   }
 
@@ -584,70 +604,85 @@ export class SecurityRiskAnalyzer {
    */
   public async generateAuditSection(): Promise<string> {
     const analysis = await this.analyze();
-    
+
     // Formater les comportements dynamiques
     let dynamicBehaviorsText = '';
     if (analysis.dynamicBehaviors.length > 0) {
-      dynamicBehaviorsText = "Conditions spécifiques :\n\n";
-      
+      dynamicBehaviorsText = 'Conditions spécifiques :\n\n';
+
       // Prendre jusqu'à 3 exemples
       for (let i = 0; i < Math.min(3, analysis.dynamicBehaviors.length); i++) {
         dynamicBehaviorsText += `\`\`\`php\n${analysis.dynamicBehaviors[i].condition}\n\`\`\`\n\n`;
       }
-      
-      dynamicBehaviorsText += "Détection IA :\n\n";
-      
-      if (analysis.dynamicBehaviors.some(b => b.condition.includes('if') && b.condition.includes('{'))) {
-        dynamicBehaviorsText += "🔁 Logique métier cachée dans des if imbriqués\n\n";
+
+      dynamicBehaviorsText += 'Détection IA :\n\n';
+
+      if (
+        analysis.dynamicBehaviors.some(
+          (b) => b.condition.includes('if') && b.condition.includes('{')
+        )
+      ) {
+        dynamicBehaviorsText += '🔁 Logique métier cachée dans des if imbriqués\n\n';
       }
-      
-      if (analysis.dynamicBehaviors.some(b => b.type === 'multilingual')) {
-        dynamicBehaviorsText += "🌍 Présence de logique multilingue hardcodée\n\n";
+
+      if (analysis.dynamicBehaviors.some((b) => b.type === 'multilingual')) {
+        dynamicBehaviorsText += '🌍 Présence de logique multilingue hardcodée\n\n';
       }
-      
-      if (analysis.dynamicBehaviors.some(b => b.type === 'session' || b.type === 'cookie')) {
-        dynamicBehaviorsText += "🎭 Changements de comportement selon les sessions ou cookies (difficile à tester/migrer)\n\n";
+
+      if (analysis.dynamicBehaviors.some((b) => b.type === 'session' || b.type === 'cookie')) {
+        dynamicBehaviorsText +=
+          '🎭 Changements de comportement selon les sessions ou cookies (difficile à tester/migrer)\n\n';
       }
-      
-      dynamicBehaviorsText += "Recommandation :\n\n";
-      
+
+      dynamicBehaviorsText += 'Recommandation :\n\n';
+
       // Agréger les recommandations uniques
-      const uniqueRecommendations = [...new Set(analysis.dynamicBehaviors.map(b => b.recommendation))];
+      const uniqueRecommendations = [
+        ...new Set(analysis.dynamicBehaviors.map((b) => b.recommendation)),
+      ];
       for (const rec of uniqueRecommendations) {
         dynamicBehaviorsText += `- ${rec}\n`;
       }
     } else {
-      dynamicBehaviorsText = "Aucun comportement dynamique complexe détecté.\n\n";
+      dynamicBehaviorsText = 'Aucun comportement dynamique complexe détecté.\n\n';
     }
-    
+
     // Formater les métriques de complexité
-    let complexityText = "| Critère | Valeur détectée | Seuil critique | État |\n";
-    complexityText += "|---------|----------------|---------------|-------|\n";
-    
+    let complexityText = '| Critère | Valeur détectée | Seuil critique | État |\n';
+    complexityText += '|---------|----------------|---------------|-------|\n';
+
     for (const metric of analysis.complexityMetrics) {
-      const statusIcon = metric.status === 'ok' ? '✅' : 
-                        metric.status === 'warning' ? '⚠️' : '🔴';
-      
-      complexityText += `| ${metric.name} | ${metric.value} ${metric.name === 'Duplication détectée' && metric.value > 0 ? 'blocs' : ''} | > ${metric.threshold} | ${statusIcon} |\n`;
+      const statusIcon = metric.status === 'ok' ? '✅' : metric.status === 'warning' ? '⚠️' : '🔴';
+
+      complexityText += `| ${metric.name} | ${metric.value} ${
+        metric.name === 'Duplication détectée' && metric.value > 0 ? 'blocs' : ''
+      } | > ${metric.threshold} | ${statusIcon} |\n`;
     }
-    
+
     // Formater les vulnérabilités de sécurité
     let securityText = '';
     if (analysis.securityVulnerabilities.length > 0) {
-      securityText = "| Type de faille | Ligne(s) | Description rapide | Gravité |\n";
-      securityText += "|--------------|---------|-------------------|--------|\n";
-      
+      securityText = '| Type de faille | Ligne(s) | Description rapide | Gravité |\n';
+      securityText += '|--------------|---------|-------------------|--------|\n';
+
       for (const vuln of analysis.securityVulnerabilities) {
-        const severityIcon = vuln.severity === 'critical' ? '🔴 Critique' : 
-                            vuln.severity === 'high' ? '🔴 Haute' :
-                            vuln.severity === 'medium' ? '⚠️ Moyen' : '⚡ Faible';
-        
-        securityText += `| ${vuln.type} | ${vuln.lines.join(', ')} | \`${vuln.code.length > 30 ? vuln.code.substring(0, 30) + '...' : vuln.code}\` | ${severityIcon} |\n`;
+        const severityIcon =
+          vuln.severity === 'critical'
+            ? '🔴 Critique'
+            : vuln.severity === 'high'
+              ? '🔴 Haute'
+              : vuln.severity === 'medium'
+                ? '⚠️ Moyen'
+                : '⚡ Faible';
+
+        securityText += `| ${vuln.type} | ${vuln.lines.join(', ')} | \`${
+          vuln.code.length > 30 ? vuln.code.substring(0, 30) + '...' : vuln.code
+        }\` | ${severityIcon} |\n`;
       }
     } else {
-      securityText = "Aucune vulnérabilité de sécurité critique détectée.\n\n";
+      securityText = 'Aucune vulnérabilité de sécurité critique détectée.\n\n';
     }
-    
+
     // Assembler la section complète
     return `## 5. Qualité & Risques
 
@@ -662,20 +697,32 @@ Outil IA utilisé : \`complexity-score.ts\` (score McCabe + duplication + inline
 ### 5.3. Risques de sécurité détectés
 ${securityText}
 
-Score de sécurité IA (0 à 10) : ${analysis.securityScore} ${analysis.securityScore < 5 ? '❗' : analysis.securityScore < 7 ? '⚠️' : '✅'}
+Score de sécurité IA (0 à 10) : ${analysis.securityScore} ${
+      analysis.securityScore < 5 ? '❗' : analysis.securityScore < 7 ? '⚠️' : '✅'
+    }
 
 ### 5.4. Recommandations de sécurité
 
-${analysis.securityVulnerabilities.length > 0 ? 
-  analysis.securityVulnerabilities.map(v => `- ${v.recommendation}`).filter((v, i, a) => a.indexOf(v) === i).join('\n') : 
-  '- Maintenir le niveau de sécurité actuel lors de la migration'
+${
+  analysis.securityVulnerabilities.length > 0
+    ? analysis.securityVulnerabilities
+        .map((v) => `- ${v.recommendation}`)
+        .filter((v, i, a) => a.indexOf(v) === i)
+        .join('\n')
+    : '- Maintenir le niveau de sécurité actuel lors de la migration'
 }
 
 ### 5.5. Score global de risque
 
 Qualité technique : ${analysis.qualityScore}/10
 Sécurité : ${analysis.securityScore}/10
-**Score global : ${analysis.overallRiskScore}/10** ${analysis.overallRiskScore < 5 ? '🚨 Migration prioritaire' : analysis.overallRiskScore < 7 ? '⚠️ À surveiller' : '✅ Standard'}`;
+**Score global : ${analysis.overallRiskScore}/10** ${
+      analysis.overallRiskScore < 5
+        ? '🚨 Migration prioritaire'
+        : analysis.overallRiskScore < 7
+          ? '⚠️ À surveiller'
+          : '✅ Standard'
+    }`;
   }
 
   /**
@@ -684,23 +731,24 @@ Sécurité : ${analysis.securityScore}/10
   public async generateRiskScoreJson(): Promise<void> {
     const analysis = await this.analyze();
     const outputPath = this.filePath.replace('.php', '.risk_score.json');
-    
+
     const riskScore = {
       file: this.fileName,
       timestamp: new Date().toISOString(),
       scores: {
         security: analysis.securityScore,
         quality: analysis.qualityScore,
-        overall: analysis.overallRiskScore
+        overall: analysis.overallRiskScore,
       },
       metrics: {
         securityVulnerabilities: analysis.securityVulnerabilities.length,
         dynamicBehaviors: analysis.dynamicBehaviors.length,
-        complexityIssues: analysis.complexityMetrics.filter(m => m.status !== 'ok').length
+        complexityIssues: analysis.complexityMetrics.filter((m) => m.status !== 'ok').length,
       },
-      migrationPriority: analysis.overallRiskScore < 5 ? 'high' : analysis.overallRiskScore < 7 ? 'medium' : 'low'
+      migrationPriority:
+        analysis.overallRiskScore < 5 ? 'high' : analysis.overallRiskScore < 7 ? 'medium' : 'low',
     };
-    
+
     fs.writeFileSync(outputPath, JSON.stringify(riskScore, null, 2));
   }
 
@@ -710,7 +758,7 @@ Sécurité : ${analysis.securityScore}/10
   public async generateSecurityPatchPlan(): Promise<void> {
     const analysis = await this.analyze();
     const outputPath = this.filePath.replace('.php', '.security_patch_plan.md');
-    
+
     if (analysis.securityVulnerabilities.length === 0) {
       const content = `# Plan de sécurité pour ${this.fileName}
 
@@ -730,10 +778,10 @@ ${analysis.securityScore}/10 ✅
       fs.writeFileSync(outputPath, content);
       return;
     }
-    
+
     // Générer le plan de correction pour chaque vulnérabilité
     let vulnerabilitiesSection = '';
-    
+
     for (const vuln of analysis.securityVulnerabilities) {
       vulnerabilitiesSection += `### ${vuln.type} (${vuln.severity})
 
@@ -751,7 +799,7 @@ ${this.generateCorrectionExample(vuln)}
 
 `;
     }
-    
+
     const content = `# Plan de sécurité pour ${this.fileName}
 
 ## Résumé
@@ -759,7 +807,9 @@ ${this.generateCorrectionExample(vuln)}
 Ce fichier présente ${analysis.securityVulnerabilities.length} vulnérabilité(s) de sécurité qui doivent être corrigées lors de la migration.
 
 - Score de sécurité actuel: ${analysis.securityScore}/10 ${analysis.securityScore < 5 ? '❗' : '⚠️'}
-- Niveau de priorité: ${analysis.overallRiskScore < 5 ? 'HAUTE' : analysis.overallRiskScore < 7 ? 'MOYENNE' : 'BASSE'}
+- Niveau de priorité: ${
+      analysis.overallRiskScore < 5 ? 'HAUTE' : analysis.overallRiskScore < 7 ? 'MOYENNE' : 'BASSE'
+    }
 
 ## Vulnérabilités détectées et plan de correction
 
@@ -802,7 +852,7 @@ ${vulnerabilitiesSection}
    */
   private generateCorrectionExample(vulnerability: SecurityVulnerability): string {
     let example = '';
-    
+
     switch (vulnerability.type) {
       case 'SQL Injection':
         example = `2. Remplacer par une requête Prisma:
@@ -815,7 +865,7 @@ const user = await this.prisma.user.findUnique({
 });
 \`\`\``;
         break;
-        
+
       case 'Cross-Site Scripting (XSS)':
         example = `2. Utiliser l'échappement approprié:
 \`\`\`php
@@ -826,7 +876,7 @@ echo htmlspecialchars($_GET['msg']);
 <div>{data.message}</div>
 \`\`\``;
         break;
-        
+
       case 'Header Injection':
         example = `2. Valider strictement les entrées:
 \`\`\`typescript
@@ -837,7 +887,7 @@ redirect(@Query('url', new ParseUrlPipe()) url: string) {
 }
 \`\`\``;
         break;
-        
+
       case 'File Inclusion':
         example = `2. Utiliser un mécanisme sécurisé:
 \`\`\`typescript
@@ -852,7 +902,7 @@ export async function loader({ params }) {
 }
 \`\`\``;
         break;
-        
+
       case 'CSRF':
         example = `2. Implémenter la protection CSRF:
 \`\`\`typescript
@@ -869,11 +919,11 @@ export const action = async ({ request }) => {
 };
 \`\`\``;
         break;
-        
+
       default:
         example = `2. Remplacer par une implémentation sécurisée conforme aux standards NestJS/Remix`;
     }
-    
+
     return example;
   }
 }
@@ -884,12 +934,13 @@ if (require.main === module) {
     console.error('Usage: node analyze-security-risks.ts <file-path>');
     process.exit(1);
   }
-  
+
   const filePath = process.argv[2];
   const analyzer = new SecurityRiskAnalyzer(filePath);
-  
-  analyzer.generateAuditSection()
-    .then(section => {
+
+  analyzer
+    .generateAuditSection()
+    .then((section) => {
       console.log(section);
       return analyzer.generateRiskScoreJson();
     })
@@ -898,9 +949,14 @@ if (require.main === module) {
     })
     .then(() => {
       console.log(`Analyse de sécurité terminée pour ${filePath}`);
-      console.log(`Fichiers générés: ${filePath.replace('.php', '.risk_score.json')} et ${filePath.replace('.php', '.security_patch_plan.md')}`);
+      console.log(
+        `Fichiers générés: ${filePath.replace('.php', '.risk_score.json')} et ${filePath.replace(
+          '.php',
+          '.security_patch_plan.md'
+        )}`
+      );
     })
-    .catch(error => {
+    .catch((error) => {
       console.error(`Erreur: ${error}`);
       process.exit(1);
     });

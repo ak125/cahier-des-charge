@@ -7,12 +7,12 @@
  * Inclut maintenant des mesures de performance Lighthouse.
  */
 
-import * as fs from 'fs-extra';
+import { execSync, spawn } from 'child_process';
 import * as path from 'path';
 import axios from 'axios';
-import { execSync, spawn } from 'child_process';
-import * as dotenv from 'dotenv';
 import chalk from 'chalk';
+import * as dotenv from 'dotenv';
+import * as fs from 'fs-extra';
 
 // Chargement de la configuration
 dotenv.config();
@@ -57,8 +57,8 @@ interface LighthouseResults {
 
 class PreviewAgent implements BaseAgent, BusinessAgent {
   private config: PreviewConfig;
-  private previewDir: string = '.preview';
-  private previewUrl: string = '';
+  private previewDir = '.preview';
+  private previewUrl = '';
   private prInfo: MigrationInfo;
 
   constructor(prNumber: string, branchName: string) {

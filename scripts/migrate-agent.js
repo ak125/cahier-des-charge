@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 /**
  * Script de migration d'agents vers l'architecture standardisée
- * 
- * Ce script analyse un agent existant et génère le code de base pour sa migration 
+ *
+ * Ce script analyse un agent existant et génère le code de base pour sa migration
  * vers la nouvelle architecture à 3 couches.
- * 
+ *
  * Usage: node migrate-agent.js <chemin-vers-agent-source> <type-agent>
- * 
+ *
  * Types d'agents supportés: analyzer, generator, validator, orchestrator
  */
 
@@ -20,7 +20,7 @@ const AGENT_TYPES = {
   analyzer: path.join(AGENTS_ROOT, 'analyzers'),
   generator: path.join(AGENTS_ROOT, 'generators'),
   validator: path.join(AGENTS_ROOT, 'validators'),
-  orchestrator: path.join(AGENTS_ROOT, 'orchestrators')
+  orchestrator: path.join(AGENTS_ROOT, 'orchestrators'),
 };
 
 // Templates de migration
@@ -103,7 +103,7 @@ export class [NOM_CLASSE] extends BaseAnalyzerAgent {
   }
 }
   `,
-  
+
   generator: `
 /**
  * [NOM_AGENT] - [DESCRIPTION_COURTE]
@@ -189,7 +189,7 @@ export class [NOM_CLASSE] extends BaseGeneratorAgent {
   }
 }
   `,
-  
+
   validator: `
 /**
  * [NOM_AGENT] - [DESCRIPTION_COURTE]
@@ -283,7 +283,7 @@ export class [NOM_CLASSE] extends BaseValidatorAgent {
   }
 }
   `,
-  
+
   orchestrator: `
 /**
  * [NOM_AGENT] - [DESCRIPTION_COURTE]
@@ -445,7 +445,7 @@ export class [NOM_CLASSE] extends BaseOrchestratorAgent {
     }
   }
 }
-  `
+  `,
 };
 
 /**
@@ -454,61 +454,69 @@ export class [NOM_CLASSE] extends BaseOrchestratorAgent {
 async function main() {
   // Vérifier les arguments
   const [sourceFilePath, agentType] = process.argv.slice(2);
-  
+
   if (!sourceFilePath || !AGENT_TYPES[agentType]) {
     console.error('Usage: node migrate-agent.js <chemin-vers-agent-source> <type-agent>');
-    console.error('Types d\'agents supportés:', Object.keys(AGENT_TYPES).join(', '));
+    console.error("Types d'agents supportés:", Object.keys(AGENT_TYPES).join(', '));
     process.exit(1);
   }
-  
+
   // Vérifier si le fichier source existe
   if (!fs.existsSync(sourceFilePath)) {
     console.error(`Le fichier source n'existe pas: ${sourceFilePath}`);
     process.exit(1);
   }
-  
+
   try {
     // Analyser le fichier source
     console.log(`\n🔍 Analyse du fichier ${sourceFilePath}...`);
     const sourceCode = await fs.readFile(sourceFilePath, 'utf-8');
-    
+
     // Extraire les informations de base
     const className = extractClassName(sourceCode);
     const fileName = path.basename(sourceFilePath);
     const agentId = fileName.replace(/\.(ts|js)$/, '').toLowerCase();
     const description = extractDescription(sourceCode);
     const configProperties = extractConfigProperties(sourceCode);
-    
-    console.log(`✅ Informations extraites:`);
+
+    console.log('✅ Informations extraites:');
     console.log(`- Nom de classe: ${className}`);
     console.log(`- ID de l'agent: ${agentId}`);
     console.log(`- Description: ${description}`);
-    
+
     // Générer le nom du fichier de destination
     const destFileName = `${agentId.replace(/-agent$/, '')}-agent.ts`;
     const destFilePath = path.join(AGENT_TYPES[agentType], destFileName);
-    
+
     // Générer le code migré
     let migratedCode = TEMPLATES[agentType]
       .replace(/\[NOM_CLASSE\]/g, className)
       .replace(/\[ID_AGENT\]/g, agentId)
-      .replace(/\[NOM_LISIBLE\]/g, className.replace(/([A-Z])/g, ' $1').trim().replace(/Agent$/, ''))
+      .replace(
+        /\[NOM_LISIBLE\]/g,
+        className
+          .replace(/([A-Z])/g, ' $1')
+          .trim()
+          .replace(/Agent$/, '')
+      )
       .replace(/\[DESCRIPTION_COURTE\]/g, description.split('.')[0].trim())
       .replace(/\[DESCRIPTION_LONGUE\]/g, description)
       .replace(/\[CONFIGS_SPECIFIQUES\]/g, configProperties);
-      
+
     // Définir les tags automatiquement
     const tags = generateTags(agentId, description, agentType);
     migratedCode = migratedCode.replace(/\[TAGS\]/g, JSON.stringify(tags));
-    
+
     // Créer le fichier de destination
     console.log(`📝 Création du fichier migré: ${destFilePath}`);
     await fs.ensureDir(path.dirname(destFilePath));
     await fs.writeFile(destFilePath, migratedCode, 'utf-8');
-    
+
     console.log(`\n✨ Migration terminée avec succès! Fichier créé: ${destFilePath}`);
-    console.log('\n⚠️ Note: La migration automatique est un point de départ. Veuillez vérifier et adapter le code généré selon vos besoins spécifiques.');
-    
+    console.log(
+      '\n⚠️ Note: La migration automatique est un point de départ. Veuillez vérifier et adapter le code généré selon vos besoins spécifiques.'
+    );
+
     // Ouvrir le fichier si possible
     try {
       console.log('📂 Ouverture du fichier migré...');
@@ -519,10 +527,9 @@ async function main() {
       } else {
         execSync(`xdg-open ${destFilePath}`);
       }
-    } catch (error) {
-      console.log('⚠️ Impossible d\'ouvrir automatiquement le fichier.');
+    } catch (_error) {
+      console.log("⚠️ Impossible d'ouvrir automatiquement le fichier.");
     }
-    
   } catch (error) {
     console.error('\n❌ Erreur lors de la migration:', error);
     process.exit(1);
@@ -533,13 +540,13 @@ async function main() {
  * Extrait le nom de la classe depuis le code source
  */
 function extractClassName(sourceCode) {
-  const classMatch = sourceCode.match(/(?:export\s+class\s+)(\w+)/) ||
-                     sourceCode.match(/(?:class\s+)(\w+)/);
-                     
-  if (classMatch && classMatch[1]) {
+  const classMatch =
+    sourceCode.match(/(?:export\s+class\s+)(\w+)/) || sourceCode.match(/(?:class\s+)(\w+)/);
+
+  if (classMatch?.[1]) {
     return classMatch[1];
   }
-  
+
   // Générer un nom par défaut basé sur le timestamp
   return `MigratedAgent${Date.now().toString().slice(-4)}`;
 }
@@ -549,19 +556,19 @@ function extractClassName(sourceCode) {
  */
 function extractDescription(sourceCode) {
   const commentBlocks = sourceCode.match(/\/\*\*([\s\S]*?)\*\//g) || [];
-  
+
   for (const block of commentBlocks) {
     // Supprimer les astérisques et les espaces au début de chaque ligne
     const cleanedBlock = block
       .replace(/\/\*\*|\*\//g, '')
       .replace(/^\s*\*\s*/gm, '')
       .trim();
-      
+
     if (cleanedBlock) {
       return cleanedBlock;
     }
   }
-  
+
   return "Agent migré depuis l'ancienne architecture";
 }
 
@@ -571,19 +578,19 @@ function extractDescription(sourceCode) {
 function extractConfigProperties(sourceCode) {
   // Rechercher les interfaces de configuration
   const interfaceMatch = sourceCode.match(/(?:interface\s+\w+Config\s*{)([\s\S]*?)}/);
-  
-  if (interfaceMatch && interfaceMatch[1]) {
+
+  if (interfaceMatch?.[1]) {
     return interfaceMatch[1].trim();
   }
-  
+
   // Rechercher les propriétés de classe qui pourraient être des configurations
   const properties = [];
   const propertyMatches = sourceCode.matchAll(/private\s+(\w+):\s*([\w<>[\]]+)/g);
-  
+
   for (const match of propertyMatches) {
     properties.push(`${match[1]}?: ${match[2]};`);
   }
-  
+
   return properties.join('\n  ');
 }
 
@@ -592,30 +599,31 @@ function extractConfigProperties(sourceCode) {
  */
 function generateTags(agentId, description, agentType) {
   const tags = [agentType];
-  
+
   // Ajouter des mots-clés depuis l'ID
-  const idWords = agentId.split('-').filter(word => 
-    word.length > 2 && 
-    !['the', 'and', 'for', 'agent'].includes(word)
-  );
-  
+  const idWords = agentId
+    .split('-')
+    .filter((word) => word.length > 2 && !['the', 'and', 'for', 'agent'].includes(word));
+
   // Ajouter des mots-clés depuis la description
-  const descWords = description.toLowerCase()
+  const descWords = description
+    .toLowerCase()
     .replace(/[^\w\s]/g, '')
     .split(/\s+/)
-    .filter(word => 
-      word.length > 4 && 
-      !['agent', 'class', 'function', 'method', 'which', 'allow', 'allows'].includes(word)
+    .filter(
+      (word) =>
+        word.length > 4 &&
+        !['agent', 'class', 'function', 'method', 'which', 'allow', 'allows'].includes(word)
     );
-  
+
   // Fusionner tous les tags et éliminer les doublons
   const allTags = [...new Set([...tags, ...idWords, ...descWords])].slice(0, 5);
-  
+
   return allTags;
 }
 
 // Exécuter le script
-main().catch(error => {
+main().catch((error) => {
   console.error('Erreur non gérée:', error);
   process.exit(1);
 });

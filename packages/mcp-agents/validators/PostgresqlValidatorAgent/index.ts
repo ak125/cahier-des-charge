@@ -5,7 +5,4 @@
 
 import { PostgresqlValidatorAgent } from './PostgresqlValidatorAgent';
 
-export {
-  PostgresqlValidatorAgent,
-};
-
+export { PostgresqlValidatorAgent };

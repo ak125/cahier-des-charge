@@ -5,14 +5,14 @@
  * et génère des rapports d'analyse SEO détaillés
  */
 
-import { MCPAgent, AgentContext, AgentConfig } from '../packagesDoDotmcp-core';
-import fs from 'fs-extra';
-import path from 'path';
 import { exec } from 'child_process';
+import path from 'path';
 import util from 'util';
+import fs from 'fs-extra';
 import glob from 'glob';
-import { Database } from '../packages/shared/DbConnector';
 import { BaseAgent, BusinessAgent } from '../core/interfaces/BaseAgent';
+import { Database } from '../packages/shared/DbConnector';
+import { AgentConfig, AgentContext, MCPAgent } from '../packagesDoDotmcp-core';
 
 
 const execPromise = util.promisify(exec);

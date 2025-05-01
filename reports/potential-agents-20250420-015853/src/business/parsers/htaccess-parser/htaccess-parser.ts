@@ -5,10 +5,10 @@ import { AnalyzerAgent , ParserAgent} from '@workspaces/cahier-des-charge/src/co
  * Date: 12 avril 2025
  */
 
-import { ServerConfig, RouteConfig } from '../migration/CaddyfileGenerator';
 import * as fs from 'fs';
 import * as path from 'path';
 import { BaseAgent, BusinessAgent } from '../core/interfaces/BaseAgent';
+import { RouteConfig, ServerConfig } from '../migration/CaddyfileGenerator';
 
 
 export interface HtaccessRule {
@@ -309,7 +309,7 @@ export class HtaccessParser implements BusinessAgent, BaseAgent, BusinessAgent, 
     }
     
     // Détecter le type de règle en fonction des drapeaux
-    let routeType: string = 'rewrite';
+    let routeType = 'rewrite';
     let status: number | undefined;
     
     if (rule.flags) {
@@ -368,7 +368,7 @@ export class HtaccessParser implements BusinessAgent, BaseAgent, BusinessAgent, 
     
     // Conditions spéciales (e.g., vérification d'en-têtes)
     if (rule.conditions) {
-      let matcherExpressions: string[] = [];
+      const matcherExpressions: string[] = [];
       
       for (const condition of rule.conditions) {
         if (condition.test === '%{HTTP_HOST}') {

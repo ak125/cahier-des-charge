@@ -10,8 +10,8 @@ import { AnalyzerAgent } from '@workspaces/cahier-des-charge/src/core/interfaces
 
 import * as fs from 'fs';
 import * as path from 'path';
-import { MySQLSchema, TableInfo, ColumnInfo } from '../models/schema';
 import { BaseAgent, BusinessAgent } from '../core/interfaces/BaseAgent';
+import { ColumnInfo, MySQLSchema, TableInfo } from '../models/schema';
 
 
 interface PrismaModelField {

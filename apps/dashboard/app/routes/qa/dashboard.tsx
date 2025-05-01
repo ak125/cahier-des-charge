@@ -1,11 +1,8 @@
+import { useLoaderData } from '@remix-run/react';
 import React, { useEffect, useState } from 'react';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "~/components/ui/card";
+import { Badge } from '~/components/ui/badge';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '~/components/ui/card';
+import { Progress } from '~/components/ui/progress';
 import {
   Table,
   TableBody,
@@ -13,52 +10,49 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "~/components/ui/table";
-import { Badge } from "~/components/ui/badge";
-import { Progress } from "~/components/ui/progress";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
-import { useLoaderData } from '@remix-run/react';
-import type { QAResultSummary, QASummary } from "../../integration/qa-dashboard";
+} from '~/components/ui/table';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '~/components/ui/tabs';
+import type { QAResultSummary, QASummary } from '../../integration/qa-dashboard';
 
 export const loader = async () => {
   // Importer dynamiquement pour éviter les problèmes avec SSR
-  const { getQASummary } = await import("../../integration/qa-dashboard");
+  const { getQASummary } = await import('../../integration/qa-dashboard');
   const summary = await getQASummary();
   return { summary };
 };
 
 export default function QADashboard() {
   const { summary } = useLoaderData<{ summary: QASummary }>();
-  
+
   return (
     <div className="container mx-auto py-10">
       <h1 className="text-3xl font-bold mb-8">Tableau de bord QA - Migrations PHP vers Remix</h1>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <StatCard 
-          title="Score Moyen" 
-          value={`${Math.round(summary.averageScore)}/100`} 
+        <StatCard
+          title="Score Moyen"
+          value={`${Math.round(summary.averageScore)}/100`}
           description="Score de qualité moyen des migrations"
           status={getScoreStatus(summary.averageScore)}
         />
-        <StatCard 
-          title="Migrations Analysées" 
-          value={summary.totalFiles.toString()} 
+        <StatCard
+          title="Migrations Analysées"
+          value={summary.totalFiles.toString()}
           description="Nombre total de fichiers analysés"
         />
-        <StatCard 
-          title="Taux de Réussite" 
+        <StatCard
+          title="Taux de Réussite"
           value={`${Math.round((summary.okCount / (summary.totalFiles || 1)) * 100)}%`}
           description="Pourcentage de migrations conformes"
           status={getSuccessRateStatus(summary.okCount, summary.totalFiles)}
         />
       </div>
-      
+
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <QAStatusOverview summary={summary} />
         <TopIssuesCard issues={summary.topIssues} />
       </div>
-      
+
       <div className="mt-10">
         <QAResultsTable results={summary.recentResults} />
       </div>
@@ -66,18 +60,27 @@ export default function QADashboard() {
   );
 }
 
-function StatCard({ title, value, description, status }: { 
-  title: string; 
-  value: string; 
+function StatCard({
+  title,
+  value,
+  description,
+  status,
+}: {
+  title: string;
+  value: string;
   description: string;
   status?: 'success' | 'warning' | 'error';
 }) {
   const getStatusColor = () => {
     switch (status) {
-      case 'success': return 'bg-green-100 text-green-800';
-      case 'warning': return 'bg-yellow-100 text-yellow-800';
-      case 'error': return 'bg-red-100 text-red-800';
-      default: return 'bg-blue-100 text-blue-800';
+      case 'success':
+        return 'bg-green-100 text-green-800';
+      case 'warning':
+        return 'bg-yellow-100 text-yellow-800';
+      case 'error':
+        return 'bg-red-100 text-red-800';
+      default:
+        return 'bg-blue-100 text-blue-800';
     }
   };
 
@@ -92,7 +95,11 @@ function StatCard({ title, value, description, status }: {
           <p className="text-3xl font-bold">{value}</p>
           {status && (
             <Badge className={getStatusColor()}>
-              {status === 'success' ? 'Excellent' : status === 'warning' ? 'À améliorer' : 'Critique'}
+              {status === 'success'
+                ? 'Excellent'
+                : status === 'warning'
+                  ? 'À améliorer'
+                  : 'Critique'}
             </Badge>
           )}
         </div>
@@ -115,25 +122,43 @@ function QAStatusOverview({ summary }: { summary: QASummary }) {
           <div>
             <div className="flex items-center justify-between mb-1">
               <span className="text-sm font-medium">Conformes (OK)</span>
-              <span className="text-sm text-muted-foreground">{summary.okCount} / {total}</span>
+              <span className="text-sm text-muted-foreground">
+                {summary.okCount} / {total}
+              </span>
             </div>
-            <Progress value={(summary.okCount / total) * 100} className="h-2 bg-slate-200" indicatorClassName="bg-green-500" />
+            <Progress
+              value={(summary.okCount / total) * 100}
+              className="h-2 bg-slate-200"
+              indicatorClassName="bg-green-500"
+            />
           </div>
-          
+
           <div>
             <div className="flex items-center justify-between mb-1">
               <span className="text-sm font-medium">Partielles</span>
-              <span className="text-sm text-muted-foreground">{summary.partialCount} / {total}</span>
+              <span className="text-sm text-muted-foreground">
+                {summary.partialCount} / {total}
+              </span>
             </div>
-            <Progress value={(summary.partialCount / total) * 100} className="h-2 bg-slate-200" indicatorClassName="bg-yellow-500" />
+            <Progress
+              value={(summary.partialCount / total) * 100}
+              className="h-2 bg-slate-200"
+              indicatorClassName="bg-yellow-500"
+            />
           </div>
-          
+
           <div>
             <div className="flex items-center justify-between mb-1">
               <span className="text-sm font-medium">Non conformes</span>
-              <span className="text-sm text-muted-foreground">{summary.failedCount} / {total}</span>
+              <span className="text-sm text-muted-foreground">
+                {summary.failedCount} / {total}
+              </span>
             </div>
-            <Progress value={(summary.failedCount / total) * 100} className="h-2 bg-slate-200" indicatorClassName="bg-red-500" />
+            <Progress
+              value={(summary.failedCount / total) * 100}
+              className="h-2 bg-slate-200"
+              indicatorClassName="bg-red-500"
+            />
           </div>
         </div>
       </CardContent>
@@ -159,7 +184,10 @@ function TopIssuesCard({ issues }: { issues: { issueType: string; count: number 
                   <span className="text-sm font-medium">{formatIssueType(issue.issueType)}</span>
                   <span className="text-sm text-muted-foreground">{issue.count}x</span>
                 </div>
-                <Progress value={calculatePercentage(issue.count, issues)} className="h-2 bg-slate-200" />
+                <Progress
+                  value={calculatePercentage(issue.count, issues)}
+                  className="h-2 bg-slate-200"
+                />
               </div>
             ))}
           </div>
@@ -199,9 +227,14 @@ function QAResultsTable({ results }: { results: QAResultSummary[] }) {
                   <TableCell>
                     <StatusBadge status={result.status} />
                   </TableCell>
-                  <TableCell>{result.presentFieldsCount}/{result.presentFieldsCount + result.missingFieldsCount}</TableCell>
+                  <TableCell>
+                    {result.presentFieldsCount}/
+                    {result.presentFieldsCount + result.missingFieldsCount}
+                  </TableCell>
                   <TableCell>{result.issuesCount}</TableCell>
-                  <TableCell className="text-muted-foreground">{formatDate(result.timestamp)}</TableCell>
+                  <TableCell className="text-muted-foreground">
+                    {formatDate(result.timestamp)}
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -236,11 +269,11 @@ function getFileName(path: string): string {
 function formatDate(dateString: string): string {
   const date = new Date(dateString);
   return new Intl.DateTimeFormat('fr-FR', {
-    day: '2-dDoDoDoDotgit',
-    month: '2-dDoDoDoDotgit',
+    day: '2-dDoDogit',
+    month: '2-dDoDogit',
     year: 'numeric',
-    hour: '2-dDoDoDoDotgit',
-    minute: '2-dDoDoDoDotgit'
+    hour: '2-dDoDogit',
+    minute: '2-dDoDogit',
   }).format(date);
 }
 
@@ -252,9 +285,9 @@ function getScoreStatus(score: number): 'success' | 'warning' | 'error' {
 
 function getSuccessRateStatus(okCount: number, total: number): 'success' | 'warning' | 'error' {
   if (total === 0) return 'warning';
-  
+
   const rate = (okCount / total) * 100;
-  
+
   if (rate >= 80) return 'success';
   if (rate >= 50) return 'warning';
   return 'error';
@@ -263,20 +296,20 @@ function getSuccessRateStatus(okCount: number, total: number): 'success' | 'warn
 function formatIssueType(issueType: string): string {
   // Transformer "type:severity" en texte lisible
   const [type, severity] = issueType.split(':');
-  
+
   const typeMap: Record<string, string> = {
-    'seo': 'SEO',
-    'type': 'Typage',
-    'validation': 'Validation',
-    'behavior': 'Comportement'
+    seo: 'SEO',
+    type: 'Typage',
+    validation: 'Validation',
+    behavior: 'Comportement',
   };
-  
+
   const severityMap: Record<string, string> = {
-    'error': 'critique',
-    'warning': 'avertissement',
-    'info': 'information'
+    error: 'critique',
+    warning: 'avertissement',
+    info: 'information',
   };
-  
+
   return `${typeMap[type] || type} (${severityMap[severity] || severity})`;
 }
 

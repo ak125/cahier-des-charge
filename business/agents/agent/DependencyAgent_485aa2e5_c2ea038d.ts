@@ -3,7 +3,7 @@
  * Agent export file
  */
 
-import { DependencyAgent } from ./DependencyAgentstructure-agent';
+import { DependencyAgent } from './DependencyAgentstructure-agent';
 
 export { DependencyAgent };
 export default DependencyAgent;

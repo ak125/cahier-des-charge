@@ -3,11 +3,7 @@ import { z } from 'zod';
 /**
  * Enum pour UserRole
  */
-export const UserRoleSchema = z.enum([
-  'USER',
-  'ADMIN',
-  'EDITOR',
-]);
+export const UserRoleSchema = z.enum(['USER', 'ADMIN', 'EDITOR']);
 
 export type UserRole = z.infer<typeof UserRoleSchema>;
 
@@ -29,8 +25,12 @@ export type OrderStatus = z.infer<typeof OrderStatusSchema>;
  */
 export const UserCreateSchema = z.object({
   email: z.string().email({ message: "L'email est invalide" }),
-  name: z.string().min(2, { message: "Le nom doit contenir au moins 2 caractères" }).nullable().optional(),
-  password: z.string().min(8, { message: "Le mot de passe doit contenir au moins 8 caractères" }),
+  name: z
+    .string()
+    .min(2, { message: 'Le nom doit contenir au moins 2 caractères' })
+    .nullable()
+    .optional(),
+  password: z.string().min(8, { message: 'Le mot de passe doit contenir au moins 8 caractères' }),
   role: UserRoleSchema.optional(),
   isActive: z.boolean().optional(),
   emailVerified: z.boolean().optional(),
@@ -38,8 +38,15 @@ export const UserCreateSchema = z.object({
 
 export const UserUpdateSchema = z.object({
   email: z.string().email({ message: "L'email est invalide" }).optional(),
-  name: z.string().min(2, { message: "Le nom doit contenir au moins 2 caractères" }).nullable().optional(),
-  password: z.string().min(8, { message: "Le mot de passe doit contenir au moins 8 caractères" }).optional(),
+  name: z
+    .string()
+    .min(2, { message: 'Le nom doit contenir au moins 2 caractères' })
+    .nullable()
+    .optional(),
+  password: z
+    .string()
+    .min(8, { message: 'Le mot de passe doit contenir au moins 8 caractères' })
+    .optional(),
   role: UserRoleSchema.optional(),
   isActive: z.boolean().optional(),
   emailVerified: z.boolean().optional(),
@@ -67,23 +74,33 @@ export type User = z.infer<typeof UserSchema>;
  * Schéma de base pour un produit
  */
 export const ProductBaseSchema = z.object({
-  name: z.string()
-    .min(2, "Le nom doit contenir au moins 2 caractères")
-    .max(100, "Le nom doit contenir au maximum 100 caractères"),
-  description: z.string()
-    .min(10, "La description doit contenir au moins 10 caractères")
-    .max(500, "La description doit contenir au maximum 500 caractères")
+  name: z
+    .string()
+    .min(2, 'Le nom doit contenir au moins 2 caractères')
+    .max(100, 'Le nom doit contenir au maximum 100 caractères'),
+  description: z
+    .string()
+    .min(10, 'La description doit contenir au moins 10 caractères')
+    .max(500, 'La description doit contenir au maximum 500 caractères')
     .optional(),
-  price: z.number()
-    .positive("Le prix doit être positif")
-    .min(0.01, "Le prix minimum est de 0.01 €"),
-  stock: z.number()
-    .int("Le stock doit être un nombre entier")
-    .min(0, "Le stock ne peut pas être négatif")
+  price: z
+    .number()
+    .positive('Le prix doit être positif')
+    .min(0.01, 'Le prix minimum est de 0.01 €'),
+  stock: z
+    .number()
+    .int('Le stock doit être un nombre entier')
+    .min(0, 'Le stock ne peut pas être négatif')
     .default(0),
-  categoryId: z.string().min(1, "La catégorie est requise"),
-  images: z.string()
-    .transform(str => str.split(",").map(s => s.trim()).filter(Boolean))
+  categoryId: z.string().min(1, 'La catégorie est requise'),
+  images: z
+    .string()
+    .transform((str) =>
+      str
+        .split(',')
+        .map((s) => s.trim())
+        .filter(Boolean)
+    )
     .optional(),
   isActive: z.boolean().default(true),
 });
@@ -123,7 +140,7 @@ export const ProductFilterSchema = z.object({
   minPrice: z.number().optional(),
   maxPrice: z.number().optional(),
   isActive: z.boolean().optional(),
-  sort: z.enum(["nameAsc", "nameDesc", "priceAsc", "priceDesc", "newest", "oldest"]).optional(),
+  sort: z.enum(['nameAsc', 'nameDesc', 'priceAsc', 'priceDesc', 'newest', 'oldest']).optional(),
   page: z.number().int().positive().default(1),
   limit: z.number().int().positive().max(100).default(10),
 });
@@ -134,14 +151,21 @@ export type ProductFilter = z.infer<typeof ProductFilterSchema>;
  * Schéma pour Category
  */
 export const CategoryCreateSchema = z.object({
-  name: z.string().min(2, { message: "Le nom doit contenir au moins 2 caractères" }),
-  slug: z.string().regex(/^[a-z0-9-]+$/, { message: "Le slug doit contenir uniquement des lettres minuscules, chiffres et tirets" }),
+  name: z.string().min(2, { message: 'Le nom doit contenir au moins 2 caractères' }),
+  slug: z.string().regex(/^[a-z0-9-]+$/, {
+    message: 'Le slug doit contenir uniquement des lettres minuscules, chiffres et tirets',
+  }),
   image: z.string().url({ message: "L'URL de l'image est invalide" }).nullable().optional(),
 });
 
 export const CategoryUpdateSchema = z.object({
-  name: z.string().min(2, { message: "Le nom doit contenir au moins 2 caractères" }).optional(),
-  slug: z.string().regex(/^[a-z0-9-]+$/, { message: "Le slug doit contenir uniquement des lettres minuscules, chiffres et tirets" }).optional(),
+  name: z.string().min(2, { message: 'Le nom doit contenir au moins 2 caractères' }).optional(),
+  slug: z
+    .string()
+    .regex(/^[a-z0-9-]+$/, {
+      message: 'Le slug doit contenir uniquement des lettres minuscules, chiffres et tirets',
+    })
+    .optional(),
   image: z.string().url({ message: "L'URL de l'image est invalide" }).nullable().optional(),
 });
 
@@ -164,13 +188,13 @@ export type Category = z.infer<typeof CategorySchema>;
 export const OrderCreateSchema = z.object({
   userId: z.string().cuid(),
   status: OrderStatusSchema.optional(),
-  totalAmount: z.number().positive({ message: "Le montant total doit être positif" }),
+  totalAmount: z.number().positive({ message: 'Le montant total doit être positif' }),
 });
 
 export const OrderUpdateSchema = z.object({
   userId: z.string().cuid().optional(),
   status: OrderStatusSchema.optional(),
-  totalAmount: z.number().positive({ message: "Le montant total doit être positif" }).optional(),
+  totalAmount: z.number().positive({ message: 'Le montant total doit être positif' }).optional(),
 });
 
 export const OrderSchema = z.object({
@@ -192,15 +216,15 @@ export type Order = z.infer<typeof OrderSchema>;
 export const OrderItemCreateSchema = z.object({
   orderId: z.string().cuid(),
   productId: z.string().cuid(),
-  quantity: z.number().int().positive({ message: "La quantité doit être positive" }),
-  price: z.number().positive({ message: "Le prix doit être positif" }),
+  quantity: z.number().int().positive({ message: 'La quantité doit être positive' }),
+  price: z.number().positive({ message: 'Le prix doit être positif' }),
 });
 
 export const OrderItemUpdateSchema = z.object({
   orderId: z.string().cuid().optional(),
   productId: z.string().cuid().optional(),
-  quantity: z.number().int().positive({ message: "La quantité doit être positive" }).optional(),
-  price: z.number().positive({ message: "Le prix doit être positif" }).optional(),
+  quantity: z.number().int().positive({ message: 'La quantité doit être positive' }).optional(),
+  price: z.number().positive({ message: 'Le prix doit être positif' }).optional(),
 });
 
 export const OrderItemSchema = z.object({
@@ -219,14 +243,23 @@ export type OrderItem = z.infer<typeof OrderItemSchema>;
  * Schéma pour Review
  */
 export const ReviewCreateSchema = z.object({
-  rating: z.number().int().min(1, { message: "La note doit être d'au moins 1" }).max(5, { message: "La note ne peut pas dépasser 5" }),
+  rating: z
+    .number()
+    .int()
+    .min(1, { message: "La note doit être d'au moins 1" })
+    .max(5, { message: 'La note ne peut pas dépasser 5' }),
   comment: z.string().nullable().optional(),
   userId: z.string().cuid(),
   productId: z.string().cuid(),
 });
 
 export const ReviewUpdateSchema = z.object({
-  rating: z.number().int().min(1, { message: "La note doit être d'au moins 1" }).max(5, { message: "La note ne peut pas dépasser 5" }).optional(),
+  rating: z
+    .number()
+    .int()
+    .min(1, { message: "La note doit être d'au moins 1" })
+    .max(5, { message: 'La note ne peut pas dépasser 5' })
+    .optional(),
   comment: z.string().nullable().optional(),
   userId: z.string().cuid().optional(),
   productId: z.string().cuid().optional(),

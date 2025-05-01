@@ -31,165 +31,165 @@ app.use(express.static(path.join(PATHS.ROOT, 'dashboard', 'unified')));
 app.use(express.json());
 
 // État global des tableaux de bord
-let dashboardsState = {
-    lastUpdated: new Date(),
-    migration: { status: 'unknown', metrics: {} },
-    audit: { status: 'unknown', metrics: {} },
-    agents: { status: 'unknown', metrics: {} }
+const dashboardsState = {
+  lastUpdated: new Date(),
+  migration: { status: 'unknown', metrics: {} },
+  audit: { status: 'unknown', metrics: {} },
+  agents: { status: 'unknown', metrics: {} },
 };
 
 /**
  * Met à jour l'état global des tableaux de bord en interrogeant leurs API
  */
 async function updateDashboardsState() {
-    try {
-        // Vérifier le statut des tableaux de bord
-        const checks = [
-            checkDashboardStatus('migration', `http://localhost:${MIGRATION_PORT}/api/status`),
-            checkDashboardStatus('audit', `http://localhost:${AUDIT_PORT}/api/audit/state`),
-            checkDashboardStatus('agents', `http://localhost:${AGENTS_PORT}/api/status`)
-        ];
+  try {
+    // Vérifier le statut des tableaux de bord
+    const checks = [
+      checkDashboardStatus('migration', `http://localhost:${MIGRATION_PORT}/api/status`),
+      checkDashboardStatus('audit', `http://localhost:${AUDIT_PORT}/api/audit/state`),
+      checkDashboardStatus('agents', `http://localhost:${AGENTS_PORT}/api/status`),
+    ];
 
-        // Attendre la fin de toutes les vérifications
-        await Promise.all(checks);
+    // Attendre la fin de toutes les vérifications
+    await Promise.all(checks);
 
-        // Mettre à jour la date de dernière mise à jour
-        dashboardsState.lastUpdated = new Date();
+    // Mettre à jour la date de dernière mise à jour
+    dashboardsState.lastUpdated = new Date();
 
-        return dashboardsState;
-    } catch (error) {
-        console.error(`Erreur lors de la mise à jour de l'état des tableaux de bord: ${error.message}`);
-        return dashboardsState;
-    }
+    return dashboardsState;
+  } catch (error) {
+    console.error(`Erreur lors de la mise à jour de l'état des tableaux de bord: ${error.message}`);
+    return dashboardsState;
+  }
 }
 
 /**
  * Vérifie le statut d'un tableau de bord spécifique
  */
 async function checkDashboardStatus(name, url) {
-    try {
-        const response = await axios.get(url, { timeout: 2000 });
+  try {
+    const response = await axios.get(url, { timeout: 2000 });
 
-        if (response.status === 200) {
-            dashboardsState[name].status = 'online';
-            const metrics = extractKeyMetrics(name, response.data);
-            dashboardsState[name].metrics = metrics;
+    if (response.status === 200) {
+      dashboardsState[name].status = 'online';
+      const metrics = extractKeyMetrics(name, response.data);
+      dashboardsState[name].metrics = metrics;
 
-            // Stocker les métriques dans l'historique quotidien
-            await storeMetrics(name, metrics);
-        } else {
-            dashboardsState[name].status = 'error';
-        }
-    } catch (error) {
-        dashboardsState[name].status = 'offline';
-        console.log(`Tableau de bord ${name} inaccessible: ${error.message}`);
+      // Stocker les métriques dans l'historique quotidien
+      await storeMetrics(name, metrics);
+    } else {
+      dashboardsState[name].status = 'error';
     }
+  } catch (error) {
+    dashboardsState[name].status = 'offline';
+    console.log(`Tableau de bord ${name} inaccessible: ${error.message}`);
+  }
 }
 
 /**
  * Extrait les métriques clés de la réponse d'un tableau de bord
  */
 function extractKeyMetrics(dashboardName, data) {
-    const metrics = {};
+  const metrics = {};
 
-    switch (dashboardName) {
-        case 'migration':
-            if (data.progress && data.progress.global !== undefined) {
-                metrics.progress = data.progress.global;
-            }
-            if (data.metrics) {
-                metrics.filesMigrated = data.metrics.filesMigrated;
-                metrics.totalFiles = data.metrics.totalFiles;
-            }
-            if (data.modules) {
-                metrics.modules = Object.keys(data.modules).length;
-            }
-            break;
+  switch (dashboardName) {
+    case 'migration':
+      if (data.progress && data.progress.global !== undefined) {
+        metrics.progress = data.progress.global;
+      }
+      if (data.metrics) {
+        metrics.filesMigrated = data.metrics.filesMigrated;
+        metrics.totalFiles = data.metrics.totalFiles;
+      }
+      if (data.modules) {
+        metrics.modules = Object.keys(data.modules).length;
+      }
+      break;
 
-        case 'audit':
-            if (data.metrics) {
-                metrics.auditedModules = data.metrics.auditedModules;
-                metrics.totalModules = data.metrics.totalModules;
-                metrics.avgScore = data.metrics.avgScore;
-                metrics.passedModules = data.metrics.passedModules;
-                metrics.failedModules = data.metrics.failedModules;
-            }
-            break;
+    case 'audit':
+      if (data.metrics) {
+        metrics.auditedModules = data.metrics.auditedModules;
+        metrics.totalModules = data.metrics.totalModules;
+        metrics.avgScore = data.metrics.avgScore;
+        metrics.passedModules = data.metrics.passedModules;
+        metrics.failedModules = data.metrics.failedModules;
+      }
+      break;
 
-        case 'agents':
-            if (data.progress) {
-                metrics.progress = data.progress.global;
-            }
-            if (data.modules) {
-                metrics.modules = Object.keys(data.modules).length;
-            }
-            metrics.agents = data.agents ? data.agents.length : 0;
-            break;
-    }
+    case 'agents':
+      if (data.progress) {
+        metrics.progress = data.progress.global;
+      }
+      if (data.modules) {
+        metrics.modules = Object.keys(data.modules).length;
+      }
+      metrics.agents = data.agents ? data.agents.length : 0;
+      break;
+  }
 
-    return metrics;
+  return metrics;
 }
 
 // Routes API
 app.get('/api/status', async (req, res) => {
-    try {
-        await updateDashboardsState();
-        res.json(dashboardsState);
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
+  try {
+    await updateDashboardsState();
+    res.json(dashboardsState);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
 // Route pour récupérer l'historique des métriques
 app.get('/api/history/:dashboard', async (req, res) => {
-    try {
-        const dashboardName = req.params.dashboard;
-        const days = parseInt(req.query.days || '30', 10);
-        const metrics = req.query.metrics ? req.query.metrics.split(',') : [];
+  try {
+    const dashboardName = req.params.dashboard;
+    const days = parseInt(req.query.days || '30', 10);
+    const metrics = req.query.metrics ? req.query.metrics.split(',') : [];
 
-        // Vérifier si le tableau de bord demandé est valide
-        if (!['migration', 'audit', 'agents'].includes(dashboardName)) {
-            return res.status(400).json({ error: 'Tableau de bord non valide' });
-        }
-
-        // Récupérer les métriques agrégées par jour
-        const dailyMetrics = await getDailyMetrics(dashboardName, days, metrics);
-        res.json(dailyMetrics);
-    } catch (error) {
-        res.status(500).json({ error: error.message });
+    // Vérifier si le tableau de bord demandé est valide
+    if (!['migration', 'audit', 'agents'].includes(dashboardName)) {
+      return res.status(400).json({ error: 'Tableau de bord non valide' });
     }
+
+    // Récupérer les métriques agrégées par jour
+    const dailyMetrics = await getDailyMetrics(dashboardName, days, metrics);
+    res.json(dailyMetrics);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
 // Route pour récupérer l'historique brut des métriques
 app.get('/api/history/:dashboard/raw', async (req, res) => {
-    try {
-        const dashboardName = req.params.dashboard;
-        const days = parseInt(req.query.days || '30', 10);
+  try {
+    const dashboardName = req.params.dashboard;
+    const days = parseInt(req.query.days || '30', 10);
 
-        // Vérifier si le tableau de bord demandé est valide
-        if (!['migration', 'audit', 'agents'].includes(dashboardName)) {
-            return res.status(400).json({ error: 'Tableau de bord non valide' });
-        }
-
-        // Récupérer l'historique complet
-        const history = await getMetricsHistory(dashboardName, days);
-        res.json(history);
-    } catch (error) {
-        res.status(500).json({ error: error.message });
+    // Vérifier si le tableau de bord demandé est valide
+    if (!['migration', 'audit', 'agents'].includes(dashboardName)) {
+      return res.status(400).json({ error: 'Tableau de bord non valide' });
     }
+
+    // Récupérer l'historique complet
+    const history = await getMetricsHistory(dashboardName, days);
+    res.json(history);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
 // Route principale pour le dashboard unifié
 app.get('/', (req, res) => {
-    // Vérifier s'il existe un fichier HTML statique
-    const indexPath = path.join(PATHS.DASHBOARD_DIR, 'unified', 'index.html');
+  // Vérifier s'il existe un fichier HTML statique
+  const indexPath = path.join(PATHS.DASHBOARD_DIR, 'unified', 'index.html');
 
-    if (fs.existsSync(indexPath)) {
-        return res.sendFile(indexPath);
-    }
+  if (fs.existsSync(indexPath)) {
+    return res.sendFile(indexPath);
+  }
 
-    // Générer une page HTML basique
-    const html = `
+  // Générer une page HTML basique
+  const html = `
     <!DOCTYPE html>
     <html lang="fr">
     <head>
@@ -460,13 +460,13 @@ app.get('/', (req, res) => {
     </html>
   `;
 
-    res.send(html);
+  res.send(html);
 });
 
 // Route pour la page des tendances
 app.get('/trends', (req, res) => {
-    // Générer une page HTML pour visualiser l'historique des métriques
-    const html = `
+  // Générer une page HTML pour visualiser l'historique des métriques
+  const html = `
     <!DOCTYPE html>
     <html lang="fr">
     <head>
@@ -1091,21 +1091,21 @@ app.get('/trends', (req, res) => {
     </html>
     `;
 
-    res.send(html);
+  res.send(html);
 });
 
 // Démarrage du serveur
 const PORT = UNIFIED_PORT;
 app.listen(PORT, () => {
-    console.log(chalk.green(`🚀 Tableau de bord unifié démarré sur http://localhost:${PORT}`));
-    console.log(chalk.blue('📊 Accédez au portail unifié pour visualiser tous les tableaux de bord'));
+  console.log(chalk.green(`🚀 Tableau de bord unifié démarré sur http://localhost:${PORT}`));
+  console.log(chalk.blue('📊 Accédez au portail unifié pour visualiser tous les tableaux de bord'));
 
-    // Mettre à jour l'état initial
-    updateDashboardsState().catch(error => {
-        console.error(chalk.red(`Erreur lors de l'initialisation: ${error.message}`));
-    });
+  // Mettre à jour l'état initial
+  updateDashboardsState().catch((error) => {
+    console.error(chalk.red(`Erreur lors de l'initialisation: ${error.message}`));
+  });
 });
 
 module.exports = {
-    updateDashboardsState
+  updateDashboardsState,
 };

@@ -3,8 +3,8 @@
  * Agent export file
  */
 
-import { php } from ./php-analyzer';
-import { AnalyzerAgent } from ../../core/interfacesstructure-agent';
+import { AnalyzerAgent } from '../../core/interfacesstructure-agent';
+import { php } from './php-analyzer';
 
 export { php };
 export default php;

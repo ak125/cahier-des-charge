@@ -37,8 +37,8 @@ interface ValidationReport {
  * Vérifie l'existence et la cohérence des fichiers d'audit
  */
 async function validateAuditOutputs(
-  basePath: string = '/workspaces/cahier-des-charge',
-  outputPath: string = '/workspaces/cahier-des-charge/reports/audit_consistency_report.json'
+  basePath = '/workspaces/cahier-des-charge',
+  outputPath = '/workspaces/cahier-des-charge/reports/audit_consistency_report.json'
 ): Promise<ValidationReport> {
   console.log('Démarrage de la validation des fichiers d\'audit...');
   

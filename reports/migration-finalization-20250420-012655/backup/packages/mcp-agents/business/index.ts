@@ -12,22 +12,17 @@ export * from './orchestrators';
 // Regroupement des IDs pour l'enregistrement
 import { analyzersIds } from './analyzers';
 import { generatorsIds } from './generators';
-import { validatorsIds } from './validators';
 import { orchestratorsIds } from './orchestrators';
+import { validatorsIds } from './validators';
 
 export const allAgentIds = {
   analyzers: analyzersIds,
   generators: generatorsIds,
   validators: validatorsIds,
-  orchestrators: orchestratorsIds
+  orchestrators: orchestratorsIds,
 };
 
 // Exporter une fonction d'aide pour l'enregistrement de tous les agents
 export function getAllAgentIds(): string[] {
-  return [
-    ...analyzersIds,
-    ...generatorsIds,
-    ...validatorsIds,
-    ...orchestratorsIds
-  ];
+  return [...analyzersIds, ...generatorsIds, ...validatorsIds, ...orchestratorsIds];
 }

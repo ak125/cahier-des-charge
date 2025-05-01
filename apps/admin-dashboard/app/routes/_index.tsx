@@ -1,9 +1,9 @@
 import { json } from '@remix-run/node';
-import { useLoaderData, Link } from '@remix-run/react';
+import { Link, useLoaderData } from '@remix-run/react';
 import { useState } from 'react';
+import AgentStatusList from '~/components/AgentStatusList';
 import MigrationStatusCard from '~/components/MigrationStatusCard';
 import ProgressBar from '~/components/ProgressBar';
-import AgentStatusList from '~/components/AgentStatusList';
 import { MigrationStats, QAScores } from '~/types';
 
 export const loader = async () => {
@@ -14,7 +14,7 @@ export const loader = async () => {
     inProgress: 12,
     pending: 58,
     failed: 5,
-    lastUpdated: new Date().toISOString()
+    lastUpdated: new Date().toISOString(),
   };
 
   const qaScores: QAScores = {
@@ -22,7 +22,7 @@ export const loader = async () => {
     requiredFields: 92,
     validationRules: 85,
     dataConsistency: 78,
-    uiComponents: 91
+    uiComponents: 91,
   };
 
   // Liste des agents et leur statut
@@ -32,18 +32,73 @@ export const loader = async () => {
     { name: 'SeoChecker', status: 'busy', lastRun: '2025-04-15T16:10:00Z', jobsCompleted: 40 },
     { name: 'sql-mapper', status: 'ready', lastRun: '2025-04-14T11:20:00Z', jobsCompleted: 15 },
     { name: 'HtaccessRouter', status: 'ready', lastRun: '2025-04-13T09:15:00Z', jobsCompleted: 30 },
-    { name: 'QaAnalyzer', status: 'error', lastRun: '2025-04-16T08:05:00Z', jobsCompleted: 42, error: 'Timeout lors de l\'analyse du formulaire de contact' },
-    { name: 'status-tracker', status: 'ready', lastRun: '2025-04-16T10:00:00Z', jobsCompleted: 120 },
-    { name: 'MigrationOrchestrator', status: 'ready', lastRun: '2025-04-16T10:00:00Z', jobsCompleted: 45 },
+    {
+      name: 'QaAnalyzer',
+      status: 'error',
+      lastRun: '2025-04-16T08:05:00Z',
+      jobsCompleted: 42,
+      error: "Timeout lors de l'analyse du formulaire de contact",
+    },
+    {
+      name: 'status-tracker',
+      status: 'ready',
+      lastRun: '2025-04-16T10:00:00Z',
+      jobsCompleted: 120,
+    },
+    {
+      name: 'MigrationOrchestrator',
+      status: 'ready',
+      lastRun: '2025-04-16T10:00:00Z',
+      jobsCompleted: 45,
+    },
   ];
 
   // Dernières migrations
   const recentMigrations = [
-    { id: 'MIG-045', name: 'Page Profil', status: 'completed', route: '/profil', completedAt: '2025-04-16T09:45:00Z', qaScore: 95, seoScore: 92 },
-    { id: 'MIG-044', name: 'Page Contact', status: 'completed', route: '/contact', completedAt: '2025-04-15T16:30:00Z', qaScore: 88, seoScore: 90 },
-    { id: 'MIG-043', name: 'Page FAQ', status: 'failed', route: '/faq', completedAt: '2025-04-15T14:15:00Z', qaScore: 62, seoScore: 45, error: 'Échec de la validation QA' },
-    { id: 'MIG-042', name: 'Page Produits', status: 'in_progress', route: '/produits', startedAt: '2025-04-16T10:10:00Z' },
-    { id: 'MIG-041', name: 'Page Services', status: 'completed', route: '/services', completedAt: '2025-04-14T17:25:00Z', qaScore: 97, seoScore: 94 },
+    {
+      id: 'MIG-045',
+      name: 'Page Profil',
+      status: 'completed',
+      route: '/profil',
+      completedAt: '2025-04-16T09:45:00Z',
+      qaScore: 95,
+      seoScore: 92,
+    },
+    {
+      id: 'MIG-044',
+      name: 'Page Contact',
+      status: 'completed',
+      route: '/contact',
+      completedAt: '2025-04-15T16:30:00Z',
+      qaScore: 88,
+      seoScore: 90,
+    },
+    {
+      id: 'MIG-043',
+      name: 'Page FAQ',
+      status: 'failed',
+      route: '/faq',
+      completedAt: '2025-04-15T14:15:00Z',
+      qaScore: 62,
+      seoScore: 45,
+      error: 'Échec de la validation QA',
+    },
+    {
+      id: 'MIG-042',
+      name: 'Page Produits',
+      status: 'in_progress',
+      route: '/produits',
+      startedAt: '2025-04-16T10:10:00Z',
+    },
+    {
+      id: 'MIG-041',
+      name: 'Page Services',
+      status: 'completed',
+      route: '/services',
+      completedAt: '2025-04-14T17:25:00Z',
+      qaScore: 97,
+      seoScore: 94,
+    },
   ];
 
   return json({ stats, qaScores, agents, recentMigrations });
@@ -60,9 +115,7 @@ export default function Dashboard() {
           <h1 className="text-3xl font-bold text-white">MCP Dashboard</h1>
           <div className="flex items-center space-x-4">
             <span className="text-white">Migration PHP → Remix</span>
-            <span className="px-3 py-1 text-sm rounded-full bg-indigo-800 text-white">
-              v1.2.0
-            </span>
+            <span className="px-3 py-1 text-sm rounded-full bg-indigo-800 text-white">v1.2.0</span>
           </div>
         </div>
       </header>
@@ -140,9 +193,7 @@ export default function Dashboard() {
                 />
                 <div className="bg-white overflow-hidden shadow rounded-lg">
                   <div className="px-4 py-5 sm:p-6">
-                    <h3 className="text-lg leading-6 font-medium text-gray-900">
-                      Score QA Global
-                    </h3>
+                    <h3 className="text-lg leading-6 font-medium text-gray-900">Score QA Global</h3>
                     <div className="mt-5">
                       <ProgressBar value={qaScores.overall} />
                       <div className="mt-3 grid grid-cols-2 gap-4 text-sm">
@@ -180,9 +231,7 @@ export default function Dashboard() {
                                 <p className="text-sm font-medium text-gray-900 truncate">
                                   {migration.name}
                                 </p>
-                                <p className="text-sm text-gray-500 truncate">
-                                  {migration.route}
-                                </p>
+                                <p className="text-sm text-gray-500 truncate">{migration.route}</p>
                               </div>
                               <div>
                                 <span
@@ -190,15 +239,15 @@ export default function Dashboard() {
                                     migration.status === 'completed'
                                       ? 'bg-green-100 text-green-800'
                                       : migration.status === 'in_progress'
-                                      ? 'bg-blue-100 text-blue-800'
-                                      : 'bg-red-100 text-red-800'
+                                        ? 'bg-blue-100 text-blue-800'
+                                        : 'bg-red-100 text-red-800'
                                   }`}
                                 >
                                   {migration.status === 'completed'
                                     ? 'Terminé'
                                     : migration.status === 'in_progress'
-                                    ? 'En cours'
-                                    : 'Échec'}
+                                      ? 'En cours'
+                                      : 'Échec'}
                                 </span>
                               </div>
                             </div>
@@ -237,10 +286,7 @@ export default function Dashboard() {
                 <ul className="divide-y divide-gray-200">
                   {recentMigrations.map((migration) => (
                     <li key={migration.id}>
-                      <Link
-                        to={`/migrations/${migration.id}`}
-                        className="block hover:bg-gray-50"
-                      >
+                      <Link to={`/migrations/${migration.id}`} className="block hover:bg-gray-50">
                         <div className="px-4 py-4 sm:px-6">
                           <div className="flex items-center justify-between">
                             <div className="flex items-center">
@@ -253,22 +299,20 @@ export default function Dashboard() {
                                     migration.status === 'completed'
                                       ? 'bg-green-100 text-green-800'
                                       : migration.status === 'in_progress'
-                                      ? 'bg-blue-100 text-blue-800'
-                                      : 'bg-red-100 text-red-800'
+                                        ? 'bg-blue-100 text-blue-800'
+                                        : 'bg-red-100 text-red-800'
                                   }`}
                                 >
                                   {migration.status === 'completed'
                                     ? 'Terminé'
                                     : migration.status === 'in_progress'
-                                    ? 'En cours'
-                                    : 'Échec'}
+                                      ? 'En cours'
+                                      : 'Échec'}
                                 </span>
                               </div>
                             </div>
                             <div className="ml-2 flex-shrink-0 flex">
-                              <p className="px-2 text-sm text-gray-500">
-                                {migration.id}
-                              </p>
+                              <p className="px-2 text-sm text-gray-500">{migration.id}</p>
                             </div>
                           </div>
                           <div className="mt-2 sm:flex sm:justify-between">
@@ -303,14 +347,10 @@ export default function Dashboard() {
             <div className="px-4 py-6 sm:px-0">
               <div className="bg-white shadow overflow-hidden sm:rounded-lg">
                 <div className="px-4 py-5 sm:p-6">
-                  <h3 className="text-lg leading-6 font-medium text-gray-900 mb-4">
-                    Agents MCP
-                  </h3>
+                  <h3 className="text-lg leading-6 font-medium text-gray-900 mb-4">Agents MCP</h3>
                   <AgentStatusList agents={agents} showDetails={true} />
                   <div className="mt-6 border-t border-gray-200 pt-4">
-                    <h4 className="text-md font-medium text-gray-900">
-                      Actions
-                    </h4>
+                    <h4 className="text-md font-medium text-gray-900">Actions</h4>
                     <div className="mt-2 grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3">
                       <button className="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none">
                         Redémarrer tous les agents
@@ -336,9 +376,7 @@ export default function Dashboard() {
                     Paramètres du système MCP
                   </h3>
                   <div className="mt-2 max-w-xl text-sm text-gray-500">
-                    <p>
-                      Configurez les options du système de migration PHP vers Remix.
-                    </p>
+                    <p>Configurez les options du système de migration PHP vers Remix.</p>
                   </div>
                   <form className="mt-5 space-y-8 divide-y divide-gray-200">
                     <div className="space-y-6">
@@ -399,10 +437,7 @@ export default function Dashboard() {
                       </div>
                       <div className="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
                         <div className="sm:col-span-3">
-                          <label
-                            htmlFor="repo"
-                            className="block text-sm font-medium text-gray-700"
-                          >
+                          <label htmlFor="repo" className="block text-sm font-medium text-gray-700">
                             Repository
                           </label>
                           <div className="mt-1">

@@ -1,0 +1,19 @@
+{
+    "name": "mcp-wasm-runtime",
+    "version": "1.0.0",
+    "description": "Runtime WASM pour isoler l'exécution des agents MCP",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "scripts": {
+        "build": "tsc",
+        "test": "jest"
+    },
+    "dependencies": {
+        "@wasmer/wasi": "^1.2.2",
+        "@wasmer/wasmfs": "^0.12.0"
+    },
+    "devDependencies": {
+        "@types/node": "^20.10.4",
+        "typescript": "^5.2.2"
+    }
+}

@@ -1,0 +1,23 @@
+{
+    "targets": {
+        "release": {
+            "outFile": "build/text-processor.wasm",
+            "textFile": "build/text-processor.wat",
+            "sourceMap": true,
+            "shrinkLevel": 0,
+            "converge": false,
+            "noAssert": false,
+            "exportRuntime": true,
+            "exportStart": [
+                "initialize",
+                "execute",
+                "validate",
+                "getMetadata"
+            ]
+        }
+    },
+    "options": {
+        "bindings": "esm",
+        "exportRuntime": true
+    }
+}

@@ -11,5 +11,5 @@ module.exports = {
   PhpAnalyzer,
   DevGenerator,
   SqlMapper,
-  SeoRewriter
+  SeoRewriter,
 };

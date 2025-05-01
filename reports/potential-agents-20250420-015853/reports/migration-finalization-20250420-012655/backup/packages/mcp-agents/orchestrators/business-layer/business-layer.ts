@@ -1,6 +1,6 @@
 /**
  * Interface de la couche métier
- * 
+ *
  * Cette couche est responsable de l'implémentation des logiques métier spécifiques,
  * indépendamment des mécanismes de coordination et d'orchestration.
  */
@@ -83,12 +83,12 @@ export interface BusinessContext {
      * Journalise un message
      */
     log(level: 'debug' | 'info' | 'warning' | 'error', message: string): void;
-    
+
     /**
      * Récupère des données d'une source externe
      */
     fetchData<T>(source: string, params?: any): Promise<T>;
-    
+
     /**
      * Rapporte l'avancement
      */
@@ -108,12 +108,12 @@ export interface BusinessContext {
      * Environnement d'exécution (dev, test, prod)
      */
     env: string;
-    
+
     /**
      * Délimiteurs de chemins de fichiers
      */
     pathSeparator: string;
-    
+
     /**
      * Options spécifiques à l'environnement
      */
@@ -153,22 +153,22 @@ export interface BusinessResult<T = any> {
      * Nombre d'éléments traités
      */
     processedItems?: number;
-    
+
     /**
      * Nombre d'éléments modifiés
      */
     modifiedItems?: number;
-    
+
     /**
      * Nombre d'erreurs rencontrées
      */
     errorCount?: number;
-    
+
     /**
      * Nombre d'avertissements générés
      */
     warningCount?: number;
-    
+
     /**
      * Informations supplémentaires spécifiques au service
      */
@@ -198,22 +198,22 @@ export interface BusinessResult<T = any> {
      * Horodatage du début d'exécution
      */
     startTime: string;
-    
+
     /**
      * Horodatage de fin d'exécution
      */
     endTime: string;
-    
+
     /**
      * Durée d'exécution en millisecondes
      */
     duration: number;
-    
+
     /**
      * Version du service utilisé
      */
     serviceVersion?: string;
-    
+
     /**
      * Autres métadonnées
      */
@@ -228,22 +228,22 @@ export interface BusinessResult<T = any> {
      * Type d'action
      */
     type: 'service' | 'notification' | 'checkpoint' | 'validation';
-    
+
     /**
      * Identifiant de l'action
      */
     id: string;
-    
+
     /**
      * Données pour l'action
      */
     data?: any;
-    
+
     /**
      * Priorité de l'action
      */
     priority?: 'low' | 'normal' | 'high' | 'critical';
-    
+
     /**
      * Condition d'exécution
      */
@@ -363,7 +363,7 @@ export interface BusinessServiceRegistry {
    * @param factory Fonction de création d'une instance du service
    */
   registerService<T = any, R = any>(
-    serviceInfo: BusinessServiceInfo, 
+    serviceInfo: BusinessServiceInfo,
     factory: (config?: any) => Promise<IBusinessService<T, R>>
   ): void;
 
@@ -458,48 +458,48 @@ export enum BusinessDataType {
   BOOLEAN = 'boolean',
   OBJECT = 'object',
   ARRAY = 'array',
-  
+
   // Types de fichiers
   FILE_PATH = 'file:path',
   FILE_CONTENT = 'file:content',
   DIRECTORY_PATH = 'directory:path',
-  
+
   // Types de données structurées
   JSON = 'json',
   XML = 'xml',
   CSV = 'csv',
   YAML = 'yaml',
-  
+
   // Types de code source
   CODE_PHP = 'code:php',
   CODE_JAVASCRIPT = 'code:javascript',
   CODE_TYPESCRIPT = 'code:typescript',
   CODE_HTML = 'code:html',
   CODE_CSS = 'code:css',
-  
+
   // Types relatifs à la migration
   MIGRATION_CONFIG = 'migration:config',
   MIGRATION_RESULT = 'migration:result',
   MIGRATION_STATUS = 'migration:status',
-  
+
   // Types d'analyse
   ANALYSIS_RESULT = 'analysis:result',
   ANALYSIS_DIFF = 'analysis:diff',
   ANALYSIS_ISSUE = 'analysis:issue',
-  
+
   // Types de rapport
   REPORT_HTML = 'report:html',
   REPORT_JSON = 'report:json',
   REPORT_METRICS = 'report:metrics',
-  
+
   // Types spécifiques à votre domaine métier
   SEO_DATA = 'seo:data',
   SEO_ISSUE = 'seo:issue',
   SEO_RECOMMENDATION = 'seo:recommendation',
   SEO_STRATEGY = 'seo:strategy',
-  
+
   // Types de workflow
   WORKFLOW_DEFINITION = 'workflow:definition',
   WORKFLOW_STATUS = 'workflow:status',
-  WORKFLOW_RESULT = 'workflow:result'
+  WORKFLOW_RESULT = 'workflow:result',
 }

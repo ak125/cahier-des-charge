@@ -6,28 +6,28 @@
  * Ce serveur implémente le protocole Model Context Protocol pour interagir avec des bases PostgreSQL
  */
 
-import express from 'express';
-import cors from 'cors';
-import bodyParser from 'body-parser';
-import { createLogger, format, transports } from 'winston';
-import dotenv from 'dotenv';
-import yargs from 'yargs';
-import { hideBin } from 'yargs/helpers';
 import fs from 'fs';
 import path from 'path';
+import bodyParser from 'body-parser';
+import cors from 'cors';
+import dotenv from 'dotenv';
+import express from 'express';
+import { createLogger, format, transports } from 'winston';
+import yargs from 'yargs';
+import { hideBin } from 'yargs/helpers';
 
 // Services et utilitaires
 import { DatabaseConnectionService } from './services/database-connection-service';
 import { 
-  SchemaMap, 
-  TableInfo, 
   ColumnInfo, 
   ForeignKeyInfo,
   IndexInfo,
-  SchemaDiff,
-  PrismaModel,
+  MCPResult,
   MCPServerConfig,
-  MCPResult
+  PrismaModel,
+  SchemaDiff,
+  SchemaMap, 
+  TableInfo 
 } from './types';
 
 // Charger la configuration depuis .env si disponible
@@ -155,12 +155,12 @@ class PostgresMCPServer {
         version: '1.0.0',
         status: 'running',
         schema: this.schema,
-        endpoint: 'DoDotmcp'
+        endpoint: 'mcp'
       });
     });
 
     // Point d'entrée principal MCP
-    this.app.post('DoDotmcp', async (req, res) => {
+    this.app.post('mcp', async (req, res) => {
       try {
         const { tool, params } = req.body;
         
@@ -890,7 +890,7 @@ datasource db {
         .join('');
       
       // Par défaut, le nom de la relation est pluriel
-      let relationName = `${relation.sourceTable}s`;
+      const relationName = `${relation.sourceTable}s`;
       
       schema.push(`  ${relationName} ${sourceModelName}[]`);
     }

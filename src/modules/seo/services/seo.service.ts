@@ -1,9 +1,9 @@
-import { Injectable, Logger } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import * as fs from 'fs';
 import * as path from 'path';
-import { ISeoService } from '../interfaces/seo-service.interface';
+import { Injectable, Logger } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { ISeoRepository } from '../interfaces/seo-repository.interface';
+import { ISeoService } from '../interfaces/seo-service.interface';
 import { SeoStrategyRegistry } from './seo-strategy.registry';
 
 @Injectable()
@@ -13,7 +13,7 @@ export class SeoService implements ISeoService {
   constructor(
     private seoRepository: ISeoRepository,
     private configService: ConfigService,
-    private strategyRegistry: SeoStrategyRegistry,
+    private strategyRegistry: SeoStrategyRegistry
   ) {}
 
   /**
@@ -49,18 +49,21 @@ export class SeoService implements ISeoService {
    */
   async runSeoAudit() {
     try {
-      this.logger.log('Démarrage d\'un audit SEO complet');
-      
+      this.logger.log("Démarrage d'un audit SEO complet");
+
       // Lire la configuration SEO
-      const configPath = this.configService.get<string>('SEO_CONFIG_PATH', path.resolve(process.cwd(), 'config/seo-config.json'));
+      const configPath = this.configService.get<string>(
+        'SEO_CONFIG_PATH',
+        path.resolve(process.cwd(), 'config/seo-config.json')
+      );
       const configExists = fs.existsSync(configPath);
-      
+
       if (!configExists) {
         throw new Error(`Fichier de configuration SEO introuvable: ${configPath}`);
       }
-      
+
       const config = JSON.parse(fs.readFileSync(configPath, 'utf-8'));
-      
+
       // Créer un rapport d'audit vide
       const auditReport = await this.seoRepository.createAuditReport({
         name: `Audit SEO complet ${new Date().toLocaleDateString('fr-FR')}`,
@@ -71,11 +74,11 @@ export class SeoService implements ISeoService {
         warnings: 0,
         successful: 0,
       });
-      
+
       // On déclenche ici le job d'audit qui sera traité par notre agent MCP
       // dans un processus asynchrone
       const auditJobId = `seo-audit-${Date.now()}`;
-      
+
       await this.seoRepository.createJob({
         jobId: auditJobId,
         status: 'pending',
@@ -86,9 +89,9 @@ export class SeoService implements ISeoService {
           timestamp: new Date().toISOString(),
         },
       });
-      
+
       this.logger.log(`Audit SEO planifié avec l'ID: ${auditReport.id}`);
-      
+
       return {
         message: 'Audit SEO démarré avec succès',
         reportId: auditReport.id,
@@ -124,16 +127,16 @@ export class SeoService implements ISeoService {
 
       if (!page) {
         // Créer la page si elle n'existe pas
-        page = await this.seoRepository.updatePage(0, { 
+        page = await this.seoRepository.updatePage(0, {
           url,
           status: 'pending',
           score: 0,
         });
       }
-      
+
       // On déclenche ici le job d'audit pour une page qui sera traité par notre agent MCP
       const auditJobId = `seo-page-audit-${Date.now()}`;
-      
+
       await this.seoRepository.createJob({
         jobId: auditJobId,
         status: 'pending',
@@ -144,16 +147,19 @@ export class SeoService implements ISeoService {
           timestamp: new Date().toISOString(),
         },
       });
-      
+
       this.logger.log(`Audit SEO de page planifié pour: ${url}`);
-      
+
       return {
         message: `Audit SEO démarré pour ${url}`,
         pageId: page.id,
         jobId: auditJobId,
       };
     } catch (error) {
-      this.logger.error(`Erreur lors du lancement de l'audit SEO de page: ${error.message}`, error.stack);
+      this.logger.error(
+        `Erreur lors du lancement de l'audit SEO de page: ${error.message}`,
+        error.stack
+      );
       throw error;
     }
   }
@@ -161,24 +167,27 @@ export class SeoService implements ISeoService {
   /**
    * Met à jour les données d'une page après un audit
    */
-  async updatePageAfterAudit(pageId: number, auditData: {
-    title?: string;
-    description?: string;
-    canonical?: string;
-    score: number;
-    status: string;
-    issues: Array<{
-      type: string;
-      severity: string;
-      message: string;
-      details?: any;
-    }>;
-  }) {
+  async updatePageAfterAudit(
+    pageId: number,
+    auditData: {
+      title?: string;
+      description?: string;
+      canonical?: string;
+      score: number;
+      status: string;
+      issues: Array<{
+        type: string;
+        severity: string;
+        message: string;
+        details?: any;
+      }>;
+    }
+  ) {
     const { title, description, canonical, score, status, issues } = auditData;
-    
+
     // Récupérer la page existante pour vérifier les changements de score
     const existingPage = await this.seoRepository.getPageDetails(`pageId:${pageId}`);
-    
+
     // Mise à jour de la page
     const updatedPage = await this.seoRepository.updatePage(pageId, {
       title,
@@ -188,30 +197,32 @@ export class SeoService implements ISeoService {
       status: status as any,
       lastChecked: new Date(),
     });
-    
+
     // Supprimer les anciens problèmes non résolus
     await this.seoRepository.deleteIssues(pageId, true);
-    
+
     // Ajouter les nouveaux problèmes
     if (issues && issues.length > 0) {
-      await this.seoRepository.createManyIssues(issues.map(issue => ({
-        pageId,
-        type: issue.type,
-        severity: issue.severity as any,
-        message: issue.message,
-        details: issue.details || {},
-        fixed: false,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      })));
+      await this.seoRepository.createManyIssues(
+        issues.map((issue) => ({
+          pageId,
+          type: issue.type,
+          severity: issue.severity as any,
+          message: issue.message,
+          details: issue.details || {},
+          fixed: false,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        }))
+      );
     }
-    
+
     // Ajouter une entrée d'historique si le score a changé
     if (!existingPage || existingPage.score !== score) {
       await this.seoRepository.addToHistory({
         pageId,
         score,
-        event: existingPage 
+        event: existingPage
           ? `Score SEO passé de ${existingPage.score} à ${score}`
           : `Premier audit SEO: score ${score}`,
         details: {
@@ -221,7 +232,7 @@ export class SeoService implements ISeoService {
         },
       });
     }
-    
+
     return updatedPage;
   }
 
@@ -245,59 +256,64 @@ export class SeoService implements ISeoService {
 
     // Dans un environnement réel, nous utiliserions une bibliothèque comme PDFKit
     // pour générer un PDF avec ces données
-    
+
     // Pour l'exemple, nous retournons simplement les données structurées
     return {
       timestamp: new Date().toISOString(),
       stats,
-      pages: pages.pages.map(p => ({
+      pages: pages.pages.map((p) => ({
         url: p.url,
         score: p.score,
         status: p.status,
         issuesCount: p.issues.length,
       })),
-      issuesSummary: Object.entries(issues.issues.reduce((acc, issue) => {
-        const key = `${issue.type}-${issue.severity}`;
-        if (!acc[key]) {
-          acc[key] = 0;
-        }
-        acc[key]++;
-        return acc;
-      }, {} as Record<string, number>)).map(([key, count]) => {
+      issuesSummary: Object.entries(
+        issues.issues.reduce(
+          (acc, issue) => {
+            const key = `${issue.type}-${issue.severity}`;
+            if (!acc[key]) {
+              acc[key] = 0;
+            }
+            acc[key]++;
+            return acc;
+          },
+          {} as Record<string, number>
+        )
+      ).map(([key, count]) => {
         const [type, severity] = key.split('-');
         return { type, severity, count };
       }),
     };
   }
-  
+
   /**
    * Gère les redirections SEO
    */
   async getRedirects(active?: boolean) {
     return this.seoRepository.getRedirects(active);
   }
-  
+
   /**
    * Ajoute une redirection
    */
   async addRedirect(data: { source: string; destination: string; statusCode?: number }) {
     return this.seoRepository.addRedirect(data);
   }
-  
+
   /**
    * Importe des redirections depuis un fichier htaccess
    */
   async importRedirectsFromHtaccess(htaccessContent: string) {
     const redirects = [];
     const lines = htaccessContent.split('\n');
-    
+
     // Expression régulière simplifiée pour les règles de redirection dans htaccess
     const redirectRegex = /RedirectMatch\s+(\d+)\s+(.+?)\s+(.+)/i;
     const rewriteRegex = /RewriteRule\s+(.+?)\s+(.+?)\s+\[R=(\d+).*\]/i;
-    
+
     for (const line of lines) {
       let match = line.match(redirectRegex);
-      
+
       if (match) {
         redirects.push({
           source: match[2],
@@ -306,9 +322,9 @@ export class SeoService implements ISeoService {
         });
         continue;
       }
-      
+
       match = line.match(rewriteRegex);
-      
+
       if (match) {
         redirects.push({
           source: match[1],
@@ -317,14 +333,14 @@ export class SeoService implements ISeoService {
         });
       }
     }
-    
+
     if (redirects.length === 0) {
       return { imported: 0 };
     }
-    
+
     // Insérer les redirections dans la base de données
     const result = await this.seoRepository.addManyRedirects(redirects);
-    
+
     return { imported: result.count };
   }
 

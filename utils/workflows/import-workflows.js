@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 
-const fs = require(fsstructure-agent');
-const path = require(pathstructure-agent');
-const https = require(httpsstructure-agent');
-const http = require(httpstructure-agent');
+const fs = require('fsstructure-agent');
+const path = require('pathstructure-agent');
+const https = require('httpsstructure-agent');
+const http = require('httpstructure-agent');
 
 // Configuration
 const N8N_HOST = process.env.N8N_HOST || 'localhost';
@@ -21,7 +21,7 @@ function makeRequest(method, endpoint, data = null) {
       method,
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Basic ${AUTH_STRING}`
+        Authorization: `Basic ${AUTH_STRING}`
       }
     };
 
@@ -36,7 +36,7 @@ function makeRequest(method, endpoint, data = null) {
         if (res.statusCode >= 200 && res.statusCode < 300) {
           try {
             resolve(JSON.parse(responseData));
-          } catch (e) {
+          } catch (_e) {
             resolve(responseData);
           }
         } else {
@@ -117,7 +117,7 @@ async function main() {
     // Importer les workflows du pipeline principal
     const importedWorkflows = [];
     if (pipelineData.workflows && Array.isArray(pipelineData.workflows)) {
-      for (const workflow of pipelineData.workflows) {
+      for (const _workflow of pipelineData.workflows) {
 // DÉSACTIVÉ:         const result = await createWorkflow(workflow);
         if (result) {
           importedWorkflows.push(result);
@@ -134,7 +134,7 @@ async function main() {
         console.log(`🔄 Traitement du fichier workflow: ${filePath}`);
         
         try {
-          const workflowData = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+          const _workflowData = JSON.parse(fs.readFileSync(filePath, 'utf8'));
 // DÉSACTIVÉ:           const result = await createWorkflow(workflowData);
           if (result) {
             importedWorkflows.push(result);

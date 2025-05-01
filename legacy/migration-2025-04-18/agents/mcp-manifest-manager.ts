@@ -1,13 +1,13 @@
 /**
  * MCP Manifest Manager - Gestionnaire pour le fichier MCPManifest.json
- * 
+ *
  * Cette classe fournit des méthodes pour lire, manipuler et écrire dans le fichier
  * MCPManifest.json qui sert de source de vérité pour toutes les migrations.
  */
 
-import fs from 'fs-extra';
 import path from 'path';
 import { Logger } from '@nestjs/common';
+import fs from 'fs-extra';
 
 // Types
 export interface MCPMigration {
@@ -62,7 +62,7 @@ export interface MCPManifest {
       recipients: string[];
       events: string[];
     };
-   DoDoDoDoDoDotgithub: {
+    DoDoDoDoDoDotgithub: {
       enabled: boolean;
       repo: string;
       owner: string;
@@ -74,12 +74,12 @@ export interface MCPManifest {
       table: string;
       enabled: boolean;
     };
-   DoDoDoDoDoDotgithub: {
+    DoDoDoDoDoDotgithub: {
       autoCreatePR: boolean;
       prTemplate: string;
       enabled: boolean;
     };
-   Dotn8N: {
+    Dotn8N: {
       workflow: string;
       enabled: boolean;
     };
@@ -93,23 +93,23 @@ export class MCPManifestManager {
   private logger = new Logger('MCPManifestManager');
   private manifestPath: string;
   private manifest: MCPManifest | null = null;
-  
+
   constructor(manifestPath: string) {
     this.manifestPath = manifestPath;
   }
-  
+
   /**
    * Charge le fichier MCPManifest.json
    */
   public async load(): Promise<MCPManifest> {
     try {
-      if (!await fs.pathExists(this.manifestPath)) {
+      if (!(await fs.pathExists(this.manifestPath))) {
         throw new Error(`Le fichier ${this.manifestPath} n'existe pas`);
       }
-      
+
       const content = await fs.readJson(this.manifestPath);
       this.manifest = content as MCPManifest;
-      
+
       this.logger.log(`✅ Manifest chargé depuis ${this.manifestPath}`);
       return this.manifest;
     } catch (error: any) {
@@ -117,7 +117,7 @@ export class MCPManifestManager {
       throw error;
     }
   }
-  
+
   /**
    * Sauvegarde le fichier MCPManifest.json
    */
@@ -126,19 +126,19 @@ export class MCPManifestManager {
       if (!this.manifest) {
         throw new Error('Manifest non chargé');
       }
-      
+
       // Mettre à jour la date de dernière mise à jour
       this.manifest.lastUpdated = new Date().toISOString();
-      
+
       await fs.writeJson(this.manifestPath, this.manifest, { spaces: 2 });
-      
+
       this.logger.log(`✅ Manifest sauvegardé dans ${this.manifestPath}`);
     } catch (error: any) {
       this.logger.error(`❌ Erreur lors de la sauvegarde du manifest: ${error.message}`);
       throw error;
     }
   }
-  
+
   /**
    * Récupère une migration par son ID
    */
@@ -147,10 +147,10 @@ export class MCPManifestManager {
       this.logger.warn('⚠️ Manifest non chargé');
       return undefined;
     }
-    
-    return this.manifest.migrations.find(m => m.id === id);
+
+    return this.manifest.migrations.find((m) => m.id === id);
   }
-  
+
   /**
    * Récupère une migration par son fichier source
    */
@@ -159,18 +159,20 @@ export class MCPManifestManager {
       this.logger.warn('⚠️ Manifest non chargé');
       return undefined;
     }
-    
+
     // Normaliser les chemins pour la comparaison
     const normalizedSourceFile = path.normalize(sourceFile);
-    
-    return this.manifest.migrations.find(m => {
+
+    return this.manifest.migrations.find((m) => {
       const migrationSourceFile = path.normalize(m.sourceFile);
-      return migrationSourceFile === normalizedSourceFile || 
-             migrationSourceFile === path.basename(normalizedSourceFile) ||
-             path.basename(migrationSourceFile) === path.basename(normalizedSourceFile);
+      return (
+        migrationSourceFile === normalizedSourceFile ||
+        migrationSourceFile === path.basename(normalizedSourceFile) ||
+        path.basename(migrationSourceFile) === path.basename(normalizedSourceFile)
+      );
     });
   }
-  
+
   /**
    * Ajoute une nouvelle migration
    */
@@ -179,10 +181,10 @@ export class MCPManifestManager {
       this.logger.warn('⚠️ Manifest non chargé');
       return;
     }
-    
+
     // Vérifier si la migration existe déjà
-    const existingIndex = this.manifest.migrations.findIndex(m => m.id === migration.id);
-    
+    const existingIndex = this.manifest.migrations.findIndex((m) => m.id === migration.id);
+
     if (existingIndex >= 0) {
       // Mettre à jour la migration existante
       this.manifest.migrations[existingIndex] = migration;
@@ -192,11 +194,11 @@ export class MCPManifestManager {
       this.manifest.migrations.push(migration);
       this.logger.log(`✅ Migration ${migration.id} ajoutée`);
     }
-    
+
     // Mettre à jour les métadonnées
     this.updateMetadata();
   }
-  
+
   /**
    * Met à jour le statut d'une migration
    */
@@ -205,28 +207,28 @@ export class MCPManifestManager {
       this.logger.warn('⚠️ Manifest non chargé');
       return false;
     }
-    
+
     const migration = this.getMigration(id);
-    
+
     if (!migration) {
       this.logger.warn(`⚠️ Migration ${id} non trouvée`);
       return false;
     }
-    
+
     migration.status = status;
-    
+
     // Mettre à jour la date de complétion si terminé
     if (status === 'completed') {
       migration.completedAt = new Date().toISOString();
     }
-    
+
     // Mettre à jour les métadonnées
     this.updateMetadata();
-    
+
     this.logger.log(`✅ Statut de la migration ${id} mis à jour: ${status}`);
     return true;
   }
-  
+
   /**
    * Met à jour les metadata du manifest
    */
@@ -235,26 +237,26 @@ export class MCPManifestManager {
       this.logger.warn('⚠️ Manifest non chargé');
       return;
     }
-    
+
     const migrations = this.manifest.migrations;
-    
+
     // Calculer les totaux
-    const totalPlanned = migrations.filter(m => m.status === 'planned').length;
-    const totalCompleted = migrations.filter(m => m.status === 'completed').length;
-    const totalInProgress = migrations.filter(m => m.status === 'in_progress').length;
-    const totalFailed = migrations.filter(m => m.status === 'failed').length;
-    
+    const totalPlanned = migrations.filter((m) => m.status === 'planned').length;
+    const totalCompleted = migrations.filter((m) => m.status === 'completed').length;
+    const totalInProgress = migrations.filter((m) => m.status === 'in_progress').length;
+    const totalFailed = migrations.filter((m) => m.status === 'failed').length;
+
     // Mettre à jour les métadonnées
     this.manifest.metadata = {
       totalPlanned,
       totalCompleted,
       totalInProgress,
-      totalFailed
+      totalFailed,
     };
-    
+
     this.logger.log('✅ Métadonnées du manifest mises à jour');
   }
-  
+
   /**
    * Récupère toutes les migrations
    */
@@ -263,10 +265,10 @@ export class MCPManifestManager {
       this.logger.warn('⚠️ Manifest non chargé');
       return [];
     }
-    
+
     return this.manifest.migrations;
   }
-  
+
   /**
    * Récupère les migrations par statut
    */
@@ -275,10 +277,10 @@ export class MCPManifestManager {
       this.logger.warn('⚠️ Manifest non chargé');
       return [];
     }
-    
-    return this.manifest.migrations.filter(m => m.status === status);
+
+    return this.manifest.migrations.filter((m) => m.status === status);
   }
-  
+
   /**
    * Récupère les migrations par tag
    */
@@ -287,10 +289,10 @@ export class MCPManifestManager {
       this.logger.warn('⚠️ Manifest non chargé');
       return [];
     }
-    
-    return this.manifest.migrations.filter(m => m.tags && m.tags.includes(tag));
+
+    return this.manifest.migrations.filter((m) => m.tags && m.tags.includes(tag));
   }
-  
+
   /**
    * Récupère les métadonnées du manifest
    */
@@ -301,34 +303,36 @@ export class MCPManifestManager {
         totalPlanned: 0,
         totalCompleted: 0,
         totalInProgress: 0,
-        totalFailed: 0
+        totalFailed: 0,
       };
     }
-    
+
     return this.manifest.metadata;
   }
-  
+
   /**
    * Génère un nouvel ID de migration
    */
   public generateMigrationId(): string {
     if (!this.manifest) {
       this.logger.warn('⚠️ Manifest non chargé');
-      return `MIG-${Math.floor(Math.random() * 1000).toString().padStart(3, '0')}`;
+      return `MIG-${Math.floor(Math.random() * 1000)
+        .toString()
+        .padStart(3, '0')}`;
     }
-    
+
     // Trouver le plus grand ID existant
-    const ids = this.manifest.migrations.map(m => {
+    const ids = this.manifest.migrations.map((m) => {
       const match = m.id.match(/MIG-(\d+)/);
       return match ? parseInt(match[1], 10) : 0;
     });
-    
+
     const maxId = Math.max(0, ...ids);
     const nextId = maxId + 1;
-    
+
     return `MIG-${nextId.toString().padStart(3, '0')}`;
   }
-  
+
   /**
    * Récupère la configuration des notifications
    */
@@ -337,10 +341,10 @@ export class MCPManifestManager {
       this.logger.warn('⚠️ Manifest non chargé');
       return {};
     }
-    
+
     return this.manifest.notifications;
   }
-  
+
   /**
    * Récupère la configuration des intégrations
    */
@@ -349,7 +353,7 @@ export class MCPManifestManager {
       this.logger.warn('⚠️ Manifest non chargé');
       return {};
     }
-    
+
     return this.manifest.integrations;
   }
 }
@@ -357,20 +361,23 @@ export class MCPManifestManager {
 // Exécution autonome si appelé directement
 if (require.main === module) {
   const manifestPath = process.argv[2] || path.join(process.cwd(), 'MCPManifest.json');
-  
+
   console.log(`📋 Lecture du manifest depuis ${manifestPath}`);
-  
+
   const manager = new MCPManifestManager(manifestPath);
-  
-  manager.load()
-    .then(manifest => {
+
+  manager
+    .load()
+    .then((manifest) => {
       console.log('✅ Manifest chargé avec succès');
-      console.log(`📊 Statistiques: ${manifest.metadata.totalCompleted}/${manifest.migrations.length} migrations terminées`);
+      console.log(
+        `📊 Statistiques: ${manifest.metadata.totalCompleted}/${manifest.migrations.length} migrations terminées`
+      );
       console.log(`🚀 Migrations en cours: ${manifest.metadata.totalInProgress}`);
       console.log(`⏳ Migrations planifiées: ${manifest.metadata.totalPlanned}`);
       console.log(`❌ Migrations échouées: ${manifest.metadata.totalFailed}`);
     })
-    .catch(error => {
+    .catch((error) => {
       console.error(`❌ Erreur: ${error.message}`);
       process.exit(1);
     });

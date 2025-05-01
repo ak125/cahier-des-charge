@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
-import { WebhooksController } from './webhooks.controller';
 import { RedisModule } from '../redis/redis.module';
+import { WebhooksController } from './webhooks.controller';
 
 @Module({
   imports: [RedisModule],

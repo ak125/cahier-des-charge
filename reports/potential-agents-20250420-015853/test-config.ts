@@ -5,9 +5,9 @@
  * des agents et éviter les erreurs d'extension .ts
  */
 
-import * as path from 'path';
-import * as fs from 'fs';
 import * as child_process from 'child_process';
+import * as fs from 'fs';
+import * as path from 'path';
 
 /**
  * Configure les tests pour un agent spécifique
@@ -24,10 +24,10 @@ export function configureAgentTest(agentName: string, agentPath: string) {
   // Générer un fichier de test adapté pour l'agent
   const testId = new Date().toISOString().replace(/[:.]/g, '-');
   const testFilePath = path.join(tmpDir, `test-${agentName}-${testId}.js`);
-  
+
   // Modifier le chemin si nécessaire pour prendre en compte le chemin relatif depuis la racine du projet
   const projectRoot = __dirname;
-  
+
   // Écrire le contenu du test qui importe correctement le module
   const testContent = `
     // Simuler l'agent pour éviter les problèmes d'importation
@@ -61,10 +61,10 @@ export function configureAgentTest(agentName: string, agentPath: string) {
       // Autres tests...
     });
   `;
-  
+
   fs.writeFileSync(testFilePath, testContent);
   console.log(`Test configuré pour ${agentName} : ${testFilePath}`);
-  
+
   return testFilePath;
 }
 
@@ -74,15 +74,15 @@ export function configureAgentTest(agentName: string, agentPath: string) {
 export function runAgentTest(testFilePath: string) {
   // Import dynamique de Jest
   const jest = require('jest');
-  
+
   // Configuration pour exécuter le test
   const jestConfig = {
     testRegex: testFilePath,
     testEnvironment: 'node',
     verbose: false,
-    silent: true
+    silent: true,
   };
-  
+
   // Exécuter le test
   return jest.runCLI(jestConfig, [__dirname]);
 }

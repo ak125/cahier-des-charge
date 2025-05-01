@@ -3,8 +3,8 @@
  * Agent export file
  */
 
-import { StatusWriterAgent } from './status-writer';
 import { BusinessAgent } from '../../core/interfaces';
+import { StatusWriterAgent } from './status-writer';
 
 export { StatusWriterAgent };
 export default StatusWriterAgent;

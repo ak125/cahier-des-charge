@@ -13,15 +13,15 @@
  * - Actualisation du tableau de bord via Supabase
  */
 
-import { Logger } from '@nestjs/common';
-import fs from 'fs-extra';
 import path from 'path';
-import { Queue, Worker } from 'bullmq';
+import { Logger } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { createClient } from 'redis';
 import { Context } from '@temporalio/activity';
 import { proxyActivities } from '@temporalio/workflow';
+import { Queue, Worker } from 'bullmq';
+import fs from 'fs-extra';
 import Redis from 'ioredis';
+import { createClient } from 'redis';
 import { BaseAgent, OrchestrationAgent } from '../core/interfaces/BaseAgent';
 
 
@@ -151,7 +151,7 @@ interface RemixGenerationResult {
 export async function phpToRemixMigrationWorkflow(options: MigrationOptions): Promise<MigrationStatus> {
   // Initialisation du status
   const migrationId = `migration-${options.file}-${Date.now()}`;
-  let status: MigrationStatus = {
+  const status: MigrationStatus = {
     id: migrationId,
     file: options.file,
     step: MigrationStep.INIT,

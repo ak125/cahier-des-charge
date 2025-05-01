@@ -1,1 +1,6 @@
-{"agent": "agent-business", "interfaces": [""], "status": "COMPLIANT", "timestamp": "2025-04-20T04:18:55+00:00"}
+{
+  "agent": "agent-business",
+  "interfaces": [""],
+  "status": "COMPLIANT",
+  "timestamp": "2025-04-20T04:18:55+00:00"
+}

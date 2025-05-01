@@ -484,7 +484,7 @@ function mapToFullPrismaType(
   }
   
   // Ajouter les modificateurs
-  let modifiers = [];
+  const modifiers = [];
   
   // Clé primaire
   if (isPrimaryKey) {
@@ -649,7 +649,7 @@ function mapPostgresToPrismaType(column: any): string {
   }
   
   // Attributs spéciaux (@id, @default, etc.)
-  let attributes = [];
+  const attributes = [];
   
   // Détecter si c'est une clé primaire
   const isPrimaryKey = column.column_default && 

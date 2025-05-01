@@ -1,10 +1,10 @@
-import express from 'express';
-import cors from 'cors';
-import { json } from 'body-parser';
 import fs from 'fs';
 import path from 'path';
-import { createLogger, format, transports } from 'winston';
+import { json } from 'body-parser';
+import cors from 'cors';
 import dotenv from 'dotenv';
+import express from 'express';
+import { createLogger, format, transports } from 'winston';
 
 // Chargement des variables d'environnement
 dotenv.config();
@@ -15,21 +15,15 @@ import { Agent, AgentContext, AgentResponse } from './types/agent';
 // Création du logger
 const logger = createLogger({
   level: process.env.LOG_LEVEL || 'info',
-  format: format.combine(
-    format.timestamp(),
-    format.json()
-  ),
+  format: format.combine(format.timestamp(), format.json()),
   transports: [
     new transports.Console({
-      format: format.combine(
-        format.colorize(),
-        format.simple()
-      )
+      format: format.combine(format.colorize(), format.simple()),
     }),
     new transports.File({
-      filename: path.join(__dirname, 'logs', 'app.log')
-    })
-  ]
+      filename: path.join(__dirname, 'logs', 'app.log'),
+    }),
+  ],
 });
 
 // Configuration
@@ -38,7 +32,7 @@ try {
   config = JSON.parse(
     fs.readFileSync(path.resolve(__dirname, 'config/mcp-server-config.json'), 'utf8')
   );
-} catch (error) {
+} catch (_error) {
   logger.warn('Fichier de configuration non trouvé, utilisation des paramètres par défaut');
   config = {
     server: {
@@ -46,11 +40,11 @@ try {
       cors: {
         origin: '*',
         methods: ['GET', 'POST', 'PUT', 'DELETE'],
-        allowedHeaders: ['Content-Type', 'Authorization']
-      }
+        allowedHeaders: ['Content-Type', 'Authorization'],
+      },
     },
     version: '1.0.0',
-    agentCategories: ['analysis', 'core', 'migration', 'quality']
+    agentCategories: ['analysis', 'core', 'migration', 'quality'],
   };
 }
 
@@ -99,7 +93,8 @@ const loadAgents = async () => {
 
           // Recherche de l'exportation d'agent (classe ou objet)
           const AgentClass = Object.values(agentModule).find(
-            (exp: any) => typeof exp === 'function' ||
+            (exp: any) =>
+              typeof exp === 'function' ||
               (typeof exp === 'object' && exp !== null && 'process' in exp)
           );
 
@@ -114,7 +109,7 @@ const loadAgents = async () => {
               agent = AgentClass as Agent;
             }
 
-            if (agent && agent.id) {
+            if (agent?.id) {
               agentRegistry[category][agent.id] = agent;
               logger.info(`Agent chargé: ${category}/${agent.id} (${agent.name || 'Sans nom'})`);
             } else {
@@ -132,7 +127,7 @@ const loadAgents = async () => {
 };
 
 // Fonctions utilitaires pour le registre d'agents
-const getAllAgents = (): Agent[] => {
+const _getAllAgents = (): Agent[] => {
   const allAgents: Agent[] = [];
 
   for (const category in agentRegistry) {
@@ -148,7 +143,7 @@ const getAgentByPath = (category: string, agentId: string): Agent | undefined =>
   return agentRegistry[category]?.[agentId];
 };
 
-const getAgentCount = (): number => {
+const _getAgentCount = (): number => {
   let count = 0;
 
   for (const category in agentRegistry) {
@@ -159,7 +154,7 @@ const getAgentCount = (): number => {
 };
 
 // API endpoints
-app.get('/api/agents', (req, res) => {
+app.get('/api/agents', (_req, res) => {
   const result: any = {};
 
   for (const category in agentRegistry) {
@@ -168,7 +163,7 @@ app.get('/api/agents', (req, res) => {
         id,
         name,
         description,
-        capabilities
+        capabilities,
       })
     );
   }
@@ -181,7 +176,7 @@ app.get('/api/agents/:category', (req, res) => {
 
   if (!agentRegistry[category]) {
     return res.status(404).json({
-      error: `Catégorie d'agents ${category} introuvable`
+      error: `Catégorie d'agents ${category} introuvable`,
     });
   }
 
@@ -190,7 +185,7 @@ app.get('/api/agents/:category', (req, res) => {
       id,
       name,
       description,
-      capabilities
+      capabilities,
     })
   );
 
@@ -205,7 +200,7 @@ app.post('/api/agents/:category/:agentId', async (req, res) => {
 
   if (!agent) {
     return res.status(404).json({
-      error: `Agent ${category}/${agentId} introuvable`
+      error: `Agent ${category}/${agentId} introuvable`,
     });
   }
 
@@ -217,7 +212,7 @@ app.post('/api/agents/:category/:agentId', async (req, res) => {
   } catch (error: any) {
     logger.error(`Erreur lors du traitement par l'agent ${category}/${agentId}: ${error.message}`);
     res.status(500).json({
-      error: `Erreur lors du traitement: ${error.message}`
+      error: `Erreur lors du traitement: ${error.message}`,
     });
   }
 });

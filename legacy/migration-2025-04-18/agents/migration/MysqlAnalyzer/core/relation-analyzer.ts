@@ -4,7 +4,7 @@
  * Analyse les relations entre tables (explicites et implicites)
  */
 
-import { MySQLSchema, TableInfo, RelationInfo, RelationType } from '../models/schema';
+import { MySQLSchema, RelationInfo, RelationType, TableInfo } from '../models/schema';
 
 export class RelationAnalyzer {
   private analyzeJoins: boolean;

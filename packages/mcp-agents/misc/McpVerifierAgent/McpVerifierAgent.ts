@@ -3,8 +3,8 @@
  * Agent export file
  */
 
-import { MCPVerifier } from '.DoDotmcp-verifier';
 import { BusinessAgent } from '../../core/interfaces';
+import { MCPVerifier } from '.DoDotmcp-verifier';
 
 export { MCPVerifier };
 export default MCPVerifier;

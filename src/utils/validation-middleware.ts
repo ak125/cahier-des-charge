@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { z } from 'zod';
 
 /**
@@ -16,10 +16,10 @@ export function validateBody<T>(schema: z.ZodType<T>) {
         return res.status(400).json({
           status: 'error',
           message: 'Erreur de validation',
-          errors: error.errors.map(err => ({
+          errors: error.errors.map((err) => ({
             path: err.path.join('.'),
-            message: err.message
-          }))
+            message: err.message,
+          })),
         });
       }
       next(error);
@@ -41,10 +41,10 @@ export function validateQuery<T>(schema: z.ZodType<T>) {
         return res.status(400).json({
           status: 'error',
           message: 'Erreur de validation des paramètres',
-          errors: error.errors.map(err => ({
+          errors: error.errors.map((err) => ({
             path: err.path.join('.'),
-            message: err.message
-          }))
+            message: err.message,
+          })),
         });
       }
       next(error);
@@ -65,11 +65,11 @@ export function validateParams<T>(schema: z.ZodType<T>) {
       if (error instanceof z.ZodError) {
         return res.status(400).json({
           status: 'error',
-          message: 'Erreur de validation des paramètres d\'URL',
-          errors: error.errors.map(err => ({
+          message: "Erreur de validation des paramètres d'URL",
+          errors: error.errors.map((err) => ({
             path: err.path.join('.'),
-            message: err.message
-          }))
+            message: err.message,
+          })),
         });
       }
       next(error);

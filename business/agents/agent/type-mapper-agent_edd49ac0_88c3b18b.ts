@@ -3,8 +3,8 @@
  * Agent export file
  */
 
-import { type } from ./type-mapperstructure-agent';
-import { BusinessAgent } from ../../core/interfacesstructure-agent';
+import { BusinessAgent } from '../../core/interfacesstructure-agent';
+import { type } from './type-mapperstructure-agent';
 
 export { type };
 export default type;

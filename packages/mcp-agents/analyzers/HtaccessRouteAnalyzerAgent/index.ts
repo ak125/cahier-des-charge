@@ -5,7 +5,4 @@
 
 import { HtaccessRouteAnalyzerAgent } from './HtaccessRouteAnalyzerAgent';
 
-export {
-  HtaccessRouteAnalyzerAgent,
-};
-
+export { HtaccessRouteAnalyzerAgent };

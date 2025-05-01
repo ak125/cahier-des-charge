@@ -3,7 +3,7 @@
  * Agent export file
  */
 
-import { NotificationService } from ./NotificationServiceAgentstructure-agent';
+import { NotificationService } from './NotificationServiceAgent';
 
 export { NotificationService };
 export default NotificationService;

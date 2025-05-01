@@ -35,47 +35,47 @@ export interface MCPAgent<TConfig = any> {
    * Identifiant unique de l'agent
    */
   id: string;
-  
+
   /**
    * Nom convivial de l'agent
    */
   name: string;
-  
+
   /**
    * Version de l'agent
    */
   version: string;
-  
+
   /**
    * Description des fonctionnalités de l'agent
    */
   description: string;
-  
+
   /**
    * Initialise l'agent avec le contexte d'exécution
    */
   initialize(context: AgentContext): Promise<void>;
-  
+
   /**
    * Exécute l'agent et retourne le résultat
    */
   execute(context: AgentContext): Promise<void>;
-  
+
   /**
    * Nettoie les ressources utilisées par l'agent
    */
   cleanup?(): Promise<void>;
-  
+
   /**
    * Retourne les dépendances de l'agent
    */
   getDependencies?(): string[];
-  
+
   /**
    * Traite la demande d'exécution et retourne le résultat
    */
   process?(): Promise<AgentResult>;
-  
+
   /**
    * Gère une action spécifique demandée à l'agent
    */

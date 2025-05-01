@@ -10,10 +10,6 @@
     "outDir": "/workspaces/cahier-des-charge/reports/ci-agents-20250420-005157/dist",
     "resolveJsonModule": true
   },
-  "include": [
-    "/workspaces/cahier-des-charge/reports/ci-agents-20250420-005157/*.ts"
-  ],
-  "exclude": [
-    "node_modules"
-  ]
+  "include": ["/workspaces/cahier-des-charge/reports/ci-agents-20250420-005157/*.ts"],
+  "exclude": ["node_modules"]
 }

@@ -10,12 +10,12 @@ export type McpRedisEvent = {
 };
 
 // Types pour Redis
-export type McpQueueName = DoDotmcp:PhpAnalyzer' | DoDotmcp:verification' | DoDotmcp:commit';
+export type McpQueueName = 'mcp:PhpAnalyzer' | 'mcp:verification' | 'mcp:commit';
 
 // Canaux Redis utilisés
 export const REDIS_CHANNELS = {
-  JOB_EVENTS: DoDotmcp:job-events',
-  JOB_QUEUE: DoDotmcp:job-queue'
+  JOB_EVENTS: 'mcp:job-events',
+  JOB_QUEUE: 'mcp:job-queue'
 };
 
 // Initialisation du client Redis
@@ -25,33 +25,35 @@ let redisClient: ReturnType<typeof createClient>;
  * Initialise le client Redis côté serveur
  */
 export async function getRedisClient() {
-  if (redisClient && redisClient.isOpen) return redisClient;
+  if (redisClient?.isOpen) {
+    return redisClient;
+  }
 
   const redisUrl = process.env.REDIS_URL || 'redis://localhost:6379';
-  
+
   redisClient = createClient({
-    url: redisUrl
+    url: redisUrl,
   });
 
   redisClient.on('error', (err) => console.error('Erreur Redis:', err));
-  
+
   if (!redisClient.isOpen) {
     await redisClient.connect();
   }
-  
+
   return redisClient;
 }
 
 /**
  * Utilitaires pour interagir avec Redis pour les jobs MCP
  */
-export constDoDotmcpRedisApi = {
+export const mcpRedisApi = {
   /**
    * Publie un événement de changement de statut
    */
   async publishStatusChange(jobId: string, status: McpJob['status'], additionalData: Partial<McpJob> = {}) {
     const redis = await getRedisClient();
-    
+
     const event: McpRedisEvent = {
       type: 'job:status-changed',
       jobId,
@@ -61,43 +63,12 @@ export constDoDotmcpRedisApi = {
       },
       timestamp: Date.now()
     };
-    
+
     await redis.publish(REDIS_CHANNELS.JOB_EVENTS, JSON.stringify(event));
-    
+
     return true;
   },
-  
-  /**
-   * Ajoute un job à la file d'attente Redis
-   */
-  async addJobToQueue(job: {
-    id: string;
-    filename: string;
-    originalPath: string;
-    priority: number;
-    dryRun?: boolean;
-  }) {
-    const redis = await getRedisClient();
-    
-    const jobData = {
-      ...job,
-      queuedAt: Date.now()
-    };
-    
-    // Ajoute le job à la queue avec la priorité (plus la valeur est faible, plus la priorité est élevée)
-    await redis.zAdd(REDIS_CHANNELS.JOB_QUEUE, {
-      score: 10 - Math.min(Math.max(job.priority, 0), 10), // Inversion de la priorité pour Redis (0=plus haute, 10=plus basse)
-      value: JSON.stringify(jobData)
-    });
-    
-    // Publie un événement pour informer que le job a été ajouté
-    await this.publishStatusChange(job.id, 'pending', {
-      metadata: { queuedAt: new Date().toISOString(), dryRun: job.dryRun }
-    });
-    
-    return true;
-  },
-  
+
   /**
    * Ajoute un job à la file d'attente Redis
    */
@@ -128,7 +99,7 @@ export constDoDotmcpRedisApi = {
     };
 
     // Ajouter à la file d'attente des jobs MCP
-    return this.addJobToQueue(DoDotmcp:PhpAnalyzer', jobData);
+    return this.addJobToQueue('mcp:PhpAnalyzer', jobData);
   },
 
   /**
@@ -136,10 +107,10 @@ export constDoDotmcpRedisApi = {
    */
   async getQueuedJobs() {
     const redis = await getRedisClient();
-    
+
     // Récupère les jobs par ordre de priorité (scores les plus bas = priorité la plus haute)
     const jobsData = await redis.zRangeWithScores(REDIS_CHANNELS.JOB_QUEUE, 0, -1);
-    
+
     return jobsData.map(item => {
       const jobData = JSON.parse(item.value);
       return {
@@ -148,7 +119,7 @@ export constDoDotmcpRedisApi = {
       };
     });
   },
-  
+
   /**
    * Récupère l'état actuel d'un job depuis Redis
    */
@@ -182,15 +153,15 @@ export constDoDotmcpRedisApi = {
    */
   async removeJobFromQueue(jobId: string) {
     const redis = await getRedisClient();
-    
+
     const jobs = await this.getQueuedJobs();
     const jobToRemove = jobs.find(job => job.id === jobId);
-    
+
     if (jobToRemove) {
       await redis.zRem(REDIS_CHANNELS.JOB_QUEUE, JSON.stringify(jobToRemove));
       return true;
     }
-    
+
     return false;
   },
 
@@ -199,16 +170,16 @@ export constDoDotmcpRedisApi = {
    */
   async subscribeToJobUpdates(callback: (channel: string, message: string) => void) {
     const redis = createClient({
-      url: process.env.REDIS_URL || 'redis://localhost:6379',
+      url: process.env.REDIS_URL || 'redis://localhost:6379'
     });
 
     await redis.connect();
 
     // S'abonner aux canaux de mise à jour des jobs
     await redis.subscribe('job:status:update', callback);
-    await redis.subscribe(DoDotmcp:PhpAnalyzer:new', callback);
-    await redis.subscribe(DoDotmcp:verification:new', callback);
-    await redis.subscribe(DoDotmcp:commit:new', callback);
+    await redis.subscribe('mcp:PhpAnalyzer:new', callback);
+    await redis.subscribe('mcp:verification:new', callback);
+    await redis.subscribe('mcp:commit:new', callback);
 
     return redis;
   },

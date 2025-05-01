@@ -5,7 +5,4 @@
 
 import { DebtAnalyzerAgent } from './DebtAnalyzerAgent';
 
-export {
-  DebtAnalyzerAgent,
-};
-
+export { DebtAnalyzerAgent };

@@ -5,7 +5,4 @@
 
 import { NginxConfigAnalyzerAgent } from './NginxConfigAnalyzerAgent';
 
-export {
-  NginxConfigAnalyzerAgent,
-};
-
+export { NginxConfigAnalyzerAgent };

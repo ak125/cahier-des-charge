@@ -3,8 +3,8 @@
  * Agent export file
  */
 
-import { DebtDetector } from ./debt-detectorstructure-agent';
-import { BusinessAgent } from ../../core/interfacesstructure-agent';
+import { BusinessAgent } from '../../core/interfacesstructure-agent';
+import { DebtDetector } from './debt-detectorstructure-agent';
 
 export { DebtDetector };
 export default DebtDetector;

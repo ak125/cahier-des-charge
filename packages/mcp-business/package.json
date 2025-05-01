@@ -1,0 +1,23 @@
+{
+    "name": "@workspaces/mcp-business",
+    "version": "1.0.0",
+    "description": "Logique métier pour le Model Context Protocol",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "scripts": {
+        "build": "tsc",
+        "test": "jest",
+        "lint": "eslint src --ext .ts"
+    },
+    "dependencies": {
+        "@workspaces/mcp-types": "^1.0.0",
+        "@workspaces/mcp-config": "^1.0.0"
+    },
+    "devDependencies": {
+        "typescript": "^5.2.2",
+        "jest": "^29.7.0",
+        "ts-jest": "^29.3.2",
+        "@types/jest": "^29.5.14",
+        "eslint": "^8.56.0"
+    }
+}

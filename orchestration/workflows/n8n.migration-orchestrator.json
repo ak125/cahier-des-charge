@@ -16,10 +16,7 @@
       "name": "Schedule Trigger",
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1,
-      "position": [
-        250,
-        300
-      ]
+      "position": [250, 300]
     },
     {
       "parameters": {
@@ -35,10 +32,7 @@
       "name": "GitHub - Check Commits",
       "type": "n8n-nodes-base.github",
       "typeVersion": 1,
-      "position": [
-        650,
-        300
-      ],
+      "position": [650, 300],
       "credentials": {
         "githubOAuth2Api": {
           "id": "1",
@@ -62,10 +56,7 @@
       "name": "Has New Commits?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
-      "position": [
-        900,
-        300
-      ]
+      "position": [900, 300]
     },
     {
       "parameters": {
@@ -76,10 +67,7 @@
       "name": "Read Status File",
       "type": "n8n-nodes-base.readBinaryFile",
       "typeVersion": 1,
-      "position": [
-        1150,
-        200
-      ]
+      "position": [1150, 200]
     },
     {
       "parameters": {
@@ -90,10 +78,7 @@
       "name": "Read Discovery Map",
       "type": "n8n-nodes-base.readBinaryFile",
       "typeVersion": 1,
-      "position": [
-        1150,
-        400
-      ]
+      "position": [1150, 400]
     },
     {
       "parameters": {
@@ -105,10 +90,7 @@
       "name": "Parse Status",
       "type": "n8n-nodes-base.set",
       "typeVersion": 1,
-      "position": [
-        1400,
-        200
-      ]
+      "position": [1400, 200]
     },
     {
       "parameters": {
@@ -120,10 +102,7 @@
       "name": "Parse Discovery",
       "type": "n8n-nodes-base.set",
       "typeVersion": 1,
-      "position": [
-        1400,
-        400
-      ]
+      "position": [1400, 400]
     },
     {
       "parameters": {
@@ -133,10 +112,7 @@
       "name": "Update Discovery Map",
       "type": "n8n-nodes-base.function",
       "typeVersion": 1,
-      "position": [
-        1650,
-        300
-      ]
+      "position": [1650, 300]
     },
     {
       "parameters": {
@@ -151,10 +127,7 @@
       "name": "Prepare Files",
       "type": "n8n-nodes-base.set",
       "typeVersion": 1,
-      "position": [
-        1900,
-        300
-      ]
+      "position": [1900, 300]
     },
     {
       "parameters": {
@@ -169,10 +142,7 @@
       "name": "Write Updated Map",
       "type": "n8n-nodes-base.writeBinaryFile",
       "typeVersion": 1,
-      "position": [
-        2150,
-        300
-      ]
+      "position": [2150, 300]
     },
     {
       "parameters": {
@@ -182,10 +152,7 @@
       "name": "Run Orchestrator",
       "type": "n8n-nodes-base.executeCommand",
       "typeVersion": 1,
-      "position": [
-        2400,
-        300
-      ]
+      "position": [2400, 300]
     },
     {
       "parameters": {
@@ -196,10 +163,7 @@
       "name": "Generate Report",
       "type": "n8n-nodes-base.emailSend",
       "typeVersion": 1,
-      "position": [
-        2650,
-        300
-      ],
+      "position": [2650, 300],
       "credentials": {
         "smtp": {
           "id": "1",
@@ -239,10 +203,7 @@
       "name": "Config",
       "type": "n8n-nodes-base.set",
       "typeVersion": 1,
-      "position": [
-        450,
-        300
-      ]
+      "position": [450, 300]
     },
     {
       "parameters": {
@@ -252,10 +213,7 @@
       "name": "Get_Last_Run",
       "type": "n8n-nodes-base.function",
       "typeVersion": 1,
-      "position": [
-        450,
-        500
-      ]
+      "position": [450, 500]
     },
     {
       "parameters": {
@@ -270,10 +228,7 @@
       "name": "Webhook Trigger",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 1,
-      "position": [
-        250,
-        500
-      ],
+      "position": [250, 500],
       "webhookId": "a9753043-af4e-4776-a355-62edc8b3aa88"
     }
   ],

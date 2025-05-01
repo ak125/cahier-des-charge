@@ -8,13 +8,9 @@ import { AgentOptions, AgentResult } from '../core/types';
 /**
  * Options spécifiques aux agents audit
  */
-export interface AuditAgentOptions extends AgentOptions {
-  // Options spécifiques à cette catégorie
-}
+export type AuditAgentOptions = AgentOptions;
 
 /**
  * Résultat spécifique aux agents audit
  */
-export interface AuditResult extends AgentResult {
-  // Données spécifiques à cette catégorie
-}
+export type AuditResult = AgentResult;

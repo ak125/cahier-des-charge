@@ -729,10 +729,10 @@ export class Agent8SqlOptimizer implements BaseAgent, BusinessAgent, INodeType {
 		return summary;
 	}
 
-  id: string = '';
-  name: string = '';
-  type: string = '';
-  version: string = '1.0.0';
+  id = '';
+  name = '';
+  type = '';
+  version = '1.0.0';
 
   /**
    * Initialise l'agent avec des options spécifiques

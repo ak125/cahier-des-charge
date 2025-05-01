@@ -3,9 +3,6 @@
  * Generated automatically on 2025-04-20
  */
 
-import { AgentOrchestratorAgent } from ./AgentOrchestratorAgentstructure-agent';
+import { AgentOrchestratorAgent } from './AgentOrchestratorAgent';
 
-export {
-  AgentOrchestratorAgent,
-};
-
+export { AgentOrchestratorAgent };

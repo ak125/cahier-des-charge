@@ -15,10 +15,7 @@
       "name": "Schedule Trigger",
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1,
-      "position": [
-        250,
-        300
-      ]
+      "position": [250, 300]
     },
     {
       "parameters": {
@@ -33,10 +30,7 @@
       "name": "MySQL Extractor",
       "type": "n8n-nodes-base.executeCommand",
       "typeVersion": 1,
-      "position": [
-        450,
-        300
-      ]
+      "position": [450, 300]
     },
     {
       "parameters": {
@@ -49,10 +43,7 @@
       "name": "Read Schema Map",
       "type": "n8n-nodes-base.readBinaryFile",
       "typeVersion": 1,
-      "position": [
-        650,
-        300
-      ]
+      "position": [650, 300]
     },
     {
       "parameters": {
@@ -62,10 +53,7 @@
       "name": "Type Optimizer",
       "type": "n8n-nodes-base.code",
       "typeVersion": 1,
-      "position": [
-        850,
-        300
-      ]
+      "position": [850, 300]
     },
     {
       "parameters": {
@@ -78,10 +66,7 @@
       "name": "Save Type Mapping",
       "type": "n8n-nodes-base.writeBinaryFile",
       "typeVersion": 1,
-      "position": [
-        1050,
-        200
-      ]
+      "position": [1050, 200]
     },
     {
       "parameters": {
@@ -91,10 +76,7 @@
       "name": "Prisma Generator",
       "type": "n8n-nodes-base.code",
       "typeVersion": 1,
-      "position": [
-        1050,
-        400
-      ]
+      "position": [1050, 400]
     },
     {
       "parameters": {
@@ -107,10 +89,7 @@
       "name": "Save Prisma Models",
       "type": "n8n-nodes-base.writeBinaryFile",
       "typeVersion": 1,
-      "position": [
-        1250,
-        400
-      ]
+      "position": [1250, 400]
     },
     {
       "parameters": {
@@ -120,10 +99,7 @@
       "name": "Diff Checker",
       "type": "n8n-nodes-base.code",
       "typeVersion": 1,
-      "position": [
-        1250,
-        300
-      ]
+      "position": [1250, 300]
     },
     {
       "parameters": {
@@ -136,10 +112,7 @@
       "name": "Save Migration Diff",
       "type": "n8n-nodes-base.writeBinaryFile",
       "typeVersion": 1,
-      "position": [
-        1450,
-        300
-      ]
+      "position": [1450, 300]
     },
     {
       "parameters": {
@@ -149,10 +122,7 @@
       "name": "SQL Quality Audit",
       "type": "n8n-nodes-base.code",
       "typeVersion": 1,
-      "position": [
-        1450,
-        400
-      ]
+      "position": [1450, 400]
     },
     {
       "parameters": {
@@ -165,10 +135,7 @@
       "name": "Save Quality Report",
       "type": "n8n-nodes-base.writeBinaryFile",
       "typeVersion": 1,
-      "position": [
-        1650,
-        400
-      ]
+      "position": [1650, 400]
     },
     {
       "parameters": {
@@ -178,10 +145,7 @@
       "name": "GitHub MCP Push",
       "type": "n8n-nodes-base.code",
       "typeVersion": 1,
-      "position": [
-        1650,
-        300
-      ]
+      "position": [1650, 300]
     },
     {
       "parameters": {
@@ -191,10 +155,7 @@
       "name": "Sync Supabase",
       "type": "n8n-nodes-base.code",
       "typeVersion": 1,
-      "position": [
-        1850,
-        300
-      ]
+      "position": [1850, 300]
     },
     {
       "parameters": {
@@ -204,10 +165,7 @@
       "name": "No Operation, do nothing",
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
-      "position": [
-        1850,
-        500
-      ]
+      "position": [1850, 500]
     },
     {
       "parameters": {
@@ -221,10 +179,7 @@
       "name": "Slack Webhook (optional)",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 1,
-      "position": [
-        2050,
-        300
-      ]
+      "position": [2050, 300]
     },
     {
       "parameters": {
@@ -246,10 +201,7 @@
       "name": "Configuration",
       "type": "n8n-nodes-base.set",
       "typeVersion": 1,
-      "position": [
-        250,
-        500
-      ]
+      "position": [250, 500]
     }
   ],
   "connections": {
@@ -303,9 +255,7 @@
       ]
     },
     "Save Type Mapping": {
-      "main": [
-        []
-      ]
+      "main": [[]]
     },
     "Prisma Generator": {
       "main": [
@@ -324,9 +274,7 @@
       ]
     },
     "Save Prisma Models": {
-      "main": [
-        []
-      ]
+      "main": [[]]
     },
     "Diff Checker": {
       "main": [
@@ -345,9 +293,7 @@
       ]
     },
     "Save Migration Diff": {
-      "main": [
-        []
-      ]
+      "main": [[]]
     },
     "SQL Quality Audit": {
       "main": [
@@ -366,9 +312,7 @@
       ]
     },
     "Save Quality Report": {
-      "main": [
-        []
-      ]
+      "main": [[]]
     },
     "GitHub MCP Push": {
       "main": [

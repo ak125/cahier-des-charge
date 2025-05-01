@@ -9,27 +9,27 @@ import { AgentContext } from '../../coreDoDotmcp-agent';
 /**
  * remix-generator.ts
  * Agent MCP pour générer automatiquement des composants Remix à partir de fichiers PHP
- * 
- * Usage: 
+ *
+ * Usage:
  * - Appel direct: await generateRemixComponent('fiche.php')
  * - Via MCP API: POST /api/generate/remix avec le payload { source: 'fiche.php', options: {...} }
- * 
+ *
  * Date: 2025-04-13
  */
 
+import { createHash } from 'crypto';
 import * as fs from 'fs';
 import * as path from 'path';
-import { createHash } from 'crypto';
+import { PrismaClient } from '@prisma/client';
 import axios from 'axios';
 import { glob } from 'glob';
 import { logger } from '../utils/logger';
-import { extractMetaData } from './SeoChecker';
-import { detectRouteParams } from './router-analyzer';
-import { extractDataStructure } from './PhpAnalyzer-v2';
-import { transformQueryToParams } from '../utils/url-transformer';
-import { createAuditFile } from './consolidator';
 import { supabaseClient } from '../utils/supabase-client';
-import { PrismaClient } from '@prisma/client';
+import { transformQueryToParams } from '../utils/url-transformer';
+import { extractDataStructure } from './PhpAnalyzer-v2';
+import { extractMetaData } from './SeoChecker';
+import { createAuditFile } from './consolidator';
+import { detectRouteParams } from './router-analyzer';
 
 // Types pour les fichiers générés
 interface GeneratedRemixComponent {
@@ -101,33 +101,31 @@ const prisma = new PrismaClient();
  * Fonction principale pour générer un composant Remix à partir d'un fichier PHP
  */
 export async function generateRemixComponent(
-  phpFilePath: string, 
+  phpFilePath: string,
   options: RemixGeneratorOptions = {}
 ): Promise<GeneratedRemixComponent> {
   // Fusionner les options avec les options par défaut
   const opts = { ...DEFAULT_OPTIONS, ...options };
   logger.info(`Génération du composant Remix pour ${phpFilePath} démarrée`);
-  
+
   // Vérifier que le fichier PHP existe
   if (!fs.existsSync(phpFilePath)) {
     throw new Error(`Le fichier PHP ${phpFilePath} n'existe pas`);
   }
-  
+
   // Définir le chemin de sortie en fonction du mode (dry run ou non)
-  const baseOutputDir = opts.dryRun 
-    ? './simulations/routes' 
-    : opts.outputDir;
-  
+  const baseOutputDir = opts.dryRun ? './simulations/routes' : opts.outputDir;
+
   // Créer les répertoires de sortie s'ils n'existent pas
   if (!fs.existsSync(baseOutputDir)) {
     fs.mkdirSync(baseOutputDir, { recursive: true });
   }
-  
+
   // Analyser le fichier PHP
   logger.debug(`Analyse du fichier PHP ${phpFilePath}`);
   const phpCode = fs.readFileSync(phpFilePath, 'utf-8');
   const fileHash = createHash('md5').update(phpCode).digest('hex');
-  
+
   // Vérifier si ce fichier a déjà été généré et si le contenu est identique
   const existingRecord = await supabaseClient
     .from('generated_files')
@@ -135,31 +133,33 @@ export async function generateRemixComponent(
     .eq('source_file', phpFilePath)
     .eq('file_hash', fileHash)
     .maybeSingle();
-  
+
   if (existingRecord.data && !opts.forceRegenerate) {
-    logger.info(`Le fichier ${phpFilePath} a déjà été généré et n'a pas changé. Utilisation de la version en cache.`);
+    logger.info(
+      `Le fichier ${phpFilePath} a déjà été généré et n'a pas changé. Utilisation de la version en cache.`
+    );
     return JSON.parse(existingRecord.data.generated_content);
   }
-  
+
   // Extraire les métadonnées SEO
   logger.debug(`Extraction des métadonnées SEO pour ${phpFilePath}`);
   const seoMetadata = !opts.skipSeo ? await extractMetaData(phpFilePath) : null;
-  
+
   // Analyser la structure des données
   logger.debug(`Extraction de la structure de données pour ${phpFilePath}`);
   const dataStructure = await extractDataStructure(phpFilePath);
-  
+
   // Détecter les paramètres de route
   logger.debug(`Détection des paramètres de route pour ${phpFilePath}`);
   const routeParams = await detectRouteParams(phpFilePath);
-  
+
   // Transformer l'URL PHP en URL Remix
   const remixRoutePath = transformPhpRouteToRemix(phpFilePath, routeParams);
   logger.info(`Route Remix définie: ${remixRoutePath}`);
-  
+
   // Déterminer le nom de fichier de sortie
   const outputFileName = getRemixFileName(remixRoutePath, opts.useFlat);
-  
+
   // Générer les fichiers Remix
   const result = await generateRemixFiles(
     phpFilePath,
@@ -171,11 +171,10 @@ export async function generateRemixComponent(
     routeParams,
     opts
   );
-  
+
   // Sauvegarder les métadonnées dans Supabase
-  await supabaseClient
-    .from('generated_files')
-    .upsert({
+  await supabaseClient.from('generated_files').upsert(
+    {
       source_file: phpFilePath,
       file_hash: fileHash,
       route_path: remixRoutePath,
@@ -183,29 +182,27 @@ export async function generateRemixComponent(
       seo_metadata: seoMetadata,
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
-    }, { onConflict: 'source_file' });
-  
-  // Créer le fichier d'audit
-  await createAuditFile(
-    phpFilePath,
-    result.mainFile.path,
-    {
-      routePath: remixRoutePath,
-      dataStructure,
-      seoMetadata,
-      routeParams,
-      generatedFiles: [
-        result.mainFile.path,
-        ...(result.metaFile ? [result.metaFile.path] : []),
-        ...(result.loaderFile ? [result.loaderFile.path] : []),
-        ...(result.actionFile ? [result.actionFile.path] : []),
-        ...(result.canonicalFile ? [result.canonicalFile.path] : []),
-        ...(result.schemaFile ? [result.schemaFile.path] : []),
-        ...result.additionalFiles.map(f => f.path)
-      ]
-    }
+    },
+    { onConflict: 'source_file' }
   );
-  
+
+  // Créer le fichier d'audit
+  await createAuditFile(phpFilePath, result.mainFile.path, {
+    routePath: remixRoutePath,
+    dataStructure,
+    seoMetadata,
+    routeParams,
+    generatedFiles: [
+      result.mainFile.path,
+      ...(result.metaFile ? [result.metaFile.path] : []),
+      ...(result.loaderFile ? [result.loaderFile.path] : []),
+      ...(result.actionFile ? [result.actionFile.path] : []),
+      ...(result.canonicalFile ? [result.canonicalFile.path] : []),
+      ...(result.schemaFile ? [result.schemaFile.path] : []),
+      ...result.additionalFiles.map((f) => f.path),
+    ],
+  });
+
   logger.info(`Génération du composant Remix pour ${phpFilePath} terminée`);
   return result;
 }
@@ -216,31 +213,31 @@ export async function generateRemixComponent(
 function transformPhpRouteToRemix(phpFilePath: string, routeParams: any): string {
   // Extraire le nom du fichier sans l'extension
   const fileName = path.basename(phpFilePath, '.php');
-  
+
   // Cas spéciaux
   if (fileName === 'index') {
     return '/';
   }
-  
+
   // Construire le chemin de base
   let routePath = `/${fileName.toLowerCase()}`;
-  
+
   // Ajouter les paramètres dynamiques s'il y en a
   if (routeParams && routeParams.length > 0) {
     // Pour les routes avec ID, on ajoute /$id
     if (routeParams.includes('id')) {
       routePath += '/$id';
-    } 
+    }
     // Pour d'autres paramètres, on les ajoute en tant que segments dynamiques
     else {
-      routeParams.forEach(param => {
+      routeParams.forEach((param) => {
         if (param !== 'id') {
           routePath += `/$${param}`;
         }
       });
     }
   }
-  
+
   return routePath;
 }
 
@@ -251,10 +248,10 @@ function getRemixFileName(routePath: string, useFlat: boolean): string {
   if (routePath === '/') {
     return '_index';
   }
-  
+
   // Supprimer le slash initial
-  let cleanPath = routePath.startsWith('/') ? routePath.substring(1) : routePath;
-  
+  const cleanPath = routePath.startsWith('/') ? routePath.substring(1) : routePath;
+
   // Remplacer les slashes par des points ou des slashes selon le mode
   if (useFlat) {
     // Format plat: user.$id.edit.tsx
@@ -279,29 +276,30 @@ async function generateRemixFiles(
   options: RemixGeneratorOptions
 ): Promise<GeneratedRemixComponent> {
   const additionalFiles = [];
-  
+
   // Déterminer si la route a besoin d'un loader, action, etc.
   const needsLoader = hasDataFetching(phpFilePath);
   const needsAction = hasFormSubmission(phpFilePath);
-  const needsCanonical = !options.skipSeo && seoMetadata && (seoMetadata.canonical || seoMetadata.title);
-  
+  const needsCanonical =
+    !options.skipSeo && seoMetadata && (seoMetadata.canonical || seoMetadata.title);
+
   // Préparer le contenu du fichier principal (route)
   const mainFileContent = await generateMainComponent(
-    phpFilePath, 
-    routePath, 
-    dataStructure, 
-    routeParams, 
-    needsLoader, 
+    phpFilePath,
+    routePath,
+    dataStructure,
+    routeParams,
+    needsLoader,
     needsAction,
     options
   );
-  
+
   // Fichier principal
   const mainFilePath = path.join(
-    baseOutputDir, 
+    baseOutputDir,
     options.useFlat ? `${outputFileName}.tsx` : `${outputFileName}/index.tsx`
   );
-  
+
   const result: GeneratedRemixComponent = {
     mainFile: {
       path: mainFilePath,
@@ -312,7 +310,7 @@ async function generateRemixFiles(
     originalPhpFile: phpFilePath,
     auditPath: path.join('./audit', `${outputFileName.replace(/\$/g, '')}.audit.md`),
   };
-  
+
   // Générer le fichier meta.ts si nécessaire
   if (!options.skipSeo && seoMetadata) {
     const metaContent = await generateMetaFile(routePath, seoMetadata, dataStructure, options);
@@ -320,12 +318,12 @@ async function generateRemixFiles(
       baseOutputDir,
       options.useFlat ? `${outputFileName}.meta.ts` : `${outputFileName}/meta.ts`
     );
-    
+
     result.metaFile = {
       path: metaFilePath,
       content: metaContent,
     };
-    
+
     // Écrire le fichier si ce n'est pas un dry run
     if (!options.dryRun) {
       const metaDir = path.dirname(metaFilePath);
@@ -335,7 +333,7 @@ async function generateRemixFiles(
       fs.writeFileSync(metaFilePath, metaContent);
     }
   }
-  
+
   // Générer le fichier loader.ts si nécessaire
   if (needsLoader) {
     const loaderContent = await generateLoaderFile(routePath, dataStructure, routeParams, options);
@@ -343,12 +341,12 @@ async function generateRemixFiles(
       baseOutputDir,
       options.useFlat ? `${outputFileName}.loader.ts` : `${outputFileName}/loader.ts`
     );
-    
+
     result.loaderFile = {
       path: loaderFilePath,
       content: loaderContent,
     };
-    
+
     // Écrire le fichier si ce n'est pas un dry run
     if (!options.dryRun) {
       const loaderDir = path.dirname(loaderFilePath);
@@ -358,7 +356,7 @@ async function generateRemixFiles(
       fs.writeFileSync(loaderFilePath, loaderContent);
     }
   }
-  
+
   // Générer le fichier action.ts si nécessaire
   if (needsAction) {
     const actionContent = await generateActionFile(routePath, dataStructure, routeParams, options);
@@ -366,12 +364,12 @@ async function generateRemixFiles(
       baseOutputDir,
       options.useFlat ? `${outputFileName}.action.ts` : `${outputFileName}/action.ts`
     );
-    
+
     result.actionFile = {
       path: actionFilePath,
       content: actionContent,
     };
-    
+
     // Écrire le fichier si ce n'est pas un dry run
     if (!options.dryRun) {
       const actionDir = path.dirname(actionFilePath);
@@ -381,7 +379,7 @@ async function generateRemixFiles(
       fs.writeFileSync(actionFilePath, actionContent);
     }
   }
-  
+
   // Générer le fichier canonical.tsx si nécessaire
   if (needsCanonical) {
     const canonicalContent = generateCanonicalFile(routePath, seoMetadata);
@@ -389,12 +387,12 @@ async function generateRemixFiles(
       baseOutputDir,
       options.useFlat ? `${outputFileName}.canonical.tsx` : `${outputFileName}/canonical.tsx`
     );
-    
+
     result.canonicalFile = {
       path: canonicalFilePath,
       content: canonicalContent,
     };
-    
+
     // Écrire le fichier si ce n'est pas un dry run
     if (!options.dryRun) {
       const canonicalDir = path.dirname(canonicalFilePath);
@@ -404,7 +402,7 @@ async function generateRemixFiles(
       fs.writeFileSync(canonicalFilePath, canonicalContent);
     }
   }
-  
+
   // Générer le fichier schema.ts si nécessaire
   if (options.enableTypeGeneration && dataStructure) {
     const schemaContent = generateSchemaFile(dataStructure);
@@ -412,12 +410,12 @@ async function generateRemixFiles(
       baseOutputDir,
       options.useFlat ? `${outputFileName}.schema.ts` : `${outputFileName}/schema.ts`
     );
-    
+
     result.schemaFile = {
       path: schemaFilePath,
       content: schemaContent,
     };
-    
+
     // Écrire le fichier si ce n'est pas un dry run
     if (!options.dryRun) {
       const schemaDir = path.dirname(schemaFilePath);
@@ -427,20 +425,22 @@ async function generateRemixFiles(
       fs.writeFileSync(schemaFilePath, schemaContent);
     }
   }
-  
+
   // Générer des tests si nécessaire
   if (options.withTests) {
     const testContent = generateTestFile(outputFileName, routePath, dataStructure);
     const testFilePath = path.join(
       baseOutputDir,
-      options.useFlat ? `${outputFileName}.test.tsx` : `${outputFileName}/${path.basename(outputFileName)}.test.tsx`
+      options.useFlat
+        ? `${outputFileName}.test.tsx`
+        : `${outputFileName}/${path.basename(outputFileName)}.test.tsx`
     );
-    
+
     additionalFiles.push({
       path: testFilePath,
       content: testContent,
     });
-    
+
     // Écrire le fichier si ce n'est pas un dry run
     if (!options.dryRun) {
       const testDir = path.dirname(testFilePath);
@@ -450,20 +450,22 @@ async function generateRemixFiles(
       fs.writeFileSync(testFilePath, testContent);
     }
   }
-  
+
   // Générer des stories si nécessaire
   if (options.withStories) {
     const storyContent = generateStoryFile(outputFileName, routePath, dataStructure);
     const storyFilePath = path.join(
       baseOutputDir,
-      options.useFlat ? `${outputFileName}.stories.tsx` : `${outputFileName}/${path.basename(outputFileName)}.stories.tsx`
+      options.useFlat
+        ? `${outputFileName}.stories.tsx`
+        : `${outputFileName}/${path.basename(outputFileName)}.stories.tsx`
     );
-    
+
     additionalFiles.push({
       path: storyFilePath,
       content: storyContent,
     });
-    
+
     // Écrire le fichier si ce n'est pas un dry run
     if (!options.dryRun) {
       const storyDir = path.dirname(storyFilePath);
@@ -473,9 +475,9 @@ async function generateRemixFiles(
       fs.writeFileSync(storyFilePath, storyContent);
     }
   }
-  
+
   result.additionalFiles = additionalFiles;
-  
+
   // Écrire le fichier principal si ce n'est pas un dry run
   if (!options.dryRun) {
     const mainDir = path.dirname(mainFilePath);
@@ -484,7 +486,7 @@ async function generateRemixFiles(
     }
     fs.writeFileSync(mainFilePath, mainFileContent);
   }
-  
+
   return result;
 }
 
@@ -493,7 +495,7 @@ async function generateRemixFiles(
  */
 function hasDataFetching(phpFilePath: string): boolean {
   const content = fs.readFileSync(phpFilePath, 'utf-8');
-  
+
   // Rechercher des modèles courants de récupération de données
   return (
     content.includes('mysqli_query') ||
@@ -512,7 +514,7 @@ function hasDataFetching(phpFilePath: string): boolean {
  */
 function hasFormSubmission(phpFilePath: string): boolean {
   const content = fs.readFileSync(phpFilePath, 'utf-8');
-  
+
   // Rechercher des modèles courants de soumission de formulaire
   return (
     content.includes('$_POST') ||
@@ -538,15 +540,17 @@ async function generateMainComponent(
 ): Promise<string> {
   // Extraire le nom du fichier sans l'extension comme nom de base pour le composant
   const baseComponentName = path.basename(phpFilePath, '.php');
-  const componentName = `${baseComponentName.charAt(0).toUpperCase() + baseComponentName.slice(1)}Page`;
-  
+  const componentName = `${
+    baseComponentName.charAt(0).toUpperCase() + baseComponentName.slice(1)
+  }Page`;
+
   // Préparer les imports
   const imports = [
     'import { useLoaderData } from "@remix-run/react";',
     'import { json } from "@remix-run/node";',
     'import { PageContainer } from "~/components/layout/PageContainer";',
   ];
-  
+
   if (needsLoader) {
     if (options.useFlat) {
       imports.push(`import { loader } from "./${baseComponentName}.loader";`);
@@ -554,7 +558,7 @@ async function generateMainComponent(
       imports.push(`import { loader } from "./loader";`);
     }
   }
-  
+
   if (needsAction) {
     if (options.useFlat) {
       imports.push(`import { action } from "./${baseComponentName}.action";`);
@@ -562,7 +566,7 @@ async function generateMainComponent(
       imports.push(`import { action } from "./action";`);
     }
   }
-  
+
   // Construire le code du composant en utilisant les données extraites
   const componentTemplate = `
 /**
@@ -583,9 +587,13 @@ export default function ${componentName}() {
   return (
     <PageContainer>
       <div className="mx-auto max-w-4xl py-8">
-        <h1 className="text-3xl font-bold mb-6">${baseComponentName.charAt(0).toUpperCase() + baseComponentName.slice(1)}</h1>
+        <h1 className="text-3xl font-bold mb-6">${
+          baseComponentName.charAt(0).toUpperCase() + baseComponentName.slice(1)
+        }</h1>
         
-        ${needsLoader ? `
+        ${
+          needsLoader
+            ? `
         {data && (
           <div className="bg-white shadow-md rounded-lg p-6">
             {/* Remplacer par le contenu réel basé sur les données */}
@@ -594,9 +602,13 @@ export default function ${componentName}() {
             </pre>
           </div>
         )}
-        ` : ''}
+        `
+            : ''
+        }
         
-        ${needsAction ? `
+        ${
+          needsAction
+            ? `
         <div className="mt-8">
           <h2 className="text-xl font-semibold mb-4">Formulaire</h2>
           <form method="post" className="space-y-4 bg-white shadow-md rounded-lg p-6">
@@ -618,7 +630,9 @@ export default function ${componentName}() {
             </button>
           </form>
         </div>
-        ` : ''}
+        `
+            : ''
+        }
       </div>
     </PageContainer>
   );
@@ -632,7 +646,7 @@ export default function ${componentName}() {
  * Générer le fichier meta.ts pour les métadonnées SEO
  */
 async function generateMetaFile(
-  routePath: string, 
+  routePath: string,
   seoMetadata: any,
   dataStructure: any,
   options: RemixGeneratorOptions
@@ -664,24 +678,34 @@ export const meta: MetaFunction = ({ data, params, location }) => {
     { title: ${seoMetadata.title ? `"${seoMetadata.title}"` : 'data.title'} },
     
     // Description principale
-    { name: "description", content: ${seoMetadata.description ? `"${seoMetadata.description}"` : 'data.description || ""'} },
+    { name: "description", content: ${
+      seoMetadata.description ? `"${seoMetadata.description}"` : 'data.description || ""'
+    } },
     
     // Mots-clés
-    { name: "keywords", content: ${seoMetadata.keywords ? `"${seoMetadata.keywords}"` : 'data.keywords || ""'} },
+    { name: "keywords", content: ${
+      seoMetadata.keywords ? `"${seoMetadata.keywords}"` : 'data.keywords || ""'
+    } },
     
     // URL canonique
-    { tagName: "link", rel: "canonical", href: ${seoMetadata.canonical ? `"${seoMetadata.canonical}"` : 'canonicalUrl'} },
+    { tagName: "link", rel: "canonical", href: ${
+      seoMetadata.canonical ? `"${seoMetadata.canonical}"` : 'canonicalUrl'
+    } },
     
     // Open Graph - pour un meilleur partage sur les réseaux sociaux
     { property: "og:title", content: ${seoMetadata.title ? `"${seoMetadata.title}"` : 'data.title'} },
-    { property: "og:description", content: ${seoMetadata.description ? `"${seoMetadata.description}"` : 'data.description || ""'} },
+    { property: "og:description", content: ${
+      seoMetadata.description ? `"${seoMetadata.description}"` : 'data.description || ""'
+    } },
     { property: "og:url", content: canonicalUrl },
     { property: "og:type", content: "website" },
     
     // Twitter Card
     { name: "twitter:card", content: "summary" },
     { name: "twitter:title", content: ${seoMetadata.title ? `"${seoMetadata.title}"` : 'data.title'} },
-    { name: "twitter:description", content: ${seoMetadata.description ? `"${seoMetadata.description}"` : 'data.description || ""'} },
+    { name: "twitter:description", content: ${
+      seoMetadata.description ? `"${seoMetadata.description}"` : 'data.description || ""'
+    } },
   ];
 };
 `;
@@ -701,10 +725,10 @@ async function generateLoaderFile(
   // Déterminer le modèle Prisma à utiliser en fonction du nom de la route
   const routeSegments = routePath.split('/').filter(Boolean);
   const mainResource = routeSegments[0]?.replace('$', '') || 'index';
-  
+
   // PascalCase pour le modèle Prisma
   const prismaModel = mainResource.charAt(0).toUpperCase() + mainResource.slice(1);
-  
+
   const loaderTemplate = `
 /**
  * Loader pour la route ${routePath}
@@ -719,11 +743,17 @@ import { prisma } from "~/lib/db.server";
  * Loader pour récupérer les données
  */
 export async function loader({ params, request }: LoaderFunctionArgs) {
-  ${routeParams?.length ? `// Récupérer les paramètres de la route
-  ${routeParams.map(param => `const ${param} = params.${param};`).join('\n  ')}` : ''}
+  ${
+    routeParams?.length
+      ? `// Récupérer les paramètres de la route
+  ${routeParams.map((param) => `const ${param} = params.${param};`).join('\n  ')}`
+      : ''
+  }
   
   try {
-    ${routeParams?.includes('id') ? `
+    ${
+      routeParams?.includes('id')
+        ? `
     // Vérifier que l'ID est valide
     if (!params.id || isNaN(Number(params.id))) {
       throw new Response("ID non valide", { status: 400 });
@@ -736,11 +766,13 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
     
     if (!${mainResource}) {
       throw new Response("Données non trouvées", { status: 404 });
-    }` : `
+    }`
+        : `
     // Récupérer les données depuis Prisma
     const ${mainResource}List = await prisma.${mainResource.toLowerCase()}.findMany({
       take: 20,
-    });`}
+    });`
+    }
     
     return json({
       ${routeParams?.includes('id') ? `${mainResource}` : `${mainResource}List`}
@@ -769,10 +801,10 @@ async function generateActionFile(
   // Déterminer le modèle Prisma à utiliser en fonction du nom de la route
   const routeSegments = routePath.split('/').filter(Boolean);
   const mainResource = routeSegments[0]?.replace('$', '') || 'index';
-  
+
   // PascalCase pour le modèle Prisma
   const prismaModel = mainResource.charAt(0).toUpperCase() + mainResource.slice(1);
-  
+
   const actionTemplate = `
 /**
  * Action pour la route ${routePath}
@@ -813,7 +845,9 @@ export async function action({ params, request }: ActionFunctionArgs) {
       
       case "PUT":
       case "PATCH": {
-        ${routeParams?.includes('id') ? `
+        ${
+          routeParams?.includes('id')
+            ? `
         // Vérifier que l'ID est valide
         if (!id || isNaN(Number(id))) {
           return json({ error: "ID non valide" }, { status: 400 });
@@ -836,12 +870,16 @@ export async function action({ params, request }: ActionFunctionArgs) {
           data: updateData,
         });
         
-        return redirect(\`${routePath.replace('$id', '')}/\${id}\`);` : `
-        return json({ error: "Méthode non supportée pour cette route" }, { status: 405 });`}
+        return redirect(\`${routePath.replace('$id', '')}/\${id}\`);`
+            : `
+        return json({ error: "Méthode non supportée pour cette route" }, { status: 405 });`
+        }
       }
       
       case "DELETE": {
-        ${routeParams?.includes('id') ? `
+        ${
+          routeParams?.includes('id')
+            ? `
         // Vérifier que l'ID est valide
         if (!id || isNaN(Number(id))) {
           return json({ error: "ID non valide" }, { status: 400 });
@@ -852,8 +890,10 @@ export async function action({ params, request }: ActionFunctionArgs) {
           where: { id: Number(id) },
         });
         
-        return redirect("${routePath.replace('/$id', '')}");` : `
-        return json({ error: "Méthode non supportée pour cette route" }, { status: 405 });`}
+        return redirect("${routePath.replace('/$id', '')}");`
+            : `
+        return json({ error: "Méthode non supportée pour cette route" }, { status: 405 });`
+        }
       }
       
       default:
@@ -889,14 +929,16 @@ export function CanonicalUrl() {
   
   // Construction de l'URL canonique
   const baseUrl = \`https://\${window.location.hostname}\`;
-  ${routePath.includes('$id') ? 
-    `const path = \`${routePath.replace('$id', '\${params.id}')}\`;` : 
-    `const path = "${routePath}";`}
+  ${
+    routePath.includes('$id')
+      ? `const path = \`${routePath.replace('$id', '${params.id}')}\`;`
+      : `const path = "${routePath}";`
+  }
   
   // Générer l'URL canonique complète
-  const canonicalUrl = ${seoMetadata?.canonical ? 
-    `"${seoMetadata.canonical}"` : 
-    'generateCanonicalUrl(baseUrl, path)'};
+  const canonicalUrl = ${
+    seoMetadata?.canonical ? `"${seoMetadata.canonical}"` : 'generateCanonicalUrl(baseUrl, path)'
+  };
   
   return (
     <link rel="canonical" href={canonicalUrl} />
@@ -912,28 +954,31 @@ export function CanonicalUrl() {
  */
 function generateSchemaFile(dataStructure: any): string {
   // Convertir la structure de données en types TypeScript
-  const types = Object.keys(dataStructure || {}).map(key => {
+  const types = Object.keys(dataStructure || {}).map((key) => {
     const structure = dataStructure[key];
-    
+
     // Générer une interface pour chaque structure
-    const properties = Object.keys(structure).map(prop => {
+    const properties = Object.keys(structure).map((prop) => {
       const type = guessTypeFromValue(structure[prop]);
       return `  ${prop}: ${type};`;
     });
-    
+
     return `
 export interface ${key.charAt(0).toUpperCase() + key.slice(1)} {
 ${properties.join('\n')}
 }`;
   });
-  
+
   const schemaTemplate = `
 /**
  * Types générés automatiquement à partir de la structure des données
  * Date: ${new Date().toISOString()}
  */
 
-${types.length > 0 ? types.join('\n\n') : `
+${
+  types.length > 0
+    ? types.join('\n\n')
+    : `
 export interface PageData {
   // Ajouter les propriétés selon les besoins
   id?: number;
@@ -949,7 +994,8 @@ export interface FormData {
   name?: string;
   email?: string;
   message?: string;
-}`}
+}`
+}
 `;
 
   return schemaTemplate.trim();
@@ -960,8 +1006,11 @@ export interface FormData {
  */
 function generateTestFile(outputFileName: string, routePath: string, dataStructure: any): string {
   const componentName = path.basename(outputFileName, '.tsx');
-  const pascalCaseName = componentName.replace(/[-._]/g, ' ').replace(/\b\w/g, c => c.toUpperCase()).replace(/\s+/g, '');
-  
+  const pascalCaseName = componentName
+    .replace(/[-._]/g, ' ')
+    .replace(/\b\w/g, (c) => c.toUpperCase())
+    .replace(/\s+/g, '');
+
   const testTemplate = `
 /**
  * Tests pour la route ${routePath}
@@ -1007,8 +1056,11 @@ describe('${pascalCaseName} Component', () => {
  */
 function generateStoryFile(outputFileName: string, routePath: string, dataStructure: any): string {
   const componentName = path.basename(outputFileName, '.tsx');
-  const pascalCaseName = componentName.replace(/[-._]/g, ' ').replace(/\b\w/g, c => c.toUpperCase()).replace(/\s+/g, '');
-  
+  const pascalCaseName = componentName
+    .replace(/[-._]/g, ' ')
+    .replace(/\b\w/g, (c) => c.toUpperCase())
+    .replace(/\s+/g, '');
+
   const storyTemplate = `
 /**
  * Storybook pour la route ${routePath}
@@ -1081,9 +1133,9 @@ export const Error: Story = {
 function guessTypeFromValue(value: any): string {
   if (value === null) return 'null';
   if (value === undefined) return 'undefined';
-  
+
   const type = typeof value;
-  
+
   switch (type) {
     case 'string':
       // Détecter les formats de date

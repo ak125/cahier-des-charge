@@ -1,9 +1,0 @@
-/**
- * class
- * Agent export file
- */
-
-import { class } from './abstract-orchestrator';
-
-export { class };
-export default class;

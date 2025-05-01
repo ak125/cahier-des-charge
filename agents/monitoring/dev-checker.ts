@@ -3,7 +3,7 @@
  * Agent export file
  */
 
-import { DevChecker } from ./dev-checker';
+import { DevChecker } from './dev-checker';
 
 export { DevChecker };
 export default DevChecker;

@@ -5,8 +5,8 @@ import { AnalyzerAgent } from '@workspaces/cahier-des-charge/src/core/interfaces
  * Détecte les problèmes et la dette technique dans le schéma MySQL
  */
 
-import { MySQLSchema, TableInfo, ColumnInfo, DebtIssue } from '../models/schema';
 import { BaseAgent, BusinessAgent } from '../core/interfaces/BaseAgent';
+import { ColumnInfo, DebtIssue, MySQLSchema, TableInfo } from '../models/schema';
 
 
 export class DebtAnalyzer implements BaseAgent, BusinessAgent, BaseAgent, BusinessAgent , AnalyzerAgent{

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
 interface FileData {
   name: string;
@@ -33,28 +33,38 @@ export const FileAnalysis: React.FC = () => {
     fetchFiles();
   }, []);
 
-  const filteredFiles = files.filter(file => {
+  const filteredFiles = files.filter((file) => {
     if (filter === 'all') return true;
     return file.status === filter;
   });
 
   const getStatusLabel = (status: string) => {
     switch (status) {
-      case 'analyzed': return 'Analysé';
-      case 'nestjs-generated': return 'NestJS généré';
-      case 'remix-generated': return 'Remix généré';
-      case 'pending': return 'En attente';
-      default: return status;
+      case 'analyzed':
+        return 'Analysé';
+      case 'nestjs-generated':
+        return 'NestJS généré';
+      case 'remix-generated':
+        return 'Remix généré';
+      case 'pending':
+        return 'En attente';
+      default:
+        return status;
     }
   };
 
   const getStatusClass = (status: string) => {
     switch (status) {
-      case 'analyzed': return 'status-analyzed';
-      case 'nestjs-generated': return 'status-nestjs';
-      case 'remix-generated': return 'status-remix';
-      case 'pending': return 'status-pending';
-      default: return '';
+      case 'analyzed':
+        return 'status-analyzed';
+      case 'nestjs-generated':
+        return 'status-nestjs';
+      case 'remix-generated':
+        return 'status-remix';
+      case 'pending':
+        return 'status-pending';
+      default:
+        return '';
     }
   };
 
@@ -72,11 +82,7 @@ export const FileAnalysis: React.FC = () => {
       <h2>Analyse des Fichiers</h2>
       <div className="filter-controls">
         <label htmlFor="status-filter">Filtrer par statut:</label>
-        <select 
-          id="status-filter" 
-          value={filter}
-          onChange={(e) => setFilter(e.target.value)}
-        >
+        <select id="status-filter" value={filter} onChange={(e) => setFilter(e.target.value)}>
           <option value="all">Tous les fichiers</option>
           <option value="analyzed">Analysés uniquement</option>
           <option value="nestjs-generated">NestJS générés</option>
@@ -99,10 +105,12 @@ export const FileAnalysis: React.FC = () => {
           <tbody>
             {filteredFiles.length === 0 ? (
               <tr>
-                <td colSpan={5} className="no-files">Aucun fichier trouvé</td>
+                <td colSpan={5} className="no-files">
+                  Aucun fichier trouvé
+                </td>
               </tr>
             ) : (
-              filteredFiles.map(file => (
+              filteredFiles.map((file) => (
                 <tr key={file.name}>
                   <td>{file.name}</td>
                   <td>

@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
-import { PhpAnalysisResult, AgentResult, MigrationConfig, DataStructure } from '../types';
 import { analyzePhpFile } from '../analysis/PhpAnalyzer';
+import { AgentResult, DataStructure, MigrationConfig, PhpAnalysisResult } from '../types';
 
 /**
  * Agent de génération NestJS à partir de fichiers PHP
@@ -18,41 +18,44 @@ export class NestJSGenerator {
   async generateFromPhp(sourceFilePath: string, destinationPath: string): Promise<AgentResult> {
     try {
       console.log(`[NestJSGenerator] Analyse du fichier PHP : ${sourceFilePath}`);
-      
+
       // 1. Analyser le fichier PHP
       const analysisResult = await analyzePhpFile(sourceFilePath);
-      
+
       // 2. Extraire les structures de données
       const dataStructures = await this.extractDataStructures(sourceFilePath, analysisResult);
-      
+
       // 3. Générer les composants NestJS
       const nestComponents = await this.generateNestJSComponents(
         path.basename(sourceFilePath, '.php'),
         dataStructures,
         analysisResult
       );
-      
+
       // 4. Écrire les fichiers générés
       await this.writeNestJSFiles(nestComponents, destinationPath);
-      
+
       // 5. Générer un fragment de schéma Prisma
       const prismaSchema = await this.generatePrismaSchema(dataStructures, analysisResult);
-      
+
       // 6. Générer un rapport d'audit
       const auditReport = this.generateAuditReport(sourceFilePath, nestComponents, prismaSchema);
-      
+
       return {
         success: true,
         sourceFile: sourceFilePath,
         generatedFiles: Object.keys(nestComponents),
-        auditReport
+        auditReport,
       };
     } catch (error) {
-      console.error(`[NestJSGenerator] Erreur lors de la génération NestJS pour ${sourceFilePath}:`, error);
+      console.error(
+        `[NestJSGenerator] Erreur lors de la génération NestJS pour ${sourceFilePath}:`,
+        error
+      );
       return {
         success: false,
         sourceFile: sourceFilePath,
-        error: error instanceof Error ? error.message : String(error)
+        error: error instanceof Error ? error.message : String(error),
       };
     }
   }
@@ -60,24 +63,27 @@ export class NestJSGenerator {
   /**
    * Extrait les structures de données du fichier PHP
    */
-  private async extractDataStructures(sourceFilePath: string, analysisResult: PhpAnalysisResult): Promise<DataStructure> {
+  private async extractDataStructures(
+    sourceFilePath: string,
+    analysisResult: PhpAnalysisResult
+  ): Promise<DataStructure> {
     const { sqlQueries, variables } = analysisResult;
     const fileName = path.basename(sourceFilePath, '.php');
-    
+
     // Détecter la table principale utilisée dans le fichier
     const mainTable = this.detectMainTable(sqlQueries);
-    
+
     // Extraire les champs à partir des requêtes SQL
     const fields = this.extractFieldsFromQueries(sqlQueries);
-    
+
     // Détecter les relations entre tables
     const relations = this.detectRelations(sqlQueries);
-    
+
     return {
       name: this.toCamelCase(fileName),
       tableName: mainTable || this.toSnakeCase(fileName),
       fields,
-      relations
+      relations,
     };
   }
 
@@ -87,24 +93,24 @@ export class NestJSGenerator {
   private detectMainTable(sqlQueries: any[]): string | null {
     // Compter les occurrences de chaque table
     const tableCounts = new Map<string, number>();
-    
-    sqlQueries.forEach(query => {
+
+    sqlQueries.forEach((query) => {
       query.tables.forEach((table: string) => {
         tableCounts.set(table, (tableCounts.get(table) || 0) + 1);
       });
     });
-    
+
     // Trouver la table la plus utilisée
     let mainTable: string | null = null;
     let maxCount = 0;
-    
+
     tableCounts.forEach((count, table) => {
       if (count > maxCount) {
         maxCount = count;
         mainTable = table;
       }
     });
-    
+
     return mainTable;
   }
 
@@ -114,9 +120,9 @@ export class NestJSGenerator {
   private extractFieldsFromQueries(sqlQueries: any[]): Array<any> {
     const fields: Array<any> = [];
     const fieldMap = new Map<string, any>();
-    
+
     // Analyser les SELECT et les WHERE pour détecter les champs
-    sqlQueries.forEach(query => {
+    sqlQueries.forEach((query) => {
       if (query.type === 'SELECT') {
         const selectMatch = query.query.match(/SELECT\s+(.*?)\s+FROM/i);
         if (selectMatch) {
@@ -128,51 +134,54 @@ export class NestJSGenerator {
                 fieldMap.set(trimmedColumn, {
                   name: trimmedColumn,
                   type: this.inferFieldType(trimmedColumn),
-                  required: this.isFieldRequired(trimmedColumn)
+                  required: this.isFieldRequired(trimmedColumn),
                 });
               }
             });
           }
         }
       }
-      
+
       // Extraire les champs des WHERE
       const whereMatch = query.query.match(/WHERE\s+(.*?)(?:\s+ORDER BY|\s+GROUP BY|\s+LIMIT|$)/i);
       if (whereMatch) {
         const wherePart = whereMatch[1];
-        const fieldMatches = wherePart.match(/([a-zA-Z0-9_]+)(?:\.([a-zA-Z0-9_]+))?\s*(?:=|<|>|LIKE|IN)/gi);
-        
+        const fieldMatches = wherePart.match(
+          /([a-zA-Z0-9_]+)(?:\.([a-zA-Z0-9_]+))?\s*(?:=|<|>|LIKE|IN)/gi
+        );
+
         if (fieldMatches) {
           fieldMatches.forEach((match: string) => {
             const fieldParts = match.split('.');
-            const fieldName = fieldParts.length > 1 ? fieldParts[1].split(/\s+/)[0] : fieldParts[0].split(/\s+/)[0];
-            
+            const fieldName =
+              fieldParts.length > 1 ? fieldParts[1].split(/\s+/)[0] : fieldParts[0].split(/\s+/)[0];
+
             if (!fieldMap.has(fieldName)) {
               fieldMap.set(fieldName, {
                 name: fieldName,
                 type: this.inferFieldType(fieldName),
-                required: this.isFieldRequired(fieldName)
+                required: this.isFieldRequired(fieldName),
               });
             }
           });
         }
       }
     });
-    
+
     // Convertir la map en tableau
-    fieldMap.forEach(field => {
+    fieldMap.forEach((field) => {
       fields.push(field);
     });
-    
+
     // Ajouter id si non présent
     if (!fieldMap.has('id')) {
       fields.unshift({
         name: 'id',
         type: 'number',
-        required: true
+        required: true,
       });
     }
-    
+
     return fields;
   }
 
@@ -182,35 +191,47 @@ export class NestJSGenerator {
   private detectRelations(sqlQueries: any[]): Array<any> {
     const relations: Array<any> = [];
     const relationMap = new Map<string, any>();
-    
+
     // Détecter les JOIN pour trouver les relations
-    sqlQueries.forEach(query => {
-      const joinMatches = query.query.match(/JOIN\s+([a-zA-Z0-9_]+)\s+(?:AS\s+)?([a-zA-Z0-9_]+)?\s+ON\s+(.*?)(?:\s+(?:LEFT|RIGHT|INNER|JOIN|WHERE|ORDER|GROUP|LIMIT)|$)/gi);
-      
+    sqlQueries.forEach((query) => {
+      const joinMatches = query.query.match(
+        /JOIN\s+([a-zA-Z0-9_]+)\s+(?:AS\s+)?([a-zA-Z0-9_]+)?\s+ON\s+(.*?)(?:\s+(?:LEFT|RIGHT|INNER|JOIN|WHERE|ORDER|GROUP|LIMIT)|$)/gi
+      );
+
       if (joinMatches) {
         joinMatches.forEach((match: string) => {
-          const joinMatch = /JOIN\s+([a-zA-Z0-9_]+)\s+(?:AS\s+)?([a-zA-Z0-9_]+)?\s+ON\s+(.*?)(?:\s+(?:LEFT|RIGHT|INNER|JOIN|WHERE|ORDER|GROUP|LIMIT)|$)/i.exec(match);
-          
+          const joinMatch =
+            /JOIN\s+([a-zA-Z0-9_]+)\s+(?:AS\s+)?([a-zA-Z0-9_]+)?\s+ON\s+(.*?)(?:\s+(?:LEFT|RIGHT|INNER|JOIN|WHERE|ORDER|GROUP|LIMIT)|$)/i.exec(
+              match
+            );
+
           if (joinMatch) {
             const targetTable = joinMatch[1];
             const onClause = joinMatch[3];
-            
+
             // Détecter le type de relation à partir de la clause ON
-            const fkMatch = onClause.match(/([a-zA-Z0-9_]+)\.([a-zA-Z0-9_]+)\s*=\s*([a-zA-Z0-9_]+)\.([a-zA-Z0-9_]+)/i);
-            
+            const fkMatch = onClause.match(
+              /([a-zA-Z0-9_]+)\.([a-zA-Z0-9_]+)\s*=\s*([a-zA-Z0-9_]+)\.([a-zA-Z0-9_]+)/i
+            );
+
             if (fkMatch) {
               const source = { table: fkMatch[1], field: fkMatch[2] };
               const target = { table: fkMatch[3], field: fkMatch[4] };
-              
-              const relationType = source.field === 'id' ? 'oneToMany' : target.field === 'id' ? 'manyToOne' : 'manyToMany';
+
+              const relationType =
+                source.field === 'id'
+                  ? 'oneToMany'
+                  : target.field === 'id'
+                    ? 'manyToOne'
+                    : 'manyToMany';
               const relationName = this.toCamelCase(targetTable);
-              
+
               if (!relationMap.has(relationName)) {
                 relationMap.set(relationName, {
                   name: relationName,
                   targetTable,
                   type: relationType,
-                  joinColumn: source.field === 'id' ? target.field : source.field
+                  joinColumn: source.field === 'id' ? target.field : source.field,
                 });
               }
             }
@@ -218,12 +239,12 @@ export class NestJSGenerator {
         });
       }
     });
-    
+
     // Convertir la map en tableau
-    relationMap.forEach(relation => {
+    relationMap.forEach((relation) => {
       relations.push(relation);
     });
-    
+
     return relations;
   }
 
@@ -237,24 +258,24 @@ export class NestJSGenerator {
   ) {
     // Créer le nom du module en camelCase pour assurer la cohérence
     const moduleName = this.toCamelCase(baseName);
-    
+
     // Générer le controller
     const controllerContent = this.generateController(moduleName, dataStructure);
-    
+
     // Générer le service
     const serviceContent = this.generateService(moduleName, dataStructure, analysisResult);
-    
+
     // Générer les DTOs
     const dtoContent = this.generateDTOs(moduleName, dataStructure);
-    
+
     // Générer le module
     const moduleContent = this.generateModule(moduleName);
-    
+
     return {
       [`${moduleName}.controller.ts`]: controllerContent,
       [`${moduleName}.service.ts`]: serviceContent,
       [`${moduleName}.dto.ts`]: dtoContent,
-      [`${moduleName}.module.ts`]: moduleContent
+      [`${moduleName}.module.ts`]: moduleContent,
     };
   }
 
@@ -264,7 +285,7 @@ export class NestJSGenerator {
   private generateController(moduleName: string, dataStructure: DataStructure): string {
     const entityName = this.capitalize(moduleName);
     const resourceName = moduleName.toLowerCase();
-    
+
     return `import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { ${entityName}Service } from './${moduleName}.service';
@@ -319,13 +340,17 @@ export class ${entityName}Controller {
   /**
    * Génère le service NestJS
    */
-  private generateService(moduleName: string, dataStructure: DataStructure, analysisResult: PhpAnalysisResult): string {
+  private generateService(
+    moduleName: string,
+    dataStructure: DataStructure,
+    analysisResult: PhpAnalysisResult
+  ): string {
     const entityName = this.capitalize(moduleName);
     const resourceName = dataStructure.tableName;
-    
+
     // Déterminer si le code PHP source contient des transactions
     const hasTransactions = analysisResult.transactions && analysisResult.transactions.length > 0;
-    
+
     return `import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 import { Create${entityName}Dto, Update${entityName}Dto, Find${entityName}Dto } from './${moduleName}.dto';
@@ -384,7 +409,9 @@ export class ${entityName}Service {
     } catch (error) {
       throw new NotFoundException(\`${entityName} avec l'ID \${id} non trouvé\`);
     }
-  }${hasTransactions ? `
+  }${
+    hasTransactions
+      ? `
 
   async processWithTransaction(data: any) {
     return this.prisma.$transaction(async (prisma) => {
@@ -399,7 +426,9 @@ export class ${entityName}Service {
       
       return ${resourceName};
     });
-  }` : ''}
+  }`
+      : ''
+  }
 }`;
   }
 
@@ -408,38 +437,40 @@ export class ${entityName}Service {
    */
   private generateDTOs(moduleName: string, dataStructure: DataStructure): string {
     const entityName = this.capitalize(moduleName);
-    
-    const properties = dataStructure.fields.map(field => {
-      const { name, type, required } = field;
-      const decorators = [];
-      
-      // Ajouter des décorateurs de validation selon le type
-      switch (type.toLowerCase()) {
-        case 'string':
-          decorators.push('@IsString()');
-          if (!required) decorators.push('@IsOptional()');
-          break;
-        case 'number':
-        case 'integer':
-          decorators.push('@IsNumber()');
-          if (!required) decorators.push('@IsOptional()');
-          break;
-        case 'boolean':
-          decorators.push('@IsBoolean()');
-          if (!required) decorators.push('@IsOptional()');
-          break;
-        case 'date':
-          decorators.push('@IsDate()');
-          if (!required) decorators.push('@IsOptional()');
-          break;
-        default:
-          if (!required) decorators.push('@IsOptional()');
-      }
-      
-      return `  ${decorators.join('\n  ')}
+
+    const properties = dataStructure.fields
+      .map((field) => {
+        const { name, type, required } = field;
+        const decorators = [];
+
+        // Ajouter des décorateurs de validation selon le type
+        switch (type.toLowerCase()) {
+          case 'string':
+            decorators.push('@IsString()');
+            if (!required) decorators.push('@IsOptional()');
+            break;
+          case 'number':
+          case 'integer':
+            decorators.push('@IsNumber()');
+            if (!required) decorators.push('@IsOptional()');
+            break;
+          case 'boolean':
+            decorators.push('@IsBoolean()');
+            if (!required) decorators.push('@IsOptional()');
+            break;
+          case 'date':
+            decorators.push('@IsDate()');
+            if (!required) decorators.push('@IsOptional()');
+            break;
+          default:
+            if (!required) decorators.push('@IsOptional()');
+        }
+
+        return `  ${decorators.join('\n  ')}
   ${name}${required ? '' : '?'}: ${this.mapPhpTypeToTypeScript(type)};`;
-    }).join('\n\n');
-    
+      })
+      .join('\n\n');
+
     return `import { IsString, IsNumber, IsBoolean, IsDate, IsOptional, IsEnum, IsArray } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
@@ -481,7 +512,7 @@ export class Find${entityName}Dto {
    */
   private generateModule(moduleName: string): string {
     const entityName = this.capitalize(moduleName);
-    
+
     return `import { Module } from '@nestjs/common';
 import { ${entityName}Service } from './${moduleName}.service';
 import { ${entityName}Controller } from './${moduleName}.controller';
@@ -498,31 +529,42 @@ export class ${entityName}Module {}`;
   /**
    * Génère un fragment de schéma Prisma basé sur l'analyse
    */
-  private async generatePrismaSchema(dataStructure: DataStructure, analysisResult: PhpAnalysisResult): Promise<string> {
+  private async generatePrismaSchema(
+    dataStructure: DataStructure,
+    analysisResult: PhpAnalysisResult
+  ): Promise<string> {
     const { tableName, fields, relations } = dataStructure;
-    
-    const fieldDefinitions = fields.map(field => {
-      const { name, type, required } = field;
-      const prismaType = this.mapTypeScriptToPrisma(type);
-      const constraints = required ? '' : '?';
-      
-      return `  ${name} ${prismaType}${constraints}`;
-    }).join('\n');
-    
-    const relationDefinitions = relations.map(relation => {
-      const { name, targetTable, type, joinColumn } = relation;
-      const targetModel = this.capitalize(this.toCamelCase(targetTable));
-      
-      if (type === 'oneToOne') {
-        return `  ${name} ${targetModel}? @relation(fields: [${joinColumn}], references: [id])
+
+    const fieldDefinitions = fields
+      .map((field) => {
+        const { name, type, required } = field;
+        const prismaType = this.mapTypeScriptToPrisma(type);
+        const constraints = required ? '' : '?';
+
+        return `  ${name} ${prismaType}${constraints}`;
+      })
+      .join('\n');
+
+    const relationDefinitions = relations
+      .map((relation) => {
+        const { name, targetTable, type, joinColumn } = relation;
+        const targetModel = this.capitalize(this.toCamelCase(targetTable));
+
+        if (type === 'oneToOne') {
+          return `  ${name} ${targetModel}? @relation(fields: [${joinColumn}], references: [id])
   ${joinColumn} Int? @unique`;
-      } else if (type === 'oneToMany' || type === 'manyToOne') {
-        return `  ${name} ${targetModel}[] @relation("${targetModel}To${this.capitalize(dataStructure.name)}")`;
-      } else {
-        return `  ${name} ${targetModel}[] @relation("${targetModel}To${this.capitalize(dataStructure.name)}")`;
-      }
-    }).join('\n\n');
-    
+        } else if (type === 'oneToMany' || type === 'manyToOne') {
+          return `  ${name} ${targetModel}[] @relation("${targetModel}To${this.capitalize(
+            dataStructure.name
+          )}")`;
+        } else {
+          return `  ${name} ${targetModel}[] @relation("${targetModel}To${this.capitalize(
+            dataStructure.name
+          )}")`;
+        }
+      })
+      .join('\n\n');
+
     const modelName = this.capitalize(dataStructure.name);
     const prismaSchema = `model ${modelName} {
   id Int @id @default(autoincrement())
@@ -531,19 +573,19 @@ ${relations.length > 0 ? '\n' + relationDefinitions : ''}
 
   @@map("${tableName}")
 }`;
-    
+
     // Écrire le schéma dans un fichier temporaire pour référence
     const schemaDir = path.join(process.cwd(), 'prisma', 'migrations');
     if (!fs.existsSync(schemaDir)) {
       fs.mkdirSync(schemaDir, { recursive: true });
     }
-    
+
     const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
     const schemaPath = path.join(schemaDir, `${dataStructure.name}_${timestamp}.prisma`);
     fs.writeFileSync(schemaPath, prismaSchema);
-    
+
     console.log(`[NestJSGenerator] Schéma Prisma généré : ${schemaPath}`);
-    
+
     return prismaSchema;
   }
 
@@ -555,7 +597,7 @@ ${relations.length > 0 ? '\n' + relationDefinitions : ''}
     if (!fs.existsSync(destinationPath)) {
       fs.mkdirSync(destinationPath, { recursive: true });
     }
-    
+
     // Écrire chaque fichier généré
     for (const [fileName, content] of Object.entries(files)) {
       const filePath = path.join(destinationPath, fileName);
@@ -567,7 +609,11 @@ ${relations.length > 0 ? '\n' + relationDefinitions : ''}
   /**
    * Génère un rapport d'audit pour la migration
    */
-  private generateAuditReport(sourceFilePath: string, nestComponents: Record<string, string>, prismaSchema: string) {
+  private generateAuditReport(
+    sourceFilePath: string,
+    nestComponents: Record<string, string>,
+    prismaSchema: string
+  ) {
     const fileName = path.basename(sourceFilePath, '.php');
     const report = `# Rapport de migration PHP → NestJS pour ${fileName}
 
@@ -575,7 +621,9 @@ ${relations.length > 0 ? '\n' + relationDefinitions : ''}
 - ${sourceFilePath}
 
 ## Fichiers générés
-${Object.keys(nestComponents).map(file => `- ${file}`).join('\n')}
+${Object.keys(nestComponents)
+  .map((file) => `- ${file}`)
+  .join('\n')}
 
 ## Schéma Prisma généré
 \`\`\`prisma
@@ -590,19 +638,19 @@ ${prismaSchema}
 ## Recommandations
 ${this.generateRecommendations(nestComponents, prismaSchema)}
 `;
-    
+
     // Écrire le rapport d'audit
     const auditPath = path.join(process.cwd(), 'audit');
     if (!fs.existsSync(auditPath)) {
       fs.mkdirSync(auditPath, { recursive: true });
     }
-    
+
     const auditFilePath = path.join(auditPath, `${fileName}.nestjs.audit.md`);
     fs.writeFileSync(auditFilePath, report);
-    
+
     return {
       path: auditFilePath,
-      content: report
+      content: report,
     };
   }
 
@@ -610,23 +658,30 @@ ${this.generateRecommendations(nestComponents, prismaSchema)}
    * Extrait les endpoints générés dans les composants NestJS
    */
   private extractEndpoints(components: Record<string, string>): string {
-    const controllerFile = Object.entries(components).find(([name]) => name.endsWith('.controller.ts'));
+    const controllerFile = Object.entries(components).find(([name]) =>
+      name.endsWith('.controller.ts')
+    );
     if (!controllerFile) return 'Aucun endpoint détecté';
-    
+
     const controllerContent = controllerFile[1];
-    const decoratorsMatch = controllerContent.match(/@(Get|Post|Patch|Delete)(?:\(['"](.*?)['"]?\))?/g);
-    
+    const decoratorsMatch = controllerContent.match(
+      /@(Get|Post|Patch|Delete)(?:\(['"](.*?)['"]?\))?/g
+    );
+
     if (!decoratorsMatch) return 'Aucun endpoint détecté';
-    
-    return decoratorsMatch.map(decorator => {
-      const match = decorator.match(/@(Get|Post|Patch|Delete)(?:\(['"](.*?)['"]?\))?/);
-      if (match) {
-        const method = match[1];
-        const path = match[2] || '';
-        return `${method} /${path}`;
-      }
-      return '';
-    }).filter(Boolean).join(', ');
+
+    return decoratorsMatch
+      .map((decorator) => {
+        const match = decorator.match(/@(Get|Post|Patch|Delete)(?:\(['"](.*?)['"]?\))?/);
+        if (match) {
+          const method = match[1];
+          const path = match[2] || '';
+          return `${method} /${path}`;
+        }
+        return '';
+      })
+      .filter(Boolean)
+      .join(', ');
   }
 
   /**
@@ -635,14 +690,16 @@ ${this.generateRecommendations(nestComponents, prismaSchema)}
   private extractValidations(components: Record<string, string>): string {
     const dtoFile = Object.entries(components).find(([name]) => name.endsWith('.dto.ts'));
     if (!dtoFile) return 'Aucune validation détectée';
-    
+
     const dtoContent = dtoFile[1];
     const validationMatch = dtoContent.match(/@Is[a-zA-Z]+\(\)/g);
-    
+
     if (!validationMatch) return 'Aucune validation détectée';
-    
+
     const uniqueValidations = [...new Set(validationMatch)];
-    return uniqueValidations.map(validation => validation.replace(/@/, '').replace(/\(\)/, '')).join(', ');
+    return uniqueValidations
+      .map((validation) => validation.replace(/@/, '').replace(/\(\)/, ''))
+      .join(', ');
   }
 
   /**
@@ -651,35 +708,55 @@ ${this.generateRecommendations(nestComponents, prismaSchema)}
   private extractTransactions(components: Record<string, string>): string {
     const serviceFile = Object.entries(components).find(([name]) => name.endsWith('.service.ts'));
     if (!serviceFile) return 'Aucune transaction détectée';
-    
+
     const serviceContent = serviceFile[1];
-    return serviceContent.includes('$transaction') ? 'Transactions supportées' : 'Aucune transaction détectée';
+    return serviceContent.includes('$transaction')
+      ? 'Transactions supportées'
+      : 'Aucune transaction détectée';
   }
 
   /**
    * Génère des recommandations pour la migration
    */
-  private generateRecommendations(components: Record<string, string>, prismaSchema: string): string {
+  private generateRecommendations(
+    components: Record<string, string>,
+    prismaSchema: string
+  ): string {
     const recommendations = [];
-    
+
     // Vérifier si des jointures complexes sont nécessaires
-    if (prismaSchema.includes('@relation') && !prismaSchema.match(/@relation\([^)]*"[^"]*"[^)]*\)/g)) {
-      recommendations.push('- Vérifier les relations entre les modèles, certaines peuvent nécessiter une configuration plus avancée');
+    if (
+      prismaSchema.includes('@relation') &&
+      !prismaSchema.match(/@relation\([^)]*"[^"]*"[^)]*\)/g)
+    ) {
+      recommendations.push(
+        '- Vérifier les relations entre les modèles, certaines peuvent nécessiter une configuration plus avancée'
+      );
     }
-    
+
     // Vérifier l'utilisation des transactions
     const serviceFile = Object.entries(components).find(([name]) => name.endsWith('.service.ts'));
-    if (serviceFile && !serviceFile[1].includes('$transaction') && prismaSchema.includes('@relation')) {
-      recommendations.push('- Considérer l\'utilisation de transactions pour les opérations impliquant plusieurs modèles');
+    if (
+      serviceFile &&
+      !serviceFile[1].includes('$transaction') &&
+      prismaSchema.includes('@relation')
+    ) {
+      recommendations.push(
+        "- Considérer l'utilisation de transactions pour les opérations impliquant plusieurs modèles"
+      );
     }
-    
+
     // Vérifier les validations
     const dtoFile = Object.entries(components).find(([name]) => name.endsWith('.dto.ts'));
     if (dtoFile && !dtoFile[1].match(/@(Min|Max|IsEmail|IsUrl|IsDate)\(/g)) {
-      recommendations.push('- Ajouter des validations plus spécifiques dans les DTOs pour renforcer la sécurité des données');
+      recommendations.push(
+        '- Ajouter des validations plus spécifiques dans les DTOs pour renforcer la sécurité des données'
+      );
     }
-    
-    return recommendations.length ? recommendations.join('\n') : '- Aucune recommandation particulière';
+
+    return recommendations.length
+      ? recommendations.join('\n')
+      : '- Aucune recommandation particulière';
   }
 
   /**
@@ -687,30 +764,51 @@ ${this.generateRecommendations(nestComponents, prismaSchema)}
    */
   private inferFieldType(fieldName: string): string {
     const lowerName = fieldName.toLowerCase();
-    
+
     if (lowerName === 'id' || lowerName.endsWith('_id') || lowerName.endsWith('id')) {
       return 'number';
     }
-    
-    if (lowerName.includes('date') || lowerName.includes('created_at') || lowerName.includes('updated_at')) {
+
+    if (
+      lowerName.includes('date') ||
+      lowerName.includes('created_at') ||
+      lowerName.includes('updated_at')
+    ) {
       return 'date';
     }
-    
-    if (lowerName.includes('price') || lowerName.includes('prix') || lowerName.includes('cost') || 
-        lowerName.includes('amount') || lowerName.includes('montant') || lowerName.includes('total')) {
+
+    if (
+      lowerName.includes('price') ||
+      lowerName.includes('prix') ||
+      lowerName.includes('cost') ||
+      lowerName.includes('amount') ||
+      lowerName.includes('montant') ||
+      lowerName.includes('total')
+    ) {
       return 'number';
     }
-    
-    if (lowerName.includes('is_') || lowerName.includes('has_') || lowerName.includes('active') || 
-        lowerName.includes('enabled') || lowerName.includes('visible')) {
+
+    if (
+      lowerName.includes('is_') ||
+      lowerName.includes('has_') ||
+      lowerName.includes('active') ||
+      lowerName.includes('enabled') ||
+      lowerName.includes('visible')
+    ) {
       return 'boolean';
     }
-    
-    if (lowerName.includes('count') || lowerName.includes('nombre') || lowerName.includes('qty') || 
-        lowerName.includes('quantity') || lowerName.includes('quantite') || lowerName.includes('stock')) {
+
+    if (
+      lowerName.includes('count') ||
+      lowerName.includes('nombre') ||
+      lowerName.includes('qty') ||
+      lowerName.includes('quantity') ||
+      lowerName.includes('quantite') ||
+      lowerName.includes('stock')
+    ) {
       return 'number';
     }
-    
+
     return 'string';
   }
 
@@ -720,27 +818,36 @@ ${this.generateRecommendations(nestComponents, prismaSchema)}
   private isFieldRequired(fieldName: string): boolean {
     const nonRequiredPrefixes = ['optional_', 'opt_'];
     const nonRequiredSuffixes = ['_optional', '_opt'];
-    
+
     for (const prefix of nonRequiredPrefixes) {
       if (fieldName.toLowerCase().startsWith(prefix)) {
         return false;
       }
     }
-    
+
     for (const suffix of nonRequiredSuffixes) {
       if (fieldName.toLowerCase().endsWith(suffix)) {
         return false;
       }
     }
-    
+
     // Certains champs sont généralement optionnels
-    const optionalFields = ['description', 'notes', 'comment', 'image', 'photo', 'avatar', 'url', 'link'];
+    const optionalFields = [
+      'description',
+      'notes',
+      'comment',
+      'image',
+      'photo',
+      'avatar',
+      'url',
+      'link',
+    ];
     for (const optField of optionalFields) {
       if (fieldName.toLowerCase().includes(optField)) {
         return false;
       }
     }
-    
+
     return true;
   }
 
@@ -748,9 +855,7 @@ ${this.generateRecommendations(nestComponents, prismaSchema)}
    * Convertit camelCase en snake_case
    */
   private toSnakeCase(str: string): string {
-    return str
-      .replace(/([a-z])([A-Z])/g, '$1_$2')
-      .toLowerCase();
+    return str.replace(/([a-z])([A-Z])/g, '$1_$2').toLowerCase();
   }
 
   /**

@@ -3,8 +3,8 @@
  * Agent export file
  */
 
-import { SEOMCPController } from ./seoDoDotmcp-controllerstructure-agent';
-import { BusinessAgent } from ../../core/interfacesstructure-agent';
+import { BusinessAgent } from '../../core/interfacesstructure-agent';
+import { SEOMCPController } from './seoDoDotmcp-controllerstructure-agent';
 
 export { SEOMCPController };
 export default SEOMCPController;

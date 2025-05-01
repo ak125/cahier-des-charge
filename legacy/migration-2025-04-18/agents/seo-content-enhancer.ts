@@ -1,15 +1,15 @@
 /**
  * SEO Content Enhancer Agent
- * 
+ *
  * Agent qui analyse et enrichit le contenu des pages
  * pour améliorer leur référencement naturel
  */
 
-import { MCPAgent, AgentContext, AgentConfig } from '../packagesDoDotmcp-core';
-import fs from 'fs-extra';
 import path from 'path';
+import fs from 'fs-extra';
 import glob from 'glob';
 import { JSDOM } from 'jsdom';
+import { AgentConfig, AgentContext, MCPAgent } from '../packagesDoDotmcp-core';
 
 interface EnhancerTarget {
   route: string;
@@ -45,101 +45,115 @@ export class SEOContentEnhancer implements MCPAgent<SEOContentEnhancerConfig> {
   name = 'SEO Content Enhancer';
   description = 'Enrichit le contenu des pages pour améliorer leur référencement';
   version = '1.0.0';
-  
+
   constructor(private config: SEOContentEnhancerConfig, private context: AgentContext) {}
-  
+
   async initialize(): Promise<void> {
     this.context.logger.info('Initialisation du SEO Content Enhancer');
     await fs.ensureDir(this.config.outputDir);
   }
-  
+
   async run(): Promise<void> {
-    this.context.logger.info('Démarrage de l\'analyse et de l\'enrichissement du contenu');
-    
+    this.context.logger.info("Démarrage de l'analyse et de l'enrichissement du contenu");
+
     // Identifier les cibles d'enrichissement
     const targets = await this.identifyTargets();
     this.context.logger.info(`${targets.length} cibles d'enrichissement identifiées`);
-    
+
     // Enrichir chaque cible
     for (const target of targets) {
       await this.processTarget(target);
     }
   }
-  
+
   /**
    * Identifie les cibles d'enrichissement en fonction de la configuration
    */
   private async identifyTargets(): Promise<EnhancerTarget[]> {
     const targets: EnhancerTarget[] = [];
     const routesDir = path.join(this.config.remixDir, 'app/routes');
-    
+
     // Fonction pour déterminer le type de contenu
     const getContentType = (filePath: string): 'product' | 'category' | 'article' | 'generic' => {
       const content = fs.readFileSync(filePath, 'utf-8');
-      
-      if (content.includes('product') || content.includes('produit') || 
-          filePath.includes('product') || filePath.includes('produit') || 
-          filePath.includes('fiche')) {
+
+      if (
+        content.includes('product') ||
+        content.includes('produit') ||
+        filePath.includes('product') ||
+        filePath.includes('produit') ||
+        filePath.includes('fiche')
+      ) {
         return 'product';
       }
-      
-      if (content.includes('category') || content.includes('categorie') || 
-          filePath.includes('category') || filePath.includes('categorie')) {
+
+      if (
+        content.includes('category') ||
+        content.includes('categorie') ||
+        filePath.includes('category') ||
+        filePath.includes('categorie')
+      ) {
         return 'category';
       }
-      
-      if (content.includes('article') || content.includes('blog') || 
-          filePath.includes('article') || filePath.includes('blog') || 
-          filePath.includes('post')) {
+
+      if (
+        content.includes('article') ||
+        content.includes('blog') ||
+        filePath.includes('article') ||
+        filePath.includes('blog') ||
+        filePath.includes('post')
+      ) {
         return 'article';
       }
-      
+
       return 'generic';
     };
-    
+
     // Chercher les fichiers de routes
     const routeFiles = glob.sync(path.join(routesDir, '**/*.{tsx,jsx}'), {
-      ignore: ['**/*.test.*', '**/*.spec.*', '**/._*']
+      ignore: ['**/*.test.*', '**/*.spec.*', '**/._*'],
     });
-    
+
     for (const filePath of routeFiles) {
       const relativePath = path.relative(routesDir, filePath);
-      
+
       // Convertir le chemin du fichier en route
-      const route = '/' + relativePath
-        .replace(/\.(tsx|jsx)$/, '')
-        .replace(/\$/g, ':')
-        .replace(/\.index$/, '')
-        .replace(/index$/, '')
-        .replace(/\._/g, '/');
-        
+      const route =
+        '/' +
+        relativePath
+          .replace(/\.(tsx|jsx)$/, '')
+          .replace(/\$/g, ':')
+          .replace(/\.index$/, '')
+          .replace(/index$/, '')
+          .replace(/\._/g, '/');
+
       const contentType = getContentType(filePath);
-      
+
       // Ajouter la cible si le type de contenu est dans la configuration
       if (this.config.targetContentTypes.includes(contentType)) {
         targets.push({
           route,
           filePath,
-          type: contentType
+          type: contentType,
         });
       }
     }
-    
+
     return targets;
   }
-  
+
   /**
    * Traite une cible pour l'enrichissement de contenu
    */
   private async processTarget(target: EnhancerTarget): Promise<void> {
     this.context.logger.info(`Traitement de ${target.route} (${target.type})`);
-    
+
     const contentSuggestions: ContentSuggestion[] = [];
     const { enhancementFeatures } = this.config;
-    
+
     // Analyser le contenu existant
     const content = await fs.readFile(target.filePath, 'utf-8');
-    
+
     // Générer des FAQ
     if (enhancementFeatures.generateFAQ) {
       const faqSuggestion = await this.generateFAQContent(target, content);
@@ -147,13 +161,13 @@ export class SEOContentEnhancer implements MCPAgent<SEOContentEnhancerConfig> {
         contentSuggestions.push(faqSuggestion);
       }
     }
-    
+
     // Améliorer les titres (headings)
     if (enhancementFeatures.improveHeadings) {
       const headingSuggestions = await this.improveHeadings(target, content);
       contentSuggestions.push(...headingSuggestions);
     }
-    
+
     // Ajouter des données structurées
     if (enhancementFeatures.addStructuredData) {
       const structuredDataSuggestion = await this.generateStructuredData(target, content);
@@ -161,7 +175,7 @@ export class SEOContentEnhancer implements MCPAgent<SEOContentEnhancerConfig> {
         contentSuggestions.push(structuredDataSuggestion);
       }
     }
-    
+
     // Suggérer du contenu associé
     if (enhancementFeatures.suggestRelatedContent) {
       const relatedContentSuggestion = await this.generateRelatedContent(target, content);
@@ -169,7 +183,7 @@ export class SEOContentEnhancer implements MCPAgent<SEOContentEnhancerConfig> {
         contentSuggestions.push(relatedContentSuggestion);
       }
     }
-    
+
     // Optimiser les mots-clés
     if (enhancementFeatures.optimizeKeywords) {
       const keywordsSuggestion = await this.optimizeKeywords(target, content);
@@ -177,75 +191,82 @@ export class SEOContentEnhancer implements MCPAgent<SEOContentEnhancerConfig> {
         contentSuggestions.push(keywordsSuggestion);
       }
     }
-    
+
     // Appliquer les suggestions ou les sauvegarder
     await this.applySuggestions(target, contentSuggestions);
   }
-  
+
   /**
    * Génère une section FAQ pour améliorer le SEO
    */
-  private async generateFAQContent(target: EnhancerTarget, content: string): Promise<ContentSuggestion | null> {
+  private async generateFAQContent(
+    target: EnhancerTarget,
+    content: string
+  ): Promise<ContentSuggestion | null> {
     try {
       // Extraire les informations pertinentes selon le type de contenu
       let questions: string[] = [];
-      
+
       switch (target.type) {
         case 'product':
           // Questions typiques pour les produits
           questions = [
-            "Comment choisir la bonne taille ?",
-            "Quelles sont les options de livraison ?",
-            "Quelle est la politique de retour ?",
+            'Comment choisir la bonne taille ?',
+            'Quelles sont les options de livraison ?',
+            'Quelle est la politique de retour ?',
             "Ce produit est-il disponible en d'autres couleurs ?",
-            "Quelles sont les principales caractéristiques de ce produit ?"
+            'Quelles sont les principales caractéristiques de ce produit ?',
           ];
           break;
         case 'category':
           // Questions typiques pour les catégories
           questions = [
-            "Quels sont les produits les plus populaires dans cette catégorie ?",
-            "Comment choisir le bon produit dans cette catégorie ?",
-            "Quelles sont les dernières tendances dans cette catégorie ?",
-            "Y a-t-il des promotions en cours dans cette catégorie ?",
-            "Quels sont les critères de qualité importants pour cette catégorie ?"
+            'Quels sont les produits les plus populaires dans cette catégorie ?',
+            'Comment choisir le bon produit dans cette catégorie ?',
+            'Quelles sont les dernières tendances dans cette catégorie ?',
+            'Y a-t-il des promotions en cours dans cette catégorie ?',
+            'Quels sont les critères de qualité importants pour cette catégorie ?',
           ];
           break;
         case 'article':
           // Questions typiques pour les articles de blog
           questions = [
-            "Quels sont les points clés à retenir de cet article ?",
+            'Quels sont les points clés à retenir de cet article ?',
             "Où puis-je trouver plus d'informations sur ce sujet ?",
-            "Comment appliquer ces conseils dans la vie quotidienne ?",
-            "Quelles sont les références utilisées dans cet article ?",
-            "Qui devrait lire cet article ?"
+            'Comment appliquer ces conseils dans la vie quotidienne ?',
+            'Quelles sont les références utilisées dans cet article ?',
+            'Qui devrait lire cet article ?',
           ];
           break;
         default:
           // Questions génériques
           questions = [
-            "Quelles informations puis-je trouver sur cette page ?",
-            "Comment contacter le service client ?",
-            "Quelles sont les conditions générales ?",
-            "Y a-t-il des ressources complémentaires disponibles ?",
-            "Comment partager cette page ?"
+            'Quelles informations puis-je trouver sur cette page ?',
+            'Comment contacter le service client ?',
+            'Quelles sont les conditions générales ?',
+            'Y a-t-il des ressources complémentaires disponibles ?',
+            'Comment partager cette page ?',
           ];
       }
-      
+
       // Générer le contenu FAQ
       const faqJSX = `
 {/* Section FAQ générée automatiquement pour améliorer le SEO */}
 <section className="faq-section my-8">
   <h2 className="text-xl font-bold mb-4">Questions fréquentes</h2>
   <div className="space-y-4">
-    ${questions.map(q => `
+    ${questions
+      .map(
+        (q) => `
     <details className="border p-4 rounded">
       <summary className="font-semibold cursor-pointer">${q}</summary>
       <div className="mt-2 text-gray-600">
         {/* Réponse à personnaliser */}
         Contenu à personnaliser avec une réponse détaillée à cette question.
       </div>
-    </details>`).join('')}
+    </details>`
+      )
+      .join('')}
   </div>
 </section>
 `;
@@ -260,14 +281,18 @@ export class SEOContentEnhancer implements MCPAgent<SEOContentEnhancerConfig> {
       "@context": "https://schema.org",
       "@type": "FAQPage",
       "mainEntity": [
-        ${questions.map(q => `{
+        ${questions
+          .map(
+            (q) => `{
           "@type": "Question",
           "name": "${q}",
           "acceptedAnswer": {
             "@type": "Answer",
             "text": "Contenu à personnaliser avec une réponse détaillée à cette question."
           }
-        }`).join(',')}
+        }`
+          )
+          .join(',')}
       ]
     })
   }}
@@ -280,29 +305,32 @@ export class SEOContentEnhancer implements MCPAgent<SEOContentEnhancerConfig> {
         targetFile: target.filePath,
         position: 'bottom',
         selector: 'return, </>',
-        priority: 1
+        priority: 1,
       };
     } catch (error) {
       this.context.logger.error(`Erreur lors de la génération de FAQ pour ${target.route}:`, error);
       return null;
     }
   }
-  
+
   /**
    * Améliore les titres (h1, h2, etc.) pour le SEO
    */
-  private async improveHeadings(target: EnhancerTarget, content: string): Promise<ContentSuggestion[]> {
+  private async improveHeadings(
+    target: EnhancerTarget,
+    content: string
+  ): Promise<ContentSuggestion[]> {
     const suggestions: ContentSuggestion[] = [];
-    
+
     try {
       // Analyser le contenu pour les titres
       const dom = new JSDOM(`<div>${content}</div>`);
       const document = dom.window.document;
-      
+
       // Vérifier la présence et la structure des titres
       const h1Tags = document.querySelectorAll('h1');
       const h2Tags = document.querySelectorAll('h2');
-      
+
       // Vérifier s'il y a un H1
       if (h1Tags.length === 0) {
         // Suggérer l'ajout d'un H1 si manquant
@@ -310,18 +338,18 @@ export class SEOContentEnhancer implements MCPAgent<SEOContentEnhancerConfig> {
           type: 'headings',
           content: 'Ajouter un titre H1 pertinent et contenant des mots-clés',
           targetFile: target.filePath,
-          priority: 0
+          priority: 0,
         });
       } else if (h1Tags.length > 1) {
         // Suggérer de ne garder qu'un seul H1
         suggestions.push({
           type: 'headings',
-          content: 'N\'utiliser qu\'un seul titre H1 par page',
+          content: "N'utiliser qu'un seul titre H1 par page",
           targetFile: target.filePath,
-          priority: 0
+          priority: 0,
         });
       }
-      
+
       // Vérifier la structure des sous-titres
       if (h2Tags.length === 0 && content.length > 1000) {
         // Suggérer l'ajout de sous-titres pour le contenu long
@@ -329,23 +357,26 @@ export class SEOContentEnhancer implements MCPAgent<SEOContentEnhancerConfig> {
           type: 'headings',
           content: 'Ajouter des sous-titres H2 pour structurer le contenu',
           targetFile: target.filePath,
-          priority: 1
+          priority: 1,
         });
       }
     } catch (error) {
       this.context.logger.error(`Erreur lors de l'analyse des titres pour ${target.route}:`, error);
     }
-    
+
     return suggestions;
   }
-  
+
   /**
    * Génère des données structurées JSON-LD
    */
-  private async generateStructuredData(target: EnhancerTarget, content: string): Promise<ContentSuggestion | null> {
+  private async generateStructuredData(
+    target: EnhancerTarget,
+    content: string
+  ): Promise<ContentSuggestion | null> {
     try {
       let schemaTemplate = '';
-      
+
       // Générer un schéma adapté au type de contenu
       switch (target.type) {
         case 'product':
@@ -382,7 +413,7 @@ export class SEOContentEnhancer implements MCPAgent<SEOContentEnhancerConfig> {
 />
 `;
           break;
-          
+
         case 'article':
           schemaTemplate = `
 <script
@@ -417,7 +448,7 @@ export class SEOContentEnhancer implements MCPAgent<SEOContentEnhancerConfig> {
 />
 `;
           break;
-          
+
         default:
           schemaTemplate = `
 <script
@@ -434,10 +465,10 @@ export class SEOContentEnhancer implements MCPAgent<SEOContentEnhancerConfig> {
 />
 `;
       }
-      
+
       // Suggérer d'ajouter le schéma à un fichier de métadonnées
       const metaFilePath = target.filePath.replace(/\.(tsx|jsx)$/, '.meta.ts');
-      
+
       return {
         type: 'schema',
         content: `
@@ -450,26 +481,35 @@ export const handle = {
     const siteUrl = "https://votre-site.com";
     const canonical = new URL(data.request.url).pathname;
     
-    return ${schemaTemplate.split('\n').map(line => `  ${line}`).join('\n')}
+    return ${schemaTemplate
+      .split('\n')
+      .map((line) => `  ${line}`)
+      .join('\n')}
   }
 };`,
         targetFile: metaFilePath,
-        priority: 2
+        priority: 2,
       };
     } catch (error) {
-      this.context.logger.error(`Erreur lors de la génération de données structurées pour ${target.route}:`, error);
+      this.context.logger.error(
+        `Erreur lors de la génération de données structurées pour ${target.route}:`,
+        error
+      );
       return null;
     }
   }
-  
+
   /**
    * Génère des suggestions de contenu associé
    */
-  private async generateRelatedContent(target: EnhancerTarget, content: string): Promise<ContentSuggestion | null> {
+  private async generateRelatedContent(
+    target: EnhancerTarget,
+    content: string
+  ): Promise<ContentSuggestion | null> {
     try {
       // Contenu associé selon le type
       let relatedContent = '';
-      
+
       switch (target.type) {
         case 'product':
           relatedContent = `
@@ -491,7 +531,7 @@ export const handle = {
 </section>
 `;
           break;
-          
+
         case 'article':
           relatedContent = `
 {/* Section d'articles associés générée pour améliorer le SEO et l'expérience utilisateur */}
@@ -512,7 +552,7 @@ export const handle = {
 </section>
 `;
           break;
-          
+
         default:
           relatedContent = `
 {/* Section de liens associés générée pour améliorer le SEO et l'expérience utilisateur */}
@@ -531,7 +571,7 @@ export const handle = {
 </section>
 `;
       }
-      
+
       // Suggérer également d'ajouter la logique pour charger le contenu associé
       const loaderLogic = `
 // Ajoutez cette fonction pour charger le contenu associé
@@ -541,29 +581,35 @@ async function loadRelatedContent(currentId, type) {
   return [];
 }
 `;
-      
+
       return {
         type: 'related',
         content: relatedContent + '\n\n' + loaderLogic,
         targetFile: target.filePath,
         position: 'bottom',
         selector: 'return, </>',
-        priority: 3
+        priority: 3,
       };
     } catch (error) {
-      this.context.logger.error(`Erreur lors de la génération de contenu associé pour ${target.route}:`, error);
+      this.context.logger.error(
+        `Erreur lors de la génération de contenu associé pour ${target.route}:`,
+        error
+      );
       return null;
     }
   }
-  
+
   /**
    * Suggère des optimisations de mots-clés
    */
-  private async optimizeKeywords(target: EnhancerTarget, content: string): Promise<ContentSuggestion | null> {
+  private async optimizeKeywords(
+    target: EnhancerTarget,
+    content: string
+  ): Promise<ContentSuggestion | null> {
     try {
       // Liste de mots-clés suggérés selon le type de contenu
       let keywordSuggestions = '';
-      
+
       switch (target.type) {
         case 'product':
           keywordSuggestions = `
@@ -578,7 +624,7 @@ Suggestions de mots-clés SEO pour cette page produit:
 */
 `;
           break;
-          
+
         case 'category':
           keywordSuggestions = `
 /*
@@ -592,7 +638,7 @@ Suggestions de mots-clés SEO pour cette page catégorie:
 */
 `;
           break;
-          
+
         case 'article':
           keywordSuggestions = `
 /*
@@ -606,7 +652,7 @@ Suggestions de mots-clés SEO pour cet article:
 */
 `;
           break;
-          
+
         default:
           keywordSuggestions = `
 /*
@@ -620,38 +666,44 @@ Suggestions de mots-clés SEO pour cette page:
 */
 `;
       }
-      
+
       return {
         type: 'keywords',
         content: keywordSuggestions,
         targetFile: target.filePath,
         position: 'top',
-        priority: 0
+        priority: 0,
       };
     } catch (error) {
-      this.context.logger.error(`Erreur lors de l'optimisation des mots-clés pour ${target.route}:`, error);
+      this.context.logger.error(
+        `Erreur lors de l'optimisation des mots-clés pour ${target.route}:`,
+        error
+      );
       return null;
     }
   }
-  
+
   /**
    * Applique ou sauvegarde les suggestions de contenu
    */
-  private async applySuggestions(target: EnhancerTarget, suggestions: ContentSuggestion[]): Promise<void> {
+  private async applySuggestions(
+    target: EnhancerTarget,
+    suggestions: ContentSuggestion[]
+  ): Promise<void> {
     if (suggestions.length === 0) {
       this.context.logger.info(`Aucune suggestion pour ${target.route}`);
       return;
     }
-    
+
     // Trier les suggestions par priorité
     suggestions.sort((a, b) => a.priority - b.priority);
-    
+
     // Générer un rapport de suggestions
     const reportPath = path.join(
       this.config.outputDir,
       `seo-content-${this.sanitizeFileName(target.route)}.md`
     );
-    
+
     let report = `# Suggestions d'enrichissement SEO pour ${target.route}
 
 ## Type de contenu: ${target.type}
@@ -672,18 +724,20 @@ ${suggestion.content}
 
 `;
     }
-    
+
     // Écrire le rapport
     await fs.writeFile(reportPath, report, 'utf-8');
-    
+
     this.context.logger.info(`Rapport de suggestions généré pour ${target.route}: ${reportPath}`);
-    
+
     // Si la configuration demande d'appliquer les changements
     if (this.config.applyChanges) {
       for (const suggestion of suggestions) {
         try {
           await this.applySuggestion(suggestion);
-          this.context.logger.info(`Suggestion ${suggestion.type} appliquée à ${suggestion.targetFile}`);
+          this.context.logger.info(
+            `Suggestion ${suggestion.type} appliquée à ${suggestion.targetFile}`
+          );
         } catch (error) {
           this.context.logger.error(
             `Erreur lors de l'application de la suggestion ${suggestion.type} à ${suggestion.targetFile}:`,
@@ -693,7 +747,7 @@ ${suggestion.content}
       }
     }
   }
-  
+
   /**
    * Applique une suggestion au fichier cible
    */
@@ -701,45 +755,51 @@ ${suggestion.content}
     if (!fs.existsSync(suggestion.targetFile)) {
       throw new Error(`Le fichier cible ${suggestion.targetFile} n'existe pas`);
     }
-    
+
     let content = await fs.readFile(suggestion.targetFile, 'utf-8');
-    
+
     switch (suggestion.position) {
       case 'top':
         content = suggestion.content + '\n\n' + content;
         break;
-        
+
       case 'bottom':
         content = content + '\n\n' + suggestion.content;
         break;
-        
+
       case 'replace':
         if (suggestion.selector) {
           const regex = new RegExp(suggestion.selector, 'g');
           content = content.replace(regex, suggestion.content);
         }
         break;
-        
+
       case 'after-intro':
         // Trouver la fin du premier paragraphe ou du premier composant
         const introEndMatch = content.match(/<\/p>|<\/div>|<\/section>/);
         if (introEndMatch && introEndMatch.index) {
           const position = introEndMatch.index + introEndMatch[0].length;
-          content = content.slice(0, position) + '\n\n' + suggestion.content + '\n\n' + content.slice(position);
+          content =
+            content.slice(0, position) +
+            '\n\n' +
+            suggestion.content +
+            '\n\n' +
+            content.slice(position);
         } else {
           content = content + '\n\n' + suggestion.content;
         }
         break;
-        
+
       default:
         // Essayer de trouver un emplacement approprié
         if (suggestion.selector) {
           const regex = new RegExp(suggestion.selector);
           const match = content.match(regex);
-          
+
           if (match && match.index) {
             const position = match.index;
-            content = content.slice(0, position) + suggestion.content + '\n\n' + content.slice(position);
+            content =
+              content.slice(0, position) + suggestion.content + '\n\n' + content.slice(position);
           } else {
             content = content + '\n\n' + suggestion.content;
           }
@@ -747,10 +807,10 @@ ${suggestion.content}
           content = content + '\n\n' + suggestion.content;
         }
     }
-    
+
     await fs.writeFile(suggestion.targetFile, content, 'utf-8');
   }
-  
+
   /**
    * Obtient un titre lisible pour le type de suggestion
    */
@@ -759,7 +819,7 @@ ${suggestion.content}
       case 'faq':
         return 'Section FAQ pour améliorer le SEO';
       case 'related':
-        return 'Contenu associé pour améliorer l\'engagement';
+        return "Contenu associé pour améliorer l'engagement";
       case 'schema':
         return 'Données structurées Schema.org';
       case 'keywords':
@@ -767,10 +827,10 @@ ${suggestion.content}
       case 'headings':
         return 'Amélioration des titres et sous-titres';
       default:
-        return 'Suggestion d\'enrichissement';
+        return "Suggestion d'enrichissement";
     }
   }
-  
+
   /**
    * Convertit une URL en nom de fichier sécurisé
    */

@@ -7,10 +7,7 @@ interface AgentStatusListProps {
   showDetails?: boolean;
 }
 
-export default function AgentStatusList({
-  agents,
-  showDetails = false
-}: AgentStatusListProps) {
+export default function AgentStatusList({ agents, showDetails = false }: AgentStatusListProps) {
   return (
     <div className="flow-root">
       <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
@@ -18,20 +15,35 @@ export default function AgentStatusList({
           <table className="min-w-full divide-y divide-gray-300">
             <thead>
               <tr>
-                <th scope="col" className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0">
+                <th
+                  scope="col"
+                  className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0"
+                >
                   Agent
                 </th>
-                <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                <th
+                  scope="col"
+                  className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                >
                   Statut
                 </th>
-                <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                <th
+                  scope="col"
+                  className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                >
                   Dernière exécution
                 </th>
-                <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                <th
+                  scope="col"
+                  className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                >
                   Jobs complétés
                 </th>
                 {showDetails && (
-                  <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                  <th
+                    scope="col"
+                    className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                  >
                     Actions
                   </th>
                 )}
@@ -49,15 +61,15 @@ export default function AgentStatusList({
                         agent.status === 'ready'
                           ? 'bg-green-100 text-green-800'
                           : agent.status === 'busy'
-                          ? 'bg-blue-100 text-blue-800'
-                          : 'bg-red-100 text-red-800'
+                            ? 'bg-blue-100 text-blue-800'
+                            : 'bg-red-100 text-red-800'
                       }`}
                     >
                       {agent.status === 'ready'
                         ? 'Disponible'
                         : agent.status === 'busy'
-                        ? 'Occupé'
-                        : 'Erreur'}
+                          ? 'Occupé'
+                          : 'Erreur'}
                     </span>
                   </td>
                   <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
@@ -90,18 +102,27 @@ export default function AgentStatusList({
           </table>
         </div>
       </div>
-      {agents.some(agent => agent.error) && showDetails && (
+      {agents.some((agent) => agent.error) && showDetails && (
         <div className="mt-4 border-t border-gray-200 pt-4">
           <h4 className="text-sm font-medium text-gray-900">Erreurs détectées</h4>
           <div className="mt-2 space-y-2">
             {agents
-              .filter(agent => agent.error)
-              .map(agent => (
+              .filter((agent) => agent.error)
+              .map((agent) => (
                 <div key={`${agent.name}-error`} className="p-3 bg-red-50 rounded-md">
                   <div className="flex">
                     <div className="flex-shrink-0">
-                      <svg className="h-5 w-5 text-red-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                      <svg
+                        className="h-5 w-5 text-red-400"
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                          clipRule="evenodd"
+                        />
                       </svg>
                     </div>
                     <div className="ml-3">

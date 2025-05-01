@@ -12,10 +12,7 @@
       "id": "standard-approach",
       "name": "Approche Standard",
       "description": "Migration standard PHP vers Remix",
-      "agents": [
-        "php-analyzer-agent",
-        "remix-generator"
-      ],
+      "agents": ["php-analyzer-agent", "remix-generator"],
       "options": {
         "optimizeForReadability": true
       }
@@ -24,11 +21,7 @@
       "id": "data-first-approach",
       "name": "Approche Data-First",
       "description": "Analyse d'abord les données puis génère l'interface",
-      "agents": [
-        "php-analyzer-agent",
-        "mysql-analyzer",
-        "remix-generator"
-      ],
+      "agents": ["php-analyzer-agent", "mysql-analyzer", "remix-generator"],
       "options": {
         "extractDataModel": true,
         "preferTypedSchemas": true
@@ -38,12 +31,7 @@
       "id": "seo-optimized",
       "name": "Approche SEO Optimisée",
       "description": "Optimise la migration pour le référencement",
-      "agents": [
-        "php-analyzer-agent",
-        "seo-content-enhancer",
-        "remix-generator",
-        "seo-meta"
-      ],
+      "agents": ["php-analyzer-agent", "seo-content-enhancer", "remix-generator", "seo-meta"],
       "options": {
         "generateMetaTags": true,
         "ensureStructuredData": true

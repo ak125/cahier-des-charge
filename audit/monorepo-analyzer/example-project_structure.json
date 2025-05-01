@@ -15,11 +15,7 @@
           "hasUseLoaderData": true,
           "hasClientSideValidation": false,
           "hasServerSideValidation": false,
-          "componentsUsed": [
-            "Card",
-            "Button",
-            "Layout"
-          ]
+          "componentsUsed": ["Card", "Button", "Layout"]
         },
         {
           "routePath": "/dashboard",
@@ -31,51 +27,25 @@
           "hasUseLoaderData": true,
           "hasClientSideValidation": true,
           "hasServerSideValidation": true,
-          "componentsUsed": [
-            "DashboardLayout",
-            "StatusCard",
-            "Table",
-            "SearchForm"
-          ]
+          "componentsUsed": ["DashboardLayout", "StatusCard", "Table", "SearchForm"]
         }
       ],
       "components": [
         {
           "name": "Card",
           "filePath": "/workspaces/remix-nestjs-monorepo/apps/frontend/app/components/Card.tsx",
-          "props": [
-            "title",
-            "children",
-            "className"
-          ],
-          "hooks": [
-            "useState"
-          ],
-          "importsFrom": [
-            "react",
-            "~/utils/styles"
-          ],
-          "exportsTo": [
-            "/workspaces/remix-nestjs-monorepo/apps/frontend/app/routes/index.tsx"
-          ]
+          "props": ["title", "children", "className"],
+          "hooks": ["useState"],
+          "importsFrom": ["react", "~/utils/styles"],
+          "exportsTo": ["/workspaces/remix-nestjs-monorepo/apps/frontend/app/routes/index.tsx"]
         },
         {
           "name": "Button",
           "filePath": "/workspaces/remix-nestjs-monorepo/apps/frontend/app/components/Button.tsx",
-          "props": [
-            "children",
-            "onClick",
-            "variant",
-            "disabled"
-          ],
+          "props": ["children", "onClick", "variant", "disabled"],
           "hooks": [],
-          "importsFrom": [
-            "react",
-            "~/utils/styles"
-          ],
-          "exportsTo": [
-            "/workspaces/remix-nestjs-monorepo/apps/frontend/app/routes/index.tsx"
-          ]
+          "importsFrom": ["react", "~/utils/styles"],
+          "exportsTo": ["/workspaces/remix-nestjs-monorepo/apps/frontend/app/routes/index.tsx"]
         }
       ]
     },
@@ -86,65 +56,27 @@
         {
           "name": "AppModule",
           "filePath": "/workspaces/remix-nestjs-monorepo/apps/backend/src/app.module.ts",
-          "imports": [
-            "UsersModule",
-            "AuthModule",
-            "ConfigModule",
-            "DatabaseModule"
-          ],
+          "imports": ["UsersModule", "AuthModule", "ConfigModule", "DatabaseModule"],
           "exports": [],
-          "controllers": [
-            "AppController"
-          ],
-          "providers": [
-            "AppService"
-          ],
-          "decorators": [
-            "@Module"
-          ]
+          "controllers": ["AppController"],
+          "providers": ["AppService"],
+          "decorators": ["@Module"]
         },
         {
           "name": "UsersModule",
           "filePath": "/workspaces/remix-nestjs-monorepo/apps/backend/src/users/users.module.ts",
-          "imports": [
-            "TypeOrmModule.forFeature([User])"
-          ],
-          "exports": [
-            "UsersService"
-          ],
-          "controllers": [
-            "UsersController"
-          ],
-          "providers": [
-            "UsersService"
-          ],
-          "decorators": [
-            "@Module"
-          ]
+          "imports": ["TypeOrmModule.forFeature([User])"],
+          "exports": ["UsersService"],
+          "controllers": ["UsersController"],
+          "providers": ["UsersService"],
+          "decorators": ["@Module"]
         }
       ],
-      "controllers": [
-        "AppController",
-        "UsersController",
-        "AuthController"
-      ],
-      "services": [
-        "AppService",
-        "UsersService",
-        "AuthService"
-      ],
-      "dtos": [
-        "CreateUserDto",
-        "UpdateUserDto",
-        "LoginDto"
-      ],
-      "guards": [
-        "AuthGuard",
-        "RolesGuard"
-      ],
-      "pipes": [
-        "ValidationPipe"
-      ]
+      "controllers": ["AppController", "UsersController", "AuthController"],
+      "services": ["AppService", "UsersService", "AuthService"],
+      "dtos": ["CreateUserDto", "UpdateUserDto", "LoginDto"],
+      "guards": ["AuthGuard", "RolesGuard"],
+      "pipes": ["ValidationPipe"]
     },
     "mcp-server": {
       "type": "mcp-server",
@@ -153,53 +85,25 @@
         {
           "name": "AppModule",
           "filePath": "/workspaces/remix-nestjs-monorepo/apps/mcp-server/src/app.module.ts",
-          "imports": [
-            "AgentsModule",
-            "ConfigModule",
-            "DatabaseModule"
-          ],
+          "imports": ["AgentsModule", "ConfigModule", "DatabaseModule"],
           "exports": [],
-          "controllers": [
-            "AppController"
-          ],
-          "providers": [
-            "AppService"
-          ],
-          "decorators": [
-            "@Module"
-          ]
+          "controllers": ["AppController"],
+          "providers": ["AppService"],
+          "decorators": ["@Module"]
         },
         {
           "name": "AgentsModule",
           "filePath": "/workspaces/remix-nestjs-monorepo/apps/mcp-server/src/agents/agents.module.ts",
           "imports": [],
-          "exports": [
-            "AgentsService"
-          ],
-          "controllers": [
-            "AgentsController"
-          ],
-          "providers": [
-            "AgentsService",
-            "AgentsRegistry"
-          ],
-          "decorators": [
-            "@Module"
-          ]
+          "exports": ["AgentsService"],
+          "controllers": ["AgentsController"],
+          "providers": ["AgentsService", "AgentsRegistry"],
+          "decorators": ["@Module"]
         }
       ],
-      "controllers": [
-        "AppController",
-        "AgentsController"
-      ],
-      "services": [
-        "AppService",
-        "AgentsService"
-      ],
-      "dtos": [
-        "RunAgentDto",
-        "AgentConfigDto"
-      ],
+      "controllers": ["AppController", "AgentsController"],
+      "services": ["AppService", "AgentsService"],
+      "dtos": ["RunAgentDto", "AgentConfigDto"],
       "guards": [],
       "pipes": []
     }
@@ -207,63 +111,31 @@
   "packages": {
     "eslint-config": {
       "path": "/workspaces/remix-nestjs-monorepo/packages/eslint-config",
-      "exports": [
-        "index.js"
-      ],
-      "dependencies": [
-        "eslint",
-        "@typescript-eslint/eslint-plugin",
-        "@typescript-eslint/parser"
-      ],
+      "exports": ["index.js"],
+      "dependencies": ["eslint", "@typescript-eslint/eslint-plugin", "@typescript-eslint/parser"],
       "devDependencies": []
     },
     "remix-ui": {
       "path": "/workspaces/remix-nestjs-monorepo/packages/remix-ui",
-      "exports": [
-        "index.ts",
-        "Button",
-        "Card",
-        "Table"
-      ],
-      "dependencies": [
-        "react",
-        "react-dom",
-        "tailwindcss"
-      ],
-      "devDependencies": [
-        "typescript",
-        "@types/react"
-      ]
+      "exports": ["index.ts", "Button", "Card", "Table"],
+      "dependencies": ["react", "react-dom", "tailwindcss"],
+      "devDependencies": ["typescript", "@types/react"]
     },
     "types": {
       "path": "/workspaces/remix-nestjs-monorepo/packages/types",
-      "exports": [
-        "index.ts",
-        "user.ts",
-        "api.ts"
-      ],
+      "exports": ["index.ts", "user.ts", "api.ts"],
       "dependencies": [],
-      "devDependencies": [
-        "typescript"
-      ]
+      "devDependencies": ["typescript"]
     }
   },
   "monorepoConfig": {
     "turbo": {
       "$schema": "https://turbo.build/schema.json",
-      "globalDependencies": [
-        "**/.env.*local"
-      ],
+      "globalDependencies": ["**/.env.*local"],
       "pipeline": {
         "build": {
-          "dependsOn": [
-            "^build"
-          ],
-          "outputs": [
-            "dist/**",
-            ".next/**",
-            "public/build/**"
-          ]
+          "dependsOn": ["^build"],
+          "outputs": ["dist/**", ".next/**", "public/build/**"]
         },
         "lint": {
           "outputs": []
@@ -281,10 +153,7 @@
       "compilerOptions": {
         "target": "es2020",
         "module": "commonjs",
-        "lib": [
-          "es2020",
-          "dom"
-        ],
+        "lib": ["es2020", "dom"],
         "declaration": true,
         "outDir": "./dist",
         "rootDir": ".",
@@ -295,15 +164,9 @@
         "resolveJsonModule": true,
         "baseUrl": ".",
         "paths": {
-          "@fafa/remix-ui/*": [
-            "packages/remix-ui/*"
-          ],
-          "@fafa/types/*": [
-            "packages/types/*"
-          ],
-          "~/*": [
-            "app/*"
-          ]
+          "@fafa/remix-ui/*": ["packages/remix-ui/*"],
+          "@fafa/types/*": ["packages/types/*"],
+          "~/*": ["app/*"]
         }
       }
     }

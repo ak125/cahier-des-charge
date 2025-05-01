@@ -1,11 +1,11 @@
 import { execSync } from 'child_process';
 import fs from 'fs';
 import path from 'path';
+import { ciTesterAgent } from '../CiTester';
 import { devCheckerAgent } from '../DevChecker';
+import { devIntegratorAgent } from '../DevIntegrator';
 import { devLinterAgent } from '../DevLinter';
 import { diffVerifierAgent } from '../DiffVerifier';
-import { devIntegratorAgent } from '../DevIntegrator';
-import { ciTesterAgent } from '../CiTester';
 import { BaseAgent, OrchestrationAgent } from '../core/interfaces/BaseAgent';
 
 

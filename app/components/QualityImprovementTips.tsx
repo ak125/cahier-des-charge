@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 
 interface QualityIssue {
   category: 'seo' | 'performance' | 'accessibility' | 'bestPractices';
@@ -14,59 +14,67 @@ interface QualityImprovementTipsProps {
   onSelectCategory?: (category: string) => void;
 }
 
-export const QualityImprovementTips: React.FC<QualityImprovementTipsProps> = ({ 
-  issues, 
+export const QualityImprovementTips: React.FC<QualityImprovementTipsProps> = ({
+  issues,
   selectedCategory = 'all',
-  onSelectCategory
+  onSelectCategory,
 }) => {
   // Filtrer les problèmes par catégorie sélectionnée
-  const filteredIssues = selectedCategory === 'all' 
-    ? issues 
-    : issues.filter(issue => issue.category === selectedCategory);
-  
+  const filteredIssues =
+    selectedCategory === 'all'
+      ? issues
+      : issues.filter((issue) => issue.category === selectedCategory);
+
   // Regrouper les problèmes par catégorie pour l'affichage du compteur
-  const categoryCounts = issues.reduce((acc, issue) => {
-    acc[issue.category] = (acc[issue.category] || 0) + 1;
-    return acc;
-  }, {} as Record<string, number>);
-  
+  const categoryCounts = issues.reduce(
+    (acc, issue) => {
+      acc[issue.category] = (acc[issue.category] || 0) + 1;
+      return acc;
+    },
+    {} as Record<string, number>
+  );
+
   const renderCategoryBadge = (category: string, count: number) => {
     const colors = {
       seo: 'bg-blue-100 text-blue-800',
       performance: 'bg-red-100 text-red-800',
       accessibility: 'bg-green-100 text-green-800',
       bestPractices: 'bg-yellow-100 text-yellow-800',
-      all: 'bg-gray-100 text-gray-800'
+      all: 'bg-gray-100 text-gray-800',
     };
-    
+
     const labels = {
       seo: 'SEO',
       performance: 'Performance',
       accessibility: 'Accessibilité',
       bestPractices: 'Meilleures Pratiques',
-      all: 'Tous les critères'
+      all: 'Tous les critères',
     };
-    
+
     return (
       <button
         className={`px-3 py-1 rounded-full text-sm font-medium mr-2 mb-2 ${
-          selectedCategory === category ? 
-          colors[category as keyof typeof colors].replace('100', '200') : 
-          colors[category as keyof typeof colors]
+          selectedCategory === category
+            ? colors[category as keyof typeof colors].replace('100', '200')
+            : colors[category as keyof typeof colors]
         }`}
-        onClick={() => onSelectCategory && onSelectCategory(category)}
+        onClick={() => onSelectCategory?.(category)}
       >
         {labels[category as keyof typeof labels]} {count && `(${count})`}
       </button>
     );
   };
-  
+
   const getImpactLabel = (impact: string) => {
     switch (impact) {
-      case 'high': return { label: 'Critique', class: 'bg-red-100 text-red-800' };
-      case 'medium': return { label: 'Important', class: 'bg-yellow-100 text-yellow-800' };
-      case 'low': return { label: 'Mineur', class: 'bg-green-100 text-green-800' };
-      default: return { label: 'Indéfini', class: 'bg-gray-100 text-gray-800' };
+      case 'high':
+        return { label: 'Critique', class: 'bg-red-100 text-red-800' };
+      case 'medium':
+        return { label: 'Important', class: 'bg-yellow-100 text-yellow-800' };
+      case 'low':
+        return { label: 'Mineur', class: 'bg-green-100 text-green-800' };
+      default:
+        return { label: 'Indéfini', class: 'bg-gray-100 text-gray-800' };
     }
   };
 
@@ -74,11 +82,11 @@ export const QualityImprovementTips: React.FC<QualityImprovementTipsProps> = ({
     <div className="quality-improvement-tips">
       <div className="flex flex-wrap mb-4">
         {renderCategoryBadge('all', issues.length)}
-        {Object.entries(categoryCounts).map(([category, count]) => (
+        {Object.entries(categoryCounts).map(([category, count]) =>
           renderCategoryBadge(category, count)
-        ))}
+        )}
       </div>
-      
+
       {filteredIssues.length > 0 ? (
         <ul className="space-y-4">
           {filteredIssues.map((issue, index) => {
@@ -91,17 +99,17 @@ export const QualityImprovementTips: React.FC<QualityImprovementTipsProps> = ({
                     {impact.label}
                   </span>
                 </div>
-                
+
                 {issue.solution && (
                   <div className="mt-2">
                     <h4 className="text-sm font-medium text-gray-700">Solution recommandée:</h4>
                     <p className="text-sm text-gray-600 mt-1">{issue.solution}</p>
                   </div>
                 )}
-                
+
                 {issue.documentation && (
                   <div className="mt-2">
-                    <a 
+                    <a
                       href={issue.documentation}
                       target="_blank"
                       rel="noopener noreferrer"

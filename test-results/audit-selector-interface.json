@@ -1,1 +1,6 @@
-{"agent": "audit-selector", "interfaces": [""], "status": "COMPLIANT", "timestamp": "2025-04-20T04:18:56+00:00"}
+{
+  "agent": "audit-selector",
+  "interfaces": [""],
+  "status": "COMPLIANT",
+  "timestamp": "2025-04-20T04:18:56+00:00"
+}

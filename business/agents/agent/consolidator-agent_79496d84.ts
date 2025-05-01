@@ -3,8 +3,8 @@
  * Agent export file
  */
 
-import { consolidator } from ./consolidatorstructure-agent';
-import { BusinessAgent } from ../../core/interfacesstructure-agent';
+import { BusinessAgent } from '../../core/interfacesstructure-agent';
+import { consolidator } from './consolidatorstructure-agent';
 
 export { consolidator };
 export default consolidator;

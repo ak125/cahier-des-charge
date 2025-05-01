@@ -17,27 +17,19 @@
       },
       "name": "Schedule Trigger",
       "type": "n8n-nodes-base.scheduleTrigger",
-      "position": [
-        100,
-        200
-      ]
+      "position": [100, 200]
     },
     {
       "parameters": {
         "path": "/workspaces/cahier-des-charge/app/legacy",
-        "fileExtensions": [
-          "php"
-        ],
+        "fileExtensions": ["php"],
         "options": {
           "recursive": true
         }
       },
       "name": "List PHP Files",
       "type": "n8n-nodes-base.filesearch",
-      "position": [
-        300,
-        200
-      ]
+      "position": [300, 200]
     },
     {
       "parameters": {
@@ -47,10 +39,7 @@
       },
       "name": "PHP Analysis",
       "type": "n8n-nodes-base.httpRequest",
-      "position": [
-        500,
-        200
-      ]
+      "position": [500, 200]
     },
     {
       "parameters": {
@@ -63,10 +52,7 @@
       },
       "name": "Save Analysis",
       "type": "n8n-nodes-base.writeBinaryFile",
-      "position": [
-        700,
-        200
-      ]
+      "position": [700, 200]
     }
   ],
   "connections": {

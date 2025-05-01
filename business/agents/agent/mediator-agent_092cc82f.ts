@@ -1,14 +1,13 @@
 /**
  * Médiateur entre agents
- * 
+ *
  * Fait partie de la Couche de coordination - Communication entre les agents et intégration
  * Responsabilité: Faciliter la communication entre les agents, assurer l'interopérabilité et gérer les intégrations externes
  */
 
-import { BaseAgent } from ../../../core/interfaces/BaseAgentstructure-agent';
+import { BaseAgent } from '../../../core/interfaces/BaseAgentstructure-agent';
 
 export interface MediatorAgent extends BaseAgent {
-
   /**
    * Enregistre un agent auprès du médiateur
    */

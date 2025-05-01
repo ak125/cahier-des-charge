@@ -3,9 +3,6 @@
  * Generated automatically on 2025-04-20
  */
 
-import { CaddyfileGeneratorAgent } from ./CaddyfileGeneratorAgentstructure-agent';
+import { CaddyfileGeneratorAgent } from './CaddyfileGeneratorAgent';
 
-export {
-  CaddyfileGeneratorAgent,
-};
-
+export { CaddyfileGeneratorAgent };

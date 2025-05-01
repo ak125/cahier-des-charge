@@ -23,7 +23,8 @@ interface IterationTask {
 
 export class DevGenerator implements MCPAgent {
   name = 'dev-generator';
-  description = 'Génère les composants nécessaires pour continuer l\'itération du développement dans le cadre de la migration PHP vers Remix';
+  description =
+    "Génère les composants nécessaires pour continuer l'itération du développement dans le cadre de la migration PHP vers Remix";
 
   private templateMap = {
     component: `import React from 'react';
@@ -50,7 +51,7 @@ export function {{ComponentName}}(props: {{ComponentName}}Props) {
   );
 }
 `,
-    
+
     route: `import { json } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 import { MetaFunction } from '@remix-run/react';
@@ -90,7 +91,7 @@ export default function {{componentName}}() {
   );
 }
 `,
-    
+
     api: `import { Controller, Get, Post, Body, Param, Query } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 
@@ -129,7 +130,7 @@ export class {{controllerName}}Controller {
   }
 }
 `,
-    
+
     test: `import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { {{componentName}} } from '../{{componentPath}}';
@@ -167,7 +168,7 @@ describe('{{componentName}}', () => {
   });
 });
 `,
-    
+
     iteration: `# Itération: {{iterationName}}
 
 ## Description
@@ -189,7 +190,7 @@ describe('{{componentName}}', () => {
 
 ## Notes
 - Créé le {{creationDate}}
-`
+`,
   };
 
   async process(context: MCPContext): Promise<any> {
@@ -199,130 +200,136 @@ describe('{{componentName}}', () => {
       outputDir,
       tasksConfig,
       createIteration = true,
-      createComponents = true
+      createComponents = true,
     } = context.inputs;
-    
+
     if (!iterationName) {
       return {
         success: false,
-        error: "Le nom de l'itération n'est pas spécifié"
+        error: "Le nom de l'itération n'est pas spécifié",
       };
     }
-    
+
     if (!outputDir) {
       return {
         success: false,
-        error: "Le répertoire de sortie n'est pas spécifié"
+        error: "Le répertoire de sortie n'est pas spécifié",
       };
     }
-    
+
     try {
       // Créer le répertoire de sortie s'il n'existe pas
       if (!fs.existsSync(outputDir)) {
         fs.mkdirSync(outputDir, { recursive: true });
       }
-      
+
       // Préparer l'objet de configuration de l'itération
       const iterationConfig: IterationConfig = {
         name: iterationName,
-        description: iterationDescription || `Itération ${iterationName} de la migration PHP vers Remix`,
+        description:
+          iterationDescription || `Itération ${iterationName} de la migration PHP vers Remix`,
         tasks: tasksConfig?.tasks || this.generateDefaultTasks(iterationName),
         dependencies: tasksConfig?.dependencies || [],
-        estimatedEffort: tasksConfig?.estimatedEffort || "À déterminer"
+        estimatedEffort: tasksConfig?.estimatedEffort || 'À déterminer',
       };
-      
+
       const generatedFiles = [];
-      
+
       // Générer le fichier de configuration de l'itération si demandé
       if (createIteration) {
         const iterationFilePath = this.generateIterationFile(iterationConfig, outputDir);
         generatedFiles.push(iterationFilePath);
       }
-      
+
       // Générer les composants pour chaque tâche si demandé
       if (createComponents) {
         const componentFiles = this.generateComponentsForTasks(iterationConfig, outputDir);
         generatedFiles.push(...componentFiles);
       }
-      
+
       return {
         success: true,
         data: {
           iteration: iterationConfig,
           generatedFiles,
-          totalFiles: generatedFiles.length
-        }
+          totalFiles: generatedFiles.length,
+        },
       };
     } catch (error) {
       return {
         success: false,
-        error: `Erreur lors de la génération des composants pour l'itération: ${error.message}`
+        error: `Erreur lors de la génération des composants pour l'itération: ${error.message}`,
       };
     }
   }
-  
+
   private generateDefaultTasks(iterationName: string): IterationTask[] {
     // Générer des tâches par défaut pour l'itération
     return [
       {
         id: `${iterationName}-task-1`,
-        name: "Analyse des routes existantes",
-        description: "Analyser les routes PHP existantes à migrer dans cette itération",
-        status: "pending",
-        type: "other"
+        name: 'Analyse des routes existantes',
+        description: 'Analyser les routes PHP existantes à migrer dans cette itération',
+        status: 'pending',
+        type: 'other',
       },
       {
         id: `${iterationName}-task-2`,
-        name: "Création des composants Remix",
-        description: "Créer les composants Remix nécessaires pour cette itération",
-        status: "pending",
-        type: "component",
-        filePath: "app/components/"
+        name: 'Création des composants Remix',
+        description: 'Créer les composants Remix nécessaires pour cette itération',
+        status: 'pending',
+        type: 'component',
+        filePath: 'app/components/',
       },
       {
         id: `${iterationName}-task-3`,
-        name: "Implémentation des routes",
-        description: "Implémenter les routes Remix correspondant aux pages PHP",
-        status: "pending",
-        type: "route",
-        filePath: "app/routes/"
+        name: 'Implémentation des routes',
+        description: 'Implémenter les routes Remix correspondant aux pages PHP',
+        status: 'pending',
+        type: 'route',
+        filePath: 'app/routes/',
       },
       {
         id: `${iterationName}-task-4`,
         name: "Création des points d'API",
         description: "Créer les points d'API NestJS pour les données",
-        status: "pending",
-        type: "api",
-        filePath: "apps/backend/src/controllers/"
+        status: 'pending',
+        type: 'api',
+        filePath: 'apps/backend/src/controllers/',
       },
       {
         id: `${iterationName}-task-5`,
         name: "Tests d'intégration",
         description: "Créer et exécuter les tests d'intégration pour les nouvelles fonctionnalités",
-        status: "pending",
-        type: "test"
-      }
+        status: 'pending',
+        type: 'test',
+      },
     ];
   }
-  
+
   private generateIterationFile(config: IterationConfig, outputDir: string): string {
     // Générer le fichier markdown de l'itération
     const now = new Date();
     const creationDate = now.toISOString().split('T')[0];
     const endDate = new Date(now.setDate(now.getDate() + 14)).toISOString().split('T')[0];
-    
+
     // Formatage des tâches pour le markdown
-    const tasksMarkdown = config.tasks.map(task => {
-      return `- [${task.status === 'completed' ? 'x' : ' '}] **${task.name}**: ${task.description} (${task.type})`;
-    }).join('\n');
-    
+    const tasksMarkdown = config.tasks
+      .map((task) => {
+        return `- [${task.status === 'completed' ? 'x' : ' '}] **${task.name}**: ${
+          task.description
+        } (${task.type})`;
+      })
+      .join('\n');
+
     // Formatage des dépendances pour le markdown
-    const dependenciesMarkdown = config.dependencies && config.dependencies.length > 0
-      ? config.dependencies.map(dep => `- ${dep}`).join('\n')
-      : "Aucune dépendance externe";
-    
+    const dependenciesMarkdown =
+      config.dependencies && config.dependencies.length > 0
+        ? config.dependencies.map((dep) => `- ${dep}`).join('\n')
+        : 'Aucune dépendance externe';
+
     // Générer le contenu du fichier
-    let content = this.templateMap.iteration
+    const content = this.templateMap.iteration
       .replace(/\{\{iterationName\}\}/g, config.name)
       .replace(/\{\{description\}\}/g, config.description)
       .replace(/\{\{tasks\}\}/g, tasksMarkdown)
@@ -332,50 +339,62 @@ describe('{{componentName}}', () => {
       .replace(/\{\{endDate\}\}/g, endDate)
       .replace(/\{\{progress\}\}/g, '0')
       .replace(/\{\{creationDate\}\}/g, creationDate);
-    
+
     // Chemin du fichier de sortie
     const fileName = `iteration-${config.name.toLowerCase().replace(/\s+/g, '-')}.md`;
     const filePath = path.join(outputDir, fileName);
-    
+
     // Écrire le fichier
     fs.writeFileSync(filePath, content, 'utf8');
-    
+
     return filePath;
   }
-  
+
   private generateComponentsForTasks(config: IterationConfig, baseOutputDir: string): string[] {
     const generatedFiles: string[] = [];
-    
+
     // Créer un composant pour chaque tâche de type composant ou route
     for (const task of config.tasks) {
-      if (task.type === 'component' || task.type === 'route' || task.type === 'api' || task.type === 'test') {
+      if (
+        task.type === 'component' ||
+        task.type === 'route' ||
+        task.type === 'api' ||
+        task.type === 'test'
+      ) {
         try {
           const fileName = this.generateComponentFile(task, config, baseOutputDir);
           if (fileName) {
             generatedFiles.push(fileName);
           }
         } catch (error) {
-          console.error(`Erreur lors de la génération du composant pour la tâche ${task.id}:`, error);
+          console.error(
+            `Erreur lors de la génération du composant pour la tâche ${task.id}:`,
+            error
+          );
         }
       }
     }
-    
+
     return generatedFiles;
   }
-  
-  private generateComponentFile(task: IterationTask, config: IterationConfig, baseOutputDir: string): string {
+
+  private generateComponentFile(
+    task: IterationTask,
+    config: IterationConfig,
+    baseOutputDir: string
+  ): string {
     // Déterminer le type de fichier à générer
     const templateKey = task.type;
     const template = this.templateMap[templateKey];
-    
+
     if (!template) {
       throw new Error(`Template non trouvé pour le type ${task.type}`);
     }
-    
+
     // Préparer le nom du composant
     const componentName = this.createComponentName(task.name);
     const componentClassName = this.createComponentClassName(componentName);
-    
+
     // Déterminer le répertoire de sortie
     let outputDir = baseOutputDir;
     if (task.filePath) {
@@ -400,12 +419,12 @@ describe('{{componentName}}', () => {
           outputDir = path.join(baseOutputDir, task.type);
       }
     }
-    
+
     // Créer le répertoire s'il n'existe pas
     if (!fs.existsSync(outputDir)) {
       fs.mkdirSync(outputDir, { recursive: true });
     }
-    
+
     // Déterminer le nom du fichier
     let fileName = '';
     switch (task.type) {
@@ -424,23 +443,26 @@ describe('{{componentName}}', () => {
       default:
         fileName = `${componentName.toLowerCase()}.ts`;
     }
-    
+
     // Chemin complet du fichier
     const filePath = path.join(outputDir, fileName);
-    
+
     // Préparer les variables pour le template
     const routePath = task.name.toLowerCase().replace(/\s+/g, '-');
     const apiPath = routePath;
-    const apiTag = task.name.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join('');
+    const apiTag = task.name
+      .split(' ')
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join('');
     const controllerName = componentName;
     const pageTitle = task.name;
     const metaDescription = task.description;
     const translationKey = `${componentName.toLowerCase()}.title`;
     const componentPath = `./${componentName}`;
     const expectedText = task.name;
-    
+
     // Remplacer les variables dans le template
-    let content = template
+    const content = template
       .replace(/\{\{ComponentName\}\}/g, componentName)
       .replace(/\{\{componentName\}\}/g, componentName)
       .replace(/\{\{componentClassName\}\}/g, componentClassName)
@@ -455,22 +477,22 @@ describe('{{componentName}}', () => {
       .replace(/\{\{controllerName\}\}/g, controllerName)
       .replace(/\{\{componentPath\}\}/g, componentPath)
       .replace(/\{\{expectedText\}\}/g, expectedText);
-    
+
     // Écrire le fichier
     fs.writeFileSync(filePath, content, 'utf8');
-    
+
     return filePath;
   }
-  
+
   private createComponentName(name: string): string {
     // Convertir un nom en PascalCase pour le nom du composant
     // Exemple: "Gestion des utilisateurs" -> "GestionDesUtilisateurs"
     return name
       .split(/[\s_-]/)
-      .map(part => part.charAt(0).toUpperCase() + part.slice(1).toLowerCase())
+      .map((part) => part.charAt(0).toUpperCase() + part.slice(1).toLowerCase())
       .join('');
   }
-  
+
   private createComponentClassName(componentName: string): string {
     // Convertir un nom de composant en kebab-case pour la classe CSS
     // Exemple: "GestionDesUtilisateurs" -> "gestion-des-utilisateurs"

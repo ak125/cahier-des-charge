@@ -23,28 +23,15 @@
         "name": "auto-retry-on-network-error",
         "description": "Réessayer automatiquement en cas d'erreur réseau",
         "priority": 10,
-        "conditions": [
-          "error.type === 'NETWORK'",
-          "retryCount < 3"
-        ],
-        "actions": [
-          "wait(exponentialBackoff(retryCount))",
-          "retry()"
-        ]
+        "conditions": ["error.type === 'NETWORK'", "retryCount < 3"],
+        "actions": ["wait(exponentialBackoff(retryCount))", "retry()"]
       },
       {
         "name": "escalate-critical-business-error",
         "description": "Escalader les erreurs critiques métier",
         "priority": 5,
-        "conditions": [
-          "error.severity === 'CRITICAL'",
-          "layer === 'business'"
-        ],
-        "actions": [
-          "notify('slack', '#alerts')",
-          "logError(error)",
-          "createIncident()"
-        ]
+        "conditions": ["error.severity === 'CRITICAL'", "layer === 'business'"],
+        "actions": ["notify('slack', '#alerts')", "logError(error)", "createIncident()"]
       }
     ]
   },

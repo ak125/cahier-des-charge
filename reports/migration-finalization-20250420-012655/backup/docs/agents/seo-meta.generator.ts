@@ -1,8 +1,8 @@
+import { execSync } from 'child_process';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as cheerio from 'cheerio';
 import { glob } from 'glob';
-import { execSync } from 'child_process';
 import { DB } from '../utils/DbConnector';
 
 interface SeoMetadata {
@@ -232,7 +232,7 @@ export class SeoMetadataGenerator implements BaseAgent, BusinessAgent, BaseAgent
       const $ = cheerio.load(content);
       
       // Extraire le slug depuis le chemin du fichier ou le contenu
-      let slug = this.extractSlugFromPhp(content, filePath);
+      const slug = this.extractSlugFromPhp(content, filePath);
       if (!slug) return null;
       
       // Extraire les métadonnées de base

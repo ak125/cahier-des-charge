@@ -1,10 +1,10 @@
 #!/usr/bin/env ts-node
-import * as fs from 'fs/promises';
-import * as path from 'path';
 import { execSync } from 'child_process';
+import * as path from 'path';
+import * as fs from 'fs/promises';
 import { BusinessAgent } from './agents/AgentBusiness';
-import { StructureAgent } from './agents/AgentStructure';
 import { QualityAgent } from './agents/AgentQuality';
+import { StructureAgent } from './agents/AgentStructure';
 import { AssemblerAgent } from './assembler-agent';
 
 interface AuditOptions {
@@ -148,7 +148,7 @@ async function main() {
     options.agents = args[agentsIndex + 1].split(',') as AuditOptions['agents'];
   }
   
-  options.saveToGit = args.includes('--save-toDoDoDoDotgit');
+  options.saveToGit = args.includes('--save-toDoDogit');
   options.createPR = args.includes('--create-pr');
   
   try {

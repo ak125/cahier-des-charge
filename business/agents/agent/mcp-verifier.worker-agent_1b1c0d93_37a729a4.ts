@@ -3,8 +3,8 @@
  * Agent export file
  */
 
-import {DoDotmcp } from ./McpVerifierDotworkerstructure-agent';
-import { OrchestratorAgent } from ../../core/interfacesstructure-agent';
+import { OrchestratorAgent } from '../../core/interfacesstructure-agent'
+import { DoDotmcp } from './McpVerifierDotworkerstructure-agent'
 
 export {DoDotmcp };
 export defaultDoDotmcp;

@@ -2,32 +2,20 @@
   "redis": {
     "url": "redis://localhost:6379",
     "enabled": true,
-    "channels": [
-      "mcp:notification",
-      "mcp:migration",
-      "mcp:qa"
-    ]
+    "channels": ["mcp:notification", "mcp:migration", "mcp:qa"]
   },
   "supabase": {
     "url": "https://your-project.supabase.co",
     "key": "your-supabase-key",
     "enabled": true,
-    "tables": [
-      "audit.migrations",
-      "audit.qa_results"
-    ]
+    "tables": ["audit.migrations", "audit.qa_results"]
   },
   "slack": {
     "token": "xoxb-your-slack-token",
     "enabled": true,
     "defaultChannel": "#migrations-status",
     "mentionUsers": ["U0123456789"],
-    "events": [
-      "migration:completed",
-      "migration:failed",
-      "qa:ok",
-      "qa:failed"
-    ]
+    "events": ["migration:completed", "migration:failed", "qa:ok", "qa:failed"]
   },
   "email": {
     "smtp": {
@@ -40,32 +28,18 @@
       }
     },
     "enabled": true,
-    "defaultRecipients": [
-      "team@example.com",
-      "dev.team@example.com"
-    ],
-    "events": [
-      "migration:failed",
-      "qa:failed"
-    ]
+    "defaultRecipients": ["team@example.com", "dev.team@example.com"],
+    "events": ["migration:failed", "qa:failed"]
   },
   "discord": {
     "webhook": "https://discord.com/api/webhooks/your-webhook-id/your-webhook-token",
     "enabled": false,
-    "events": [
-      "migration:completed",
-      "migration:failed",
-      "qa:ok",
-      "qa:failed"
-    ]
+    "events": ["migration:completed", "migration:failed", "qa:ok", "qa:failed"]
   },
   "webhook": {
     "url": "https://webhook.site/your-custom-webhook",
     "enabled": false,
-    "events": [
-      "migration:*",
-      "qa:*"
-    ]
+    "events": ["migration:*", "qa:*"]
   },
   "manifestPath": "/workspaces/cahier-des-charge/MCPManifest.json"
 }

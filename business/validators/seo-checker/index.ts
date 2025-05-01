@@ -3,13 +3,13 @@
  * Fichier standardisé - 24 avril 2025
  */
 
-import { SEOCheckerAgent, seoCheckerAgent, SEOCheckerConfig, SEOValidationResult } from './seo-checker-agent';
+import {
+  SEOCheckerAgent,
+  SEOCheckerConfig,
+  SEOValidationResult,
+  seoCheckerAgent,
+} from './seo-checker-agent';
 
-export {
-    SEOCheckerAgent,
-    seoCheckerAgent,
-    SEOCheckerConfig,
-    SEOValidationResult
-};
+export { SEOCheckerAgent, seoCheckerAgent, SEOCheckerConfig, SEOValidationResult };
 
 export default seoCheckerAgent;

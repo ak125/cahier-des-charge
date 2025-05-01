@@ -1,9 +1,9 @@
-// filepath: /workspaces/cahier-des-charge/agents/progressive-migration-agent.ts
-import { BaseAgent } from '@workspaces/cahier-des-charge/src/core/interfaces/BaseAgent';
-import { BusinessAgent } from '@workspaces/cahier-des-charge/src/core/interfaces/business';
 import * as fs from 'fs';
 import { promises as fsPromises } from 'fs';
 import * as path from 'path';
+// filepath: /workspaces/cahier-des-charge/agents/progressive-migration-agent.ts
+import { BaseAgent } from '@workspaces/cahier-des-charge/src/core/interfaces/BaseAgent';
+import { BusinessAgent } from '@workspaces/cahier-des-charge/src/core/interfaces/business';
 
 interface ProxyConfig {
   phpEndpoint: string;

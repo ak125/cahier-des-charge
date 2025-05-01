@@ -13,10 +13,7 @@
       "name": "Webhook Déclencheur",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 1,
-      "position": [
-        250,
-        300
-      ]
+      "position": [250, 300]
     },
     {
       "parameters": {
@@ -25,10 +22,7 @@
       "name": "Charger Index d'Audit",
       "type": "n8n-nodes-base.readBinaryFile",
       "typeVersion": 1,
-      "position": [
-        450,
-        300
-      ]
+      "position": [450, 300]
     },
     {
       "parameters": {
@@ -38,10 +32,7 @@
       "name": "Parser JSON Audit",
       "type": "n8n-nodes-base.set",
       "typeVersion": 1,
-      "position": [
-        650,
-        300
-      ]
+      "position": [650, 300]
     },
     {
       "parameters": {
@@ -54,10 +45,7 @@
       "name": "Convertir en JSON",
       "type": "n8n-nodes-base.moveData",
       "typeVersion": 1,
-      "position": [
-        850,
-        300
-      ]
+      "position": [850, 300]
     },
     {
       "parameters": {
@@ -66,10 +54,7 @@
       "name": "Collecter Résultats Audit",
       "type": "n8n-nodes-base.function",
       "typeVersion": 1,
-      "position": [
-        1050,
-        300
-      ]
+      "position": [1050, 300]
     },
     {
       "parameters": {
@@ -79,10 +64,7 @@
       "name": "Créer Résumé Markdown",
       "type": "n8n-nodes-base.markdown",
       "typeVersion": 1,
-      "position": [
-        1250,
-        300
-      ]
+      "position": [1250, 300]
     },
     {
       "parameters": {
@@ -95,10 +77,7 @@
       "name": "Notification Telegram",
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1,
-      "position": [
-        1450,
-        300
-      ],
+      "position": [1450, 300],
       "credentials": {
         "telegramApi": {
           "id": "1",
@@ -115,10 +94,7 @@
       "name": "Réponse HTTP",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1,
-      "position": [
-        1450,
-        500
-      ]
+      "position": [1450, 500]
     },
     {
       "parameters": {
@@ -135,10 +111,7 @@
       "name": "Vérifier Dette Technique",
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
-      "position": [
-        1250,
-        500
-      ]
+      "position": [1250, 500]
     },
     {
       "parameters": {
@@ -147,10 +120,7 @@
       "name": "Générer Suggestions",
       "type": "n8n-nodes-base.function",
       "typeVersion": 1,
-      "position": [
-        1050,
-        500
-      ]
+      "position": [1050, 500]
     },
     {
       "parameters": {
@@ -160,10 +130,7 @@
       "name": "Sauvegarder Suggestions",
       "type": "n8n-nodes-base.writeBinaryFile",
       "typeVersion": 1,
-      "position": [
-        1250,
-        700
-      ]
+      "position": [1250, 700]
     },
     {
       "parameters": {
@@ -173,10 +140,7 @@
       "name": "Préparer Suggestions Markdown",
       "type": "n8n-nodes-base.set",
       "typeVersion": 1,
-      "position": [
-        1050,
-        700
-      ]
+      "position": [1050, 700]
     },
     {
       "parameters": {
@@ -186,10 +150,7 @@
       "name": "Générer Dashboard HTML",
       "type": "n8n-nodes-base.code",
       "typeVersion": 1,
-      "position": [
-        650,
-        500
-      ]
+      "position": [650, 500]
     }
   ],
   "connections": {

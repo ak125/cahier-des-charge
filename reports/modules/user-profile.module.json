@@ -3,7 +3,5 @@
   "status": "in-progress",
   "progress": 30,
   "complexity": "low",
-  "dependencies": [
-    "Authentication"
-  ]
+  "dependencies": ["Authentication"]
 }

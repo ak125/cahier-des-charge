@@ -5,8 +5,11 @@
  */
 
 declare module '../../core/abstract-analyzer-agent' {
-  import { AnalyzerAgent } from @workspaces/cahier-des-charge/src/core/interfaces/businessstructure-agent';
-  import { AgentContext, AgentResult } from @workspaces/cahier-des-charge/src/core/interfaces/BaseAgentstructure-agent';
+  import { AnalyzerAgent } from '@workspaces/cahier-des-charge/src/core/interfaces/business';
+  import {
+    AgentContext,
+    AgentResult,
+  } from '@workspaces/cahier-des-charge/src/core/interfaces/BaseAgent';
 
   export interface AnalyzerConfig {
     id: string;
@@ -17,7 +20,13 @@ declare module '../../core/abstract-analyzer-agent' {
   }
 
   export abstract class AbstractAnalyzerAgent<InputType, OutputType> implements AnalyzerAgent {
-    readonly metadata: { id: string; type: string; name: string; version: string; description?: string; };
+    readonly metadata: {
+      id: string;
+      type: string;
+      name: string;
+      version: string;
+      description?: string;
+    };
     readonly domain: string;
     readonly capabilities: string[];
     status: 'ready' | 'busy' | 'error' | 'stopped';
@@ -27,20 +36,23 @@ declare module '../../core/abstract-analyzer-agent' {
 
     initialize(): Promise<void>;
     protected abstract initializeInternal(): Promise<void>;
-  
+
     execute(context: AgentContext): Promise<AgentResult>;
-    
+
     analyze<I = InputType, O = OutputType>(input: I, context?: AgentContext): Promise<O>;
-    protected abstract analyzeInternal(input: InputType, context?: AgentContext): Promise<OutputType>;
-    
+    protected abstract analyzeInternal(
+      input: InputType,
+      context?: AgentContext
+    ): Promise<OutputType>;
+
     validate(context: AgentContext): Promise<boolean>;
     protected abstract validateInternal(context: AgentContext): Promise<boolean>;
-    
+
     stop(): Promise<void>;
     protected abstract stopInternal(): Promise<void>;
-    
-    getStatus(): Promise<{ status: 'ready' | 'busy' | 'error' | 'stopped'; details?: any; }>;
-    getSummary(): Promise<{ domain: string; capabilities: string[]; status: string; }>;
+
+    getStatus(): Promise<{ status: 'ready' | 'busy' | 'error' | 'stopped'; details?: any }>;
+    getSummary(): Promise<{ domain: string; capabilities: string[]; status: string }>;
   }
 
   export default AbstractAnalyzerAgent;

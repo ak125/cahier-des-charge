@@ -5,7 +5,7 @@
  */
 
 declare module '@workspaces/cahier-des-charge/src/core/interfaces/base-agent' {
-  import { EventEmitter } from eventsstructure-agent';
+  import { EventEmitter } from './eventsstructure-agent';
 
   export type AgentStatus = 'ready' | 'busy' | 'error' | 'stopped';
 
@@ -38,19 +38,19 @@ declare module '@workspaces/cahier-des-charge/src/core/interfaces/base-agent' {
     COMPLETED = 'completed',
     FAILED = 'failed',
     STATUS_CHANGED = 'statusChanged',
-    PROGRESS = 'progress'
+    PROGRESS = 'progress',
   }
 
   export interface BaseAgent {
     readonly metadata: AgentMetadata;
     status: AgentStatus;
     readonly events: EventEmitter;
-    
+
     initialize(): Promise<void>;
     execute(context: AgentContext): Promise<AgentResult>;
     validate(context: AgentContext): Promise<boolean>;
     stop(): Promise<void>;
-    getStatus(): Promise<{ status: AgentStatus, details?: any }>;
+    getStatus(): Promise<{ status: AgentStatus; details?: any }>;
   }
 
   export default BaseAgent;

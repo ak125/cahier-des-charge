@@ -4,19 +4,15 @@
  */
 
 import { BaseAgent } from '../core/base-agent';
-import { WorkersAgentOptions, WorkersResult } from './types';
+import { WorkersAgentOptions } from './types';
 
 /**
  * Classe de base pour tous les agents workers
  */
 export abstract class BaseWorkersAgent<
   TOptions extends WorkersAgentOptions = WorkersAgentOptions,
-  TResult = any
+  TResult = any,
 > extends BaseAgent<TOptions, TResult> {
-  constructor(options?: Partial<TOptions>) {
-    super(options);
-  }
-
   /**
    * Fonctions utilitaires spécifiques à la catégorie workers
    */

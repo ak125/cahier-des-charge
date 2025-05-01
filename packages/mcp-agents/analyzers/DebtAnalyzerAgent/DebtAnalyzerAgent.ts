@@ -3,8 +3,8 @@
  * Agent export file
  */
 
-import { DebtAnalyzer } from './debt-analyzer';
 import { AnalyzerAgent } from '../../core/interfaces';
+import { DebtAnalyzer } from './debt-analyzer';
 
 export { DebtAnalyzer };
 export default DebtAnalyzer;

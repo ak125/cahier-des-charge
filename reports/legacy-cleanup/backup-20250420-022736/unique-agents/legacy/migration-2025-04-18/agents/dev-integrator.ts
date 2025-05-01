@@ -1,7 +1,7 @@
+import { execSync } from 'child_process';
 // filepath: /workspaces/cahier-des-charge/agents/dev-integrator.ts
 import fs from 'fs';
 import path from 'path';
-import { execSync } from 'child_process';
 import * as glob from 'glob';
 
 // Types pour l'agent

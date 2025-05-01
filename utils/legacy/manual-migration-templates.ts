@@ -1,12 +1,12 @@
 /**
  * Templates pour la migration manuelle des agents non-standards
- * 
+ *
  * Ce fichier contient des templates pour aider à transformer différentes structures
  * d'agents en classes conformes à la nouvelle architecture abstraite.
  */
 
 /**
- * Template pour transformer un agent basé sur un objet 
+ * Template pour transformer un agent basé sur un objet
  * (export const myAgent = {...}) en classe abstraite
  */
 export const objectToClassTemplate = `
@@ -119,7 +119,7 @@ export class XXXAgent extends AbstractXXXAgent<InputType, OutputType> {
 `;
 
 /**
- * Template pour transformer un agent qui exporte une fonction 
+ * Template pour transformer un agent qui exporte une fonction
  * en classe abstraite
  */
 export const functionToClassTemplate = `

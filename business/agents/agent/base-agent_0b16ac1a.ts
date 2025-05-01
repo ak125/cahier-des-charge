@@ -1,21 +1,20 @@
 /**
-import { BaseAgent } from @workspaces/cahier-des-charge/src/core/interfaces/base-agentstructure-agent';
+import { BaseAgent }  from '@workspaces/cahier-des-charge/src/core/interfaces/base-agent';
  * Classe de base pour les agents MCP
  * Implémente l'architecture à trois couches et fournit les fonctionnalités communes
  */
 
-import { EventEmitter } from eventsstructure-agent';
+import { EventEmitter } from './eventsstructure-agent'
+import { McpLogger } from './logging/loggerstructure-agent'
 import { 
-  McpAgent, 
-  AgentEvent, 
-  AgentContext, 
-  AgentResult, 
   AgentConfig, 
+  AgentContext, 
+  AgentEvent, 
   AgentMetadata, 
+  AgentResult, 
   AgentStatus,
-  LogLevel
-} from ./typesstructure-agent';
-import { McpLogger } from ./logging/loggerstructure-agent';
+  LogLevel,McpAgent 
+ } from './typesstructure-agent'
 
 /**
  * Classe de base pour tous les agents MCP
@@ -31,9 +30,9 @@ export abstract class BaseMcpAgent implements BaseAgent<TResult = any, TConfig e
   protected events: EventEmitter = new EventEmitter();
   protected status: AgentStatus = AgentStatus.IDLE;
   protected lastResult?: AgentResult<TResult>;
-  protected startTime: number = 0;
+  protected startTime = 0;
   protected lastError?: Error;
-  protected retryCount: number = 0;
+  protected retryCount = 0;
   
   /**
    * Constructeur de l'agent de base
@@ -70,7 +69,7 @@ export abstract class BaseMcpAgent implements BaseAgent<TResult = any, TConfig e
    * Méthode abstraite à implémenter par les agents spécifiques pour valider le contexte
    * @param context Contexte d'exécution à valider
    */
-  protected async validateAgentContext(context: AgentContext): Promise<boolean> {
+  protected async validateAgentContext(_context: AgentContext): Promise<boolean> {
     return true;
   }
   
@@ -226,7 +225,7 @@ export abstract class BaseMcpAgent implements BaseAgent<TResult = any, TConfig e
     // Backoff exponentiel avec jitter aléatoire
     const baseDelay = 1000; // 1 seconde
     const maxDelay = 30000; // 30 secondes
-    const expBackoff = Math.min(maxDelay, baseDelay * Math.pow(2, retryCount - 1));
+    const expBackoff = Math.min(maxDelay, baseDelay * 2 ** (retryCount - 1));
     const jitter = Math.random() * 0.3 * expBackoff; // 30% de jitter max
     
     return Math.floor(expBackoff + jitter);
@@ -349,5 +348,5 @@ export abstract class BaseMcpAgent implements BaseAgent<TResult = any, TConfig e
 /**
  * Exemple d'exports spécifiques à l'implémentation qui seront utilisés par les agents
  */
-export { AgentStatus } from ./typesstructure-agent';
-export type { AgentContext, AgentResult, AgentConfig, AgentMetadata } from ./typesstructure-agent';
+export { AgentStatus } from './typesstructure-agent'
+export type { AgentContext, AgentResult, AgentConfig, AgentMetadata } from './typesstructure-agent'

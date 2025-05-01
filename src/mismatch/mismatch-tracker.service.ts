@@ -1,26 +1,26 @@
+import * as path from 'path';
+import { promisify } from 'util';
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import { Cron } from '@nestjs/schedule';
 import { EventEmitter2 } from '@nestjs/event-emitter';
+import { InjectModel } from '@nestjs/mongoose';
+import { Cron } from '@nestjs/schedule';
 import * as fs from 'fs/promises';
-import * as path from 'path';
 import * as glob from 'glob';
-import { promisify } from 'util';
+import { Model } from 'mongoose';
 
-import { DocumentAnalyzer } from './analyzers/document-analyzer';
+import { NotificationService } from '../notification/notification.service';
 import { CodeAnalyzer } from './analyzers/code-analyzer';
+import { DocumentAnalyzer } from './analyzers/document-analyzer';
 import { ModelComparator } from './comparators/model-comparator';
 import { MismatchReporter } from './reporters/mismatch-reporter';
-import { NotificationService } from '../notification/notification.service';
 
 import {
-  MismatchResult,
-  MismatchReport,
-  MismatchRecord,
+  CodeModel,
   DocumentModel,
-  CodeModel
+  MismatchRecord,
+  MismatchReport,
+  MismatchResult
 } from './interfaces';
 
 const globPromise = promisify(glob);
@@ -40,7 +40,7 @@ export class MismatchTrackerService {
     private readonly mismatchReporter: MismatchReporter,
     private readonly notificationService: NotificationService,
     private readonly eventEmitter: EventEmitter2,
-    @InjectModel('MismatchRecord') private mismatchModel: Model<MismatchRecord>
+    @InjectModel('MismatchRecord') private _mismatchModel: Model<MismatchRecord>
   ) {
     this.cdcDir = this.configService.get<string>('CDC_DIRECTORY', 'cahier-des-charges');
     this.srcDir = this.configService.get<string>('SOURCE_DIRECTORY', 'src');
@@ -133,8 +133,8 @@ export class MismatchTrackerService {
       const existingMismatch = await this.mismatchModel.findOne({ 
         'details.documentPath': mismatch.details.documentPath,
         'details.codePath': mismatch.details.codePath,
-        'type': mismatch.type,
-        'status': { $ne: 'resolved' }
+        type: mismatch.type,
+        status: { $ne: 'resolved' }
       });
       
       if (existingMismatch) {

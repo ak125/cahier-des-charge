@@ -28,47 +28,49 @@ function executeCommand(command, showOutput = true) {
 const commands = {
   run: (agentName, ...args) => {
     const agentArgs = args.length > 0 ? args.join(' ') : '';
-    console.log(`Exécution de l'agent ${agentName}${agentArgs ? ' avec arguments: ' + agentArgs : ''}`);
-    
+    console.log(
+      `Exécution de l'agent ${agentName}${agentArgs ? ` avec arguments: ${agentArgs}` : ''}`
+    );
+
     // Vérifier si l'agent existe
     const agentFile = findAgentFile(agentName);
     if (!agentFile) {
       console.error(`Agent "${agentName}" introuvable.`);
       return { success: false };
     }
-    
+
     // Exécuter l'agent
     return executeCommand(`ts-node ${agentFile} ${agentArgs}`);
   },
-  
+
   status: () => {
     console.log('Vérification du statut des agents...');
     return executeCommand('node scripts/agent-status.js');
   },
-  
+
   list: () => {
     console.log('Liste des agents disponibles:');
     const agents = findAllAgents();
-    agents.forEach(agent => {
+    agents.forEach((agent) => {
       console.log(`- ${agent.name} (${agent.path})`);
     });
     return { success: true, agents };
   },
-  
+
   register: () => {
     console.log('Enregistrement des agents...');
     return executeCommand('node scripts/agent-runner.js register');
   },
-  
+
   verify: (path) => {
     console.log(`Vérification de l'agent pour: ${path}`);
     return executeCommand(`node agents/diff-verifier.ts --file=${path}`);
   },
-  
+
   'bullmq-orchestrator': () => {
     console.log('Démarrage du BullMQ orchestrator...');
     return executeCommand('ts-node agents/bullmq-orchestrator.ts', false);
-  }
+  },
 };
 
 // Rechercher un agent par son nom
@@ -78,14 +80,14 @@ function findAgentFile(agentName) {
   if (fs.existsSync(directPath)) {
     return directPath;
   }
-  
+
   // Recherche récursive
   function searchInDirectory(dir) {
     const files = fs.readdirSync(dir, { withFileTypes: true });
-    
+
     for (const file of files) {
       const filePath = path.join(dir, file.name);
-      
+
       if (file.isDirectory()) {
         const found = searchInDirectory(filePath);
         if (found) return found;
@@ -93,40 +95,44 @@ function findAgentFile(agentName) {
         return filePath;
       }
     }
-    
+
     return null;
   }
-  
+
   return searchInDirectory(AGENTS_DIR);
 }
 
 // Trouver tous les agents disponibles
 function findAllAgents() {
   const agents = [];
-  
+
   function searchInDirectory(dir, baseDir = AGENTS_DIR) {
     const files = fs.readdirSync(dir, { withFileTypes: true });
-    
+
     for (const file of files) {
       const filePath = path.join(dir, file.name);
-      
+
       if (file.isDirectory()) {
         searchInDirectory(filePath, baseDir);
       } else if (file.name.endsWith('.ts') || file.name.endsWith('.js')) {
         // Exclure les fichiers de test et les définitions de types
-        if (!file.name.includes('.spec.') && !file.name.includes('.test.') && !file.name.endsWith('.d.ts')) {
+        if (
+          !file.name.includes('.spec.') &&
+          !file.name.includes('.test.') &&
+          !file.name.endsWith('.d.ts')
+        ) {
           const relativePath = path.relative(baseDir, filePath);
           const name = file.name.replace(/\.(ts|js)$/, '');
           agents.push({
             name,
             path: relativePath,
-            fullPath: filePath
+            fullPath: filePath,
           });
         }
       }
     }
   }
-  
+
   searchInDirectory(AGENTS_DIR);
   return agents;
 }
@@ -136,22 +142,22 @@ function parseArgs() {
   const args = process.argv.slice(2);
   const command = args[0] || 'list';
   const params = args.slice(1);
-  
+
   return { command, params };
 }
 
 // Exécution principale
 function main() {
   const { command, params } = parseArgs();
-  
+
   if (!commands[command]) {
     console.error(`Commande inconnue: ${command}`);
     console.log('Commandes disponibles: ', Object.keys(commands).join(', '));
     process.exit(1);
   }
-  
+
   const result = commands[command](...params);
-  
+
   if (!result.success) {
     process.exit(1);
   }

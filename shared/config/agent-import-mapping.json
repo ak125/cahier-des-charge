@@ -1,7 +1,7 @@
 {
   "importMap": {
     "MysqlAnalyzer+optimizerAgent": "MysqlAnalyzerPlusOptimizerAgent",
-    "PhpAnalyzer.workerAgent": "PhpAnalyzerDotWorkerAgent", 
+    "PhpAnalyzer.workerAgent": "PhpAnalyzerDotWorkerAgent",
     "SqlAnalyzer+prismaBuilderAgent": "SqlAnalyzerPlusPrismaBuilderAgent",
     "McpVerifier.workerAgent": "McpVerifierDotWorkerAgent",
     "SeoMeta.generatorAgent": "SeoMetaDotGeneratorAgent",

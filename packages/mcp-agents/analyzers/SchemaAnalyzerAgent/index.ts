@@ -5,7 +5,4 @@
 
 import { SchemaAnalyzerAgent } from './SchemaAnalyzerAgent';
 
-export {
-  SchemaAnalyzerAgent,
-};
-
+export { SchemaAnalyzerAgent };

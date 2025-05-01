@@ -78,7 +78,7 @@ interface ValidationRule {
 export class ComponentGenerator implements BaseAgent, BusinessAgent, BaseAgent, BusinessAgent , GeneratorAgent{
   private outputDir: string;
 
-  constructor(outputDir: string = './src/generated') {
+  constructor(outputDir = './src/generated') {
     this.outputDir = outputDir;
   }
 
@@ -187,13 +187,13 @@ ${props.length > 0 ? '}' : ''}) => {
     };
   }
 
-  id: string = '';
-  type: string = '';
-  version: string = '1.0.0';
+  id = '';
+  type = '';
+  version = '1.0.0';
 
-  id: string = '';
-  type: string = '';
-  version: string = '1.0.0';
+  id = '';
+  type = '';
+  version = '1.0.0';
 };
 
 ${hasDefaultProps ? `${name}.defaultProps = {

@@ -10,11 +10,11 @@
  * - obsoletes.json: Fichiers et composants obsolètes ou non utilisés
  */
 
-import * as fs from 'fs-extra';
-import * as path from 'path';
-import * as glob from 'glob';
 import { exec } from 'child_process';
+import * as path from 'path';
 import { promisify } from 'util';
+import * as fs from 'fs-extra';
+import * as glob from 'glob';
 
 // Utilitaires
 const execAsync = promisify(exec);
@@ -174,7 +174,7 @@ async function analyzeFile(filePath: string): Promise<ProjectFile> {
     .filter(dep => dep && !dep.startsWith('.'));
   
   // Compter les utilisations
-  let usageCount = 0;
+  const usageCount = 0;
   try {
     const fileName = path.basename(filePath, path.extname(filePath));
     const { stdout } = await execAsync(DoDoDoDotgit grep -l "${fileName}" --exclude="${path.basename(filePath)}" | wc -l`);

@@ -1,5 +1,5 @@
-import { useParams, useLocation } from "@remix-run/react";
-import { generateCanonicalUrl } from "~/utils/seo";
+import { useLocation, useParams } from '@remix-run/react';
+import { generateCanonicalUrl } from '~/utils/seo';
 
 /**
  * Composant pour générer les URLs canoniques pour la page fiche
@@ -9,15 +9,13 @@ import { generateCanonicalUrl } from "~/utils/seo";
 export function CanonicalUrl() {
   const params = useParams();
   const location = useLocation();
-  
+
   // Construction de l'URL canonique
   const baseUrl = `https://${window.location.hostname}`;
   const path = `/fiche/${params.id}`;
-  
+
   // Génération de l'URL canonique complète
   const canonicalUrl = generateCanonicalUrl(baseUrl, path);
-  
-  return (
-    <link rel="canonical" href={canonicalUrl} />
-  );
+
+  return <link rel="canonical" href={canonicalUrl} />;
 }

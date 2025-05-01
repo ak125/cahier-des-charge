@@ -5,17 +5,17 @@
  * pour s'assurer qu'ils respectent les bonnes pratiques et les standards de qualité.
  */
 
-import fs from 'fs-extra';
-import path from 'path';
-import { glob } from 'glob';
-import { Logger } from '@nestjs/common';
 import { execSync } from 'child_process';
-import { MCPManifestManager } from '.DotMcpManifestManager';
-import * as ts from 'typescript';
+import path from 'path';
 import { parse as babelParse } from '@babel/parser';
 import traverse from '@babel/traverse';
-import { createLocalAiService } from '../packages/shared/ai/local-ai.service';
+import { Logger } from '@nestjs/common';
+import fs from 'fs-extra';
+import { glob } from 'glob';
+import * as ts from 'typescript';
 import { BaseAgent, BusinessAgent } from '../core/interfaces/BaseAgent';
+import { createLocalAiService } from '../packages/shared/ai/local-ai.service';
+import { MCPManifestManager } from '.DotMcpManifestManager';
 
 
 // Types

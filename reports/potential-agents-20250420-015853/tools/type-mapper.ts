@@ -2,24 +2,24 @@
 
 /**
  * Type Mapper - Agent 4
- * 
+ *
  * Utilitaire avancé pour cartographier les types de données entre différents systèmes
  * Prend en charge la conversion entre :
  * - MySQL -> PostgreSQL
  * - MySQL/PostgreSQL -> Prisma Schema
  * - Détection des cas problématiques et suggestion d'améliorations
- * 
- * Usage: 
+ *
+ * Usage:
  * ts-node type-mapper.ts --input=schema.sql --output=type_mapping.json --format=json
  * ts-node type-mapper.ts --analyze-schema=my_database --output=prisma_schema.prisma
  */
 
 import * as fs from 'fs';
 import * as path from 'path';
+import chalk from 'chalk';
 import { Command } from 'commander';
 import * as mysql from 'mysql2/promise';
 import * as pg from 'pg';
-import chalk from 'chalk';
 import { parse as parseSQL } from 'sql-parser-cst';
 import * as z from 'zod';
 
@@ -41,7 +41,9 @@ type TypeMapping = z.infer<typeof TypeMappingSchema>;
 const program = new Command();
 program
   .version('1.0.0')
-  .description('Outil avancé de cartographie et conversion de types entre MySQL, PostgreSQL et Prisma')
+  .description(
+    'Outil avancé de cartographie et conversion de types entre MySQL, PostgreSQL et Prisma'
+  )
   .option('-i, --input <path>', 'Fichier SQL ou JSON à analyser')
   .option('-o, --output <path>', 'Chemin du fichier de sortie')
   .option('-f, --format <format>', 'Format de sortie (json, prisma, markdown)', 'json')
@@ -54,7 +56,7 @@ program
   .option('-a, --analyze-schema <schema>', 'Analyser directement un schéma de base de données')
   .option('-v, --verbose', 'Mode verbeux')
   .option('-w, --warnings-only', 'Afficher uniquement les avertissements')
-  .option('--with-suggestions', 'Inclure des suggestions d\'amélioration', true)
+  .option('--with-suggestions', "Inclure des suggestions d'amélioration", true)
   .option('--with-zod', 'Générer des schémas Zod pour la validation', false)
   .option('--with-typescript', 'Générer des types TypeScript', false)
   .parse(process.argv);
@@ -64,46 +66,46 @@ const options = program.opts();
 // Base de données de mapping des types
 const typeMapping: Record<string, Record<string, string>> = {
   // Types numériques
-  'TINYINT': { 'postgres': 'SMALLINT', 'prisma': 'Int @db.SmallInt' },
-  'TINYINT(1)': { 'postgres': 'BOOLEAN', 'prisma': 'Boolean' },
-  'SMALLINT': { 'postgres': 'SMALLINT', 'prisma': 'Int @db.SmallInt' },
-  'MEDIUMINT': { 'postgres': 'INTEGER', 'prisma': 'Int' },
-  'INT': { 'postgres': 'INTEGER', 'prisma': 'Int' },
-  'BIGINT': { 'postgres': 'BIGINT', 'prisma': 'BigInt @db.BigInt' },
-  'FLOAT': { 'postgres': 'REAL', 'prisma': 'Float @db.Real' },
-  'DOUBLE': { 'postgres': 'DOUBLE PRECISION', 'prisma': 'Float' },
-  'DECIMAL': { 'postgres': 'NUMERIC', 'prisma': 'Decimal @db.Decimal' },
-  
+  TINYINT: { postgres: 'SMALLINT', prisma: 'Int @db.SmallInt' },
+  'TINYINT(1)': { postgres: 'BOOLEAN', prisma: 'Boolean' },
+  SMALLINT: { postgres: 'SMALLINT', prisma: 'Int @db.SmallInt' },
+  MEDIUMINT: { postgres: 'INTEGER', prisma: 'Int' },
+  INT: { postgres: 'INTEGER', prisma: 'Int' },
+  BIGINT: { postgres: 'BIGINT', prisma: 'BigInt @db.BigInt' },
+  FLOAT: { postgres: 'REAL', prisma: 'Float @db.Real' },
+  DOUBLE: { postgres: 'DOUBLE PRECISION', prisma: 'Float' },
+  DECIMAL: { postgres: 'NUMERIC', prisma: 'Decimal @db.Decimal' },
+
   // Types textuels
-  'CHAR': { 'postgres': 'CHAR', 'prisma': 'String @db.Char' },
-  'VARCHAR': { 'postgres': 'VARCHAR', 'prisma': 'String @db.VarChar' },
-  'TINYTEXT': { 'postgres': 'TEXT', 'prisma': 'String @db.Text' },
-  'TEXT': { 'postgres': 'TEXT', 'prisma': 'String @db.Text' },
-  'MEDIUMTEXT': { 'postgres': 'TEXT', 'prisma': 'String @db.Text' },
-  'LONGTEXT': { 'postgres': 'TEXT', 'prisma': 'String @db.Text' },
-  
+  CHAR: { postgres: 'CHAR', prisma: 'String @db.Char' },
+  VARCHAR: { postgres: 'VARCHAR', prisma: 'String @db.VarChar' },
+  TINYTEXT: { postgres: 'TEXT', prisma: 'String @db.Text' },
+  TEXT: { postgres: 'TEXT', prisma: 'String @db.Text' },
+  MEDIUMTEXT: { postgres: 'TEXT', prisma: 'String @db.Text' },
+  LONGTEXT: { postgres: 'TEXT', prisma: 'String @db.Text' },
+
   // Types binaires
-  'BINARY': { 'postgres': 'BYTEA', 'prisma': 'Bytes' },
-  'VARBINARY': { 'postgres': 'BYTEA', 'prisma': 'Bytes' },
-  'TINYBLOB': { 'postgres': 'BYTEA', 'prisma': 'Bytes' },
-  'BLOB': { 'postgres': 'BYTEA', 'prisma': 'Bytes' },
-  'MEDIUMBLOB': { 'postgres': 'BYTEA', 'prisma': 'Bytes' },
-  'LONGBLOB': { 'postgres': 'BYTEA', 'prisma': 'Bytes' },
-  
+  BINARY: { postgres: 'BYTEA', prisma: 'Bytes' },
+  VARBINARY: { postgres: 'BYTEA', prisma: 'Bytes' },
+  TINYBLOB: { postgres: 'BYTEA', prisma: 'Bytes' },
+  BLOB: { postgres: 'BYTEA', prisma: 'Bytes' },
+  MEDIUMBLOB: { postgres: 'BYTEA', prisma: 'Bytes' },
+  LONGBLOB: { postgres: 'BYTEA', prisma: 'Bytes' },
+
   // Types temporels
-  'DATE': { 'postgres': 'DATE', 'prisma': 'DateTime @db.Date' },
-  'TIME': { 'postgres': 'TIME', 'prisma': 'DateTime @db.Time' },
-  'DATETIME': { 'postgres': 'TIMESTAMP', 'prisma': 'DateTime' },
-  'TIMESTAMP': { 'postgres': 'TIMESTAMP', 'prisma': 'DateTime' },
-  'YEAR': { 'postgres': 'SMALLINT', 'prisma': 'Int @db.SmallInt' },
-  
+  DATE: { postgres: 'DATE', prisma: 'DateTime @db.Date' },
+  TIME: { postgres: 'TIME', prisma: 'DateTime @db.Time' },
+  DATETIME: { postgres: 'TIMESTAMP', prisma: 'DateTime' },
+  TIMESTAMP: { postgres: 'TIMESTAMP', prisma: 'DateTime' },
+  YEAR: { postgres: 'SMALLINT', prisma: 'Int @db.SmallInt' },
+
   // Types JSON
-  'JSON': { 'postgres': 'JSONB', 'prisma': 'Json' },
-  
+  JSON: { postgres: 'JSONB', prisma: 'Json' },
+
   // Types spéciaux
-  'ENUM': { 'postgres': 'TEXT', 'prisma': 'String @db.Text' },
-  'SET': { 'postgres': 'TEXT[]', 'prisma': 'String[]' },
-  'GEOMETRY': { 'postgres': 'GEOMETRY', 'prisma': 'Unsupported("GEOMETRY")' },
+  ENUM: { postgres: 'TEXT', prisma: 'String @db.Text' },
+  SET: { postgres: 'TEXT[]', prisma: 'String[]' },
+  GEOMETRY: { postgres: 'GEOMETRY', prisma: 'Unsupported("GEOMETRY")' },
 };
 
 // Patrons problématiques à détecter
@@ -111,35 +113,35 @@ const problematicPatterns = [
   {
     pattern: /FLOAT|DOUBLE/i,
     forFinancial: true,
-    warning: "Type à virgule flottante utilisé pour des données financières",
-    suggestion: "Utiliser NUMERIC(precision,scale) pour une précision exacte"
+    warning: 'Type à virgule flottante utilisé pour des données financières',
+    suggestion: 'Utiliser NUMERIC(precision,scale) pour une précision exacte',
   },
   {
     pattern: /ENUM/i,
-    warning: "Les ENUM MySQL ne sont pas nativement supportés par PostgreSQL",
-    suggestion: "Créer un type ENUM en Prisma ou utiliser une table de référence"
+    warning: 'Les ENUM MySQL ne sont pas nativement supportés par PostgreSQL',
+    suggestion: 'Créer un type ENUM en Prisma ou utiliser une table de référence',
   },
   {
     pattern: /SET/i,
-    warning: "Les types SET MySQL ne sont pas supportés par PostgreSQL",
-    suggestion: "Utiliser un tableau (TEXT[]) ou une table de jointure"
+    warning: 'Les types SET MySQL ne sont pas supportés par PostgreSQL',
+    suggestion: 'Utiliser un tableau (TEXT[]) ou une table de jointure',
   },
   {
     pattern: /UNSIGNED/i,
-    warning: "Les entiers UNSIGNED ne sont pas supportés par PostgreSQL",
-    suggestion: "Utiliser un type de taille supérieure (ex: INT -> BIGINT)"
+    warning: 'Les entiers UNSIGNED ne sont pas supportés par PostgreSQL',
+    suggestion: 'Utiliser un type de taille supérieure (ex: INT -> BIGINT)',
   },
   {
     pattern: /JSON/i,
-    warning: "Colonne stockant probablement du JSON sans validation de structure",
-    suggestion: "Utiliser JSONB avec contraintes ou définir un zod schema"
+    warning: 'Colonne stockant probablement du JSON sans validation de structure',
+    suggestion: 'Utiliser JSONB avec contraintes ou définir un zod schema',
   },
   {
     pattern: /TEXT|BLOB/i,
     forPrimaryKey: true,
-    warning: "Utilisation de TEXT/BLOB comme clé primaire",
-    suggestion: "Utiliser INT, BIGINT ou UUID comme clé primaire pour de meilleures performances"
-  }
+    warning: 'Utilisation de TEXT/BLOB comme clé primaire',
+    suggestion: 'Utiliser INT, BIGINT ou UUID comme clé primaire pour de meilleures performances',
+  },
 ];
 
 // Fonction principale
@@ -157,7 +159,9 @@ async function main() {
       console.log(chalk.green(`Analyse directe du schéma: ${options.analyzeSchema}`));
       mappingData = await analyzeDatabaseSchema(options.analyzeSchema);
     } else {
-      console.error(chalk.red('Erreur: Vous devez spécifier un fichier d\'entrée ou un schéma à analyser'));
+      console.error(
+        chalk.red("Erreur: Vous devez spécifier un fichier d'entrée ou un schéma à analyser")
+      );
       process.exit(1);
     }
 
@@ -180,9 +184,8 @@ async function main() {
     console.log(`Avertissements détectés: ${stats.warnings}`);
     console.log(`Types problématiques: ${stats.problematicTypes.join(', ')}`);
     console.log(chalk.blue('=========================================='));
-
   } catch (error) {
-    console.error(chalk.red('Erreur lors de l\'exécution:'), error);
+    console.error(chalk.red("Erreur lors de l'exécution:"), error);
     process.exit(1);
   }
 }
@@ -204,28 +207,28 @@ async function processInputFile(filePath: string): Promise<TypeMapping> {
 // Parser un fichier SQL pour extraire les définitions de tables et colonnes
 function parseSQLFile(sqlContent: string): TypeMapping {
   const mapping: TypeMapping = {};
-  
+
   try {
     // Utilisation de sql-parser-cst pour une analyse plus robuste
     const ast = parseSQL(sqlContent);
-    
+
     // Pour chaque CREATE TABLE dans le SQL
     const createTableStatements = findCreateTableStatements(ast);
-    
+
     for (const statement of createTableStatements) {
       const tableName = extractTableName(statement);
       const columns = extractColumns(statement);
-      
+
       for (const column of columns) {
         const columnDef = analyzeColumnDefinition(column);
         const key = `${tableName}.${columnDef.name}`;
-        
+
         mapping[key] = {
           mysql: columnDef.mysqlType,
           postgres: mapToPostgresType(columnDef),
-          prisma: mapToPrismaType(columnDef)
+          prisma: mapToPrismaType(columnDef),
         };
-        
+
         // Ajouter des avertissements si nécessaire
         const warnings = detectProblematicPatterns(columnDef);
         if (warnings.warning) {
@@ -236,10 +239,10 @@ function parseSQLFile(sqlContent: string): TypeMapping {
         }
       }
     }
-    
+
     return mapping;
   } catch (error) {
-    console.error(chalk.red('Erreur lors de l\'analyse du SQL:'), error);
+    console.error(chalk.red("Erreur lors de l'analyse du SQL:"), error);
     return mapping;
   }
 }
@@ -252,7 +255,7 @@ function findCreateTableStatements(ast: any): any[] {
 
 function extractTableName(statement: any): string {
   // Simplifié pour l'exemple
-  return "table_name";
+  return 'table_name';
 }
 
 function extractColumns(statement: any): any[] {
@@ -263,37 +266,37 @@ function extractColumns(statement: any): any[] {
 function analyzeColumnDefinition(columnDef: any): any {
   // Simplifié pour l'exemple
   return {
-    name: "column_name",
-    mysqlType: "VARCHAR(255)",
+    name: 'column_name',
+    mysqlType: 'VARCHAR(255)',
     nullable: false,
     primaryKey: false,
-    defaultValue: null
+    defaultValue: null,
   };
 }
 
 // Analyser directement un schéma de base de données
 async function analyzeDatabaseSchema(schemaName: string): Promise<TypeMapping> {
   const mapping: TypeMapping = {};
-  
+
   if (options.type === 'mysql') {
     const connection = await mysql.createConnection({
       host: options.host,
       port: options.port ? parseInt(options.port) : 3306,
       user: options.user,
       password: options.password,
-      database: schemaName
+      database: schemaName,
     });
-    
+
     try {
       // Récupérer toutes les tables
       const [tables] = await connection.query(
         `SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = ?`,
         [schemaName]
       );
-      
+
       for (const table of tables as any[]) {
         const tableName = table.TABLE_NAME;
-        
+
         // Récupérer les colonnes pour chaque table
         const [columns] = await connection.query(
           `SELECT COLUMN_NAME, COLUMN_TYPE, IS_NULLABLE, COLUMN_KEY, COLUMN_DEFAULT, EXTRA 
@@ -302,33 +305,33 @@ async function analyzeDatabaseSchema(schemaName: string): Promise<TypeMapping> {
            ORDER BY ORDINAL_POSITION`,
           [schemaName, tableName]
         );
-        
+
         for (const column of columns as any[]) {
           const key = `${tableName}.${column.COLUMN_NAME}`;
           const mysqlType = column.COLUMN_TYPE.toUpperCase();
-          
+
           const isPrimaryKey = column.COLUMN_KEY === 'PRI';
           const isNullable = column.IS_NULLABLE === 'YES';
           const hasDefault = column.COLUMN_DEFAULT !== null;
           const isAutoIncrement = column.EXTRA.includes('auto_increment');
-          
+
           // Mappage vers PostgreSQL et Prisma
           const postgresType = mapMySQLToPostgreSQL(mysqlType, isPrimaryKey, isAutoIncrement);
           const prismaType = mapToFullPrismaType(
-            mysqlType, 
-            isPrimaryKey, 
-            isNullable, 
-            hasDefault, 
+            mysqlType,
+            isPrimaryKey,
+            isNullable,
+            hasDefault,
             column.COLUMN_DEFAULT,
             isAutoIncrement
           );
-          
+
           mapping[key] = {
             mysql: mysqlType,
             postgres: postgresType,
-            prisma: prismaType
+            prisma: prismaType,
           };
-          
+
           // Détection des patterns problématiques
           const columnInfo = {
             name: column.COLUMN_NAME,
@@ -336,9 +339,9 @@ async function analyzeDatabaseSchema(schemaName: string): Promise<TypeMapping> {
             nullable: isNullable,
             primaryKey: isPrimaryKey,
             defaultValue: column.COLUMN_DEFAULT,
-            autoIncrement: isAutoIncrement
+            autoIncrement: isAutoIncrement,
           };
-          
+
           const warnings = detectProblematicPatterns(columnInfo);
           if (warnings.warning) {
             mapping[key].warning = warnings.warning;
@@ -357,20 +360,20 @@ async function analyzeDatabaseSchema(schemaName: string): Promise<TypeMapping> {
       port: options.port ? parseInt(options.port) : 5432,
       user: options.user,
       password: options.password,
-      database: schemaName
+      database: schemaName,
     });
-    
+
     try {
       await client.connect();
-      
+
       // Récupérer toutes les tables
       const tablesResult = await client.query(
         `SELECT tablename FROM pg_catalog.pg_tables WHERE schemaname = 'public'`
       );
-      
+
       for (const table of tablesResult.rows) {
         const tableName = table.tablename;
-        
+
         // Récupérer les colonnes pour chaque table
         const columnsResult = await client.query(
           `SELECT column_name, data_type, udt_name, character_maximum_length, 
@@ -385,19 +388,19 @@ async function analyzeDatabaseSchema(schemaName: string): Promise<TypeMapping> {
            ORDER BY ordinal_position`,
           [tableName]
         );
-        
+
         for (const column of columnsResult.rows) {
           const key = `${tableName}.${column.column_name}`;
           const pgType = formatPostgresType(column);
-          
+
           // Conversion vers Prisma
           const prismaType = mapPostgresToPrismaType(column);
-          
+
           mapping[key] = {
             postgres: pgType,
-            prisma: prismaType
+            prisma: prismaType,
           };
-          
+
           // Nous n'avons pas les types MySQL ici, donc on n'ajoute pas d'avertissements spécifiques MySQL
         }
       }
@@ -407,52 +410,59 @@ async function analyzeDatabaseSchema(schemaName: string): Promise<TypeMapping> {
   } else {
     throw new Error(`Type de base de données non pris en charge: ${options.type}`);
   }
-  
+
   return mapping;
 }
 
 // Formater un type PostgreSQL complet à partir des métadonnées de colonne
 function formatPostgresType(column: any): string {
   let type = column.data_type.toUpperCase();
-  
+
   // Ajouter la taille pour les types qui le supportent
-  if (column.character_maximum_length && ['CHARACTER', 'CHARACTER VARYING', 'VARCHAR', 'CHAR'].includes(type)) {
+  if (
+    column.character_maximum_length &&
+    ['CHARACTER', 'CHARACTER VARYING', 'VARCHAR', 'CHAR'].includes(type)
+  ) {
     type += `(${column.character_maximum_length})`;
   }
-  
+
   return type;
 }
 
 // Mapper un type MySQL vers PostgreSQL
-function mapMySQLToPostgreSQL(mysqlType: string, isPrimaryKey: boolean, isAutoIncrement: boolean): string {
+function mapMySQLToPostgreSQL(
+  mysqlType: string,
+  isPrimaryKey: boolean,
+  isAutoIncrement: boolean
+): string {
   // Extraire le type de base (sans les paramètres)
   const baseType = mysqlType.split('(')[0].trim();
-  
+
   // Cas particuliers
   if (baseType === 'TINYINT' && mysqlType.includes('(1)')) {
     return 'BOOLEAN';
   }
-  
+
   if (isPrimaryKey && isAutoIncrement) {
     if (baseType === 'BIGINT') {
       return 'BIGSERIAL';
     }
     return 'SERIAL';
   }
-  
+
   // Utiliser le mapping standard
   if (typeMapping[baseType] && typeMapping[baseType].postgres) {
     const pgType = typeMapping[baseType].postgres;
-    
+
     // Ajouter les paramètres si nécessaire (ex: VARCHAR(255))
     const match = mysqlType.match(/\(([^)]+)\)/);
     if (match && ['VARCHAR', 'CHAR', 'NUMERIC', 'DECIMAL'].includes(pgType)) {
       return `${pgType}(${match[1]})`;
     }
-    
+
     return pgType;
   }
-  
+
   // Type non reconnu, conserver tel quel avec un avertissement
   console.warn(chalk.yellow(`Type MySQL non reconnu: ${mysqlType}, conservé tel quel`));
   return mysqlType;
@@ -460,19 +470,19 @@ function mapMySQLToPostgreSQL(mysqlType: string, isPrimaryKey: boolean, isAutoIn
 
 // Mapper un type vers un type Prisma complet (avec modificateurs)
 function mapToFullPrismaType(
-  mysqlType: string, 
-  isPrimaryKey: boolean, 
-  isNullable: boolean, 
-  hasDefault: boolean, 
+  mysqlType: string,
+  isPrimaryKey: boolean,
+  isNullable: boolean,
+  hasDefault: boolean,
   defaultValue: string | null,
   isAutoIncrement: boolean
 ): string {
   // Extraire le type de base (sans les paramètres)
   const baseType = mysqlType.split('(')[0].trim();
-  
+
   // Type de base Prisma
   let prismaType = '';
-  
+
   // Cas particulier pour TINYINT(1) qui est généralement un booléen
   if (baseType === 'TINYINT' && mysqlType.includes('(1)')) {
     prismaType = 'Boolean';
@@ -482,20 +492,20 @@ function mapToFullPrismaType(
     // Type non reconnu
     prismaType = `String @db.${mysqlType}`;
   }
-  
+
   // Ajouter les modificateurs
-  let modifiers = [];
-  
+  const modifiers = [];
+
   // Clé primaire
   if (isPrimaryKey) {
     modifiers.push('@id');
   }
-  
+
   // Auto-increment
   if (isAutoIncrement) {
     modifiers.push('@default(autoincrement())');
   }
-  
+
   // Valeur par défaut
   if (hasDefault && defaultValue !== null) {
     // Traiter les différents types de valeurs par défaut
@@ -517,19 +527,21 @@ function mapToFullPrismaType(
       modifiers.push(`@default(${defaultValue})`);
     }
   }
-  
+
   // Ajouter @updatedAt pour les champs qui semblent être des timestamps de mise à jour
-  if ((baseType === 'TIMESTAMP' || baseType === 'DATETIME') && 
-      mysqlType.includes('ON UPDATE CURRENT_TIMESTAMP')) {
+  if (
+    (baseType === 'TIMESTAMP' || baseType === 'DATETIME') &&
+    mysqlType.includes('ON UPDATE CURRENT_TIMESTAMP')
+  ) {
     modifiers.push('@updatedAt');
   }
-  
+
   // Ajouter le db. mapping avec les contraintes de taille si présentes
   const match = mysqlType.match(/\(([^)]+)\)/);
   if (match && !prismaType.includes('@db.')) {
     // Extraire le type Prisma de base
     const basePrismaType = prismaType.split(' ')[0];
-    
+
     if (['VARCHAR', 'CHAR'].includes(baseType)) {
       // Pour les types textuels avec taille
       prismaType = `${basePrismaType} @db.${baseType}(${match[1]})`;
@@ -538,7 +550,7 @@ function mapToFullPrismaType(
       prismaType = `${basePrismaType} @db.Decimal(${match[1]})`;
     }
   }
-  
+
   // Combiner le type avec les modificateurs
   let finalType = prismaType;
   if (modifiers.length > 0) {
@@ -550,7 +562,7 @@ function mapToFullPrismaType(
       finalType += ' ' + modifiers.join(' ');
     }
   }
-  
+
   // Ajouter le point d'interrogation pour les champs nullable
   if (isNullable && !finalType.startsWith('Json')) {
     // Insérer le ? après le type de base, avant les modificateurs
@@ -560,7 +572,7 @@ function mapToFullPrismaType(
       finalType += '?';
     }
   }
-  
+
   return finalType;
 }
 
@@ -569,9 +581,9 @@ function mapPostgresToPrismaType(column: any): string {
   const type = column.data_type.toUpperCase();
   const udtName = column.udt_name;
   const isNullable = column.is_nullable === 'YES';
-  
+
   let prismaType = '';
-  
+
   // Mapping des types PostgreSQL vers Prisma
   switch (type) {
     case 'SMALLINT':
@@ -647,18 +659,19 @@ function mapPostgresToPrismaType(column: any): string {
       // Type non reconnu
       prismaType = `Unsupported("${type}")`;
   }
-  
+
   // Attributs spéciaux (@id, @default, etc.)
-  let attributes = [];
-  
+  const attributes = [];
+
   // Détecter si c'est une clé primaire
-  const isPrimaryKey = column.column_default && 
-                       column.column_default.includes('nextval') && 
-                       column.column_name === 'id';
-  
+  const isPrimaryKey =
+    column.column_default &&
+    column.column_default.includes('nextval') &&
+    column.column_name === 'id';
+
   if (isPrimaryKey) {
     attributes.push('@id');
-    
+
     // Auto-increment
     if (column.column_default && column.column_default.includes('nextval')) {
       if (type === 'BIGINT') {
@@ -668,7 +681,7 @@ function mapPostgresToPrismaType(column: any): string {
       }
     }
   }
-  
+
   // Valeur par défaut
   if (column.column_default && !column.column_default.includes('nextval')) {
     if (column.column_default === 'CURRENT_TIMESTAMP') {
@@ -684,12 +697,12 @@ function mapPostgresToPrismaType(column: any): string {
       attributes.push(`@default(${column.column_default})`);
     }
   }
-  
+
   // Generation expression for updatedAt
   if (column.generation_expression && column.generation_expression.includes('CURRENT_TIMESTAMP')) {
     attributes.push('@updatedAt');
   }
-  
+
   // Ajouter les attributs au type de base
   let finalType = prismaType;
   if (attributes.length > 0) {
@@ -701,7 +714,7 @@ function mapPostgresToPrismaType(column: any): string {
       finalType += ' ' + attributes.join(' ');
     }
   }
-  
+
   // Ajouter le ? pour les champs nullables
   if (isNullable && !finalType.startsWith('Json')) {
     if (finalType.includes(' @')) {
@@ -710,53 +723,68 @@ function mapPostgresToPrismaType(column: any): string {
       finalType += '?';
     }
   }
-  
+
   return finalType;
 }
 
 // Mapper un type vers PostgreSQL en fonction d'une définition de colonne
 function mapToPostgresType(columnDef: any): string {
   // Implémentation simplifiée
-  return "TEXT";
+  return 'TEXT';
 }
 
 // Mapper un type vers Prisma en fonction d'une définition de colonne
 function mapToPrismaType(columnDef: any): string {
   // Implémentation simplifiée
-  return "String";
+  return 'String';
 }
 
 // Détecter les patterns problématiques dans une définition de colonne
 function detectProblematicPatterns(columnDef: any): { warning?: string; suggestion?: string } {
   const result: { warning?: string; suggestion?: string } = {};
-  
+
   for (const pattern of problematicPatterns) {
     // Vérifier si le pattern s'applique à cette colonne
     if (pattern.pattern.test(columnDef.mysqlType)) {
       // Vérifier les conditions spéciales
       if (pattern.forPrimaryKey && !columnDef.primaryKey) continue;
       if (pattern.forFinancial && !isLikelyFinancialColumn(columnDef.name)) continue;
-      
+
       // Ajouter l'avertissement et la suggestion
       result.warning = pattern.warning;
       result.suggestion = pattern.suggestion;
       break;
     }
   }
-  
+
   return result;
 }
 
 // Vérifier si une colonne est probablement financière
 function isLikelyFinancialColumn(columnName: string): boolean {
-  const financialTerms = ['price', 'amount', 'cost', 'fee', 'tax', 'salary', 'budget', 'balance', 'payment', 'total'];
+  const financialTerms = [
+    'price',
+    'amount',
+    'cost',
+    'fee',
+    'tax',
+    'salary',
+    'budget',
+    'balance',
+    'payment',
+    'total',
+  ];
   const lowerName = columnName.toLowerCase();
-  
-  return financialTerms.some(term => lowerName.includes(term));
+
+  return financialTerms.some((term) => lowerName.includes(term));
 }
 
 // Générer un fichier de sortie dans le format demandé
-async function generateOutput(mappingData: TypeMapping, outputPath: string, format: string): Promise<void> {
+async function generateOutput(
+  mappingData: TypeMapping,
+  outputPath: string,
+  format: string
+): Promise<void> {
   if (format === 'json') {
     fs.writeFileSync(outputPath, JSON.stringify(mappingData, null, 2));
   } else if (format === 'prisma') {
@@ -789,31 +817,31 @@ generator client {
 
   // Organiser les colonnes par table
   const tableMap: Record<string, Record<string, MappingEntry>> = {};
-  
+
   for (const [key, entry] of Object.entries(mappingData)) {
     const [tableName, columnName] = key.split('.');
-    
+
     if (!tableMap[tableName]) {
       tableMap[tableName] = {};
     }
-    
+
     tableMap[tableName][columnName] = entry;
   }
-  
+
   // Générer un modèle Prisma pour chaque table
   for (const [tableName, columns] of Object.entries(tableMap)) {
     // Convertir le nom de table en PascalCase pour le modèle Prisma
     const modelName = tableName
       .split('_')
-      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
       .join('');
-    
+
     schema += `model ${modelName} {\n`;
-    
+
     // Ajouter chaque colonne
     for (const [columnName, entry] of Object.entries(columns)) {
       let line = `  ${columnName} ${entry.prisma}`;
-      
+
       // Ajouter des commentaires pour les avertissements
       if (entry.warning) {
         line += ` // ${entry.warning}`;
@@ -821,15 +849,15 @@ generator client {
           line += ` - ${entry.suggestion}`;
         }
       }
-      
+
       schema += line + '\n';
     }
-    
+
     // Ajouter une relation @@map pour lier au nom de table original
     schema += `\n  @@map("${tableName}")\n`;
     schema += '}\n\n';
   }
-  
+
   return schema;
 }
 
@@ -848,49 +876,49 @@ avec des mises en évidence des patrons problématiques nécessitant une attenti
 
   // Organiser les colonnes par table
   const tableMap: Record<string, Record<string, MappingEntry>> = {};
-  
+
   for (const [key, entry] of Object.entries(mappingData)) {
     const [tableName, columnName] = key.split('.');
-    
+
     if (!tableMap[tableName]) {
       tableMap[tableName] = {};
     }
-    
+
     tableMap[tableName][columnName] = entry;
   }
-  
+
   // Ajouter une section pour chaque table
   for (const [tableName, columns] of Object.entries(tableMap)) {
     markdown += `## Table: ${tableName}\n\n`;
     markdown += `| Colonne | Type MySQL | Type PostgreSQL | Type Prisma | Problèmes potentiels |\n`;
     markdown += `|---------|------------|-----------------|-------------|---------------------|\n`;
-    
+
     for (const [columnName, entry] of Object.entries(columns)) {
-      const issues = entry.warning 
+      const issues = entry.warning
         ? `⚠️ ${entry.warning}${entry.suggestion ? '<br />✅ ' + entry.suggestion : ''}`
         : '';
-      
+
       markdown += `| ${columnName} | ${entry.mysql} | ${entry.postgres} | ${entry.prisma} | ${issues} |\n`;
     }
-    
+
     markdown += `\n`;
   }
-  
+
   // Ajouter les statistiques
   const stats = generateStatistics(mappingData);
-  
+
   markdown += `## Résumé des problèmes détectés\n\n`;
   markdown += `- **Tables analysées**: ${stats.tables}\n`;
   markdown += `- **Colonnes analysées**: ${stats.columns}\n`;
   markdown += `- **Avertissements détectés**: ${stats.warnings}\n\n`;
-  
+
   if (stats.problematicTypes.length > 0) {
     markdown += `### Types problématiques fréquents\n\n`;
     for (const typeProblem of stats.problematicByType) {
       markdown += `- **${typeProblem.type}**: ${typeProblem.count} occurrences - ${typeProblem.warning}\n`;
     }
   }
-  
+
   return markdown;
 }
 
@@ -900,20 +928,20 @@ function generateStatistics(mappingData: TypeMapping): any {
   let columns = 0;
   let warnings = 0;
   const problematicTypes = new Set<string>();
-  const typeWarnings: Record<string, { count: number, warning: string }> = {};
-  
+  const typeWarnings: Record<string, { count: number; warning: string }> = {};
+
   for (const [key, entry] of Object.entries(mappingData)) {
     const [tableName] = key.split('.');
     tables.add(tableName);
     columns++;
-    
+
     if (entry.warning) {
       warnings++;
-      
+
       // Collecter les types problématiques
       const mysqlType = entry.mysql.split('(')[0].trim();
       problematicTypes.add(mysqlType);
-      
+
       // Compter les occurrences par type et avertissement
       const warningKey = `${mysqlType}:${entry.warning}`;
       if (!typeWarnings[warningKey]) {
@@ -922,22 +950,22 @@ function generateStatistics(mappingData: TypeMapping): any {
       typeWarnings[warningKey].count++;
     }
   }
-  
+
   // Trier les problèmes par fréquence
   const problematicByType = Object.entries(typeWarnings)
     .map(([key, value]) => ({
       type: key.split(':')[0],
       count: value.count,
-      warning: value.warning
+      warning: value.warning,
     }))
     .sort((a, b) => b.count - a.count);
-  
+
   return {
     tables: tables.size,
     columns,
     warnings,
     problematicTypes: Array.from(problematicTypes),
-    problematicByType
+    problematicByType,
   };
 }
 

@@ -12,11 +12,7 @@
     "status": "pending",
     "category": "core",
     "critical": true,
-    "phpDependencies": [
-      "auth.php",
-      "profile.php",
-      "user_manager.php"
-    ]
+    "phpDependencies": ["auth.php", "profile.php", "user_manager.php"]
   },
   {
     "table": "commandes",
@@ -32,10 +28,7 @@
     "blocked_by": ["User", "Customer", "Status"],
     "category": "business",
     "critical": true,
-    "phpDependencies": [
-      "order_process.php",
-      "invoice_generator.php"
-    ]
+    "phpDependencies": ["order_process.php", "invoice_generator.php"]
   },
   {
     "table": "produits",
@@ -51,11 +44,7 @@
     "blocked_by": ["Category", "Supplier"],
     "category": "core",
     "critical": true,
-    "phpDependencies": [
-      "product_catalog.php",
-      "stock_manager.php",
-      "admin/product_editor.php"
-    ]
+    "phpDependencies": ["product_catalog.php", "stock_manager.php", "admin/product_editor.php"]
   },
   {
     "table": "categories",
@@ -69,10 +58,7 @@
     "status": "pending",
     "category": "reference",
     "critical": false,
-    "phpDependencies": [
-      "product_catalog.php",
-      "admin/category_manager.php"
-    ]
+    "phpDependencies": ["product_catalog.php", "admin/category_manager.php"]
   },
   {
     "table": "commandes_produits",
@@ -87,10 +73,7 @@
     "blocked_by": ["Order", "Product"],
     "category": "junction",
     "critical": false,
-    "phpDependencies": [
-      "order_process.php",
-      "order_details.php"
-    ]
+    "phpDependencies": ["order_process.php", "order_details.php"]
   },
   {
     "table": "vue_clients_actifs",
@@ -105,8 +88,6 @@
     "blocked_by": ["Customer", "Order", "Invoice"],
     "category": "view",
     "critical": false,
-    "phpDependencies": [
-      "dashboard/customer_analytics.php"
-    ]
+    "phpDependencies": ["dashboard/customer_analytics.php"]
   }
 ]

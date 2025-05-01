@@ -1,1 +1,6 @@
-{"agent": "mcp-integrator", "interfaces": [""], "status": "COMPLIANT", "timestamp": "2025-04-20T04:18:52+00:00"}
+{
+  "agent": "mcp-integrator",
+  "interfaces": [""],
+  "status": "COMPLIANT",
+  "timestamp": "2025-04-20T04:18:52+00:00"
+}

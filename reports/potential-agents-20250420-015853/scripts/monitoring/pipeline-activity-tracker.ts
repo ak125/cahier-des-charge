@@ -10,9 +10,9 @@
  * 4. Calculer les métriques d'utilisation
  */
 
+import { execSync } from 'child_process';
 import * as fs from 'fs';
 import * as path from 'path';
-import { execSync } from 'child_process';
 import { glob } from 'glob';
 
 // Types pour le suivi des pipelines

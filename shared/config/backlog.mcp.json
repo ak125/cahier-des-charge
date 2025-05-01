@@ -39,10 +39,7 @@
     "priority": 80,
     "status": "pending",
     "path": "legacy/models/cart.model.php",
-    "dependencies": [
-      "product.model.php",
-      "user.model.php"
-    ],
+    "dependencies": ["product.model.php", "user.model.php"],
     "metadata": {
       "routeType": "model",
       "isCritical": true,
@@ -54,9 +51,7 @@
     "priority": 95,
     "status": "done",
     "path": "legacy/login.php",
-    "dependencies": [
-      "user.model.php"
-    ],
+    "dependencies": ["user.model.php"],
     "metadata": {
       "routeType": "auth",
       "isCritical": true,
@@ -68,9 +63,7 @@
     "priority": 90,
     "status": "invalid",
     "path": "legacy/register.php",
-    "dependencies": [
-      "user.model.php"
-    ],
+    "dependencies": ["user.model.php"],
     "metadata": {
       "routeType": "auth",
       "isCritical": true,
@@ -82,9 +75,7 @@
     "priority": 85,
     "status": "pending",
     "path": "legacy/profile.php",
-    "dependencies": [
-      "user.model.php"
-    ],
+    "dependencies": ["user.model.php"],
     "metadata": {
       "routeType": "auth",
       "isCritical": true,
@@ -96,9 +87,7 @@
     "priority": 80,
     "status": "pending",
     "path": "legacy/products.php",
-    "dependencies": [
-      "product.model.php"
-    ],
+    "dependencies": ["product.model.php"],
     "metadata": {
       "routeType": "listing",
       "isCritical": true,
@@ -110,10 +99,7 @@
     "priority": 75,
     "status": "pending",
     "path": "legacy/product.php",
-    "dependencies": [
-      "product.model.php",
-      "cart.model.php"
-    ],
+    "dependencies": ["product.model.php", "cart.model.php"],
     "metadata": {
       "routeType": "detail",
       "isCritical": true,
@@ -125,11 +111,7 @@
     "priority": 70,
     "status": "pending",
     "path": "legacy/cart.php",
-    "dependencies": [
-      "cart.model.php",
-      "product.model.php",
-      "user.model.php"
-    ],
+    "dependencies": ["cart.model.php", "product.model.php", "user.model.php"],
     "metadata": {
       "routeType": "cart",
       "isCritical": true,
@@ -141,10 +123,7 @@
     "priority": 65,
     "status": "pending",
     "path": "legacy/checkout.php",
-    "dependencies": [
-      "cart.model.php",
-      "user.model.php"
-    ],
+    "dependencies": ["cart.model.php", "user.model.php"],
     "metadata": {
       "routeType": "checkout",
       "isCritical": true,
@@ -156,9 +135,7 @@
     "priority": 60,
     "status": "pending",
     "path": "legacy/order.php",
-    "dependencies": [
-      "user.model.php"
-    ],
+    "dependencies": ["user.model.php"],
     "metadata": {
       "routeType": "order",
       "isCritical": true,

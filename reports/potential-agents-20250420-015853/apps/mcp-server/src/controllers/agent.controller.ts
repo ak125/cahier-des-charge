@@ -1,5 +1,5 @@
-import { Controller, Post, Body, HttpException, HttpStatus } from '@nestjs/common';
 import { agentRegistry, executeAgent } from '@fafaDoDotmcp-agents';
+import { Body, Controller, HttpException, HttpStatus, Post } from '@nestjs/common';
 
 interface AgentRequestDto {
   agentName: string;

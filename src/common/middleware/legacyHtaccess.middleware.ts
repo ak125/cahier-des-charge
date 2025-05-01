@@ -1,7 +1,7 @@
-import { Injectable, NestMiddleware } from '@nestjs/common';
-import { Request, Response, NextFunction } from 'express';
 import * as fs from 'fs';
 import * as path from 'path';
+import { Injectable, NestMiddleware } from '@nestjs/common';
+import { NextFunction, Request, Response } from 'express';
 
 interface RedirectMapping {
   to: string;
@@ -37,27 +37,33 @@ export class LegacyHtaccessMiddleware implements NestMiddleware {
   private initializeRoutes(): void {
     try {
       const reportsDir = path.resolve(process.cwd(), 'reports');
-      
+
       // Charger les redirections
       const redirectsPath = path.join(reportsDir, 'redirects.json');
       if (fs.existsSync(redirectsPath)) {
         this.redirects = JSON.parse(fs.readFileSync(redirectsPath, 'utf8'));
       }
-      
+
       // Charger les pages supprimées
       const gonePath = path.join(reportsDir, 'deleted_routes.json');
       if (fs.existsSync(gonePath)) {
         this.gone = JSON.parse(fs.readFileSync(gonePath, 'utf8'));
       }
-      
+
       // Charger le mapping des routes
       const mappingPath = path.join(reportsDir, 'legacy_route_map.json');
       if (fs.existsSync(mappingPath)) {
         this.mapping = JSON.parse(fs.readFileSync(mappingPath, 'utf8'));
       }
-      
+
       this.initialized = true;
-      console.log(`[LegacyHtaccessMiddleware] Initialisé avec ${Object.keys(this.redirects).length} redirections, ${this.gone.length} pages supprimées, ${Object.keys(this.mapping).length} mappings`);
+      console.log(
+        `[LegacyHtaccessMiddleware] Initialisé avec ${
+          Object.keys(this.redirects).length
+        } redirections, ${this.gone.length} pages supprimées, ${
+          Object.keys(this.mapping).length
+        } mappings`
+      );
     } catch (error) {
       console.error(`[LegacyHtaccessMiddleware] Erreur lors de l'initialisation:`, error);
     }
@@ -79,7 +85,7 @@ export class LegacyHtaccessMiddleware implements NestMiddleware {
     if (this.gone.includes(url)) {
       return true;
     }
-    
+
     // Vérifier avec des expressions régulières pour les modèles dynamiques
     for (const pattern of this.gone) {
       if (pattern.includes(':param')) {
@@ -90,7 +96,7 @@ export class LegacyHtaccessMiddleware implements NestMiddleware {
         }
       }
     }
-    
+
     return false;
   }
 
@@ -102,39 +108,39 @@ export class LegacyHtaccessMiddleware implements NestMiddleware {
     if (this.mapping[url]) {
       return this.mapping[url];
     }
-    
+
     // Extraire le chemin de base et les paramètres pour les routes PHP
     if (url.includes('.php')) {
       const [basePath, queryString] = url.split('?');
       if (this.mapping[basePath]) {
         const targetPath = this.mapping[basePath];
-        
+
         // Si pas de query string, juste retourner le chemin cible
         if (!queryString) {
           return targetPath;
         }
-        
+
         // Traiter les paramètres pour les routes dynamiques
         const params = new URLSearchParams(queryString);
-        
+
         // Cas spéciaux courants
         if (basePath === '/fiche.php' && params.has('id')) {
           return `${targetPath}/${params.get('id')}`;
         }
-        
+
         if (basePath === '/categorie.php' && params.has('id')) {
           return `${targetPath}/${params.get('id')}`;
         }
-        
+
         if (basePath === '/search.php' && params.has('q')) {
           return `${targetPath}?q=${params.get('q')}`;
         }
-        
+
         // Cas général : ajouter les paramètres tels quels
         return `${targetPath}?${queryString}`;
       }
     }
-    
+
     return null;
   }
 
@@ -147,13 +153,13 @@ export class LegacyHtaccessMiddleware implements NestMiddleware {
       if (!fs.existsSync(logDir)) {
         fs.mkdirSync(logDir, { recursive: true });
       }
-      
+
       const date = new Date().toISOString();
       const method = req.method;
       const url = req.url;
       const userAgent = req.get('user-agent') || 'Unknown';
       const referer = req.get('referer') || 'Unknown';
-      
+
       const logEntry = `${date} | ${method} | ${url} | ${userAgent} | ${referer}\n`;
       fs.appendFileSync(this.missedRoutesLog, logEntry);
     } catch (error) {
@@ -167,18 +173,18 @@ export class LegacyHtaccessMiddleware implements NestMiddleware {
   private preserveQueryParams(req: Request, route: any): string {
     // Liste des paramètres à toujours préserver
     const alwaysPreserve = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'];
-    
+
     // Obtenir les paramètres de requête actuels
     const currentParams = new URLSearchParams(req.url.split('?')[1] || '');
     const preservedParams = new URLSearchParams();
-    
+
     // Ajouter les paramètres à préserver
-    alwaysPreserve.forEach(param => {
+    alwaysPreserve.forEach((param) => {
       if (currentParams.has(param)) {
         preservedParams.append(param, currentParams.get(param) as string);
       }
     });
-    
+
     // Ajouter les paramètres spécifiés dans la configuration de la route
     if (route.queryParams) {
       route.queryParams.forEach((param: string) => {
@@ -187,7 +193,7 @@ export class LegacyHtaccessMiddleware implements NestMiddleware {
         }
       });
     }
-    
+
     // Construire la chaîne de requête
     const queryString = preservedParams.toString();
     return queryString ? `?${queryString}` : '';
@@ -201,39 +207,38 @@ export class LegacyHtaccessMiddleware implements NestMiddleware {
     if (!this.initialized) {
       this.initializeRoutes();
     }
-    
+
     const url = req.path;
-    
+
     // 1. Vérifier si l'URL est dans les redirections
     if (this.redirects[url]) {
       const { to, status } = this.redirects[url];
       return res.redirect(status, to);
     }
-    
+
     // 2. Vérifier si l'URL correspond à une page supprimée
     if (this.isGone(url)) {
-      return res.status(410).send('Gone - Cette ressource n\'existe plus');
+      return res.status(410).send("Gone - Cette ressource n'existe plus");
     }
-    
+
     // 3. Vérifier si c'est une ancienne URL PHP
     if (url.endsWith('.php')) {
       const remixUrl = this.mapLegacyToRemix(url);
       if (remixUrl) {
         // Rediriger vers la nouvelle URL Remix
         return res.redirect(301, remixUrl);
-      } else {
-        // Enregistrer l'URL PHP inconnue pour analyse
-        this.logMissedRoute(req);
       }
+      // Enregistrer l'URL PHP inconnue pour analyse
+      this.logMissedRoute(req);
     }
-    
+
     // 4. Vérifier les URL qui contiennent /core/, /admin/, etc. (typiques des CMS PHP)
     const legacyPaths = ['/core/', '/admin/', '/includes/', '/modules/', '/plugins/'];
-    if (legacyPaths.some(path => url.includes(path))) {
+    if (legacyPaths.some((path) => url.includes(path))) {
       this.logMissedRoute(req);
-      return res.status(410).send('Gone - Cette ressource a été déplacée ou n\'existe plus');
+      return res.status(410).send("Gone - Cette ressource a été déplacée ou n'existe plus");
     }
-    
+
     // Continuer avec le traitement normal de la demande
     next();
   }
@@ -246,18 +251,21 @@ export class LegacyHtaccessMiddleware implements NestMiddleware {
       if (!fs.existsSync(this.missedRoutesLog)) {
         return {
           total: 0,
-          routes: []
+          routes: [],
         };
       }
 
       const logContent = fs.readFileSync(this.missedRoutesLog, 'utf-8');
-      const logLines = logContent.split('\n').filter(line => line.trim());
+      const logLines = logContent.split('\n').filter((line) => line.trim());
 
       // Extraire et compter les URLs uniques
       const urlCounts = new Map<string, number>();
-      const urlDetails = new Map<string, { userAgents: Set<string>, methods: Set<string>, dates: string[] }>();
+      const urlDetails = new Map<
+        string,
+        { userAgents: Set<string>; methods: Set<string>; dates: string[] }
+      >();
 
-      logLines.forEach(line => {
+      logLines.forEach((line) => {
         const parts = line.split(' | ');
         if (parts.length >= 3) {
           const date = parts[0];
@@ -267,17 +275,21 @@ export class LegacyHtaccessMiddleware implements NestMiddleware {
 
           // Incrémenter le compteur
           urlCounts.set(url, (urlCounts.get(url) || 0) + 1);
-          
+
           // Stocker les détails
           if (!urlDetails.has(url)) {
             urlDetails.set(url, {
               userAgents: new Set(),
               methods: new Set(),
-              dates: []
+              dates: [],
             });
           }
-          
-          const details = urlDetails.get(url) as { userAgents: Set<string>, methods: Set<string>, dates: string[] };
+
+          const details = urlDetails.get(url) as {
+            userAgents: Set<string>;
+            methods: Set<string>;
+            dates: string[];
+          };
           details.userAgents.add(userAgent);
           details.methods.add(method);
           details.dates.push(date);
@@ -289,28 +301,32 @@ export class LegacyHtaccessMiddleware implements NestMiddleware {
 
       // Générer le rapport
       const report = sortedUrls.map(([url, count]) => {
-        const details = urlDetails.get(url) as { userAgents: Set<string>, methods: Set<string>, dates: string[] };
+        const details = urlDetails.get(url) as {
+          userAgents: Set<string>;
+          methods: Set<string>;
+          dates: string[];
+        };
         const lastAccess = details.dates[details.dates.length - 1];
-        
+
         return {
           url,
           count,
           lastAccess,
           methods: [...details.methods],
-          userAgents: [...details.userAgents].slice(0, 5) // Limiter à 5 user agents pour éviter trop de données
+          userAgents: [...details.userAgents].slice(0, 5), // Limiter à 5 user agents pour éviter trop de données
         };
       });
 
       return {
         total: sortedUrls.length,
-        routes: report
+        routes: report,
       };
     } catch (error) {
-      console.error(`[LegacyHtaccessMiddleware] Erreur lors de la génération du rapport:`, error);
+      console.error('[LegacyHtaccessMiddleware] Erreur lors de la génération du rapport:', error);
       return {
         total: 0,
         routes: [],
-        error: error.message
+        error: error.message,
       };
     }
   }

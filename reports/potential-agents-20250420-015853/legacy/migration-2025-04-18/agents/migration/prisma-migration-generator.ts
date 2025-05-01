@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 /**
  * prisma-migration-generator.ts
- * 
+ *
  * Cet agent génère les commandes Prisma nécessaires pour la migration basée sur
  * le modèle Prisma suggéré et peut déclencher les migrations en fonction des options choisies.
- * 
+ *
  * Usage: ts-node prisma-migration-generator.ts [options]
- * 
+ *
  * Options:
  *   --mode=<mode>       Mode de migration (preview, diff, push, migrate)
  *   --schema=<path>     Chemin vers le fichier schema.prisma à utiliser
@@ -16,20 +16,32 @@
  *   --auto-generate-dto Génère automatiquement les DTOs NestJS
  */
 
+import { execSync } from 'child_process';
 import * as fs from 'fs';
 import * as path from 'path';
-import { program } from 'commander';
-import { execSync } from 'child_process';
 import chalk from 'chalk';
+import { program } from 'commander';
 
 // Configuration de la ligne de commande
 program
   .version('1.0.0')
   .description('Génère et exécute les commandes Prisma pour la migration')
   .option('--mode <mode>', 'Mode de migration (preview, diff, push, migrate)', 'preview')
-  .option('--schema <path>', 'Chemin vers le fichier schema.prisma à utiliser', './prisma/schema.prisma')
-  .option('--from <path>', 'Chemin vers le fichier de modèle Prisma suggéré', './reports/latest/prisma_models.suggestion.prisma')
-  .option('--to <path>', 'Chemin de destination pour l\'intégration du schema', './apps/backend/prisma/schema.prisma')
+  .option(
+    '--schema <path>',
+    'Chemin vers le fichier schema.prisma à utiliser',
+    './prisma/schema.prisma'
+  )
+  .option(
+    '--from <path>',
+    'Chemin vers le fichier de modèle Prisma suggéré',
+    './reports/latest/prisma_models.suggestion.prisma'
+  )
+  .option(
+    '--to <path>',
+    "Chemin de destination pour l'intégration du schema",
+    './apps/backend/prisma/schema.prisma'
+  )
   .option('--dry-run', 'Affiche les commandes sans les exécuter', false)
   .option('--auto-generate-dto', 'Génère automatiquement les DTOs NestJS', false)
   .parse(process.argv);
@@ -90,7 +102,7 @@ async function main() {
  * Affiche un aperçu de la migration sans appliquer les changements
  */
 async function previewMigration() {
-  console.log(chalk.blue('📊 Génération de l\'aperçu de la migration...'));
+  console.log(chalk.blue("📊 Génération de l'aperçu de la migration..."));
 
   // Lire le contenu du fichier suggéré
   const suggestedSchema = fs.readFileSync(fromPath, 'utf8');
@@ -110,7 +122,9 @@ async function previewMigration() {
     console.log(chalk.gray(`Schema temporairement écrit dans: ${schemaPath}`));
 
     // Exécuter la commande prisma migrate diff
-    const command = `npx prisma migrate diff --from-schema-datamodel ${tempSchemaPath || 'mysql://url'} --to-schema-datamodel ${schemaPath} --pretty`;
+    const command = `npx prisma migrate diff --from-schema-datamodel ${
+      tempSchemaPath || 'mysql://url'
+    } --to-schema-datamodel ${schemaPath} --pretty`;
     console.log(chalk.blue(`Exécution de: ${command}`));
 
     if (!options.dryRun) {
@@ -181,7 +195,7 @@ async function pushSchema() {
  * Crée une migration nommée et l'applique
  */
 async function migrateSchema() {
-  console.log(chalk.blue('🔄 Création d\'une migration Prisma...'));
+  console.log(chalk.blue("🔄 Création d'une migration Prisma..."));
 
   // Copier le schéma suggéré vers la destination souhaitée
   fs.copyFileSync(fromPath, toPath);
@@ -217,7 +231,7 @@ async function generateDtos() {
     if (!options.dryRun) {
       execSync('npm install -g prisma-nestjs-dto');
     } else {
-      console.log(chalk.yellow('[DRY RUN] La commande d\'installation aurait été exécutée'));
+      console.log(chalk.yellow("[DRY RUN] La commande d'installation aurait été exécutée"));
     }
   }
 
@@ -239,7 +253,7 @@ async function generateDtos() {
 }
 
 // Exécuter la fonction principale
-main().catch(error => {
+main().catch((error) => {
   console.error(chalk.red('Erreur inattendue:'), error);
   process.exit(1);
 });

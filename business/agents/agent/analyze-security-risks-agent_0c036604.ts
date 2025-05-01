@@ -3,8 +3,8 @@
  * Agent export file
  */
 
-import { SecurityRiskAnalyzer } from ./analyze-security-risksstructure-agent';
-import { BusinessAgent } from ../../core/interfacesstructure-agent';
+import { BusinessAgent } from '../../core/interfacesstructure-agent';
+import { SecurityRiskAnalyzer } from './analyze-security-risksstructure-agent';
 
 export { SecurityRiskAnalyzer };
 export default SecurityRiskAnalyzer;

@@ -11,12 +11,8 @@ import { SeoAgentOptions, SeoResult } from './types';
  */
 export abstract class BaseSeoAgent<
   TOptions extends SeoAgentOptions = SeoAgentOptions,
-  TResult = any
+  TResult = any,
 > extends BaseAgent<TOptions, TResult> {
-  constructor(options?: Partial<TOptions>) {
-    super(options);
-  }
-
   /**
    * Fonctions utilitaires spécifiques à la catégorie seo
    */
@@ -24,4 +20,8 @@ export abstract class BaseSeoAgent<
   /**
    * Optimiser le contenu pour le référencement
    */
-  protected optimizeContent(content: string, keywords: string[]): string {
+  protected optimizeContent(_content: string, _keywords: string[]): string {
+    // Implémentation par défaut
+    return _content;
+  }
+}

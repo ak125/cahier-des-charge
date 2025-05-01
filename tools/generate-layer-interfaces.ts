@@ -1,14 +1,14 @@
 /**
  * generate-layer-interfaces.ts
- * 
+ *
  * Outil pour générer les interfaces TypeScript des trois couches de l'architecture MCP OS
- * 
+ *
  * Cet outil définit les contrats d'interface pour chaque type d'agent dans chacune des couches:
  * - Orchestration: gestion des workflows, coordination de haut niveau
  * - Coordination: enregistrement des agents, logs, propagation de statut
  * - Business: agents analytiques, générateurs, stratégies
- * 
- * Les interfaces sont générées avec une documentation JSDoc complète et 
+ *
+ * Les interfaces sont générées avec une documentation JSDoc complète et
  * servent de base pour les futurs développements et la standardisation.
  */
 
@@ -58,8 +58,9 @@ interface AgentTypeConfig {
 const layers: LayerDefinition[] = [
   {
     name: 'orchestration',
-    description: 'Couche d\'orchestration - Gestion des workflows et coordination de haut niveau',
-    responsibility: 'Gérer le cycle de vie des workflows, coordonner l\'exécution des agents, et assurer la fiabilité du système',
+    description: "Couche d'orchestration - Gestion des workflows et coordination de haut niveau",
+    responsibility:
+      "Gérer le cycle de vie des workflows, coordonner l'exécution des agents, et assurer la fiabilité du système",
     agentTypes: {
       orchestrator: {
         name: 'OrchestratorAgent',
@@ -74,57 +75,58 @@ const layers: LayerDefinition[] = [
                 name: 'workflowDefinition',
                 type: 'WorkflowDefinition',
                 description: 'La définition du workflow à exécuter',
-                required: true
+                required: true,
               },
               {
                 name: 'input',
                 type: 'Record<string, any>',
-                description: 'Les données d\'entrée pour le workflow',
-                required: true
-              }
+                description: "Les données d'entrée pour le workflow",
+                required: true,
+              },
             ],
             returnType: 'Promise<string>',
-            returnDescription: 'L\'identifiant du workflow démarré'
+            returnDescription: "L'identifiant du workflow démarré",
           },
           {
             name: 'getStatus',
-            description: 'Obtient l\'état actuel d\'un workflow',
+            description: "Obtient l'état actuel d'un workflow",
             parameters: [
               {
                 name: 'workflowId',
                 type: 'string',
-                description: 'L\'identifiant du workflow',
-                required: true
-              }
+                description: "L'identifiant du workflow",
+                required: true,
+              },
             ],
             returnType: 'Promise<WorkflowStatus>',
-            returnDescription: 'L\'état actuel du workflow'
+            returnDescription: "L'état actuel du workflow",
           },
           {
             name: 'cancelWorkflow',
-            description: 'Annule un workflow en cours d\'exécution',
+            description: "Annule un workflow en cours d'exécution",
             parameters: [
               {
                 name: 'workflowId',
                 type: 'string',
-                description: 'L\'identifiant du workflow',
-                required: true
+                description: "L'identifiant du workflow",
+                required: true,
               },
               {
                 name: 'reason',
                 type: 'string',
-                description: 'La raison de l\'annulation',
-                required: false
-              }
+                description: "La raison de l'annulation",
+                required: false,
+              },
             ],
             returnType: 'Promise<boolean>',
-            returnDescription: 'Vrai si le workflow a bien été annulé'
-          }
-        ]
+            returnDescription: 'Vrai si le workflow a bien été annulé',
+          },
+        ],
       },
       scheduler: {
         name: 'SchedulerAgent',
-        description: 'Agent responsable de la planification et de l\'exécution périodique des tâches',
+        description:
+          "Agent responsable de la planification et de l'exécution périodique des tâches",
         extends: 'BaseAgent',
         methods: [
           {
@@ -135,17 +137,17 @@ const layers: LayerDefinition[] = [
                 name: 'task',
                 type: 'TaskDefinition',
                 description: 'La définition de la tâche à planifier',
-                required: true
+                required: true,
               },
               {
                 name: 'scheduleOptions',
                 type: 'ScheduleOptions',
                 description: 'Les options de planification (cron, délai, etc.)',
-                required: true
-              }
+                required: true,
+              },
             ],
             returnType: 'Promise<string>',
-            returnDescription: 'L\'identifiant de la tâche planifiée'
+            returnDescription: "L'identifiant de la tâche planifiée",
           },
           {
             name: 'cancelScheduledTask',
@@ -154,46 +156,47 @@ const layers: LayerDefinition[] = [
               {
                 name: 'taskId',
                 type: 'string',
-                description: 'L\'identifiant de la tâche planifiée',
-                required: true
-              }
+                description: "L'identifiant de la tâche planifiée",
+                required: true,
+              },
             ],
             returnType: 'Promise<boolean>',
-            returnDescription: 'Vrai si la tâche planifiée a bien été annulée'
+            returnDescription: 'Vrai si la tâche planifiée a bien été annulée',
           },
           {
             name: 'getScheduledTasks',
             description: 'Obtient la liste des tâches planifiées',
             parameters: [],
             returnType: 'Promise<ScheduledTask[]>',
-            returnDescription: 'La liste des tâches planifiées'
-          }
-        ]
+            returnDescription: 'La liste des tâches planifiées',
+          },
+        ],
       },
       monitor: {
         name: 'MonitorAgent',
-        description: 'Agent responsable de la surveillance et du reporting des performances et des erreurs système',
+        description:
+          'Agent responsable de la surveillance et du reporting des performances et des erreurs système',
         extends: 'BaseAgent',
         methods: [
           {
             name: 'startMonitoring',
-            description: 'Démarre la surveillance d\'un composant ou d\'un processus',
+            description: "Démarre la surveillance d'un composant ou d'un processus",
             parameters: [
               {
                 name: 'target',
                 type: 'MonitoringTarget',
                 description: 'La cible à surveiller',
-                required: true
+                required: true,
               },
               {
                 name: 'options',
                 type: 'MonitoringOptions',
                 description: 'Les options de surveillance',
-                required: false
-              }
+                required: false,
+              },
             ],
             returnType: 'Promise<string>',
-            returnDescription: 'L\'identifiant de la session de surveillance'
+            returnDescription: "L'identifiant de la session de surveillance",
           },
           {
             name: 'stopMonitoring',
@@ -202,12 +205,12 @@ const layers: LayerDefinition[] = [
               {
                 name: 'monitoringId',
                 type: 'string',
-                description: 'L\'identifiant de la session de surveillance',
-                required: true
-              }
+                description: "L'identifiant de la session de surveillance",
+                required: true,
+              },
             ],
             returnType: 'Promise<void>',
-            returnDescription: 'Une promesse qui se résout lorsque la surveillance est arrêtée'
+            returnDescription: 'Une promesse qui se résout lorsque la surveillance est arrêtée',
           },
           {
             name: 'getMetrics',
@@ -216,31 +219,34 @@ const layers: LayerDefinition[] = [
               {
                 name: 'monitoringId',
                 type: 'string',
-                description: 'L\'identifiant de la session de surveillance',
-                required: true
+                description: "L'identifiant de la session de surveillance",
+                required: true,
               },
               {
                 name: 'timeRange',
                 type: 'TimeRange',
                 description: 'La plage de temps pour laquelle récupérer les métriques',
-                required: false
-              }
+                required: false,
+              },
             ],
             returnType: 'Promise<MetricsData>',
-            returnDescription: 'Les données de métriques collectées'
-          }
-        ]
-      }
-    }
+            returnDescription: 'Les données de métriques collectées',
+          },
+        ],
+      },
+    },
   },
   {
     name: 'coordination',
-    description: 'Couche de coordination - Enregistrement des agents, logs, propagation de statut, fallback',
-    responsibility: 'Assurer la communication entre les agents, gérer l\'enregistrement, et coordonner les interactions du système',
+    description:
+      'Couche de coordination - Enregistrement des agents, logs, propagation de statut, fallback',
+    responsibility:
+      "Assurer la communication entre les agents, gérer l'enregistrement, et coordonner les interactions du système",
     agentTypes: {
       bridge: {
         name: 'BridgeAgent',
-        description: 'Agent responsable de l\'intégration et de la communication entre différents systèmes',
+        description:
+          "Agent responsable de l'intégration et de la communication entre différents systèmes",
         extends: 'BaseAgent',
         methods: [
           {
@@ -251,11 +257,11 @@ const layers: LayerDefinition[] = [
                 name: 'connectionConfig',
                 type: 'ConnectionConfig',
                 description: 'La configuration de connexion',
-                required: true
-              }
+                required: true,
+              },
             ],
             returnType: 'Promise<Connection>',
-            returnDescription: 'La connexion établie'
+            returnDescription: 'La connexion établie',
           },
           {
             name: 'disconnect',
@@ -264,78 +270,79 @@ const layers: LayerDefinition[] = [
               {
                 name: 'connectionId',
                 type: 'string',
-                description: 'L\'identifiant de la connexion',
-                required: true
-              }
+                description: "L'identifiant de la connexion",
+                required: true,
+              },
             ],
             returnType: 'Promise<boolean>',
-            returnDescription: 'Vrai si la connexion a été fermée avec succès'
+            returnDescription: 'Vrai si la connexion a été fermée avec succès',
           },
           {
             name: 'transfer',
-            description: 'Transfère des données d\'un système à un autre',
+            description: "Transfère des données d'un système à un autre",
             parameters: [
               {
                 name: 'sourceConnectionId',
                 type: 'string',
-                description: 'L\'identifiant de la connexion source',
-                required: true
+                description: "L'identifiant de la connexion source",
+                required: true,
               },
               {
                 name: 'targetConnectionId',
                 type: 'string',
-                description: 'L\'identifiant de la connexion cible',
-                required: true
+                description: "L'identifiant de la connexion cible",
+                required: true,
               },
               {
                 name: 'data',
                 type: 'any',
                 description: 'Les données à transférer',
-                required: true
-              }
+                required: true,
+              },
             ],
             returnType: 'Promise<TransferResult>',
-            returnDescription: 'Le résultat du transfert'
-          }
-        ]
+            returnDescription: 'Le résultat du transfert',
+          },
+        ],
       },
       adapter: {
         name: 'AdapterAgent',
-        description: 'Agent responsable de l\'adaptation des interfaces entre différents systèmes',
+        description: "Agent responsable de l'adaptation des interfaces entre différents systèmes",
         extends: 'BaseAgent',
         methods: [
           {
             name: 'adapt',
-            description: 'Adapte des données d\'un format à un autre',
+            description: "Adapte des données d'un format à un autre",
             parameters: [
               {
                 name: 'sourceData',
                 type: 'any',
                 description: 'Les données sources à adapter',
-                required: true
+                required: true,
               },
               {
                 name: 'targetFormat',
                 type: 'string',
                 description: 'Le format cible',
-                required: true
-              }
+                required: true,
+              },
             ],
             returnType: 'Promise<any>',
-            returnDescription: 'Les données adaptées'
+            returnDescription: 'Les données adaptées',
           },
           {
             name: 'getSupportedFormats',
-            description: 'Récupère la liste des formats supportés par l\'adaptateur',
+            description: "Récupère la liste des formats supportés par l'adaptateur",
             parameters: [],
             returnType: 'Promise<string[]>',
-            returnDescription: 'La liste des formats supportés'
-          }
-        ]
+            returnDescription: 'La liste des formats supportés',
+          },
+        ],
       },
       registry: {
         name: 'RegistryAgent',
-        description: 'Agent responsable de l\'enregistrement et du suivi des services et agents disponibles',
+        description:
+          "Agent responsable de l'enregistrement et du suivi des services et agents disponibles",
         extends: 'BaseAgent',
         methods: [
           {
@@ -346,11 +353,11 @@ const layers: LayerDefinition[] = [
                 name: 'serviceInfo',
                 type: 'ServiceInfo',
                 description: 'Les informations sur le service à enregistrer',
-                required: true
-              }
+                required: true,
+              },
             ],
             returnType: 'Promise<string>',
-            returnDescription: 'L\'identifiant d\'enregistrement'
+            returnDescription: "L'identifiant d'enregistrement",
           },
           {
             name: 'unregister',
@@ -359,12 +366,12 @@ const layers: LayerDefinition[] = [
               {
                 name: 'serviceId',
                 type: 'string',
-                description: 'L\'identifiant du service',
-                required: true
-              }
+                description: "L'identifiant du service",
+                required: true,
+              },
             ],
             returnType: 'Promise<boolean>',
-            returnDescription: 'Vrai si le service a été désinscrit avec succès'
+            returnDescription: 'Vrai si le service a été désinscrit avec succès',
           },
           {
             name: 'discover',
@@ -374,24 +381,26 @@ const layers: LayerDefinition[] = [
                 name: 'criteria',
                 type: 'DiscoveryCriteria',
                 description: 'Les critères de découverte',
-                required: true
-              }
+                required: true,
+              },
             ],
             returnType: 'Promise<ServiceInfo[]>',
-            returnDescription: 'La liste des services correspondant aux critères'
-          }
-        ]
-      }
-    }
+            returnDescription: 'La liste des services correspondant aux critères',
+          },
+        ],
+      },
+    },
   },
   {
     name: 'business',
-    description: 'Couche métier - Agents analytiques, générateurs, stratégies, outils de migration/QA/SEO',
-    responsibility: 'Implémenter les fonctionnalités métier spécifiques, l\'analyse des données, la génération de contenu, etc.',
+    description:
+      'Couche métier - Agents analytiques, générateurs, stratégies, outils de migration/QA/SEO',
+    responsibility:
+      "Implémenter les fonctionnalités métier spécifiques, l'analyse des données, la génération de contenu, etc.",
     agentTypes: {
       analyzer: {
         name: 'AnalyzerAgent',
-        description: 'Agent responsable de l\'analyse de données et de l\'extraction d\'informations',
+        description: "Agent responsable de l'analyse de données et de l'extraction d'informations",
         extends: 'BaseAgent',
         methods: [
           {
@@ -402,47 +411,47 @@ const layers: LayerDefinition[] = [
                 name: 'data',
                 type: 'any',
                 description: 'Les données à analyser',
-                required: true
+                required: true,
               },
               {
                 name: 'options',
                 type: 'AnalysisOptions',
-                description: 'Les options d\'analyse',
-                required: false
-              }
+                description: "Les options d'analyse",
+                required: false,
+              },
             ],
             returnType: 'Promise<AnalysisResult>',
-            returnDescription: 'Le résultat de l\'analyse'
+            returnDescription: "Le résultat de l'analyse",
           },
           {
             name: 'getInsights',
-            description: 'Récupère les insights d\'une analyse',
+            description: "Récupère les insights d'une analyse",
             parameters: [
               {
                 name: 'analysisId',
                 type: 'string',
-                description: 'L\'identifiant de l\'analyse',
-                required: true
-              }
+                description: "L'identifiant de l'analyse",
+                required: true,
+              },
             ],
             returnType: 'Promise<Insight[]>',
-            returnDescription: 'Les insights extraits de l\'analyse'
+            returnDescription: "Les insights extraits de l'analyse",
           },
           {
             name: 'explainAnalysis',
-            description: 'Fournit une explication détaillée d\'une analyse',
+            description: "Fournit une explication détaillée d'une analyse",
             parameters: [
               {
                 name: 'analysisId',
                 type: 'string',
-                description: 'L\'identifiant de l\'analyse',
-                required: true
-              }
+                description: "L'identifiant de l'analyse",
+                required: true,
+              },
             ],
             returnType: 'Promise<string>',
-            returnDescription: 'L\'explication de l\'analyse'
-          }
-        ]
+            returnDescription: "L'explication de l'analyse",
+          },
+        ],
       },
       generator: {
         name: 'GeneratorAgent',
@@ -457,11 +466,11 @@ const layers: LayerDefinition[] = [
                 name: 'specifications',
                 type: 'GenerationSpec',
                 description: 'Les spécifications pour la génération',
-                required: true
-              }
+                required: true,
+              },
             ],
             returnType: 'Promise<GeneratedContent>',
-            returnDescription: 'Le contenu généré'
+            returnDescription: 'Le contenu généré',
           },
           {
             name: 'validate',
@@ -471,27 +480,27 @@ const layers: LayerDefinition[] = [
                 name: 'content',
                 type: 'GeneratedContent',
                 description: 'Le contenu à valider',
-                required: true
-              }
+                required: true,
+              },
             ],
             returnType: 'Promise<ValidationResult>',
-            returnDescription: 'Le résultat de la validation'
+            returnDescription: 'Le résultat de la validation',
           },
           {
             name: 'getGenerationHistory',
-            description: 'Récupère l\'historique des générations',
+            description: "Récupère l'historique des générations",
             parameters: [
               {
                 name: 'filters',
                 type: 'HistoryFilters',
-                description: 'Les filtres pour l\'historique',
-                required: false
-              }
+                description: "Les filtres pour l'historique",
+                required: false,
+              },
             ],
             returnType: 'Promise<GenerationRecord[]>',
-            returnDescription: 'L\'historique des générations'
-          }
-        ]
+            returnDescription: "L'historique des générations",
+          },
+        ],
       },
       validator: {
         name: 'ValidatorAgent',
@@ -506,31 +515,31 @@ const layers: LayerDefinition[] = [
                 name: 'content',
                 type: 'any',
                 description: 'Le contenu à valider',
-                required: true
+                required: true,
               },
               {
                 name: 'rules',
                 type: 'ValidationRules',
                 description: 'Les règles de validation',
-                required: true
-              }
+                required: true,
+              },
             ],
             returnType: 'Promise<ValidationResult>',
-            returnDescription: 'Le résultat de la validation'
+            returnDescription: 'Le résultat de la validation',
           },
           {
             name: 'getSuggestions',
-            description: 'Obtient des suggestions d\'amélioration',
+            description: "Obtient des suggestions d'amélioration",
             parameters: [
               {
                 name: 'content',
                 type: 'any',
                 description: 'Le contenu à améliorer',
-                required: true
-              }
+                required: true,
+              },
             ],
             returnType: 'Promise<Suggestion[]>',
-            returnDescription: 'Les suggestions d\'amélioration'
+            returnDescription: "Les suggestions d'amélioration",
           },
           {
             name: 'applyFixes',
@@ -540,23 +549,23 @@ const layers: LayerDefinition[] = [
                 name: 'content',
                 type: 'any',
                 description: 'Le contenu à corriger',
-                required: true
+                required: true,
               },
               {
                 name: 'fixOptions',
                 type: 'FixOptions',
                 description: 'Les options de correction',
-                required: false
-              }
+                required: false,
+              },
             ],
             returnType: 'Promise<CorrectedContent>',
-            returnDescription: 'Le contenu corrigé'
-          }
-        ]
+            returnDescription: 'Le contenu corrigé',
+          },
+        ],
       },
       parser: {
         name: 'ParserAgent',
-        description: 'Agent responsable de l\'analyse syntaxique et de la transformation de formats',
+        description: "Agent responsable de l'analyse syntaxique et de la transformation de formats",
         extends: 'BaseAgent',
         methods: [
           {
@@ -567,17 +576,17 @@ const layers: LayerDefinition[] = [
                 name: 'content',
                 type: 'string | Buffer',
                 description: 'Le contenu à analyser',
-                required: true
+                required: true,
               },
               {
                 name: 'options',
                 type: 'ParseOptions',
-                description: 'Les options d\'analyse',
-                required: false
-              }
+                description: "Les options d'analyse",
+                required: false,
+              },
             ],
             returnType: 'Promise<ParseResult>',
-            returnDescription: 'Le résultat de l\'analyse'
+            returnDescription: "Le résultat de l'analyse",
           },
           {
             name: 'serialize',
@@ -586,23 +595,23 @@ const layers: LayerDefinition[] = [
               {
                 name: 'data',
                 type: 'any',
-                description: 'L\'objet à sérialiser',
-                required: true
+                description: "L'objet à sérialiser",
+                required: true,
               },
               {
                 name: 'format',
                 type: 'string',
                 description: 'Le format de sortie',
-                required: true
-              }
+                required: true,
+              },
             ],
             returnType: 'Promise<string>',
-            returnDescription: 'La représentation sérialisée'
-          }
-        ]
-      }
-    }
-  }
+            returnDescription: 'La représentation sérialisée',
+          },
+        ],
+      },
+    },
+  },
 ];
 
 // Interface commune à tous les agents
@@ -921,7 +930,7 @@ import { BaseAgent } from '../BaseAgent';
 `;
 
   // Générer les interfaces pour chaque type d'agent
-  for (const [typeKey, agentType] of Object.entries(layer.agentTypes)) {
+  for (const [_typeKey, agentType] of Object.entries(layer.agentTypes)) {
     output += `/**
  * ${agentType.description}
  */
@@ -944,16 +953,30 @@ export interface ${agentType.name} extends ${agentType.extends || 'BaseAgent'} {
     for (const method of agentType.methods) {
       output += `  /**
    * ${method.description}
-   *${method.parameters ? method.parameters.map(param => `
-   * @param ${param.name} ${param.description}`).join('') : ''}
+   *${
+     method.parameters
+       ? method.parameters
+            .map(
+              (param) => `
+   * @param ${param.name} ${param.description}`
+            )
+            .join('')
+       : ''
+   }
    * @returns ${method.returnDescription || method.returnType}
    */
-  ${method.name}(${method.parameters ? method.parameters.map(param => `${param.name}${param.required === false ? '?' : ''}: ${param.type}`).join(', ') : ''}): ${method.returnType};
+  ${method.name}(${
+    method.parameters
+      ? method.parameters
+          .map((param) => `${param.name}${param.required === false ? '?' : ''}: ${param.type}`)
+          .join(', ')
+      : ''
+  }): ${method.returnType};
 
 `;
     }
 
-    output += `}\n\n`;
+    output += '}\n\n';
   }
 
   return output;
@@ -964,8 +987,8 @@ function ensureDirectories(): void {
   if (!fs.existsSync(INTERFACES_DIR)) {
     fs.mkdirSync(INTERFACES_DIR, { recursive: true });
   }
-  
-  layers.forEach(layer => {
+
+  layers.forEach((layer) => {
     const layerDir = path.join(INTERFACES_DIR, layer.name);
     if (!fs.existsSync(layerDir)) {
       fs.mkdirSync(layerDir, { recursive: true });
@@ -976,26 +999,18 @@ function ensureDirectories(): void {
 // Générer et sauvegarder les interfaces
 function generateInterfaces(): void {
   ensureDirectories();
-  
+
   // Générer l'interface de base
-  fs.writeFileSync(
-    path.join(INTERFACES_DIR, 'BaseAgent.ts'),
-    baseAgentInterface,
-    'utf8'
-  );
-  console.log(`Interface BaseAgent générée avec succès.`);
-  
+  fs.writeFileSync(path.join(INTERFACES_DIR, 'BaseAgent.ts'), baseAgentInterface, 'utf8');
+  console.log('Interface BaseAgent générée avec succès.');
+
   // Générer les interfaces pour chaque couche
   for (const layer of layers) {
     const layerInterface = generateLayerInterface(layer);
-    fs.writeFileSync(
-      path.join(INTERFACES_DIR, `${layer.name}.ts`),
-      layerInterface,
-      'utf8'
-    );
+    fs.writeFileSync(path.join(INTERFACES_DIR, `${layer.name}.ts`), layerInterface, 'utf8');
     console.log(`Interface pour la couche ${layer.name} générée avec succès.`);
   }
-  
+
   // Créer un index.ts qui exporte toutes les interfaces
   let indexContent = `/**
  * Index des interfaces de l'architecture trois couches MCP OS
@@ -1003,19 +1018,19 @@ function generateInterfaces(): void {
 
 export * from './BaseAgent';
 `;
-  
+
   for (const layer of layers) {
     indexContent += `export * from './${layer.name}';\n`;
   }
-  
+
   fs.writeFileSync(path.join(INTERFACES_DIR, 'index.ts'), indexContent, 'utf8');
-  console.log(`Fichier index.ts généré avec succès.`);
+  console.log('Fichier index.ts généré avec succès.');
 }
 
 // Point d'entrée principal
 (function main() {
-  console.log('=== Génération des interfaces pour l\'architecture trois couches MCP OS ===');
-  
+  console.log("=== Génération des interfaces pour l'architecture trois couches MCP OS ===");
+
   try {
     generateInterfaces();
     console.log('\nGénération des interfaces terminée avec succès!');

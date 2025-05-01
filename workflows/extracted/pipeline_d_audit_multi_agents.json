@@ -16,10 +16,7 @@
       },
       "name": "Déclencheur Quotidien",
       "type": "n8n-nodes-base.cron",
-      "position": [
-        100,
-        200
-      ],
+      "position": [100, 200],
       "typeVersion": 1
     },
     {
@@ -28,10 +25,7 @@
       },
       "name": "Trigger Manuel",
       "type": "n8n-nodes-base.manualTrigger",
-      "position": [
-        100,
-        340
-      ],
+      "position": [100, 340],
       "typeVersion": 1
     },
     {
@@ -46,10 +40,7 @@
       },
       "name": "Webhook GitHub",
       "type": "n8n-nodes-base.webhook",
-      "position": [
-        100,
-        480
-      ],
+      "position": [100, 480],
       "webhookId": "audit-php-files-webhook",
       "typeVersion": 1
     },
@@ -66,10 +57,7 @@
       },
       "name": "Est Branch Legacy?",
       "type": "n8n-nodes-base.if",
-      "position": [
-        300,
-        480
-      ],
+      "position": [300, 480],
       "typeVersion": 1
     },
     {
@@ -78,10 +66,7 @@
       },
       "name": "Merge Déclencheurs",
       "type": "n8n-nodes-base.merge",
-      "position": [
-        500,
-        340
-      ],
+      "position": [500, 340],
       "typeVersion": 2
     },
     {
@@ -92,10 +77,7 @@
       },
       "name": "Exécuter Discovery Agent",
       "type": "n8n-nodes-base.executeCommand",
-      "position": [
-        700,
-        340
-      ],
+      "position": [700, 340],
       "typeVersion": 1
     },
     {
@@ -104,10 +86,7 @@
       },
       "name": "Charger Configuration",
       "type": "n8n-nodes-base.function",
-      "position": [
-        900,
-        340
-      ]
+      "position": [900, 340]
     },
     {
       "parameters": {
@@ -117,10 +96,7 @@
       },
       "name": "Exécuter Audit Selector",
       "type": "n8n-nodes-base.executeCommand",
-      "position": [
-        1100,
-        340
-      ]
+      "position": [1100, 340]
     },
     {
       "parameters": {
@@ -128,10 +104,7 @@
       },
       "name": "Traiter Liste Fichiers",
       "type": "n8n-nodes-base.code",
-      "position": [
-        1300,
-        340
-      ]
+      "position": [1300, 340]
     },
     {
       "parameters": {
@@ -146,10 +119,7 @@
       },
       "name": "Fichiers Trouvés?",
       "type": "n8n-nodes-base.if",
-      "position": [
-        1500,
-        340
-      ]
+      "position": [1500, 340]
     },
     {
       "parameters": {
@@ -162,10 +132,7 @@
       },
       "name": "Notifier Aucun Fichier",
       "type": "n8n-nodes-base.telegram",
-      "position": [
-        1700,
-        460
-      ]
+      "position": [1700, 460]
     },
     {
       "parameters": {
@@ -175,10 +142,7 @@
       },
       "name": "Créer Dossier Sorties",
       "type": "n8n-nodes-base.executeCommand",
-      "position": [
-        1700,
-        240
-      ]
+      "position": [1700, 240]
     },
     {
       "parameters": {
@@ -186,10 +150,7 @@
       },
       "name": "Préparer Pipeline d'Agents",
       "type": "n8n-nodes-base.function",
-      "position": [
-        1900,
-        240
-      ]
+      "position": [1900, 240]
     },
     {
       "parameters": {
@@ -202,10 +163,7 @@
       },
       "name": "Notifier Démarrage Analyse",
       "type": "n8n-nodes-base.telegram",
-      "position": [
-        1700,
-        100
-      ]
+      "position": [1700, 100]
     },
     {
       "parameters": {
@@ -213,10 +171,7 @@
       },
       "name": "Sélectionner Agent Actuel",
       "type": "n8n-nodes-base.function",
-      "position": [
-        2100,
-        240
-      ]
+      "position": [2100, 240]
     },
     {
       "parameters": {
@@ -231,10 +186,7 @@
       },
       "name": "Pipeline Terminé?",
       "type": "n8n-nodes-base.if",
-      "position": [
-        2300,
-        240
-      ]
+      "position": [2300, 240]
     },
     {
       "parameters": {
@@ -244,10 +196,7 @@
       },
       "name": "Exécuter Agent Actuel",
       "type": "n8n-nodes-base.executeCommand",
-      "position": [
-        2500,
-        340
-      ]
+      "position": [2500, 340]
     },
     {
       "parameters": {
@@ -255,10 +204,7 @@
       },
       "name": "Traiter Résultat Agent",
       "type": "n8n-nodes-base.function",
-      "position": [
-        2700,
-        340
-      ]
+      "position": [2700, 340]
     },
     {
       "parameters": {
@@ -268,10 +214,7 @@
       },
       "name": "Assembler Résultats",
       "type": "n8n-nodes-base.executeCommand",
-      "position": [
-        2500,
-        140
-      ]
+      "position": [2500, 140]
     },
     {
       "parameters": {
@@ -281,10 +224,7 @@
       },
       "name": "Pousser vers GitHub",
       "type": "n8n-nodes-base.executeCommand",
-      "position": [
-        2700,
-        140
-      ]
+      "position": [2700, 140]
     },
     {
       "parameters": {
@@ -294,10 +234,7 @@
       },
       "name": "Synchroniser Supabase",
       "type": "n8n-nodes-base.executeCommand",
-      "position": [
-        2900,
-        140
-      ]
+      "position": [2900, 140]
     },
     {
       "parameters": {
@@ -310,10 +247,7 @@
       },
       "name": "Notifier Analyse Terminée",
       "type": "n8n-nodes-base.telegram",
-      "position": [
-        3100,
-        140
-      ]
+      "position": [3100, 140]
     },
     {
       "parameters": {
@@ -329,10 +263,7 @@
       },
       "name": "Erreurs Détectées?",
       "type": "n8n-nodes-base.if",
-      "position": [
-        3300,
-        140
-      ]
+      "position": [3300, 140]
     },
     {
       "parameters": {
@@ -345,10 +276,7 @@
       },
       "name": "Notifier Erreurs",
       "type": "n8n-nodes-base.telegram",
-      "position": [
-        3500,
-        140
-      ]
+      "position": [3500, 140]
     },
     {
       "parameters": {
@@ -359,10 +287,7 @@
       },
       "name": "Mettre à jour Index Audits",
       "type": "n8n-nodes-base.writeFile",
-      "position": [
-        3500,
-        300
-      ]
+      "position": [3500, 300]
     },
     {
       "parameters": {
@@ -370,10 +295,7 @@
       },
       "name": "Préparer Données Index",
       "type": "n8n-nodes-base.function",
-      "position": [
-        3300,
-        300
-      ]
+      "position": [3300, 300]
     }
   ],
   "connections": {

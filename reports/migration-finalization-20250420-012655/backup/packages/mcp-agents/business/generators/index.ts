@@ -14,5 +14,5 @@ export const generatorsIds = [
   'RemixGenerator',
   'NestjsGenerator',
   'PrismaGenerator',
-  'ComponentGenerator'
+  'ComponentGenerator',
 ];

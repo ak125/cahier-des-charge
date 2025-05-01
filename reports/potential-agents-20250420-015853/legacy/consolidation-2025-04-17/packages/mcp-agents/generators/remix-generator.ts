@@ -1,10 +1,10 @@
-import { AbstractGeneratorAgent } from '../AbstractGenerator';
 import fs from 'fs';
 import path from 'path';
 import { parse as parseHTML } from 'node-html-parser';
+import { AbstractGeneratorAgent } from '../AbstractGenerator';
 import { analyzePhpFile } from '../analysis/PhpAnalyzer';
-import { transformPhpToRemix } from '../core/PhpToRemix-transformer';
 import { generateMetaFile } from '../core/MetaGenerator';
+import { transformPhpToRemix } from '../core/PhpToRemix-transformer';
 import { generateLoaderFile } from '../core/loader-generator';
 import { generateSchemaFile } from '../core/schema-generator';
 import { AgentResult, MigrationConfig, PhpAnalysisResult } from '../types';

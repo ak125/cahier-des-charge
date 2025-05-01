@@ -1,7 +1,7 @@
-import { BullMqOrchestrator } from './BullmqOrchestrator';
-import { Logger } from '@nestjs/common';
-import * as path from 'path';
 import * as fs from 'fs';
+import * as path from 'path';
+import { Logger } from '@nestjs/common';
+import { BullMqOrchestrator } from './BullmqOrchestrator';
 
 /**
  * Exemple d'une migration automatisée de PHP vers Remix utilisant BullMQ
@@ -27,20 +27,24 @@ async function runPhpToRemixMigration() {
 
     // 1. Analyse des fichiers PHP source
     logger.log('🔍 Analyse des fichiers PHP source...');
-    const analysisResult = await orchestrator.queues['orchestrator'].add('analyze-directory', {
-      action: 'analyze-directory',
-      params: {
-        directory: sourceDir,
-        options: {
-          batchId,
-          priority: 10,
-          attempts: 3
-        }
+    const analysisResult = await orchestrator.queues.orchestrator.add(
+      'analyze-directory',
+      {
+        action: 'analyze-directory',
+        params: {
+          directory: sourceDir,
+          options: {
+            batchId,
+            priority: 10,
+            attempts: 3,
+          },
+        },
+      },
+      {
+        priority: 10,
+        attempts: 1,
       }
-    }, {
-      priority: 10,
-      attempts: 1
-    });
+    );
 
     logger.log(`✅ Job d'analyse créé: ${analysisResult.id}`);
 
@@ -53,7 +57,7 @@ async function runPhpToRemixMigration() {
       { path: `${sourceDir}/about.php`, route: '/about' },
       { path: `${sourceDir}/products/list.php`, route: '/products' },
       { path: `${sourceDir}/products/details.php`, route: '/products/$id' },
-      { path: `${sourceDir}/contact.php`, route: '/contact' }
+      { path: `${sourceDir}/contact.php`, route: '/contact' },
     ];
 
     // Créer un flow de migration avec des dépendances
@@ -70,15 +74,15 @@ async function runPhpToRemixMigration() {
           metadata: {
             source: 'migration-workflow',
             batchId,
-            targetRoute: file.route
-          }
+            targetRoute: file.route,
+          },
         },
-        opts: { priority: 5 }
+        opts: { priority: 5 },
       });
     }
 
     // Étape 2: Pour chaque fichier PHP, créer un job de migration
-    const migrationJobs = phpFiles.map(file => ({
+    const migrationJobs = phpFiles.map((file) => ({
       name: `migrate:${path.basename(file.path)}`,
       queueName: 'migration',
       data: {
@@ -89,11 +93,11 @@ async function runPhpToRemixMigration() {
         params: {
           routePath: file.route,
           createLoader: true,
-          createAction: file.path.includes('contact.php')
-        }
+          createAction: file.path.includes('contact.php'),
+        },
       },
       opts: { priority: 3 },
-      children: []
+      children: [],
     }));
 
     migrationChildren.push(...migrationJobs);
@@ -106,11 +110,11 @@ async function runPhpToRemixMigration() {
         action: 'generate-MigrationReport',
         params: {
           batchId,
-          outputPath: `./reports/MigrationReport-${batchId}.json`
-        }
+          outputPath: `./reports/MigrationReport-${batchId}.json`,
+        },
       },
       opts: { priority: 1 },
-      children: migrationJobs.map(job => ({ name: job.name, queueName: job.queueName }))
+      children: migrationJobs.map((job) => ({ name: job.name, queueName: job.queueName })),
     });
 
     // Ajouter le workflow complet à la file d'attente
@@ -122,8 +126,8 @@ async function runPhpToRemixMigration() {
         params: {
           batchId,
           fileCount: phpFiles.length,
-          timestamp: new Date().toISOString()
-        }
+          timestamp: new Date().toISOString(),
+        },
       },
       children: [
         {
@@ -134,28 +138,29 @@ async function runPhpToRemixMigration() {
             params: {
               batchId,
               fileCount: phpFiles.length,
-              timestamp: new Date().toISOString()
-            }
+              timestamp: new Date().toISOString(),
+            },
           },
-          children: migrationChildren
-        }
-      ]
+          children: migrationChildren,
+        },
+      ],
     });
 
     logger.log(`✅ Workflow de migration créé: ${migrationFlow.job.id}`);
     logger.log('⏳ La migration est en cours de traitement en arrière-plan...');
-    logger.log('📊 Vous pouvez suivre la progression dans le dashboard Bull Board: http://localhost:3030/queues');
+    logger.log(
+      '📊 Vous pouvez suivre la progression dans le dashboard Bull Board: http://localhost:3030/queues'
+    );
 
     // Attendre un moment avant de fermer l'orchestrateur (en situation réelle, vous n'attendriez pas)
     logger.log('⏱️ Attente de 5 secondes pour la démonstration...');
-    await new Promise(resolve => setTimeout(resolve, 5000));
-
+    await new Promise((resolve) => setTimeout(resolve, 5000));
   } catch (error) {
     logger.error(`❌ Erreur lors de la migration: ${error.message}`);
     throw error;
   } finally {
     // Fermer proprement l'orchestrateur
-    logger.log('🛑 Fermeture de l\'orchestrateur...');
+    logger.log("🛑 Fermeture de l'orchestrateur...");
     await orchestrator.shutdown();
     logger.log('✅ Orchestrateur fermé');
   }
@@ -163,7 +168,7 @@ async function runPhpToRemixMigration() {
 
 // Exécuter la migration si ce fichier est exécuté directement
 if (require.main === module) {
-  runPhpToRemixMigration().catch(err => {
+  runPhpToRemixMigration().catch((err) => {
     console.error('❌ Erreur fatale lors de la migration:', err);
     process.exit(1);
   });

@@ -1,6 +1,6 @@
-import { Worker, Job } from 'bullmq';
-import {DoDotmcpVerifier } from '../../packagesDoDotmcp-agentsDoDotmcp-verifier';
 import { Logger } from '@nestjs/common';
+import { Job, Worker } from 'bullmq';
+import { DoDotmcpVerifier } from '../../packagesDoDotmcp-agentsDoDotmcp-verifier';
 
 /**
  * Worker BullMQ pour la vérification de fichiers générés par MCP
@@ -15,21 +15,21 @@ async function startMcpVerifierWorker() {
     async (job: Job) => {
       logger.log(`📋 Traitement du job ${job.id}: ${job.name}`);
       const { filePrefix, options } = job.data;
-      
+
       try {
         logger.log(`🔍 Vérification des fichiers avec préfixe: ${filePrefix}`);
-        
+
         // Appel de l'agent de vérification
         const result = awaitDoDotmcpVerifier.run({
           filePrefix,
           generateReport: true,
           addTags: true,
           typeCheck: true,
-          ...options
+          ...options,
         });
-        
+
         logger.log(`✅ Vérification terminée pour ${filePrefix}`);
-        
+
         // Résultats pour BullMQ
         return {
           success: result.status === 'success',
@@ -37,7 +37,7 @@ async function startMcpVerifierWorker() {
           timestamp: new Date().toISOString(),
           jobId: job.id,
           endTime: new Date().toISOString(),
-          executionTimeMs: new Date().getTime() - new Date(job.data.timestamp).getTime()
+          executionTimeMs: new Date().getTime() - new Date(job.data.timestamp).getTime(),
         };
       } catch (error) {
         logger.error(`❌ Erreur lors de la vérification de ${filePrefix}: ${error.message}`);
@@ -76,7 +76,7 @@ async function startMcpVerifierWorker() {
 
 // Démarrage automatique si exécuté directement
 if (require.main === module) {
-  startMcpVerifierWorker().catch(err => {
+  startMcpVerifierWorker().catch((err) => {
     console.error('❌ Erreur fatale du worker MCP Verifier:', err);
     process.exit(1);
   });

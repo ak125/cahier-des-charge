@@ -7,9 +7,9 @@
  * 3. Proposer une migration vers la structure unifiée
  */
 
+import { execSync } from 'child_process';
 import * as fs from 'fs';
 import * as path from 'path';
-import { execSync } from 'child_process';
 
 interface AgentFile {
   path: string;
@@ -162,7 +162,7 @@ function generateMigrationRecommendation(agentTypeInfo: { name: string, type: st
 }
 
 // Effectuer la migration d'un agent
-function migrateAgent(recommendation: MigrationRecommendation, dryRun: boolean = true): void {
+function migrateAgent(recommendation: MigrationRecommendation, dryRun = true): void {
   const { bestVersion, targetPath } = recommendation;
   
   console.log(`\n>>> Migration de l'agent ${recommendation.agentType}`);

@@ -3,7 +3,7 @@
  * Agent export file
  */
 
-import { DebtDetector } from ./debt-detectorstructure-agent';
+import { DebtDetector } from './debt-detector-structure-agent';
 
 export { DebtDetector };
 export default DebtDetector;

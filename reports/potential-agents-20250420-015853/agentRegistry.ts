@@ -6,28 +6,28 @@
  * progressivement la nouvelle architecture.
  */
 
-import * as fs from 'fs-extra';
 import * as path from 'path';
 import { Logger } from '@nestjs/common';
+import * as fs from 'fs-extra';
 
 // Importer les types de la nouvelle architecture
 import { BaseAgent } from './src/core/interfaces/BaseAgent';
-import { OrchestratorAgent, SchedulerAgent, MonitorAgent } from './src/core/interfaces/orchestration';
-import { BridgeAgent, AdapterAgent, RegistryAgent } from './src/core/interfaces/coordination';
-import { AnalyzerAgent, GeneratorAgent, ValidatorAgent, ParserAgent } from './src/core/interfaces/business';
+import { AnalyzerAgent, GeneratorAgent, ParserAgent, ValidatorAgent } from './src/core/interfaces/business';
+import { AdapterAgent, BridgeAgent, RegistryAgent } from './src/core/interfaces/coordination';
+import { MonitorAgent, OrchestratorAgent, SchedulerAgent } from './src/core/interfaces/orchestration';
 
+import { BullMQOrchestrator } from './agents/BullmqOrchestrator';
+import { DevLinter } from './agents/DevLinter';
+import { DiffVerifier } from './agents/DiffVerifier';
+import { MonitoringCheck } from './agents/MonitoringCheck';
+import { PhpAnalyzerAgent } from './agents/PhpAnalyzer-agent';
+import { PRCreator } from './agents/PrCreator';
 // Import manuel des agents
 import { QAAnalyzer } from './agents/QaAnalyzer';
-import { PhpAnalyzerAgent } from './agents/PhpAnalyzer-agent';
-import { DiffVerifier } from './agents/DiffVerifier';
 import { SeoCheckerAgent } from './agents/SeoChecker';
-import { MCPManifestManager } from './agentsDotMcpManifestManager';
-import { DevLinter } from './agents/DevLinter';
-import { MonitoringCheck } from './agents/MonitoringCheck';
 import { Notifier } from './agents/notifier';
 import { Orchestrator } from './agents/orchestrator';
-import { PRCreator } from './agents/PrCreator';
-import { BullMQOrchestrator } from './agents/BullmqOrchestrator';
+import { MCPManifestManager } from './agentsDotMcpManifestManager';
 
 // Types pour le manifest
 export interface AgentManifestEntry {

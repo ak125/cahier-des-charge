@@ -17,10 +17,7 @@
       },
       "name": "Schedule Trigger",
       "type": "n8n-nodes-base.scheduleTrigger",
-      "position": [
-        100,
-        200
-      ]
+      "position": [100, 200]
     },
     {
       "parameters": {
@@ -28,10 +25,7 @@
       },
       "name": "Run Quality Analysis",
       "type": "n8n-nodes-base.function",
-      "position": [
-        300,
-        200
-      ]
+      "position": [300, 200]
     },
     {
       "parameters": {
@@ -44,10 +38,7 @@
       },
       "name": "Send Quality Report",
       "type": "n8n-nodes-base.telegram",
-      "position": [
-        500,
-        200
-      ]
+      "position": [500, 200]
     },
     {
       "parameters": {
@@ -63,10 +54,7 @@
       },
       "name": "Priority Audits?",
       "type": "n8n-nodes-base.if",
-      "position": [
-        700,
-        200
-      ]
+      "position": [700, 200]
     },
     {
       "parameters": {
@@ -79,10 +67,7 @@
       },
       "name": "Send Priority Alert",
       "type": "n8n-nodes-base.telegram",
-      "position": [
-        900,
-        120
-      ]
+      "position": [900, 120]
     },
     {
       "parameters": {
@@ -127,10 +112,7 @@
       },
       "name": "Prepare Metrics",
       "type": "n8n-nodes-base.set",
-      "position": [
-        900,
-        280
-      ]
+      "position": [900, 280]
     },
     {
       "parameters": {
@@ -143,10 +125,7 @@
       },
       "name": "Save to Database",
       "type": "n8n-nodes-base.postgres",
-      "position": [
-        1100,
-        280
-      ]
+      "position": [1100, 280]
     }
   ],
   "connections": {

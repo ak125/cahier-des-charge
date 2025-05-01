@@ -1,9 +1,9 @@
+import { randomUUID } from 'crypto';
 /**
  * Service de traçabilité trans-couche
  * Permet le suivi de bout en bout des opérations à travers l'architecture à 3 couches
  */
 import { Logger } from '@nestjs/common';
-import { randomUUID } from 'crypto';
 import { createClient } from '@supabase/supabase-js';
 
 // Options du service de traçabilité
@@ -259,7 +259,7 @@ export class TraceabilityService {
       endTime?: Date;
       success?: boolean;
     },
-    limit: number = 100
+    limit = 100
   ): Promise<TraceEvent[]> {
     if (!this.options.enabled || !this.supabase) {
       return [];

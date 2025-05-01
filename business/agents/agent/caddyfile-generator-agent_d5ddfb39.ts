@@ -3,8 +3,8 @@
  * Agent export file
  */
 
-import { CaddyfileGenerator } from ./caddyfile-generator';
-import { GeneratorAgent } from ../../core/interfacesstructure-agent';
+import { GeneratorAgent } from '../../core/interfacesstructure-agent';
+import { CaddyfileGenerator } from './caddyfile-generator';
 
 export { CaddyfileGenerator };
 export default CaddyfileGenerator;

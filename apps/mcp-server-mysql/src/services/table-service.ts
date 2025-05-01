@@ -86,10 +86,10 @@ export class TableService {
       const rows = await this.dbService.executeQuery<{ TABLE_NAME: string }>(
         `SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES 
          WHERE TABLE_SCHEMA = ?`,
-        [this.dbService['connectionOptions'].database]
+        [this.dbService.connectionOptions.database]
       );
-      
-      return rows.map(row => row.TABLE_NAME);
+
+      return rows.map((row) => row.TABLE_NAME);
     } catch (error) {
       throw new Error(`Erreur lors de la récupération des tables: ${error.message}`);
     }
@@ -107,23 +107,23 @@ export class TableService {
       if (!tables.includes(tableName)) {
         throw new Error(`La table '${tableName}' n'existe pas`);
       }
-      
+
       // Récupérer les informations générales sur la table
       const [tableInfoRows] = await this.dbService.executeQuery<any>(
         `SELECT * FROM INFORMATION_SCHEMA.TABLES 
          WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?`,
-        [this.dbService['connectionOptions'].database, tableName]
+        [this.dbService.connectionOptions.database, tableName]
       );
-      
+
       if (!tableInfoRows || tableInfoRows.length === 0) {
         throw new Error(`Impossible de récupérer les informations pour la table '${tableName}'`);
       }
-      
+
       const tableInfoRow = tableInfoRows[0];
-      
+
       // Récupérer les informations sur les colonnes
       const columns = await this.getColumnInfo(tableName);
-      
+
       return {
         name: tableInfoRow.TABLE_NAME,
         engine: tableInfoRow.ENGINE,
@@ -143,10 +143,12 @@ export class TableService {
         checksum: tableInfoRow.CHECKSUM,
         createOptions: tableInfoRow.CREATE_OPTIONS,
         comment: tableInfoRow.TABLE_COMMENT,
-        columns
+        columns,
       };
     } catch (error) {
-      throw new Error(`Erreur lors de la récupération des informations de la table '${tableName}': ${error.message}`);
+      throw new Error(
+        `Erreur lors de la récupération des informations de la table '${tableName}': ${error.message}`
+      );
     }
   }
 
@@ -162,24 +164,26 @@ export class TableService {
         `SELECT * FROM INFORMATION_SCHEMA.COLUMNS 
          WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?
          ORDER BY ORDINAL_POSITION`,
-        [this.dbService['connectionOptions'].database, tableName]
+        [this.dbService.connectionOptions.database, tableName]
       );
-      
+
       // Récupérer les informations sur les clés uniques
       const uniqueIndexes = await this.getUniqueIndexes(tableName);
-      
-      return rows.map(row => {
-        const typeParts = row.COLUMN_TYPE.match(/^(\w+)(?:\((\d+)(?:,(\d+))?\))?(?:\s+(unsigned|zerofill))?/i);
-        const baseType = typeParts ? typeParts[1] : row.COLUMN_TYPE;
-        const length = typeParts && typeParts[2] ? parseInt(typeParts[2], 10) : undefined;
+
+      return rows.map((row) => {
+        const typeParts = row.COLUMN_TYPE.match(
+          /^(\w+)(?:\((\d+)(?:,(\d+))?\))?(?:\s+(unsigned|zerofill))?/i
+        );
+        const _baseType = typeParts ? typeParts[1] : row.COLUMN_TYPE;
+        const length = typeParts?.[2] ? parseInt(typeParts[2], 10) : undefined;
         const unsigned = row.COLUMN_TYPE.toLowerCase().includes('unsigned');
         const zerofill = row.COLUMN_TYPE.toLowerCase().includes('zerofill');
-        
+
         // Vérifier si la colonne fait partie d'un index unique
-        const isUnique = uniqueIndexes.some(idx => 
-          idx.columnName === row.COLUMN_NAME && !idx.nonUnique
+        const isUnique = uniqueIndexes.some(
+          (idx) => idx.columnName === row.COLUMN_NAME && !idx.nonUnique
         );
-        
+
         return {
           name: row.COLUMN_NAME,
           type: row.COLUMN_TYPE,
@@ -194,11 +198,13 @@ export class TableService {
           autoIncrement: row.EXTRA.toLowerCase().includes('auto_increment'),
           unsigned,
           zerofill,
-          unique: isUnique || row.COLUMN_KEY === 'UNI'
+          unique: isUnique || row.COLUMN_KEY === 'UNI',
         };
       });
     } catch (error) {
-      throw new Error(`Erreur lors de la récupération des informations des colonnes pour '${tableName}': ${error.message}`);
+      throw new Error(
+        `Erreur lors de la récupération des informations des colonnes pour '${tableName}': ${error.message}`
+      );
     }
   }
 
@@ -225,12 +231,14 @@ export class TableService {
          WHERE k.TABLE_SCHEMA = ?
            AND k.TABLE_NAME = ?
            AND k.REFERENCED_TABLE_NAME IS NOT NULL`,
-        [this.dbService['connectionOptions'].database, tableName]
+        [this.dbService.connectionOptions.database, tableName]
       );
-      
+
       return rows;
     } catch (error) {
-      throw new Error(`Erreur lors de la récupération des clés étrangères pour '${tableName}': ${error.message}`);
+      throw new Error(
+        `Erreur lors de la récupération des clés étrangères pour '${tableName}': ${error.message}`
+      );
     }
   }
 
@@ -260,16 +268,18 @@ export class TableService {
          WHERE TABLE_SCHEMA = ?
            AND TABLE_NAME = ?
          ORDER BY INDEX_NAME, SEQ_IN_INDEX`,
-        [this.dbService['connectionOptions'].database, tableName]
+        [this.dbService.connectionOptions.database, tableName]
       );
-      
-      return rows.map(row => ({
+
+      return rows.map((row) => ({
         ...row,
         nonUnique: row.nonUnique === 1,
-        nullable: row.nullable === 'YES'
+        nullable: row.nullable === 'YES',
       }));
     } catch (error) {
-      throw new Error(`Erreur lors de la récupération des index pour '${tableName}': ${error.message}`);
+      throw new Error(
+        `Erreur lors de la récupération des index pour '${tableName}': ${error.message}`
+      );
     }
   }
 
@@ -280,7 +290,7 @@ export class TableService {
    */
   async getUniqueIndexes(tableName: string): Promise<IndexInfo[]> {
     const indexes = await this.getTableIndexes(tableName);
-    return indexes.filter(index => !index.nonUnique);
+    return indexes.filter((index) => !index.nonUnique);
   }
 
   /**
@@ -304,12 +314,14 @@ export class TableService {
            AND k.CONSTRAINT_SCHEMA = r.CONSTRAINT_SCHEMA
          WHERE k.TABLE_SCHEMA = ?
            AND k.REFERENCED_TABLE_NAME IS NOT NULL`,
-        [this.dbService['connectionOptions'].database]
+        [this.dbService.connectionOptions.database]
       );
-      
+
       return rows;
     } catch (error) {
-      throw new Error(`Erreur lors de la récupération des relations entre tables: ${error.message}`);
+      throw new Error(
+        `Erreur lors de la récupération des relations entre tables: ${error.message}`
+      );
     }
   }
 
@@ -320,7 +332,7 @@ export class TableService {
    */
   async countRows(tableName: string): Promise<number> {
     try {
-      const [result] = await this.dbService.executeQuery<{count: number}>(
+      const [result] = await this.dbService.executeQuery<{ count: number }>(
         `SELECT COUNT(*) as count FROM \`${tableName}\``
       );
       return result.count;
@@ -335,14 +347,13 @@ export class TableService {
    * @param limit Nombre maximum de lignes à récupérer
    * @returns Lignes de la table
    */
-  async getSampleRows(tableName: string, limit: number = 10): Promise<any[]> {
+  async getSampleRows(tableName: string, limit = 10): Promise<any[]> {
     try {
-      return await this.dbService.executeQuery(
-        `SELECT * FROM \`${tableName}\` LIMIT ?`,
-        [limit]
-      );
+      return await this.dbService.executeQuery(`SELECT * FROM \`${tableName}\` LIMIT ?`, [limit]);
     } catch (error) {
-      throw new Error(`Erreur lors de la récupération des lignes pour '${tableName}': ${error.message}`);
+      throw new Error(
+        `Erreur lors de la récupération des lignes pour '${tableName}': ${error.message}`
+      );
     }
   }
 
@@ -354,9 +365,11 @@ export class TableService {
   async hasPrimaryKey(tableName: string): Promise<boolean> {
     try {
       const columns = await this.getColumnInfo(tableName);
-      return columns.some(column => column.key === 'PRI');
+      return columns.some((column) => column.key === 'PRI');
     } catch (error) {
-      throw new Error(`Erreur lors de la vérification de la clé primaire pour '${tableName}': ${error.message}`);
+      throw new Error(
+        `Erreur lors de la vérification de la clé primaire pour '${tableName}': ${error.message}`
+      );
     }
   }
 }

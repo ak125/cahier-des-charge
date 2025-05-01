@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Param, Body, Patch, Query, Sse } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post, Query, Sse } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { RedisService } from '../redis/redis.service';
 import { McpJobsService } from '.DoDotmcp-jobs.service';
@@ -9,7 +9,7 @@ export class JobsController {
 
   constructor(
     private redisService: RedisService,
-    privateDoDotmcpJobsService: McpJobsService
+    _privateDoDotmcpJobsService: McpJobsService
   ) {
     // S'abonner aux événements Redis
     this.redisService.subscribe('job_finished', (data) => {

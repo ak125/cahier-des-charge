@@ -6,16 +6,16 @@
  * dans le pipeline de migration.
  */
 
-import { createClient as createRedisClient } from 'redis';
-import { createClient as createSupabaseClient } from '@supabase/supabase-js';
-import axios from 'axios';
-import nodemailer from 'nodemailer';
-import { WebClient } from '@slack/web-api';
-import fs from 'fs-extra';
 import path from 'path';
 import { Logger } from '@nestjs/common';
-import { MCPManifestManager } from '.DotMcpManifestManager';
+import { WebClient } from '@slack/web-api';
+import { createClient as createSupabaseClient } from '@supabase/supabase-js';
+import axios from 'axios';
+import fs from 'fs-extra';
+import nodemailer from 'nodemailer';
+import { createClient as createRedisClient } from 'redis';
 import { BaseAgent, OrchestrationAgent } from '../core/interfaces/BaseAgent';
+import { MCPManifestManager } from '.DotMcpManifestManager';
 
 
 // Types

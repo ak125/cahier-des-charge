@@ -5,7 +5,4 @@
 
 import { ClassifierAgent } from './ClassifierAgent';
 
-export {
-  ClassifierAgent,
-};
-
+export { ClassifierAgent };

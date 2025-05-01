@@ -5,7 +5,4 @@
 
 import { OrchestratorAgent } from './OrchestratorAgent';
 
-export {
-  OrchestratorAgent,
-};
-
+export { OrchestratorAgent };

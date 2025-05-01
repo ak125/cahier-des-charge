@@ -8,11 +8,14 @@ const registryConfigSchema = z.object({
   manifestPath: z.string().default('./agent-manifest.json'),
   autoReloadOnChange: z.boolean().default(true),
   validateDependencies: z.boolean().default(true),
-  agents: z.record(z.string(), z.object({
-    enabled: z.boolean().default(true),
-    priority: z.number().int().min(1).max(10).default(5),
-    overrideConfig: z.record(z.string(), z.any()).optional()
-  }))
+  agents: z.record(
+    z.string(),
+    z.object({
+      enabled: z.boolean().default(true),
+      priority: z.number().int().min(1).max(10).default(5),
+      overrideConfig: z.record(z.string(), z.any()).optional(),
+    })
+  ),
 });
 
 // Schéma pour la configuration des manifestes d'agents
@@ -20,22 +23,24 @@ const manifestsConfigSchema = z.object({
   validateOnStartup: z.boolean().default(true),
   autoBackup: z.boolean().default(true),
   backupFrequency: z.number().int().positive().default(86400), // en secondes, 1 jour par défaut
-  versionStrategy: z.enum(['semantic', 'timestamp', 'incremental']).default('semantic')
+  versionStrategy: z.enum(['semantic', 'timestamp', 'incremental']).default('semantic'),
 });
 
 // Schéma pour la configuration du monitoring des agents
 const monitoringConfigSchema = z.object({
   enabled: z.boolean().default(true),
   interval: z.number().int().positive().default(30), // en secondes
-  metrics: z.array(z.enum([
-    'status', 'memory', 'cpu', 'errors', 'executionTime', 'successRate'
-  ])).default(['status', 'errors', 'successRate']),
-  alertThresholds: z.object({
-    errorRate: z.number().min(0).max(100).default(10), // pourcentage
-    executionTime: z.number().int().positive().default(10000), // en ms
-    memoryUsage: z.number().int().positive().default(500) // en MB
-  }).default({}),
-  storageStrategy: z.enum(['database', 'files', 'prometheus']).default('database')
+  metrics: z
+    .array(z.enum(['status', 'memory', 'cpu', 'errors', 'executionTime', 'successRate']))
+    .default(['status', 'errors', 'successRate']),
+  alertThresholds: z
+    .object({
+      errorRate: z.number().min(0).max(100).default(10), // pourcentage
+      executionTime: z.number().int().positive().default(10000), // en ms
+      memoryUsage: z.number().int().positive().default(500), // en MB
+    })
+    .default({}),
+  storageStrategy: z.enum(['database', 'files', 'prometheus']).default('database'),
 });
 
 // Schéma pour la fonctionnalité de circuit breaker spécifique aux agents
@@ -43,7 +48,9 @@ const circuitBreakerSchema = z.object({
   enabled: z.boolean().default(true),
   resetTimeout: z.number().int().positive(),
   failureThreshold: z.number().int().positive(),
-  strategy: z.enum(['disableTemporarily', 'substituteAgent', 'fallbackToSimpler']).default('disableTemporarily')
+  strategy: z
+    .enum(['disableTemporarily', 'substituteAgent', 'fallbackToSimpler'])
+    .default('disableTemporarily'),
 });
 
 // Schéma pour la traçabilité spécifique aux agents
@@ -51,7 +58,7 @@ const traceabilitySchema = z.object({
   enabled: z.boolean().default(true),
   idFormat: z.string(),
   storageStrategy: z.enum(['database', 'distributed', 'hybrid']),
-  layer: z.literal('agents')
+  layer: z.literal('agents'),
 });
 
 // Schéma complet pour la configuration des agents
@@ -60,7 +67,7 @@ export const agentConfigSchema = z.object({
   manifests: manifestsConfigSchema,
   monitoring: monitoringConfigSchema,
   circuitBreaker: circuitBreakerSchema,
-  traceability: traceabilitySchema
+  traceability: traceabilitySchema,
 });
 
 export type AgentConfig = z.infer<typeof agentConfigSchema>;
@@ -71,13 +78,13 @@ export const defaultAgentConfig: Partial<AgentConfig> = {
     manifestPath: './agent-manifest.json',
     autoReloadOnChange: true,
     validateDependencies: true,
-    agents: {}
+    agents: {},
   },
   manifests: {
     validateOnStartup: true,
     autoBackup: true,
     backupFrequency: 86400,
-    versionStrategy: 'semantic'
+    versionStrategy: 'semantic',
   },
   monitoring: {
     enabled: true,
@@ -86,8 +93,8 @@ export const defaultAgentConfig: Partial<AgentConfig> = {
     alertThresholds: {
       errorRate: 10,
       executionTime: 10000,
-      memoryUsage: 500
+      memoryUsage: 500,
     },
-    storageStrategy: 'database'
-  }
+    storageStrategy: 'database',
+  },
 };

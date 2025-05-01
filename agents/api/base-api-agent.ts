@@ -11,12 +11,8 @@ import { ApiAgentOptions, ApiResult } from './types';
  */
 export abstract class BaseApiAgent<
   TOptions extends ApiAgentOptions = ApiAgentOptions,
-  TResult = any
+  TResult = any,
 > extends BaseAgent<TOptions, TResult> {
-  constructor(options?: Partial<TOptions>) {
-    super(options);
-  }
-
   /**
    * Fonctions utilitaires spécifiques à la catégorie api
    */

@@ -16,10 +16,7 @@
       "name": "Schedule Trigger",
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1,
-      "position": [
-        240,
-        300
-      ]
+      "position": [240, 300]
     },
     {
       "parameters": {
@@ -31,10 +28,7 @@
       "name": "Supabase - Get Complex Files",
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 1,
-      "position": [
-        600,
-        300
-      ],
+      "position": [600, 300],
       "credentials": {
         "postgres": {
           "id": "supabase-postgres",
@@ -50,10 +44,7 @@
       "name": "Set Alert Thresholds",
       "type": "n8n-nodes-base.code",
       "typeVersion": 1,
-      "position": [
-        420,
-        300
-      ]
+      "position": [420, 300]
     },
     {
       "parameters": {
@@ -70,10 +61,7 @@
       "name": "Any Complex Files?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
-      "position": [
-        780,
-        300
-      ]
+      "position": [780, 300]
     },
     {
       "parameters": {
@@ -83,10 +71,7 @@
       "name": "Format Alert Data",
       "type": "n8n-nodes-base.code",
       "typeVersion": 1,
-      "position": [
-        960,
-        240
-      ]
+      "position": [960, 240]
     },
     {
       "parameters": {
@@ -103,10 +88,7 @@
       "name": "Send Email?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
-      "position": [
-        1180,
-        240
-      ]
+      "position": [1180, 240]
     },
     {
       "parameters": {
@@ -123,10 +105,7 @@
       "name": "Send Slack?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
-      "position": [
-        1180,
-        420
-      ]
+      "position": [1180, 420]
     },
     {
       "parameters": {
@@ -141,10 +120,7 @@
       "name": "Send Slack Alert",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 3,
-      "position": [
-        1400,
-        420
-      ]
+      "position": [1400, 420]
     },
     {
       "parameters": {
@@ -158,10 +134,7 @@
       "name": "Send Email Alert",
       "type": "n8n-nodes-base.emailSend",
       "typeVersion": 1,
-      "position": [
-        1400,
-        240
-      ]
+      "position": [1400, 240]
     },
     {
       "parameters": {
@@ -171,10 +144,7 @@
       "name": "No Files Found",
       "type": "n8n-nodes-base.code",
       "typeVersion": 1,
-      "position": [
-        960,
-        380
-      ]
+      "position": [960, 380]
     },
     {
       "parameters": {
@@ -191,10 +161,7 @@
       "name": "Weekly Trigger",
       "type": "n8n-nodes-base.cron",
       "typeVersion": 1,
-      "position": [
-        240,
-        560
-      ]
+      "position": [240, 560]
     },
     {
       "parameters": {
@@ -206,10 +173,7 @@
       "name": "Supabase - Weekly Stats",
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 1,
-      "position": [
-        420,
-        560
-      ],
+      "position": [420, 560],
       "credentials": {
         "postgres": {
           "id": "supabase-postgres",
@@ -225,10 +189,7 @@
       "name": "Format Weekly Report",
       "type": "n8n-nodes-base.code",
       "typeVersion": 1,
-      "position": [
-        600,
-        560
-      ]
+      "position": [600, 560]
     },
     {
       "parameters": {
@@ -242,10 +203,7 @@
       "name": "Send Weekly Report Email",
       "type": "n8n-nodes-base.emailSend",
       "typeVersion": 1,
-      "position": [
-        780,
-        500
-      ]
+      "position": [780, 500]
     },
     {
       "parameters": {
@@ -260,10 +218,7 @@
       "name": "Send Weekly Report Slack",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 3,
-      "position": [
-        780,
-        620
-      ]
+      "position": [780, 620]
     }
   ],
   "connections": {

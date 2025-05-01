@@ -1,72 +1,63 @@
 {
-    "$schema": "http://json-schema.org/schema",
-    "cli": "nx",
-    "$id": "temporal-workflow",
-    "type": "object",
-    "title": "Générateur de workflow Temporal",
-    "description": "Créer un nouveau workflow Temporal avec la structure standard",
-    "properties": {
-        "name": {
-            "type": "string",
-            "description": "Nom du workflow Temporal",
-            "$default": {
-                "$source": "argv",
-                "index": 0
-            },
-            "x-prompt": "Quel est le nom du workflow Temporal?"
-        },
-        "category": {
-            "type": "string",
-            "description": "Catégorie de workflow",
-            "enum": [
-                "migration",
-                "integration",
-                "audit",
-                "notification",
-                "orchestration"
-            ],
-            "default": "migration",
-            "x-prompt": {
-                "message": "Quelle est la catégorie du workflow?",
-                "type": "list",
-                "items": [
-                    {
-                        "value": "migration",
-                        "label": "Workflow de migration"
-                    },
-                    {
-                        "value": "integration",
-                        "label": "Workflow d'intégration"
-                    },
-                    {
-                        "value": "audit",
-                        "label": "Workflow d'audit"
-                    },
-                    {
-                        "value": "notification",
-                        "label": "Workflow de notification"
-                    },
-                    {
-                        "value": "orchestration",
-                        "label": "Workflow d'orchestration"
-                    }
-                ]
-            }
-        },
-        "directory": {
-            "type": "string",
-            "description": "Répertoire dans lequel créer le workflow",
-            "default": "src/temporal/workflows",
-            "x-prompt": "Dans quel dossier souhaitez-vous créer le workflow?"
-        },
-        "timeout": {
-            "type": "string",
-            "description": "Timeout du workflow (ex: 10m, 1h)",
-            "default": "30m"
-        }
+  "$schema": "http://json-schema.org/schema",
+  "cli": "nx",
+  "$id": "temporal-workflow",
+  "type": "object",
+  "title": "Générateur de workflow Temporal",
+  "description": "Créer un nouveau workflow Temporal avec la structure standard",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Nom du workflow Temporal",
+      "$default": {
+        "$source": "argv",
+        "index": 0
+      },
+      "x-prompt": "Quel est le nom du workflow Temporal?"
     },
-    "required": [
-        "name",
-        "category"
-    ]
+    "category": {
+      "type": "string",
+      "description": "Catégorie de workflow",
+      "enum": ["migration", "integration", "audit", "notification", "orchestration"],
+      "default": "migration",
+      "x-prompt": {
+        "message": "Quelle est la catégorie du workflow?",
+        "type": "list",
+        "items": [
+          {
+            "value": "migration",
+            "label": "Workflow de migration"
+          },
+          {
+            "value": "integration",
+            "label": "Workflow d'intégration"
+          },
+          {
+            "value": "audit",
+            "label": "Workflow d'audit"
+          },
+          {
+            "value": "notification",
+            "label": "Workflow de notification"
+          },
+          {
+            "value": "orchestration",
+            "label": "Workflow d'orchestration"
+          }
+        ]
+      }
+    },
+    "directory": {
+      "type": "string",
+      "description": "Répertoire dans lequel créer le workflow",
+      "default": "src/temporal/workflows",
+      "x-prompt": "Dans quel dossier souhaitez-vous créer le workflow?"
+    },
+    "timeout": {
+      "type": "string",
+      "description": "Timeout du workflow (ex: 10m, 1h)",
+      "default": "30m"
+    }
+  },
+  "required": ["name", "category"]
 }

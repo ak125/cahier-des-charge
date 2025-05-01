@@ -6,22 +6,21 @@
 import { BaseOrchestrationAgent } from './base-orchestration-agent';
 
 // Original content (commented)
-/*
 /**
- * MCPManifestManager
- * Agent export file
- */
+ * Le code ci-dessous était l'original. Il est commenté pour référence.
+ 
+// MCPManifestManager
+// Agent export file
 
-import { MCPManifestManager } from .DoDotmcp-manifest-managerstructure-agent';
-
-export { MCPManifestManager };
-export default MCPManifestManager;
+// import { MCPManifestManager } from './mcp-manifest-manager-structure-agent';
+// export { MCPManifestManager };
+// export default MCPManifestManager;
 */
 
 /**
  * Agent mcp-manifest-manager
  */
-export class mcp-manifest-managerAgent extends BaseOrchestrationAgent {
+export class McpManifestManagerAgent extends BaseOrchestrationAgent {
   constructor(options?: any) {
     super(options);
   }

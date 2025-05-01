@@ -37,26 +37,26 @@ export class NginxConfigParser implements MCPAgent {
 
   async process(context: MCPContext): Promise<any> {
     const { configPath } = context.inputs;
-    
+
     if (!configPath || !fs.existsSync(configPath)) {
       return {
         success: false,
-        error: `Le fichier de configuration Nginx n'existe pas: ${configPath}`
+        error: `Le fichier de configuration Nginx n'existe pas: ${configPath}`,
       };
     }
 
     try {
       const content = fs.readFileSync(configPath, 'utf8');
       const config = this.parseNginxConfig(content);
-      
+
       return {
         success: true,
-        data: config
+        data: config,
       };
     } catch (error) {
       return {
         success: false,
-        error: `Erreur lors de l'analyse de la configuration Nginx: ${error.message}`
+        error: `Erreur lors de l'analyse de la configuration Nginx: ${error.message}`,
       };
     }
   }
@@ -65,17 +65,17 @@ export class NginxConfigParser implements MCPAgent {
     const result: NginxConfig = {
       servers: [],
       upstreams: {},
-      globals: {}
+      globals: {},
     };
 
     // Extraction des blocs server
     const serverBlocks = this.extractBlocks(content, 'server');
-    
+
     for (const serverBlock of serverBlocks) {
       const server: NginxServer = {
         serverName: this.extractDirective(serverBlock, 'server_name').split(/\s+/).filter(Boolean),
         listen: this.extractDirectives(serverBlock, 'listen'),
-        locations: []
+        locations: [],
       };
 
       // Extraction des paramètres SSL
@@ -90,14 +90,14 @@ export class NginxConfigParser implements MCPAgent {
 
       // Extraction des blocs location
       const locationBlocks = this.extractLocationBlocks(serverBlock);
-      
+
       for (const locationBlock of locationBlocks) {
         const locationMatch = locationBlock.match(/^\s*location\s+(?:([=~*^@])\s*)?([^\s{]+)\s*\{/);
-        
+
         if (locationMatch) {
           const isRegex = locationMatch[1] === '~' || locationMatch[1] === '~*';
           const path = locationMatch[2];
-          
+
           const location: NginxLocation = {
             path,
             isRegex,
@@ -106,8 +106,9 @@ export class NginxConfigParser implements MCPAgent {
             return: this.extractDirective(locationBlock, 'return'),
             alias: this.extractDirective(locationBlock, 'alias'),
             try_files: this.extractDirective(locationBlock, 'try_files')
-              .split(/\s+/).filter(Boolean),
-            headers: {}
+              .split(/\s+/)
+              .filter(Boolean),
+            headers: {},
           };
 
           // Extraction des en-têtes
@@ -127,7 +128,9 @@ export class NginxConfigParser implements MCPAgent {
 
       // Extraction des redirections
       server.redirects = [];
-      const redirects = serverBlock.match(/rewrite\s+([^\s]+)\s+([^\s]+)(?:\s+permanent|\s+(\d+))?;/g);
+      const redirects = serverBlock.match(
+        /rewrite\s+([^\s]+)\s+([^\s]+)(?:\s+permanent|\s+(\d+))?;/g
+      );
       if (redirects) {
         for (const redirect of redirects) {
           const match = redirect.match(/rewrite\s+([^\s]+)\s+([^\s]+)(?:\s+permanent|\s+(\d+))?;/);
@@ -135,7 +138,7 @@ export class NginxConfigParser implements MCPAgent {
             server.redirects.push({
               from: match[1],
               to: match[2],
-              code: match[3] ? parseInt(match[3]) : 301
+              code: match[3] ? parseInt(match[3]) : 301,
             });
           }
         }
@@ -146,17 +149,19 @@ export class NginxConfigParser implements MCPAgent {
 
     // Extraction des blocs upstream
     const upstreamBlocks = this.extractBlocks(content, 'upstream');
-    
+
     for (const upstreamBlock of upstreamBlocks) {
       const nameMatch = upstreamBlock.match(/upstream\s+([^\s{]+)\s*\{/);
       if (nameMatch) {
         const name = nameMatch[1];
         const servers = upstreamBlock.match(/server\s+([^;]+);/g);
         if (servers) {
-          result.upstreams[name] = servers.map(s => {
-            const match = s.match(/server\s+([^;]+);/);
-            return match ? match[1] : '';
-          }).filter(Boolean);
+          result.upstreams[name] = servers
+            .map((s) => {
+              const match = s.match(/server\s+([^;]+);/);
+              return match ? match[1] : '';
+            })
+            .filter(Boolean);
         }
       }
     }
@@ -167,12 +172,12 @@ export class NginxConfigParser implements MCPAgent {
   private extractBlocks(content: string, blockType: string): string[] {
     const blocks: string[] = [];
     const regex = new RegExp(`${blockType}\\s+[^{]*\\{[^}]*(?:\\{[^}]*\\}[^}]*)*\\}`, 'g');
-    
+
     let match;
     while ((match = regex.exec(content)) !== null) {
       blocks.push(match[0]);
     }
-    
+
     return blocks;
   }
 
@@ -189,12 +194,12 @@ export class NginxConfigParser implements MCPAgent {
   private extractDirectives(block: string, directive: string): string[] {
     const regex = new RegExp(`${directive}\\s+([^;]+);`, 'g');
     const directives: string[] = [];
-    
+
     let match;
     while ((match = regex.exec(block)) !== null) {
       directives.push(match[1].trim());
     }
-    
+
     return directives;
   }
 }

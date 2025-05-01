@@ -2,8 +2,8 @@
  * Interfaces pour la Couche de coordination - Communication entre les agents et intégration
  */
 
-import { BridgeAgent, BridgeOptions, BridgeResult } from './bridge/bridge-agent';
 import { AdapterAgent, AdapterOptions, AdapterResult } from './adapter/adapter-agent';
+import { BridgeAgent, BridgeOptions, BridgeResult } from './bridge/bridge-agent';
 import { MediatorAgent, MediatorOptions, MediatorResult } from './mediator/mediator-agent';
 
 export {
@@ -15,5 +15,5 @@ export {
   AdapterResult,
   MediatorAgent,
   MediatorOptions,
-  MediatorResult
+  MediatorResult,
 };

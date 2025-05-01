@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 
-const fs = require(fsstructure-agent');
-const path = require(pathstructure-agent');
-const https = require(httpsstructure-agent');
-const http = require(httpstructure-agent');
+const fs = require('fsstructure-agent');
+const path = require('pathstructure-agent');
+const https = require('httpsstructure-agent');
+const http = require('httpstructure-agent');
 
 // Configuration
 const N8N_HOST = process.env.N8N_HOST || 'localhost';
@@ -23,7 +23,7 @@ function makeRequest(method, endpoint, data = null) {
       method,
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${JWT_TOKEN}`
+        Authorization: `Bearer ${JWT_TOKEN}`
       }
     };
 
@@ -38,7 +38,7 @@ function makeRequest(method, endpoint, data = null) {
         if (res.statusCode >= 200 && res.statusCode < 300) {
           try {
             resolve(JSON.parse(responseData));
-          } catch (e) {
+          } catch (_e) {
             resolve(responseData);
           }
         } else {
@@ -137,9 +137,9 @@ function cleanJsonFile(filePath) {
         content = content.replace(/[\x00-\x1F\x7F-\x9F]/g, '');
         
         // Vérifier et fermer les accolades/crochets manquants
-        let openBraces = (content.match(/{/g) || []).length;
+        const openBraces = (content.match(/{/g) || []).length;
         let closeBraces = (content.match(/}/g) || []).length;
-        let openBrackets = (content.match(/\[/g) || []).length;
+        const openBrackets = (content.match(/\[/g) || []).length;
         let closeBrackets = (content.match(/\]/g) || []).length;
         
         while (openBraces > closeBraces) {
@@ -199,7 +199,7 @@ async function main() {
     const importedWorkflows = [];
     if (pipelineData.workflows && Array.isArray(pipelineData.workflows)) {
       console.log(`📊 ${pipelineData.workflows.length} workflows trouvés dans le fichier pipeline`);
-      for (const workflow of pipelineData.workflows) {
+      for (const _workflow of pipelineData.workflows) {
 // DÉSACTIVÉ:         const result = await createWorkflow(workflow);
         if (result) {
           importedWorkflows.push(result);
@@ -226,7 +226,7 @@ async function main() {
         }
         
         try {
-          const workflowData = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+          const _workflowData = JSON.parse(fs.readFileSync(filePath, 'utf8'));
 // DÉSACTIVÉ:           const result = await createWorkflow(workflowData);
           if (result) {
             importedWorkflows.push(result);
@@ -267,15 +267,15 @@ async function main() {
             }
           } else if (workflowData.workflows && Array.isArray(workflowData.workflows)) {
             // C'est un tableau de workflows
-            for (const workflow of workflowData.workflows) {
+            for (const _workflow of workflowData.workflows) {
 // DÉSACTIVÉ:               const result = await createWorkflow(workflow);
               if (result) {
                 importedWorkflows.push(result);
               }
             }
-          } else if (workflowData.data && workflowData.data.workflows) {
+          } else if (workflowData.data?.workflows) {
             // Format d'exportation n8n
-            for (const workflow of workflowData.data.workflows) {
+            for (const _workflow of workflowData.data.workflows) {
 // DÉSACTIVÉ:               const result = await createWorkflow(workflow);
               if (result) {
                 importedWorkflows.push(result);

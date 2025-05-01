@@ -21,5 +21,5 @@ export interface McpAgent {
   description: string;
   execute(context: AgentContext): Promise<AgentResult>;
   validate?(context: AgentContext): Promise<boolean>;
-  getStatus?(): Promise<{ status: 'ready' | 'busy' | 'error', message?: string }>;
+  getStatus?(): Promise<{ status: 'ready' | 'busy' | 'error'; message?: string }>;
 }

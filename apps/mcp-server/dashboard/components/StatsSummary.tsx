@@ -28,9 +28,7 @@ export const StatsSummary: React.FC<StatsSummaryProps> = ({ stats }) => {
           <div className="stat-label">Composants Remix générés</div>
         </div>
         <div className="stat-item">
-          <div className="stat-value">
-            {stats.nestjsFilesGenerated + stats.remixFilesGenerated}
-          </div>
+          <div className="stat-value">{stats.nestjsFilesGenerated + stats.remixFilesGenerated}</div>
           <div className="stat-label">Total fichiers générés</div>
         </div>
       </div>

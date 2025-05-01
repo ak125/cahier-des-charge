@@ -1,8 +1,8 @@
 /**
  * migrate-agents.ts
- * 
+ *
  * Script d'analyse et de migration des agents vers l'architecture MCP OS en 3 couches
- * 
+ *
  * Ce script:
  * 1. Analyse les agents existants et leur structure
  * 2. Identifie leur couche appropriée (orchestration, coordination, business)
@@ -11,11 +11,11 @@
  * 5. Effectue les migrations approuvées
  */
 
-import * as fs from 'fs-extra';
-import * as path from 'path';
-import * as glob from 'glob';
 import { exec } from 'child_process';
+import * as path from 'path';
 import { promisify } from 'util';
+import * as fs from 'fs-extra';
+import * as glob from 'glob';
 
 // Utilitaires
 const execAsync = promisify(exec);
@@ -23,16 +23,20 @@ const logger = {
   info: (msg: string) => console.log(`\x1b[36mINFO\x1b[0m: ${msg}`),
   warn: (msg: string) => console.log(`\x1b[33mWARN\x1b[0m: ${msg}`),
   error: (msg: string) => console.log(`\x1b[31mERROR\x1b[0m: ${msg}`),
-  success: (msg: string) => console.log(`\x1b[32mSUCCESS\x1b[0m: ${msg}`)
+  success: (msg: string) => console.log(`\x1b[32mSUCCESS\x1b[0m: ${msg}`),
 };
 
 // Constantes
 const WORKSPACE_ROOT = process.cwd();
 const AGENTS_DIR = path.join(WORKSPACE_ROOT, 'agents');
-const PACKAGES_DIR = path.join(WORKSPACE_ROOT, 'packages');
+const _PACKAGES_DIR = path.join(WORKSPACE_ROOT, 'packages');
 const MCP_AGENTS_DIR = path.join(WORKSPACE_ROOT, 'packages', 'mcp-agents');
-const INTERFACES_DIR = path.join(WORKSPACE_ROOT, 'src', 'core', 'interfaces');
-const LEGACY_DIR = path.join(WORKSPACE_ROOT, 'legacy', `migration-${new Date().toISOString().split('T')[0]}`);
+const _INTERFACES_DIR = path.join(WORKSPACE_ROOT, 'src', 'core', 'interfaces');
+const LEGACY_DIR = path.join(
+  WORKSPACE_ROOT,
+  'legacy',
+  `migration-${new Date().toISOString().split('T')[0]}`
+);
 
 // Types pour la migration
 interface AgentAnalysis {
@@ -69,12 +73,11 @@ async function analyzeAgent(filePath: string): Promise<AgentAnalysis> {
   const id = path.basename(filePath, path.extname(filePath)).toLowerCase();
 
   // Extraction des imports
-  const imports = lines
-    .filter(line => line.startsWith('import '))
-    .map(line => line.trim());
+  const imports = lines.filter((line) => line.startsWith('import ')).map((line) => line.trim());
 
   // Extraction des méthodes
-  const methodRegex = /(?:public|private|protected|async)?\s*(\w+)\s*\([^)]*\)\s*(?::\s*[^{]+)?\s*{/g;
+  const methodRegex =
+    /(?:public|private|protected|async)?\s*(\w+)\s*\([^)]*\)\s*(?::\s*[^{]+)?\s*{/g;
   let match;
   const methods: string[] = [];
   while ((match = methodRegex.exec(content)) !== null) {
@@ -93,9 +96,7 @@ async function analyzeAgent(filePath: string): Promise<AgentAnalysis> {
     /Workflow/i.test(name) ||
     /Schedul(er|ing)/i.test(name) ||
     /Monitor(ing)?/i.test(name) ||
-    methods.some(m =>
-      /^(start|schedule|monitor|orchestrate|coordinate|execute)/.test(m)
-    )
+    methods.some((m) => /^(start|schedule|monitor|orchestrate|coordinate|execute)/.test(m))
   ) {
     layer = 'orchestration';
 
@@ -110,9 +111,7 @@ async function analyzeAgent(filePath: string): Promise<AgentAnalysis> {
     /Adapt(er|or)/i.test(name) ||
     /Registry/i.test(name) ||
     /Connect(or|ion)/i.test(name) ||
-    methods.some(m =>
-      /^(bridge|adapt|register|connect|discover|lookup)/.test(m)
-    )
+    methods.some((m) => /^(bridge|adapt|register|connect|discover|lookup)/.test(m))
   ) {
     layer = 'coordination';
 
@@ -128,9 +127,7 @@ async function analyzeAgent(filePath: string): Promise<AgentAnalysis> {
     /Validat(or|e)/i.test(name) ||
     /Check(er)?/i.test(name) ||
     /Parser/i.test(name) ||
-    methods.some(m =>
-      /^(analyze|generate|validate|check|parse)/.test(m)
-    )
+    methods.some((m) => /^(analyze|generate|validate|check|parse)/.test(m))
   ) {
     layer = 'business';
 
@@ -145,24 +142,35 @@ async function analyzeAgent(filePath: string): Promise<AgentAnalysis> {
   try {
     const { stdout } = await execAsync(`git grep -l "${name}" --exclude="*.md" | wc -l`);
     usageCount = parseInt(stdout.trim(), 10);
-  } catch (error) {
+  } catch (_error) {
     logger.warn(`Impossible de compter les utilisations pour ${name}`);
   }
 
   // Déterminer les dépendances
   const dependencies = imports
-    .filter(imp => imp.includes('from'))
-    .map(imp => {
+    .filter((imp) => imp.includes('from'))
+    .map((imp) => {
       const match = imp.match(/from\s+['"](.*?)['"]/);
       return match ? match[1] : '';
     })
-    .filter(dep => dep && !dep.startsWith('.') && !dep.startsWith('@'));
+    .filter((dep) => dep && !dep.startsWith('.') && !dep.startsWith('@'));
 
   // Vérifier si l'agent implémente déjà les interfaces
   const implemented = {
-    baseInterface: content.includes('implements BaseAgent') || content.includes('extends BaseAgent'),
-    layerInterface: content.includes(`implements ${layer === 'orchestration' ? 'Orchestrator' : layer === 'coordination' ? 'Bridge' : 'Analyzer'}Agent`),
-    typeInterface: content.includes(`implements ${agentType.charAt(0).toUpperCase() + agentType.slice(1)}Agent`)
+    baseInterface:
+      content.includes('implements BaseAgent') || content.includes('extends BaseAgent'),
+    layerInterface: content.includes(
+      `implements ${
+        layer === 'orchestration'
+          ? 'Orchestrator'
+          : layer === 'coordination'
+            ? 'Bridge'
+            : 'Analyzer'
+      }Agent`
+    ),
+    typeInterface: content.includes(
+      `implements ${agentType.charAt(0).toUpperCase() + agentType.slice(1)}Agent`
+    ),
   };
 
   return {
@@ -176,7 +184,7 @@ async function analyzeAgent(filePath: string): Promise<AgentAnalysis> {
     agentType,
     usageCount,
     dependencies,
-    implemented
+    implemented,
   };
 }
 
@@ -194,7 +202,9 @@ function generateMigrationProposal(agent: AgentAnalysis): AgentAnalysis {
   );
 
   // Construire le template adapté
-  const interfaceBaseName = agent.agentType.charAt(0).toUpperCase() + agent.agentType.slice(1) + 'Agent';
+  const interfaceBaseName = `${
+    agent.agentType.charAt(0).toUpperCase() + agent.agentType.slice(1)
+  }Agent`;
 
   const generatedCode = `/**
  * ${agent.name} - Agent MCP pour ${agent.layer} (${agent.agentType})
@@ -203,7 +213,9 @@ function generateMigrationProposal(agent: AgentAnalysis): AgentAnalysis {
  * Date: ${new Date().toISOString()}
  */
 
-import { ${interfaceBaseName} } from '@workspaces/cahier-des-charge/src/core/interfaces/${agent.layer}';
+import { ${interfaceBaseName} } from '@workspaces/cahier-des-charge/src/core/interfaces/${
+    agent.layer
+  }';
 import { BaseAgent } from '@workspaces/cahier-des-charge/src/core/interfaces/BaseAgent';
 ${agent.imports.join('\n')}
 
@@ -215,11 +227,13 @@ export interface ${agent.name}Config {
 }
 
 /**
- * ${agent.name} - ${agent.layer === 'business'
-      ? 'Agent d\'analyse et de traitement métier'
-      : agent.layer === 'coordination'
-        ? 'Agent de coordination et d\'intégration'
-        : 'Agent d\'orchestration et de workflows'}
+ * ${agent.name} - ${
+   agent.layer === 'business'
+     ? "Agent d'analyse et de traitement métier"
+     : agent.layer === 'coordination'
+        ? "Agent de coordination et d'intégration"
+        : "Agent d'orchestration et de workflows"
+ }
  */
 export class ${agent.name} implements ${interfaceBaseName} {
   id = '${agent.id}';
@@ -265,13 +279,17 @@ export class ${agent.name} implements ${interfaceBaseName} {
   }
   
   // TODO: Implémenter les méthodes spécifiques de l'interface ${interfaceBaseName}
-${agent.methods.map(method => `  
+${agent.methods
+  .map(
+    (method) => `  
   /**
    * ${method}
    */
   ${method}() {
     // TODO: Migrer l'implémentation existante
-  }`).join('\n')}
+  }`
+  )
+  .join('\n')}
 }
 
 export default ${agent.name};
@@ -280,21 +298,24 @@ export default ${agent.name};
   return {
     ...agent,
     generatedCode,
-    migrationPath
+    migrationPath,
   };
 }
 
 /**
  * Exécute la migration d'un agent
  */
-async function executeMigration(agent: AgentAnalysis, backupOriginal: boolean = true): Promise<boolean> {
+async function executeMigration(agent: AgentAnalysis, backupOriginal = true): Promise<boolean> {
   try {
     // S'assurer que le dossier de destination existe
     await fs.ensureDir(path.dirname(agent.migrationPath!));
 
     // Backup de l'agent original si demandé
     if (backupOriginal) {
-      const backupDir = path.join(LEGACY_DIR, path.relative(WORKSPACE_ROOT, path.dirname(agent.filePath)));
+      const backupDir = path.join(
+        LEGACY_DIR,
+        path.relative(WORKSPACE_ROOT, path.dirname(agent.filePath))
+      );
       const backupPath = path.join(backupDir, path.basename(agent.filePath));
       await fs.ensureDir(backupDir);
       await fs.copy(agent.filePath, backupPath);
@@ -305,12 +326,16 @@ async function executeMigration(agent: AgentAnalysis, backupOriginal: boolean = 
 
     // Vérifier que le fichier a bien été écrit
     if (await fs.pathExists(agent.migrationPath!)) {
-      logger.success(`✅ Agent migré: ${path.relative(WORKSPACE_ROOT, agent.filePath)} -> ${path.relative(WORKSPACE_ROOT, agent.migrationPath!)}`);
+      logger.success(
+        `✅ Agent migré: ${path.relative(WORKSPACE_ROOT, agent.filePath)} -> ${path.relative(
+          WORKSPACE_ROOT,
+          agent.migrationPath!
+        )}`
+      );
       return true;
-    } else {
-      logger.error(`❌ Erreur lors de la migration de ${agent.name}: le fichier n'a pas été créé`);
-      return false;
     }
+    logger.error(`❌ Erreur lors de la migration de ${agent.name}: le fichier n'a pas été créé`);
+    return false;
   } catch (error: any) {
     logger.error(`❌ Erreur lors de la migration de ${agent.name}: ${error.message}`);
     return false;
@@ -326,10 +351,14 @@ async function main() {
   // Récupérer les arguments de ligne de commande
   const args = process.argv.slice(2);
   const shouldExecute = args.includes('--execute');
-  const specificLayer = args.find(arg => arg.startsWith('--layer='))?.split('=')[1] as AgentAnalysis['layer'] | undefined;
+  const specificLayer = args.find((arg) => arg.startsWith('--layer='))?.split('=')[1] as
+    | AgentAnalysis['layer']
+    | undefined;
 
   // Rechercher tous les agents existants
-  const agentFiles = glob.sync(path.join(AGENTS_DIR, '**/*.ts'), { ignore: ['**/*.spec.ts', '**/*.test.ts'] });
+  const agentFiles = glob.sync(path.join(AGENTS_DIR, '**/*.ts'), {
+    ignore: ['**/*.spec.ts', '**/*.test.ts'],
+  });
   logger.info(`${agentFiles.length} agents trouvés.`);
 
   // Analyser chaque agent
@@ -363,12 +392,12 @@ async function main() {
     date: new Date().toISOString(),
     totalAgents: analyses.length,
     byLayer: {
-      orchestration: analyses.filter(a => a.layer === 'orchestration').length,
-      coordination: analyses.filter(a => a.layer === 'coordination').length,
-      business: analyses.filter(a => a.layer === 'business').length,
-      unknown: analyses.filter(a => a.layer === 'unknown').length
+      orchestration: analyses.filter((a) => a.layer === 'orchestration').length,
+      coordination: analyses.filter((a) => a.layer === 'coordination').length,
+      business: analyses.filter((a) => a.layer === 'business').length,
+      unknown: analyses.filter((a) => a.layer === 'unknown').length,
     },
-    agents: proposals.map(p => ({
+    agents: proposals.map((p) => ({
       id: p.id,
       name: p.name,
       layer: p.layer,
@@ -376,29 +405,31 @@ async function main() {
       usageCount: p.usageCount,
       currentPath: p.filePath,
       migrationPath: p.migrationPath,
-      implemented: p.implemented
-    }))
+      implemented: p.implemented,
+    })),
   };
 
   await fs.ensureDir(path.dirname(LEGACY_DIR));
   await fs.writeJson(path.join(WORKSPACE_ROOT, 'MigrationReport.json'), report, { spaces: 2 });
 
-  logger.success(`Rapport de migration généré: MigrationReport.json`);
-  logger.info(`Agents par couche: Orchestration: ${report.byLayer.orchestration}, Coordination: ${report.byLayer.coordination}, Business: ${report.byLayer.business}, Non classés: ${report.byLayer.unknown}`);
+  logger.success('Rapport de migration généré: MigrationReport.json');
+  logger.info(
+    `Agents par couche: Orchestration: ${report.byLayer.orchestration}, Coordination: ${report.byLayer.coordination}, Business: ${report.byLayer.business}, Non classés: ${report.byLayer.unknown}`
+  );
 
   // Générer un exemple de plan de migration
   await generateMigrationPlan(proposals);
 
   // Exécuter la migration si demandé
   if (shouldExecute) {
-    logger.info(`Mode exécution activé. Migration des agents...`);
+    logger.info('Mode exécution activé. Migration des agents...');
 
     // Préparer les dossiers de la nouvelle structure
     await prepareDirectoryStructure();
 
     // Filtrer les agents selon la couche spécifiée
     const agentsToMigrate = specificLayer
-      ? proposals.filter(p => p.layer === specificLayer)
+      ? proposals.filter((p) => p.layer === specificLayer)
       : proposals;
 
     if (agentsToMigrate.length === 0) {
@@ -406,7 +437,11 @@ async function main() {
       return;
     }
 
-    logger.info(`Migration de ${agentsToMigrate.length} agents ${specificLayer ? `de la couche ${specificLayer}` : ''}...`);
+    logger.info(
+      `Migration de ${agentsToMigrate.length} agents ${
+        specificLayer ? `de la couche ${specificLayer}` : ''
+      }...`
+    );
 
     // Exécuter la migration pour chaque agent
     let successCount = 0;
@@ -415,11 +450,15 @@ async function main() {
         const success = await executeMigration(agent, true);
         if (success) successCount++;
       } else {
-        logger.warn(`⚠️ Impossible de migrer ${agent.name}: code généré ou chemin de migration manquant`);
+        logger.warn(
+          `⚠️ Impossible de migrer ${agent.name}: code généré ou chemin de migration manquant`
+        );
       }
     }
 
-    logger.success(`Migration terminée: ${successCount}/${agentsToMigrate.length} agents migrés avec succès`);
+    logger.success(
+      `Migration terminée: ${successCount}/${agentsToMigrate.length} agents migrés avec succès`
+    );
   }
 }
 
@@ -451,7 +490,7 @@ async function prepareDirectoryStructure(): Promise<void> {
     path.join(MCP_AGENTS_DIR, 'others', 'misc'),
 
     // Backup directory
-    LEGACY_DIR
+    LEGACY_DIR,
   ];
 
   for (const dir of structure) {
@@ -469,9 +508,12 @@ async function generateMigrationPlan(proposals: AgentAnalysis[]) {
 
 ## Priorisation des agents
 
-${proposals.slice(0, 10).map((p, i) =>
-    `${i + 1}. **${p.name}** (${p.layer}/${p.agentType}) - ${p.usageCount} utilisations`
-  ).join('\n')}
+${proposals
+  .slice(0, 10)
+  .map(
+    (p, i) => `${i + 1}. **${p.name}** (${p.layer}/${p.agentType}) - ${p.usageCount} utilisations`
+  )
+  .join('\n')}
 
 ## Structure cible
 
@@ -523,7 +565,7 @@ npm run test:coverage
 }
 
 // Exécuter la fonction principale
-main().catch(error => {
+main().catch((error) => {
   logger.error(`Erreur lors de la migration des agents: ${error.message}`);
   process.exit(1);
 });

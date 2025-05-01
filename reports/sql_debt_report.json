@@ -18,8 +18,12 @@
       "description": "Utilisation incohérente de champs de timestamp",
       "affected_tables": ["users", "orders", "products", "categories", "payment_transactions"],
       "affected_columns": [
-        "created_on", "created_at", "date_created", 
-        "updated_on", "updated_at", "last_update"
+        "created_on",
+        "created_at",
+        "date_created",
+        "updated_on",
+        "updated_at",
+        "last_update"
       ],
       "severity": "Moyenne",
       "remediation": "Standardiser sur created_at et updated_at avec type TIMESTAMP et déclencher automatiquement les mises à jour"
@@ -28,9 +32,7 @@
       "pattern": "Champs d'état textuels avec codes numériques",
       "description": "Champs status accompagnés de status_txt décrivant la même information",
       "affected_tables": ["orders", "payment_transactions", "shipping"],
-      "affected_columns": [
-        "status", "status_txt", "status_description"
-      ],
+      "affected_columns": ["status", "status_txt", "status_description"],
       "severity": "Élevée",
       "remediation": "Utiliser un ENUM ou une table de référence pour le statut plutôt que des codes et descriptions dupliqués"
     },
@@ -39,9 +41,13 @@
       "description": "Colonnes stockant la même information d'identifiant sous différentes formes",
       "affected_tables": ["users", "orders", "products"],
       "affected_columns": [
-        "id", "user_id", "user_uuid", 
-        "order_id", "order_number",
-        "product_id", "product_code"
+        "id",
+        "user_id",
+        "user_uuid",
+        "order_id",
+        "order_number",
+        "product_id",
+        "product_code"
       ],
       "severity": "Moyenne",
       "remediation": "Choisir un format d'identifiant unique et cohérent (soit numérique, soit UUID) et s'y tenir"
@@ -53,8 +59,8 @@
       "description": "Colonnes inutilisées ou devenues obsolètes",
       "affected_tables": ["users", "products", "orders"],
       "affected_columns": [
-        "users.legacy_id", 
-        "products.old_category", 
+        "users.legacy_id",
+        "products.old_category",
         "orders.shipping_old_method",
         "users.temp_flag",
         "products.discontinued"
@@ -69,9 +75,10 @@
       "description": "Colonnes utilisées pour stocker différents types de données",
       "affected_tables": ["products", "orders", "users", "configs"],
       "affected_columns": [
-        "products.data1", "products.data2",
-        "orders.additional_data", 
-        "users.preferences", 
+        "products.data1",
+        "products.data2",
+        "orders.additional_data",
+        "users.preferences",
         "configs.value"
       ],
       "severity": "Élevée",
@@ -81,11 +88,7 @@
       "pattern": "Colonnes JSON non structurées",
       "description": "Utilisation de TEXT ou VARCHAR pour stocker du JSON sans validation",
       "affected_tables": ["products", "orders", "configs"],
-      "affected_columns": [
-        "products.json_blob", 
-        "orders.meta_info",
-        "configs.settings"
-      ],
+      "affected_columns": ["products.json_blob", "orders.meta_info", "configs.settings"],
       "severity": "Élevée",
       "remediation": "Migrer vers le type JSON/JSONB natif avec validation de schéma ou décomposer en colonnes si possible"
     }
@@ -103,9 +106,9 @@
       "description": "Relations implicites sans contraintes de clé étrangère",
       "affected_tables": ["orders", "order_items", "user_addresses", "product_categories"],
       "affected_columns": [
-        "orders.user_id", 
-        "order_items.order_id", 
-        "user_addresses.user_id", 
+        "orders.user_id",
+        "order_items.order_id",
+        "user_addresses.user_id",
         "product_categories.product_id"
       ],
       "severity": "Moyenne",
@@ -128,8 +131,8 @@
       "description": "Conventions de nommage incohérentes entre les tables",
       "affected_tables": ["users", "products", "orders", "categories"],
       "examples": [
-        "user_id vs. userId", 
-        "created_at vs. dateCreated", 
+        "user_id vs. userId",
+        "created_at vs. dateCreated",
         "product_name vs. productName"
       ],
       "severity": "Faible",

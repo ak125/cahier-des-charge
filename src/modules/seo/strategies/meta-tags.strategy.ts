@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { ISeoAnalysisStrategy } from '../interfaces/seo-strategy.interface';
 import * as cheerio from 'cheerio';
+import { ISeoAnalysisStrategy } from '../interfaces/seo-strategy.interface';
 
 /**
  * Stratégie d'analyse des balises meta pour le SEO
@@ -17,14 +17,18 @@ export class MetaTagsStrategy implements ISeoAnalysisStrategy {
   /**
    * Cette stratégie est applicable à toutes les pages HTML
    */
-  isApplicable(url: string, content?: string): boolean {
+  isApplicable(_url: string, content?: string): boolean {
     return !!content && content.includes('<!DOCTYPE html>');
   }
 
   /**
    * Analyse les balises meta d'une page
    */
-  async analyze(url: string, content: string, options?: any): Promise<{
+  async analyze(
+    url: string,
+    content: string,
+    _options?: any
+  ): Promise<{
     score: number;
     issues: Array<{
       type: string;
@@ -71,7 +75,8 @@ export class MetaTagsStrategy implements ISeoAnalysisStrategy {
             details: {
               titleLength: title.length,
               title: title,
-              recommendation: 'Allongez le titre pour qu\'il soit plus descriptif (50-60 caractères)',
+              recommendation:
+                "Allongez le titre pour qu'il soit plus descriptif (50-60 caractères)",
             },
           });
         } else if (title.length > 70) {
@@ -82,7 +87,8 @@ export class MetaTagsStrategy implements ISeoAnalysisStrategy {
             details: {
               titleLength: title.length,
               title: title,
-              recommendation: 'Raccourcissez le titre à 50-60 caractères pour éviter la troncature dans les SERP',
+              recommendation:
+                'Raccourcissez le titre à 50-60 caractères pour éviter la troncature dans les SERP',
             },
           });
         }
@@ -96,7 +102,8 @@ export class MetaTagsStrategy implements ISeoAnalysisStrategy {
           severity: 'critical',
           message: 'La balise meta description est manquante.',
           details: {
-            recommendation: 'Ajoutez une meta description concise et pertinente (130-160 caractères)',
+            recommendation:
+              'Ajoutez une meta description concise et pertinente (130-160 caractères)',
           },
         });
       } else {
@@ -108,7 +115,8 @@ export class MetaTagsStrategy implements ISeoAnalysisStrategy {
             details: {
               descriptionLength: description.length,
               description: description,
-              recommendation: 'Allongez la description pour qu\'elle soit plus informative (130-160 caractères)',
+              recommendation:
+                "Allongez la description pour qu'elle soit plus informative (130-160 caractères)",
             },
           });
         } else if (description.length > 320) {
@@ -119,7 +127,8 @@ export class MetaTagsStrategy implements ISeoAnalysisStrategy {
             details: {
               descriptionLength: description.length,
               description: description,
-              recommendation: 'Raccourcissez la description à 130-160 caractères pour éviter la troncature dans les SERP',
+              recommendation:
+                'Raccourcissez la description à 130-160 caractères pour éviter la troncature dans les SERP',
             },
           });
         }
@@ -133,7 +142,8 @@ export class MetaTagsStrategy implements ISeoAnalysisStrategy {
           severity: 'warning',
           message: 'La balise canonical est manquante.',
           details: {
-            recommendation: 'Ajoutez une balise canonical pour éviter les problèmes de contenu dupliqué',
+            recommendation:
+              'Ajoutez une balise canonical pour éviter les problèmes de contenu dupliqué',
           },
         });
       } else if (!canonical.startsWith('http')) {
@@ -146,7 +156,7 @@ export class MetaTagsStrategy implements ISeoAnalysisStrategy {
             recommendation: 'Utilisez une URL absolue pour la balise canonical',
           },
         });
-      } else if (canonical !== url && !url.endsWith('/') && canonical !== url + '/') {
+      } else if (canonical !== url && !url.endsWith('/') && canonical !== `${url}/`) {
         issues.push({
           type: 'incorrect-canonical',
           severity: 'info',
@@ -166,7 +176,8 @@ export class MetaTagsStrategy implements ISeoAnalysisStrategy {
           severity: 'info',
           message: 'La balise Open Graph title est manquante.',
           details: {
-            recommendation: 'Ajoutez une balise og:title pour améliorer le partage sur les réseaux sociaux',
+            recommendation:
+              'Ajoutez une balise og:title pour améliorer le partage sur les réseaux sociaux',
           },
         });
       }
@@ -177,7 +188,8 @@ export class MetaTagsStrategy implements ISeoAnalysisStrategy {
           severity: 'info',
           message: 'La balise Open Graph description est manquante.',
           details: {
-            recommendation: 'Ajoutez une balise og:description pour améliorer le partage sur les réseaux sociaux',
+            recommendation:
+              'Ajoutez une balise og:description pour améliorer le partage sur les réseaux sociaux',
           },
         });
       }
@@ -188,22 +200,23 @@ export class MetaTagsStrategy implements ISeoAnalysisStrategy {
           severity: 'info',
           message: 'La balise Open Graph image est manquante.',
           details: {
-            recommendation: 'Ajoutez une balise og:image pour améliorer le partage sur les réseaux sociaux',
+            recommendation:
+              'Ajoutez une balise og:image pour améliorer le partage sur les réseaux sociaux',
           },
         });
       }
 
       // Calcul du score
       const totalIssues = issues.length;
-      const criticalIssues = issues.filter(issue => issue.severity === 'critical').length;
-      const warningIssues = issues.filter(issue => issue.severity === 'warning').length;
-      const infoIssues = issues.filter(issue => issue.severity === 'info').length;
+      const criticalIssues = issues.filter((issue) => issue.severity === 'critical').length;
+      const warningIssues = issues.filter((issue) => issue.severity === 'warning').length;
+      const infoIssues = issues.filter((issue) => issue.severity === 'info').length;
 
       // Calcul du score (100 - pénalités)
       let score = 100;
       score -= criticalIssues * 20; // -20 points par problème critique
       score -= warningIssues * 10; // -10 points par avertissement
-      score -= infoIssues * 2;     // -2 points par information
+      score -= infoIssues * 2; // -2 points par information
 
       // S'assurer que le score reste entre 0 et 100
       score = Math.max(0, Math.min(100, score));
@@ -225,12 +238,14 @@ export class MetaTagsStrategy implements ISeoAnalysisStrategy {
       this.logger.error(`Erreur lors de l'analyse des balises meta: ${error.message}`, error.stack);
       return {
         score: 0,
-        issues: [{
-          type: 'analysis-error',
-          severity: 'critical',
-          message: `Erreur lors de l'analyse: ${error.message}`,
-          details: { error: error.message },
-        }],
+        issues: [
+          {
+            type: 'analysis-error',
+            severity: 'critical',
+            message: `Erreur lors de l'analyse: ${error.message}`,
+            details: { error: error.message },
+          },
+        ],
       };
     }
   }
@@ -238,7 +253,10 @@ export class MetaTagsStrategy implements ISeoAnalysisStrategy {
   /**
    * Suggère des corrections pour les problèmes identifiés
    */
-  async suggestFixes(issues: Array<any>, content: string): Promise<{
+  async suggestFixes(
+    issues: Array<any>,
+    content: string
+  ): Promise<{
     fixedContent?: string;
     recommendations: Array<{
       issue: any;
@@ -273,7 +291,9 @@ export class MetaTagsStrategy implements ISeoAnalysisStrategy {
             });
             // Tentative de correction automatique avec une description générique
             if (!$('meta[name="description"]').length) {
-              $('head').append('<meta name="description" content="Description à personnaliser pour cette page" />');
+              $('head').append(
+                '<meta name="description" content="Description à personnaliser pour cette page" />'
+              );
               modified = true;
             }
             break;
@@ -281,7 +301,8 @@ export class MetaTagsStrategy implements ISeoAnalysisStrategy {
           case 'missing-canonical':
             recommendations.push({
               issue,
-              recommendation: 'Ajoutez une balise canonical pointant vers l\'URL canonique de cette page.',
+              recommendation:
+                "Ajoutez une balise canonical pointant vers l'URL canonique de cette page.",
               autoFixable: true,
             });
             // Tentative de correction automatique
@@ -307,7 +328,9 @@ export class MetaTagsStrategy implements ISeoAnalysisStrategy {
           default:
             recommendations.push({
               issue,
-              recommendation: issue.details?.recommendation || 'Consultez les détails du problème pour des recommandations.',
+              recommendation:
+                issue.details?.recommendation ||
+                'Consultez les détails du problème pour des recommandations.',
               autoFixable: false,
             });
             break;
@@ -319,17 +342,23 @@ export class MetaTagsStrategy implements ISeoAnalysisStrategy {
         recommendations,
       };
     } catch (error) {
-      this.logger.error(`Erreur lors de la suggestion de corrections: ${error.message}`, error.stack);
+      this.logger.error(
+        `Erreur lors de la suggestion de corrections: ${error.message}`,
+        error.stack
+      );
       return {
-        recommendations: [{
-          issue: {
-            type: 'fix-error',
-            severity: 'critical',
-            message: `Erreur lors de la suggestion de corrections: ${error.message}`,
+        recommendations: [
+          {
+            issue: {
+              type: 'fix-error',
+              severity: 'critical',
+              message: `Erreur lors de la suggestion de corrections: ${error.message}`,
+            },
+            recommendation:
+              'Une erreur est survenue lors de la tentative de correction. Vérifiez la syntaxe HTML de la page.',
+            autoFixable: false,
           },
-          recommendation: 'Une erreur est survenue lors de la tentative de correction. Vérifiez la syntaxe HTML de la page.',
-          autoFixable: false,
-        }],
+        ],
       };
     }
   }

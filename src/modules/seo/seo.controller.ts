@@ -1,8 +1,8 @@
-import { Controller, Get, Post, Body, Param, Query, Logger, HttpException, HttpStatus, UseGuards } from '@nestjs/common';
-import { SeoService } from './seo.service';
+import { Body, Controller, Get, HttpException, HttpStatus, Logger, Param, Post, Query, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '../auth/auth.guard';
 import { Roles } from '../auth/roles.decorator';
 import { RolesGuard } from '../auth/roles.guard';
+import { SeoService } from './seo.service';
 
 @Controller('api/seo')
 export class SeoController {
@@ -135,7 +135,7 @@ export class SeoController {
     try {
       const issueId = parseInt(id, 10);
       
-      if (isNaN(issueId)) {
+      if (Number.isNaN(issueId)) {
         throw new HttpException('ID de problème invalide', HttpStatus.BAD_REQUEST);
       }
       

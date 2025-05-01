@@ -5,12 +5,12 @@
  * avec les standards du framework MCP (Model Context Protocol).
  */
 
-import fs from 'fs-extra';
 import path from 'path';
-import ts from 'typescript';
 import { Logger } from '@nestjs/common';
-import { AgentManifest, AgentManifestEntry } from './agentRegistry';
+import fs from 'fs-extra';
+import ts from 'typescript';
 import { z } from 'zod';
+import { AgentManifest, AgentManifestEntry } from './agentRegistry';
 
 const logger = new Logger('AgentValidator');
 
@@ -881,7 +881,7 @@ function implementInterfaces(filePath: string): void {
   console.log(`Traitement de ${filePath}`);
   
   // Lire le contenu du fichier
-  let content = fs.readFileSync(filePath, 'utf8');
+  const content = fs.readFileSync(filePath, 'utf8');
   
   // Déterminer la couche et le type
   const layer = determineLayer(filePath);
@@ -959,7 +959,7 @@ function implementInterfaces(filePath: string): void {
       
       if (classMatch[2]) {
         // Il y a déjà une clause implements
-        let implementsList = classMatch[3];
+        const implementsList = classMatch[3];
         const alreadyImplemented = implementsList.split(',').map(i => i.trim());
         const interfacesToAdd = requiredInterfaces.filter(i => !alreadyImplemented.includes(i));
         

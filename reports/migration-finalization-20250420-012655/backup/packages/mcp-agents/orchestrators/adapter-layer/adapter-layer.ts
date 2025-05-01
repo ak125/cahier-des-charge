@@ -1,16 +1,16 @@
-import { 
-  OrchestrationAbstraction, 
-  WorkflowDefinition, 
-  ExecutionOptions, 
-  ExecutionResult, 
-  TaskOptions, 
-  JobStatus 
+import {
+  ExecutionOptions,
+  ExecutionResult,
+  JobStatus,
+  OrchestrationAbstraction,
+  TaskOptions,
+  WorkflowDefinition,
 } from './AbstractionLayer';
 
 /**
  * Interface de la couche d'adaptation pour les systèmes d'orchestration
- * 
- * Cette interface définit comment un adaptateur spécifique doit se connecter 
+ *
+ * Cette interface définit comment un adaptateur spécifique doit se connecter
  * à un système d'orchestration concret et exposer ses fonctionnalités.
  */
 export interface OrchestrationAdapter extends OrchestrationAbstraction {
@@ -77,7 +77,7 @@ export interface OrchestratorCapabilities {
    * Supporte l'exécution parallèle
    */
   parallelExecution: boolean;
-  
+
   /**
    * Supporte les sous-workflows
    */
@@ -102,7 +102,7 @@ export interface OrchestratorCapabilities {
    * Supporte le versionnement des workflows
    */
   versioning: boolean;
-  
+
   /**
    * Capacités additionnelles spécifiques au système
    */
@@ -137,17 +137,17 @@ export interface ValidationError {
    * Code d'erreur
    */
   code: string;
-  
+
   /**
    * Message d'erreur
    */
   message: string;
-  
+
   /**
    * Chemin dans la définition du workflow où l'erreur est présente
    */
   path?: string;
-  
+
   /**
    * Suggestions de correction
    */
@@ -162,17 +162,17 @@ export interface ValidationWarning {
    * Code d'avertissement
    */
   code: string;
-  
+
   /**
    * Message d'avertissement
    */
   message: string;
-  
+
   /**
    * Chemin dans la définition du workflow où l'avertissement est présent
    */
   path?: string;
-  
+
   /**
    * Suggestions d'amélioration
    */
@@ -192,17 +192,17 @@ export interface ErrorContext {
    * Type de l'erreur
    */
   type: 'WORKFLOW' | 'TASK' | 'CONNECTION' | 'SYSTEM';
-  
+
   /**
    * Identifiant de l'entité concernée par l'erreur
    */
   entityId?: string;
-  
+
   /**
    * Tentative actuelle (pour les mécanismes de retry)
    */
   attemptNumber?: number;
-  
+
   /**
    * Métadonnées additionnelles
    */
@@ -217,12 +217,12 @@ export interface ErrorHandlingResult {
    * Action à prendre
    */
   action: 'RETRY' | 'FAIL' | 'IGNORE' | 'COMPENSATE';
-  
+
   /**
    * Délai avant retry (si action=RETRY)
    */
   retryDelayMs?: number;
-  
+
   /**
    * Données de compensation (si action=COMPENSATE)
    */
@@ -237,7 +237,7 @@ export interface HealthStatus {
    * État de santé global
    */
   status: 'HEALTHY' | 'DEGRADED' | 'UNHEALTHY';
-  
+
   /**
    * Détails sur l'état de santé
    */
@@ -246,17 +246,17 @@ export interface HealthStatus {
      * État de la connexion
      */
     connection: 'CONNECTED' | 'CONNECTING' | 'DISCONNECTED';
-    
+
     /**
      * Temps de réponse en millisecondes
      */
     responseTimeMs?: number;
-    
+
     /**
      * Statut des services dépendants
      */
     dependencies?: Record<string, 'HEALTHY' | 'DEGRADED' | 'UNHEALTHY'>;
-    
+
     /**
      * Message d'erreur (si présent)
      */
@@ -283,7 +283,7 @@ export interface AdapterConfig {
    * Type d'adaptateur à créer
    */
   type: 'TEMPORAL' | 'BULLMQ' | 'N8N' | string;
-  
+
   /**
    * Configuration de connexion
    */
@@ -292,7 +292,7 @@ export interface AdapterConfig {
      * URL du service d'orchestration
      */
     url?: string;
-    
+
     /**
      * Informations d'authentification
      */
@@ -302,7 +302,7 @@ export interface AdapterConfig {
       token?: string;
       [key: string]: any;
     };
-    
+
     /**
      * Options de timeout (en millisecondes)
      */
@@ -310,13 +310,13 @@ export interface AdapterConfig {
       connection?: number;
       operation?: number;
     };
-    
+
     /**
      * Options additionnelles spécifiques au système
      */
     [key: string]: any;
   };
-  
+
   /**
    * Options de configuration additionnelles
    */

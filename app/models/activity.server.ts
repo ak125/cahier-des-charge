@@ -9,25 +9,25 @@ export interface AIActivityDetails {
   tokens?: number;
   duration?: number;
   prompt?: string;
-  [key: string]: any;  // Pour les propriétés additionnelles spécifiques par type
+  [key: string]: any; // Pour les propriétés additionnelles spécifiques par type
 }
 
 export interface AIActivity {
   id: string;
-  type: string;         // 'code-generation', 'analysis', 'audit', etc.
+  type: string; // 'code-generation', 'analysis', 'audit', etc.
   status: 'completed' | 'failed' | 'processing' | 'queued';
   description: string;
-  timestamp: string;    // ISO date string
-  userId?: string;      // ID de l'utilisateur qui a initié l'activité
-  moduleId?: string;    // Lien vers le module concerné
-  fileId?: string;      // Lien vers le fichier concerné
+  timestamp: string; // ISO date string
+  userId?: string; // ID de l'utilisateur qui a initié l'activité
+  moduleId?: string; // Lien vers le module concerné
+  fileId?: string; // Lien vers le fichier concerné
   details?: AIActivityDetails;
 }
 
 /**
  * Récupère les activités IA récentes
  */
-export async function getRecentAIActivities(limit = 50): Promise<AIActivity[]> {
+export async function getRecentAIActivities(_limit = 50): Promise<AIActivity[]> {
   // Dans une implémentation réelle, ceci ferait un appel à une API ou une base de données
   // Pour l'exemple, nous retournons des données statiques
   return Promise.resolve([
@@ -42,8 +42,8 @@ export async function getRecentAIActivities(limit = 50): Promise<AIActivity[]> {
         model: 'gpt-4',
         tokens: 1250,
         input: 'UserController.php',
-        output: 'UserController.ts'
-      }
+        output: 'UserController.ts',
+      },
     },
     {
       id: '2',
@@ -55,8 +55,8 @@ export async function getRecentAIActivities(limit = 50): Promise<AIActivity[]> {
       details: {
         model: 'gpt-4',
         tokens: 850,
-        input: 'CartService.php'
-      }
+        input: 'CartService.php',
+      },
     },
     {
       id: '3',
@@ -68,20 +68,22 @@ export async function getRecentAIActivities(limit = 50): Promise<AIActivity[]> {
       details: {
         model: 'gpt-4',
         tokens: 1820,
-        input: 'PaymentProcessor.ts'
-      }
-    }
+        input: 'PaymentProcessor.ts',
+      },
+    },
   ]);
 }
 
 /**
  * Ajoute une nouvelle activité IA
  */
-export async function logAIActivity(activity: Omit<AIActivity, 'id' | 'timestamp'>): Promise<AIActivity> {
+export async function logAIActivity(
+  activity: Omit<AIActivity, 'id' | 'timestamp'>
+): Promise<AIActivity> {
   const newActivity = {
     ...activity,
     id: generateId(),
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   };
 
   // Dans une implémentation réelle, ceci enregistrerait l'activité dans une base de données

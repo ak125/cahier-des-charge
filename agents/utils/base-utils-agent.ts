@@ -11,12 +11,8 @@ import { UtilsAgentOptions, UtilsResult } from './types';
  */
 export abstract class BaseUtilsAgent<
   TOptions extends UtilsAgentOptions = UtilsAgentOptions,
-  TResult = any
+  TResult = any,
 > extends BaseAgent<TOptions, TResult> {
-  constructor(options?: Partial<TOptions>) {
-    super(options);
-  }
-
   /**
    * Fonctions utilitaires spécifiques à la catégorie utils
    */

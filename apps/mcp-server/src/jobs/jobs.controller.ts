@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Delete, Query, Logger } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Logger, Param, Post, Query } from '@nestjs/common';
 import { BullQueueService, McpJobOptions } from '../bullmq/bullmq.service';
 
 @Controller('jobs')

@@ -3,15 +3,15 @@
  * Stratégie principale : isoler les workflows défaillants
  */
 import { Logger } from '@nestjs/common';
-import { 
-  BaseCircuitBreaker, 
-  CircuitBreakerOptions, 
-  CircuitBreakerResult, 
-  CircuitEvent,
-  CircuitState
-} from './base-circuit-breaker';
 import { configManager } from '../../config/core/unified-config';
 import { TraceabilityService } from '../traceability/traceability-service';
+import {
+  BaseCircuitBreaker,
+  CircuitBreakerOptions,
+  CircuitBreakerResult,
+  CircuitEvent,
+  CircuitState,
+} from './base-circuit-breaker';
 
 // Type spécifique pour le contexte d'orchestration
 export interface OrchestrationContext {
@@ -25,27 +25,29 @@ export interface OrchestrationContext {
 }
 
 export class OrchestrationCircuitBreaker extends BaseCircuitBreaker {
-  private workflowRegistry: Map<string, {
-    state: CircuitState,
-    failureCount: number,
-    lastFailure?: Date
-  }>;
+  private workflowRegistry: Map<
+    string,
+    {
+      state: CircuitState;
+      failureCount: number;
+      lastFailure?: Date;
+    }
+  >;
   private logger: Logger;
   private traceabilityService: TraceabilityService;
 
-  constructor(
-    options: CircuitBreakerOptions,
-    traceabilityService?: TraceabilityService
-  ) {
+  constructor(options: CircuitBreakerOptions, traceabilityService?: TraceabilityService) {
     super(options);
     this.logger = new Logger('OrchestrationCircuitBreaker');
     this.workflowRegistry = new Map();
-    this.traceabilityService = traceabilityService || new TraceabilityService({
-      layer: 'orchestration',
-      enabled: true,
-      idFormat: DoDotmcp-{timestamp}-orchestration-{random}',
-      storageStrategy: 'database'
-    });
+    this.traceabilityService =
+      traceabilityService ||
+      new TraceabilityService({
+        layer: 'orchestration',
+        enabled: true,
+        idFormat: 'mcp-{timestamp}-orchestration-{random}',
+        storageStrategy: 'database',
+      });
   }
 
   /**
@@ -62,7 +64,7 @@ export class OrchestrationCircuitBreaker extends BaseCircuitBreaker {
         success: true,
         result,
         circuitState: this.state,
-        duration: 0
+        duration: 0,
       };
     }
 
@@ -77,7 +79,7 @@ export class OrchestrationCircuitBreaker extends BaseCircuitBreaker {
         reason: `Workflow ${context.workflowId} is currently isolated due to failures`,
         context,
         time: new Date(),
-        traceId
+        traceId,
       });
 
       if (fallback) {
@@ -86,13 +88,13 @@ export class OrchestrationCircuitBreaker extends BaseCircuitBreaker {
             new Error(`Circuit open for workflow: ${context.workflowId}`),
             context
           );
-          
+
           const duration = Date.now() - startTime;
           this.emit(CircuitEvent.FALLBACK_SUCCESS, {
             duration,
             context,
             time: new Date(),
-            traceId
+            traceId,
           });
 
           return {
@@ -101,7 +103,7 @@ export class OrchestrationCircuitBreaker extends BaseCircuitBreaker {
             fallbackUsed: true,
             circuitState: this.state,
             duration,
-            traceId
+            traceId,
           };
         } catch (fallbackError) {
           const duration = Date.now() - startTime;
@@ -110,7 +112,7 @@ export class OrchestrationCircuitBreaker extends BaseCircuitBreaker {
             duration,
             context,
             time: new Date(),
-            traceId
+            traceId,
           });
 
           return {
@@ -119,7 +121,7 @@ export class OrchestrationCircuitBreaker extends BaseCircuitBreaker {
             fallbackUsed: true,
             circuitState: this.state,
             duration,
-            traceId
+            traceId,
           };
         }
       }
@@ -130,39 +132,36 @@ export class OrchestrationCircuitBreaker extends BaseCircuitBreaker {
         error: new Error(`Circuit open for workflow: ${context?.workflowId}`),
         circuitState: this.state,
         duration,
-        traceId
+        traceId,
       };
     }
-    
+
     // Vérifie l'état général du circuit
     if (this.isOpen()) {
       if (fallback) {
         try {
-          const fallbackResult = await fallback(
-            new Error('Circuit is OPEN'),
-            context
-          );
-          
+          const fallbackResult = await fallback(new Error('Circuit is OPEN'), context);
+
           const duration = Date.now() - startTime;
-          
+
           return {
             success: true,
             result: fallbackResult,
             fallbackUsed: true,
             circuitState: this.state,
             duration,
-            traceId
+            traceId,
           };
         } catch (fallbackError) {
           const duration = Date.now() - startTime;
-          
+
           return {
             success: false,
             error: fallbackError as Error,
             fallbackUsed: true,
             circuitState: this.state,
             duration,
-            traceId
+            traceId,
           };
         }
       }
@@ -173,7 +172,7 @@ export class OrchestrationCircuitBreaker extends BaseCircuitBreaker {
         error: new Error('Circuit is OPEN'),
         circuitState: this.state,
         duration,
-        traceId
+        traceId,
       };
     }
 
@@ -183,19 +182,21 @@ export class OrchestrationCircuitBreaker extends BaseCircuitBreaker {
       event: 'orchestration:workflow:start',
       context: {
         ...context,
-        circuitState: this.state
+        circuitState: this.state,
       },
-      timestamp: new Date()
+      timestamp: new Date(),
     });
 
     // Essaie d'exécuter la fonction protégée
     try {
       const result = await Promise.race([
         fn(),
-        new Promise<never>((_, reject) => 
-          setTimeout(() => reject(new Error(`Execution timed out after ${this.options.timeout}ms`)), 
-            this.options.timeout)
-        )
+        new Promise<never>((_, reject) =>
+          setTimeout(
+            () => reject(new Error(`Execution timed out after ${this.options.timeout}ms`)),
+            this.options.timeout
+          )
+        ),
       ]);
 
       const duration = Date.now() - startTime;
@@ -208,9 +209,9 @@ export class OrchestrationCircuitBreaker extends BaseCircuitBreaker {
         context: {
           ...context,
           duration,
-          circuitState: this.state
+          circuitState: this.state,
         },
-        timestamp: new Date()
+        timestamp: new Date(),
       });
 
       return {
@@ -218,12 +219,12 @@ export class OrchestrationCircuitBreaker extends BaseCircuitBreaker {
         result,
         circuitState: this.state,
         duration,
-        traceId
+        traceId,
       };
     } catch (error) {
       const duration = Date.now() - startTime;
       this.handleFailure(error as Error, context);
-      
+
       // Journaliser l'échec
       await this.traceabilityService.logTrace({
         traceId,
@@ -232,30 +233,30 @@ export class OrchestrationCircuitBreaker extends BaseCircuitBreaker {
           ...context,
           error: (error as Error).message,
           duration,
-          circuitState: this.state
+          circuitState: this.state,
         },
-        timestamp: new Date()
+        timestamp: new Date(),
       });
 
       // Essayer le fallback si disponible
       if (fallback) {
         try {
           const fallbackResult = await fallback(error as Error, context);
-          
+
           this.emit(CircuitEvent.FALLBACK_SUCCESS, {
             duration,
             context,
             time: new Date(),
-            traceId
+            traceId,
           });
-          
+
           return {
             success: true,
             result: fallbackResult,
             fallbackUsed: true,
             circuitState: this.state,
             duration,
-            traceId
+            traceId,
           };
         } catch (fallbackError) {
           this.emit(CircuitEvent.FALLBACK_FAILURE, {
@@ -263,26 +264,26 @@ export class OrchestrationCircuitBreaker extends BaseCircuitBreaker {
             duration,
             context,
             time: new Date(),
-            traceId
+            traceId,
           });
-          
+
           return {
             success: false,
             error: fallbackError as Error,
             fallbackUsed: true,
             circuitState: this.state,
             duration,
-            traceId
+            traceId,
           };
         }
       }
-      
+
       return {
         success: false,
         error: error as Error,
         circuitState: this.state,
         duration,
-        traceId
+        traceId,
       };
     }
   }
@@ -300,12 +301,12 @@ export class OrchestrationCircuitBreaker extends BaseCircuitBreaker {
    */
   public forceClose(): void {
     this.transitionState(CircuitState.CLOSED, 'Forced closed by system');
-    
+
     // Réinitialiser également tous les workflows isolés
     for (const [workflowId, _] of this.workflowRegistry) {
       this.resetWorkflowState(workflowId);
     }
-    
+
     this.logger.log('Circuit breaker forced CLOSED for all workflows');
   }
 
@@ -317,15 +318,15 @@ export class OrchestrationCircuitBreaker extends BaseCircuitBreaker {
   public isolateWorkflow(workflowId: string, reason: string): void {
     const workflowState = this.workflowRegistry.get(workflowId) || {
       state: CircuitState.CLOSED,
-      failureCount: 0
+      failureCount: 0,
     };
-    
+
     workflowState.state = CircuitState.OPEN;
     workflowState.lastFailure = new Date();
     this.workflowRegistry.set(workflowId, workflowState);
-    
+
     this.logger.warn(`Isolated workflow ${workflowId}: ${reason}`);
-    
+
     // Programmer la réintroduction automatique
     setTimeout(() => {
       this.testWorkflow(workflowId);
@@ -358,7 +359,7 @@ export class OrchestrationCircuitBreaker extends BaseCircuitBreaker {
   public resetWorkflowState(workflowId: string): void {
     this.workflowRegistry.set(workflowId, {
       state: CircuitState.CLOSED,
-      failureCount: 0
+      failureCount: 0,
     });
     this.logger.log(`Workflow ${workflowId} state has been reset`);
   }
@@ -389,7 +390,7 @@ export class OrchestrationCircuitBreaker extends BaseCircuitBreaker {
 
     this.emit(CircuitEvent.SUCCESS, {
       context,
-      time: new Date()
+      time: new Date(),
     });
   }
 
@@ -408,7 +409,7 @@ export class OrchestrationCircuitBreaker extends BaseCircuitBreaker {
     this.emit(CircuitEvent.FAILURE, {
       error,
       context,
-      time: new Date()
+      time: new Date(),
     });
 
     // Traitement spécifique pour un workflow
@@ -418,14 +419,16 @@ export class OrchestrationCircuitBreaker extends BaseCircuitBreaker {
 
     // Vérifier si le seuil général d'erreurs est atteint
     if (this.shouldTripCircuit()) {
-      this.transitionState(CircuitState.OPEN, 
-        `Failure threshold reached: ${this.stats.consecutiveFailures} consecutive failures`);
-      
+      this.transitionState(
+        CircuitState.OPEN,
+        `Failure threshold reached: ${this.stats.consecutiveFailures} consecutive failures`
+      );
+
       // Programmer la réouverture du circuit
       if (this.resetTimer) {
         clearTimeout(this.resetTimer);
       }
-      
+
       this.resetTimer = setTimeout(() => {
         this.transitionState(CircuitState.HALF_OPEN, 'Reset timeout elapsed, testing circuit');
       }, this.options.resetTimeout);
@@ -435,21 +438,26 @@ export class OrchestrationCircuitBreaker extends BaseCircuitBreaker {
   /**
    * Traite un échec spécifique à un workflow
    */
-  private handleWorkflowFailure(workflowId: string, error: Error): void {
+  private handleWorkflowFailure(workflowId: string, _error: Error): void {
     const workflowState = this.workflowRegistry.get(workflowId) || {
       state: CircuitState.CLOSED,
-      failureCount: 0
+      failureCount: 0,
     };
-    
+
     workflowState.failureCount++;
     workflowState.lastFailure = new Date();
-    
+
     // Vérifier si le workflow doit être isolé
-    if (workflowState.state === CircuitState.CLOSED && 
-        workflowState.failureCount >= this.options.failureThreshold) {
-      this.isolateWorkflow(workflowId, `Failure threshold reached: ${workflowState.failureCount} failures`);
+    if (
+      workflowState.state === CircuitState.CLOSED &&
+      workflowState.failureCount >= this.options.failureThreshold
+    ) {
+      this.isolateWorkflow(
+        workflowId,
+        `Failure threshold reached: ${workflowState.failureCount} failures`
+      );
     }
-    
+
     this.workflowRegistry.set(workflowId, workflowState);
   }
 
@@ -461,17 +469,17 @@ export class OrchestrationCircuitBreaker extends BaseCircuitBreaker {
     if (this.stats.totalRequests < (this.options.volumeThreshold || 0)) {
       return false;
     }
-    
+
     // Vérifier le nombre d'échecs consécutifs
     if (this.stats.consecutiveFailures >= this.options.failureThreshold) {
       return true;
     }
-    
+
     // Vérifier le pourcentage d'erreur
     if (this.stats.errorRate >= (this.options.errorPercentageThreshold || 50)) {
       return true;
     }
-    
+
     return false;
   }
 }
@@ -483,13 +491,13 @@ export function getOrchestrationCircuitBreaker(): OrchestrationCircuitBreaker {
   if (!orchestrationCircuitBreakerInstance) {
     // Charger la configuration depuis le système de configuration unifié
     const config = configManager.getConfig();
-    
+
     orchestrationCircuitBreakerInstance = new OrchestrationCircuitBreaker({
       failureThreshold: config.circuitBreaker.failureThreshold,
       resetTimeout: config.circuitBreaker.resetTimeout,
-      enabled: config.circuitBreaker.enabled
+      enabled: config.circuitBreaker.enabled,
     });
   }
-  
+
   return orchestrationCircuitBreakerInstance;
 }

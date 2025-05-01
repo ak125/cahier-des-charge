@@ -3,7 +3,7 @@
  * Agent export file
  */
 
-import { PhpRouterAudit } from ./php-router-auditstructure-agent';
+import { PhpRouterAudit } from './php-router-auditstructure-agent';
 
 export { PhpRouterAudit };
 export default PhpRouterAudit;

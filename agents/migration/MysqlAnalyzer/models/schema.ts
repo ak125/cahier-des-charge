@@ -1,6 +1,6 @@
 /**
  * schema.ts
- * 
+ *
  * Définit les interfaces et types pour représenter un schéma MySQL
  */
 
@@ -28,13 +28,13 @@ export interface MySQLSchema {
  * Types de tables
  */
 export enum TableType {
-  BUSINESS_CORE = 'BUSINESS_CORE',       // Tables métier principales (entités fortes)
-  BUSINESS_DETAIL = 'BUSINESS_DETAIL',   // Tables métier secondaires/détails
-  TECHNICAL = 'TECHNICAL',               // Tables techniques (logs, audit, etc.)
-  JUNCTION = 'JUNCTION',                 // Tables de jointure
-  METADATA = 'METADATA',                 // Tables de métadonnées
-  CONFIGURATION = 'CONFIGURATION',       // Tables de configuration/paramètres
-  UNKNOWN = 'UNKNOWN'                    // Type non déterminé
+  BUSINESS_CORE = 'BUSINESS_CORE', // Tables métier principales (entités fortes)
+  BUSINESS_DETAIL = 'BUSINESS_DETAIL', // Tables métier secondaires/détails
+  TECHNICAL = 'TECHNICAL', // Tables techniques (logs, audit, etc.)
+  JUNCTION = 'JUNCTION', // Tables de jointure
+  METADATA = 'METADATA', // Tables de métadonnées
+  CONFIGURATION = 'CONFIGURATION', // Tables de configuration/paramètres
+  UNKNOWN = 'UNKNOWN', // Type non déterminé
 }
 
 /**
@@ -215,220 +215,7 @@ export interface SchemaAnalysisResult {
   recommendations: string[]; // Recommandations pour la migration
 }
 import { BaseAgent } from '@workspaces/cahier-des-charge/src/core/interfaces/BaseAgent';
-import { BusinessAgent, AnalyzerAgent } from '@workspaces/cahier-des-charge/src/core/interfaces/business';
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+import {
+  AnalyzerAgent,
+  BusinessAgent,
+} from '@workspaces/cahier-des-charge/src/core/interfaces/business';

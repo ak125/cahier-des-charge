@@ -1,15 +1,15 @@
+import * as path from 'path';
 import { OrchestrationAgent } from '@workspaces/cahier-des-charge/src/core/interfaces/orchestration';
 import * as fs from 'fs-extra';
-import * as path from 'path';
-import { IAgent, AgentResult } from './BaseAgent';
+import { loadConfig } from '../config/config';
+import { AssemblerAgent } from './AssemblerAgent';
+import { AgentResult, IAgent } from './BaseAgent';
 import { BusinessAgent } from './BusinessAgent';
-import { StructureAgent } from './StructureAgent';
 import { DataAgent } from './DataAgent';
 import { DependencyAgent } from './DependencyAgent';
 import { QualityAgent } from './QualityAgent';
 import { StrategyAgent } from './StrategyAgent';
-import { AssemblerAgent } from './AssemblerAgent';
-import { loadConfig } from '../config/config';
+import { StructureAgent } from './StructureAgent';
 
 // Charger la configuration centralisée
 const config = loadConfig();
@@ -93,7 +93,7 @@ interface ExecutionCheckpoint {
 export class CoordinatorAgent implements BaseAgent, CoordinationAgent, BaseAgent, CoordinationAgent , OrchestrationAgent{
   private config: CoordinatorConfig;
   private results: AgentExecutionResult[] = [];
-  private startTime: number = 0;
+  private startTime = 0;
   private agentRegistry: Map<string, new (filePath: string) => IAgent> = new Map();
   private artifacts: string[] = [];
   private messageQueue: InterAgentMessage[] = []; // File d'attente des messages
@@ -425,7 +425,7 @@ export class CoordinatorAgent implements BaseAgent, CoordinationAgent, BaseAgent
     
     // Exécuter les agents en groupes parallèles en fonction des dépendances
     const completedAgents = new Set<string>();
-    let remainingAgents = new Set(orderedAgents);
+    const remainingAgents = new Set(orderedAgents);
     
     while (remainingAgents.size > 0) {
       // Identifier les agents qui peuvent être exécutés en parallèle

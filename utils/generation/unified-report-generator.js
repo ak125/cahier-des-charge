@@ -23,28 +23,29 @@ fs.mkdirSync(reportDir, { recursive: true });
 function log(message) {
   const logEntry = `[${new Date().toISOString()}] ${message}`;
   console.log(logEntry);
-  fs.appendFileSync(logFile, logEntry + '\n');
+  fs.appendFileSync(logFile, `${logEntry}\n`);
 }
 
 // Générer un rapport simple
-function generateSimpleReport(target, options = {}) {
+function generateSimpleReport(target, _options = {}) {
   log(`Génération d'un rapport simple pour ${target}...`);
-  
+
   const reportFile = path.join(reportDir, `${target}-report-${timestamp}.md`);
-  
+
   let content = `# Rapport sur ${target}\n\n`;
   content += `Date: ${new Date().toLocaleString()}\n\n`;
-  
+
   if (target === 'agents') {
     // Liste des agents
     content += '## Liste des agents\n\n';
     const agentsDir = path.join(projectRoot, 'agents');
-    
+
     if (fs.existsSync(agentsDir)) {
-      const agents = fs.readdirSync(agentsDir)
-        .filter(file => file.endsWith('.ts') || file.endsWith('.js'));
-      
-      agents.forEach(agent => {
+      const agents = fs
+        .readdirSync(agentsDir)
+        .filter((file) => file.endsWith('.ts') || file.endsWith('.js'));
+
+      agents.forEach((agent) => {
         content += `- ${agent}\n`;
       });
     } else {
@@ -54,12 +55,11 @@ function generateSimpleReport(target, options = {}) {
     // Liste des workflows
     content += '## Liste des workflows\n\n';
     const workflowsDir = path.join(projectRoot, 'workflows');
-    
+
     if (fs.existsSync(workflowsDir)) {
-      const workflows = fs.readdirSync(workflowsDir)
-        .filter(file => file.endsWith('.json'));
-      
-      workflows.forEach(workflow => {
+      const workflows = fs.readdirSync(workflowsDir).filter((file) => file.endsWith('.json'));
+
+      workflows.forEach((workflow) => {
         content += `- ${workflow}\n`;
       });
     } else {
@@ -69,43 +69,45 @@ function generateSimpleReport(target, options = {}) {
     // Liste des scripts
     content += '## Liste des scripts\n\n';
     const scriptsDir = path.join(projectRoot, 'scripts');
-    
+
     if (fs.existsSync(scriptsDir)) {
-      const categories = fs.readdirSync(scriptsDir)
-        .filter(item => fs.statSync(path.join(scriptsDir, item)).isDirectory());
-      
-      categories.forEach(category => {
+      const categories = fs
+        .readdirSync(scriptsDir)
+        .filter((item) => fs.statSync(path.join(scriptsDir, item)).isDirectory());
+
+      categories.forEach((category) => {
         content += `### ${category}\n\n`;
-        
+
         const categoryDir = path.join(scriptsDir, category);
-        const scripts = fs.readdirSync(categoryDir)
-          .filter(file => file.endsWith('.sh') || file.endsWith('.js') || file.endsWith('.ts'));
-        
-        scripts.forEach(script => {
+        const scripts = fs
+          .readdirSync(categoryDir)
+          .filter((file) => file.endsWith('.sh') || file.endsWith('.js') || file.endsWith('.ts'));
+
+        scripts.forEach((script) => {
           content += `- ${script}\n`;
         });
-        
+
         content += '\n';
       });
     } else {
       content += '*Aucun script trouvé*\n';
     }
   }
-  
+
   fs.writeFileSync(reportFile, content);
   log(`✅ Rapport généré : ${reportFile}`);
-  
+
   return reportFile;
 }
 
 // Générer un rapport HTML
 function generateHTMLReport(target, options = {}) {
   log(`Génération d'un rapport HTML pour ${target}...`);
-  
+
   // Générer d'abord le rapport markdown
   const mdReportFile = generateSimpleReport(target, options);
   const htmlReportFile = mdReportFile.replace('.md', '.html');
-  
+
   // Conversion en HTML
   let htmlContent = `<!DOCTYPE html>
 <html lang="fr">
@@ -129,11 +131,11 @@ function generateHTMLReport(target, options = {}) {
   // Convertir le contenu Markdown en HTML basique
   const mdContent = fs.readFileSync(mdReportFile, 'utf8');
   const lines = mdContent.split('\n');
-  
+
   // Ignorer les deux premières lignes (titre et date)
   for (let i = 2; i < lines.length; i++) {
     const line = lines[i].trim();
-    
+
     if (line.startsWith('## ')) {
       htmlContent += `  <h2>${line.substring(3)}</h2>\n`;
     } else if (line.startsWith('### ')) {
@@ -144,22 +146,22 @@ function generateHTMLReport(target, options = {}) {
       htmlContent += `  <p>${line}</p>\n`;
     }
   }
-  
+
   htmlContent += `</body>
 </html>`;
 
   fs.writeFileSync(htmlReportFile, htmlContent);
   log(`✅ Rapport HTML généré : ${htmlReportFile}`);
-  
+
   return htmlReportFile;
 }
 
 // Générer un rapport interactif
-function generateInteractiveReport(target, options = {}) {
+function generateInteractiveReport(target, _options = {}) {
   log(`Génération d'un rapport interactif pour ${target}...`);
-  
+
   const interactiveReportFile = path.join(reportDir, `${target}-interactive-${timestamp}.html`);
-  
+
   // Contenu de base
   let htmlContent = `<!DOCTYPE html>
 <html lang="fr">
@@ -219,60 +221,63 @@ function generateInteractiveReport(target, options = {}) {
   } else if (target === 'workflows') {
     dataDir = path.join(projectRoot, 'workflows');
   }
-  
+
   // Fonction récursive pour lister les fichiers
   function listFiles(dir, targetType) {
     let files = [];
-    
+
     if (!fs.existsSync(dir)) return files;
-    
+
     const items = fs.readdirSync(dir);
-    
+
     for (const item of items) {
       const fullPath = path.join(dir, item);
       const stats = fs.statSync(fullPath);
-      
+
       if (stats.isDirectory()) {
         // Recursively add files from subdirectory
         files = files.concat(listFiles(fullPath, targetType));
       } else {
         // Only include relevant files based on target
         let shouldInclude = false;
-        let category = path.relative(dataDir, path.dirname(fullPath)) || 'Root';
-        
+        const category = path.relative(dataDir, path.dirname(fullPath)) || 'Root';
+
         if (targetType === 'agents' && (item.endsWith('.ts') || item.endsWith('.js'))) {
           shouldInclude = true;
-        } else if (targetType === 'scripts' && (item.endsWith('.sh') || item.endsWith('.js') || item.endsWith('.ts'))) {
+        } else if (
+          targetType === 'scripts' &&
+          (item.endsWith('.sh') || item.endsWith('.js') || item.endsWith('.ts'))
+        ) {
           shouldInclude = true;
         } else if (targetType === 'workflows' && item.endsWith('.json')) {
           shouldInclude = true;
         } else if (targetType === 'all') {
           shouldInclude = true;
         }
-        
+
         if (shouldInclude) {
           files.push({
             name: item,
             path: fullPath,
             category: category,
             size: stats.size,
-            mtime: stats.mtime
+            mtime: stats.mtime,
           });
         }
       }
     }
-    
+
     return files;
   }
-  
+
   const files = listFiles(dataDir, target);
-  
+
   // Ajouter chaque fichier au tableau
   for (const file of files) {
     const relativePath = path.relative(projectRoot, file.path);
     const sizeKb = (file.size / 1024).toFixed(2);
     const mtime = file.mtime.toLocaleString();
-    
+
     htmlContent += `      <tr class="expandable" data-path="${relativePath}">
         <td>${file.name}</td>
         <td>${file.category}</td>
@@ -286,7 +291,7 @@ function generateInteractiveReport(target, options = {}) {
       </tr>
 `;
   }
-  
+
   // Terminer le HTML avec le JavaScript pour l'interactivité
   htmlContent += `    </tbody>
   </table>
@@ -402,59 +407,62 @@ function generateInteractiveReport(target, options = {}) {
 
   fs.writeFileSync(interactiveReportFile, htmlContent);
   log(`✅ Rapport interactif généré : ${interactiveReportFile}`);
-  
+
   return interactiveReportFile;
 }
 
 // Générer un rapport de tableau de bord
-function generateDashboardReport(options = {}) {
+function generateDashboardReport(_options = {}) {
   log(`Génération d'un tableau de bord...`);
-  
+
   const dashboardFile = path.join(reportDir, `dashboard-${timestamp}.html`);
-  
+
   // Générer des données pour le tableau de bord
   const dashboardData = {
     scripts: {
       total: 0,
-      byCategory: {}
+      byCategory: {},
     },
     agents: {
       total: 0,
-      byType: {}
+      byType: {},
     },
     workflows: {
-      total: 0
-    }
+      total: 0,
+    },
   };
-  
+
   // Compter les scripts par catégorie
   const scriptsDir = path.join(projectRoot, 'scripts');
   if (fs.existsSync(scriptsDir)) {
-    const categories = fs.readdirSync(scriptsDir)
-      .filter(item => fs.statSync(path.join(scriptsDir, item)).isDirectory());
-    
-    categories.forEach(category => {
+    const categories = fs
+      .readdirSync(scriptsDir)
+      .filter((item) => fs.statSync(path.join(scriptsDir, item)).isDirectory());
+
+    categories.forEach((category) => {
       const categoryDir = path.join(scriptsDir, category);
-      const scripts = fs.readdirSync(categoryDir)
-        .filter(file => file.endsWith('.sh') || file.endsWith('.js') || file.endsWith('.ts'));
-      
+      const scripts = fs
+        .readdirSync(categoryDir)
+        .filter((file) => file.endsWith('.sh') || file.endsWith('.js') || file.endsWith('.ts'));
+
       dashboardData.scripts.byCategory[category] = scripts.length;
       dashboardData.scripts.total += scripts.length;
     });
   }
-  
+
   // Compter les agents
   const agentsDir = path.join(projectRoot, 'agents');
   if (fs.existsSync(agentsDir)) {
-    const agents = fs.readdirSync(agentsDir)
-      .filter(file => file.endsWith('.ts') || file.endsWith('.js'));
-    
+    const agents = fs
+      .readdirSync(agentsDir)
+      .filter((file) => file.endsWith('.ts') || file.endsWith('.js'));
+
     dashboardData.agents.total = agents.length;
-    
+
     // Catégoriser les agents par nom
-    agents.forEach(agent => {
+    agents.forEach((agent) => {
       let type = 'Autre';
-      
+
       if (agent.includes('audit')) {
         type = 'Audit';
       } else if (agent.includes('validator') || agent.includes('verifier')) {
@@ -464,22 +472,21 @@ function generateDashboardReport(options = {}) {
       } else if (agent.includes('monitor')) {
         type = 'Monitoring';
       }
-      
+
       dashboardData.agents.byType[type] = (dashboardData.agents.byType[type] || 0) + 1;
     });
   }
-  
+
   // Compter les workflows
   const workflowsDir = path.join(projectRoot, 'workflows');
   if (fs.existsSync(workflowsDir)) {
-    const workflows = fs.readdirSync(workflowsDir)
-      .filter(file => file.endsWith('.json'));
-    
+    const workflows = fs.readdirSync(workflowsDir).filter((file) => file.endsWith('.json'));
+
     dashboardData.workflows.total = workflows.length;
   }
-  
+
   // Générer le HTML du tableau de bord
-  let dashboardHtml = `<!DOCTYPE html>
+  const dashboardHtml = `<!DOCTYPE html>
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
@@ -617,7 +624,7 @@ function generateDashboardReport(options = {}) {
 
   fs.writeFileSync(dashboardFile, dashboardHtml);
   log(`✅ Tableau de bord généré : ${dashboardFile}`);
-  
+
   return dashboardFile;
 }
 
@@ -656,20 +663,20 @@ Examples:
 // Fonction principale
 function main() {
   const args = process.argv.slice(2);
-  
+
   if (args.length === 0 || args.includes('--help')) {
     showHelp();
     return;
   }
-  
+
   const command = args[0];
   const target = args[1] || 'all';
   const options = {
-    open: args.includes('--open')
+    open: args.includes('--open'),
   };
-  
+
   let reportFile;
-  
+
   switch (command) {
     case 'simple':
       reportFile = generateSimpleReport(target, options);
@@ -688,19 +695,20 @@ function main() {
       showHelp();
       return;
   }
-  
+
   // Ouvrir le rapport si demandé
   if (options.open && reportFile) {
-    const command = process.platform === 'win32' ? 'start' : (process.platform === 'darwin' ? 'open' : 'xdg-open');
+    const command =
+      process.platform === 'win32' ? 'start' : process.platform === 'darwin' ? 'open' : 'xdg-open';
     try {
       execSync(`${command} "${reportFile}"`);
-      log(`Rapport ouvert dans le navigateur par défaut`);
+      log('Rapport ouvert dans le navigateur par défaut');
     } catch (error) {
       log(`Erreur lors de l'ouverture du rapport: ${error.message}`);
     }
   }
-  
-  log(`Exécution terminée.`);
+
+  log('Exécution terminée.');
 }
 
 main();

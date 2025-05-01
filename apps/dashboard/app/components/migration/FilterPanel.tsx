@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState } from 'react';
 
 interface FilterPanelProps {
   filters: {
@@ -15,48 +15,48 @@ interface FilterPanelProps {
 export default function FilterPanel({ filters, setFilters, categories }: FilterPanelProps) {
   // Extraire toutes les catégories métier disponibles
   const businessCategories = Object.keys(categories || {});
-  
+
   // Liste des statuts possibles
   const statuses = [
-    { id: "all", name: "Tous les statuts" },
-    { id: "pending", name: "En attente" },
-    { id: "in_progress", name: "En cours" },
-    { id: "completed", name: "Terminée" },
-    { id: "blocked", name: "Bloquée" },
-    { id: "skipped", name: "Ignorée" }
+    { id: 'all', name: 'Tous les statuts' },
+    { id: 'pending', name: 'En attente' },
+    { id: 'in_progress', name: 'En cours' },
+    { id: 'completed', name: 'Terminée' },
+    { id: 'blocked', name: 'Bloquée' },
+    { id: 'skipped', name: 'Ignorée' },
   ];
-  
+
   // Gestion des changements de filtres
   const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setFilters({ ...filters, category: e.target.value });
   };
-  
+
   const handleStatusChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setFilters({ ...filters, status: e.target.value });
   };
-  
+
   const handleModuleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setFilters({ ...filters, module: e.target.value });
   };
-  
+
   const handleDebtThresholdChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFilters({ ...filters, debtThreshold: Number(e.target.value) });
   };
-  
+
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFilters({ ...filters, searchTerm: e.target.value });
   };
-  
+
   const resetFilters = () => {
     setFilters({
-      category: "all",
-      status: "all",
+      category: 'all',
+      status: 'all',
       debtThreshold: 0,
-      searchTerm: "",
-      module: "all"
+      searchTerm: '',
+      module: 'all',
     });
   };
-  
+
   return (
     <div className="bg-white shadow rounded-lg p-4">
       <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
@@ -78,14 +78,14 @@ export default function FilterPanel({ filters, setFilters, categories }: FilterP
             <option value="reference">Tables de référence</option>
             <option value="technical">Tables techniques</option>
             <option value="view">Vues</option>
-            {businessCategories.map(category => (
+            {businessCategories.map((category) => (
               <option key={category} value={`business_${category}`}>
                 Métier: {category}
               </option>
             ))}
           </select>
         </div>
-        
+
         {/* Filtre par statut */}
         <div>
           <label htmlFor="status" className="block text-sm font-medium text-gray-700">
@@ -98,14 +98,14 @@ export default function FilterPanel({ filters, setFilters, categories }: FilterP
             value={filters.status}
             onChange={handleStatusChange}
           >
-            {statuses.map(status => (
+            {statuses.map((status) => (
               <option key={status.id} value={status.id}>
                 {status.name}
               </option>
             ))}
           </select>
         </div>
-        
+
         {/* Filtre par module */}
         <div>
           <label htmlFor="module" className="block text-sm font-medium text-gray-700">
@@ -126,7 +126,7 @@ export default function FilterPanel({ filters, setFilters, categories }: FilterP
             <option value="statistiques">Statistiques</option>
           </select>
         </div>
-        
+
         {/* Filtre par seuil de dette technique */}
         <div>
           <label htmlFor="debtThreshold" className="block text-sm font-medium text-gray-700">
@@ -149,7 +149,7 @@ export default function FilterPanel({ filters, setFilters, categories }: FilterP
             </span>
           </div>
         </div>
-        
+
         {/* Recherche textuelle */}
         <div>
           <label htmlFor="search" className="block text-sm font-medium text-gray-700">
@@ -169,17 +169,26 @@ export default function FilterPanel({ filters, setFilters, categories }: FilterP
               <button
                 type="button"
                 className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-500"
-                onClick={() => setFilters({ ...filters, searchTerm: "" })}
+                onClick={() => setFilters({ ...filters, searchTerm: '' })}
               >
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                    clipRule="evenodd"
+                  />
                 </svg>
               </button>
             )}
           </div>
         </div>
       </div>
-      
+
       {/* Bouton de réinitialisation */}
       <div className="mt-4 flex justify-end">
         <button

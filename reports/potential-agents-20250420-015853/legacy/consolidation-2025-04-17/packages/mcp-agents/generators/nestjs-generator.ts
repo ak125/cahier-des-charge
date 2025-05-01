@@ -6,13 +6,13 @@ import { AgentContext } from '../../coreDoDotmcp-agent';
 import { AbstractGeneratorAgent, GeneratorConfig } from '../../core/AbstractGenerator-agent';
 import { AgentContext } from '../../coreDoDotmcp-agent';
 
-import { AbstractGeneratorAgent } from '../AbstractGenerator';
 import fs from 'fs';
 import path from 'path';
-import { PhpAnalysisResult } from '../types';
+import { AbstractGeneratorAgent } from '../AbstractGenerator';
 import { analyzePhpFile } from '../analysis/PhpAnalyzer';
-import { extractDataStructures } from '../core/data-extractor';
 import { generatePrismaSchema } from '../core/PrismaGenerator';
+import { extractDataStructures } from '../core/data-extractor';
+import { PhpAnalysisResult } from '../types';
 
 /**
  * Agent de génération NestJS à partir de fichiers PHP
@@ -27,37 +27,40 @@ export class NestJSGenerator {
   async generateFromPhp(sourceFilePath: string, destinationPath: string) {
     try {
       console.log(`[NestJSGenerator] Analyse du fichier PHP : ${sourceFilePath}`);
-      
+
       // 1. Analyser le fichier PHP
       const analysisResult = await analyzePhpFile(sourceFilePath);
-      
+
       // 2. Extraire les structures de données
       const dataStructures = await extractDataStructures(sourceFilePath, analysisResult);
-      
+
       // 3. Générer les composants NestJS
       const nestComponents = await this.generateNestJSComponents(
         path.basename(sourceFilePath, '.php'),
         dataStructures,
         analysisResult
       );
-      
+
       // 4. Écrire les fichiers générés
       await this.writeNestJSFiles(nestComponents, destinationPath);
-      
+
       // 5. Générer un fragment de schéma Prisma
       await this.generatePrismaSchema(dataStructures, analysisResult);
-      
+
       return {
         success: true,
         sourceFile: sourceFilePath,
-        generatedFiles: Object.keys(nestComponents)
+        generatedFiles: Object.keys(nestComponents),
       };
     } catch (error) {
-      console.error(`[NestJSGenerator] Erreur lors de la génération NestJS pour ${sourceFilePath}:`, error);
+      console.error(
+        `[NestJSGenerator] Erreur lors de la génération NestJS pour ${sourceFilePath}:`,
+        error
+      );
       return {
         success: false,
         sourceFile: sourceFilePath,
-        error: error instanceof Error ? error.message : String(error)
+        error: error instanceof Error ? error.message : String(error),
       };
     }
   }
@@ -72,24 +75,24 @@ export class NestJSGenerator {
   ) {
     // Créer le nom du module en camelCase pour assurer la cohérence
     const moduleName = this.toCamelCase(baseName);
-    
+
     // Générer le controller
     const controllerContent = this.generateController(moduleName, dataStructures);
-    
+
     // Générer le service
     const serviceContent = this.generateService(moduleName, dataStructures, analysisResult);
-    
+
     // Générer les DTOs
     const dtoContent = this.generateDTOs(moduleName, dataStructures);
-    
+
     // Générer le module
     const moduleContent = this.generateModule(moduleName);
-    
+
     return {
       [`${moduleName}.controller.ts`]: controllerContent,
       [`${moduleName}.service.ts`]: serviceContent,
       [`${moduleName}.dto.ts`]: dtoContent,
-      [`${moduleName}.module.ts`]: moduleContent
+      [`${moduleName}.module.ts`]: moduleContent,
     };
   }
 
@@ -99,7 +102,7 @@ export class NestJSGenerator {
   private generateController(moduleName: string, dataStructures: any) {
     const entityName = this.capitalizeFirst(moduleName);
     const resourceName = moduleName.toLowerCase();
-    
+
     return `import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { ${entityName}Service } from './${moduleName}.service';
@@ -154,13 +157,17 @@ export class ${entityName}Controller {
   /**
    * Génère le service NestJS
    */
-  private generateService(moduleName: string, dataStructures: any, analysisResult: PhpAnalysisResult) {
+  private generateService(
+    moduleName: string,
+    dataStructures: any,
+    analysisResult: PhpAnalysisResult
+  ) {
     const entityName = this.capitalizeFirst(moduleName);
     const resourceName = moduleName.toLowerCase();
-    
+
     // Déterminer si le code PHP source contient des transactions
     const hasTransactions = analysisResult.transactions && analysisResult.transactions.length > 0;
-    
+
     return `import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 import { Create${entityName}Dto, Update${entityName}Dto, Find${entityName}Dto } from './${moduleName}.dto';
@@ -219,7 +226,9 @@ export class ${entityName}Service {
     } catch (error) {
       throw new NotFoundException(\`${entityName} avec l'ID \${id} non trouvé\`);
     }
-  }${hasTransactions ? `
+  }${
+    hasTransactions
+      ? `
 
   async processWithTransaction(data: any) {
     return this.prisma.$transaction(async (prisma) => {
@@ -234,7 +243,9 @@ export class ${entityName}Service {
       
       return ${resourceName};
     });
-  }` : ''}
+  }`
+      : ''
+  }
 }`;
   }
 
@@ -243,38 +254,40 @@ export class ${entityName}Service {
    */
   private generateDTOs(moduleName: string, dataStructures: any) {
     const entityName = this.capitalizeFirst(moduleName);
-    
-    const properties = dataStructures.fields.map(field => {
-      const { name, type, required } = field;
-      const decorators = [];
-      
-      // Ajouter des décorateurs de validation selon le type
-      switch (type.toLowerCase()) {
-        case 'string':
-          decorators.push('@IsString()');
-          if (!required) decorators.push('@IsOptional()');
-          break;
-        case 'number':
-        case 'integer':
-          decorators.push('@IsNumber()');
-          if (!required) decorators.push('@IsOptional()');
-          break;
-        case 'boolean':
-          decorators.push('@IsBoolean()');
-          if (!required) decorators.push('@IsOptional()');
-          break;
-        case 'date':
-          decorators.push('@IsDate()');
-          if (!required) decorators.push('@IsOptional()');
-          break;
-        default:
-          if (!required) decorators.push('@IsOptional()');
-      }
-      
-      return `  ${decorators.join('\n  ')}
+
+    const properties = dataStructures.fields
+      .map((field) => {
+        const { name, type, required } = field;
+        const decorators = [];
+
+        // Ajouter des décorateurs de validation selon le type
+        switch (type.toLowerCase()) {
+          case 'string':
+            decorators.push('@IsString()');
+            if (!required) decorators.push('@IsOptional()');
+            break;
+          case 'number':
+          case 'integer':
+            decorators.push('@IsNumber()');
+            if (!required) decorators.push('@IsOptional()');
+            break;
+          case 'boolean':
+            decorators.push('@IsBoolean()');
+            if (!required) decorators.push('@IsOptional()');
+            break;
+          case 'date':
+            decorators.push('@IsDate()');
+            if (!required) decorators.push('@IsOptional()');
+            break;
+          default:
+            if (!required) decorators.push('@IsOptional()');
+        }
+
+        return `  ${decorators.join('\n  ')}
   ${name}${required ? '' : '?'}: ${this.mapPhpTypeToTypeScript(type)};`;
-    }).join('\n\n');
-    
+      })
+      .join('\n\n');
+
     return `import { IsString, IsNumber, IsBoolean, IsDate, IsOptional, IsEnum, IsArray } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
@@ -316,7 +329,7 @@ export class Find${entityName}Dto {
    */
   private generateModule(moduleName: string) {
     const entityName = this.capitalizeFirst(moduleName);
-    
+
     return `import { Module } from '@nestjs/common';
 import { ${entityName}Service } from './${moduleName}.service';
 import { ${entityName}Controller } from './${moduleName}.controller';
@@ -335,22 +348,22 @@ export class ${entityName}Module {}`;
    */
   private async generatePrismaSchema(dataStructures: any, analysisResult: PhpAnalysisResult) {
     const prismaSchema = await generatePrismaSchema(dataStructures);
-    
+
     // Écrire le schéma dans un fichier temporaire pour référence
     const schemaDir = path.join(process.cwd(), 'prisma', 'migrations');
     if (!fs.existsSync(schemaDir)) {
       fs.mkdirSync(schemaDir, { recursive: true });
     }
-    
+
     const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
     const schemaPath = path.join(schemaDir, `${dataStructures.name}_${timestamp}.prisma`);
     fs.writeFileSync(schemaPath, prismaSchema);
-    
+
     console.log(`[NestJSGenerator] Schéma Prisma généré : ${schemaPath}`);
-    
+
     return {
       path: schemaPath,
-      content: prismaSchema
+      content: prismaSchema,
     };
   }
 
@@ -362,7 +375,7 @@ export class ${entityName}Module {}`;
     if (!fs.existsSync(destinationPath)) {
       fs.mkdirSync(destinationPath, { recursive: true });
     }
-    
+
     // Écrire chaque fichier généré
     for (const [fileName, content] of Object.entries(files)) {
       const filePath = path.join(destinationPath, fileName);

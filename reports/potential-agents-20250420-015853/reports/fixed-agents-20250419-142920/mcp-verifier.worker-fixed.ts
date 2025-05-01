@@ -57,9 +57,9 @@ export classDoDotmcp implements McpAgent {
   readonly metadata: AgentMetadata = {
     id: DoDotmcp-verifier.worker',
     type: 'analyzer',
-    name: DoDotmcp',
+    name: mcp',
     version: '1.0.0',
-    description: 'Automatically fixed version ofDoDotmcp'
+    description: 'Automatically fixed version ofmcp'
   };
   
   status: AgentStatus = 'ready';

@@ -1,12 +1,12 @@
+import { execSync } from 'child_process';
 import fs from 'fs';
 import path from 'path';
-import { execSync } from 'child_process';
 import * as glob from 'glob';
 
 // Import des agents existants
 import { ciTesterAgent } from './CiTester';
-import { devIntegratorAgent } from './DevIntegrator';
 import { devCheckerAgent } from './DevChecker';
+import { devIntegratorAgent } from './DevIntegrator';
 import { devLinterAgent } from './DevLinter';
 import { diffVerifierAgent } from './DiffVerifier';
 
@@ -64,7 +64,8 @@ interface OrchestratorReport {
     improvement?: number;
   }[];
   sharedData?: any; // Données partagées entre les agents
-  checkpoints?: { // Nouveau: points de contrôle
+  checkpoints?: {
+    // Nouveau: points de contrôle
     timestamp: string;
     completedAgents: string[];
     state: any;
@@ -86,19 +87,23 @@ interface AgentPerformanceMetrics {
 export const orchestratorAgent = {
   name: 'orchestrator',
   description: 'Coordonne tous les agents pour créer un pipeline complet de validation',
-  
-  async run(context: OrchestratorContext): Promise<{ status: string; logs: string[]; report: OrchestratorReport }> {
+
+  async run(
+    context: OrchestratorContext
+  ): Promise<{ status: string; logs: string[]; report: OrchestratorReport }> {
     const logs: string[] = [];
     const startTime = new Date();
-    
+
     // Initialiser les options de configuration avec des valeurs par défaut
     context = this.initializeContext(context);
-    
-    logs.push(`🚀 Démarrage de l'orchestrateur en mode ${context.mode} (ID: ${context.pipelineId})`);
+
+    logs.push(
+      `🚀 Démarrage de l'orchestrateur en mode ${context.mode} (ID: ${context.pipelineId})`
+    );
     if (context.verboseLogging) {
       logs.push(`📝 Configuration détaillée: ${JSON.stringify(context, null, 2)}`);
     }
-    
+
     // Initialiser le rapport
     const report: OrchestratorReport = {
       startTime: startTime.toISOString(),
@@ -110,42 +115,42 @@ export const orchestratorAgent = {
       agents: [],
       overallStatus: 'success',
       sharedData: {}, // Données partagées entre les agents
-      checkpoints: [] // Points de contrôle
+      checkpoints: [], // Points de contrôle
     };
-    
+
     try {
       // Restaurer les données partagées de l'exécution précédente si activé
       if (context.saveSharedData) {
         await this.restoreSharedData(report, logs);
       }
-      
+
       // Créer le répertoire de travail pour ce pipeline
       const workDir = path.resolve('reports', `pipeline-${context.pipelineId}`);
       if (!fs.existsSync(workDir)) {
         fs.mkdirSync(workDir, { recursive: true });
       }
       logs.push(`📁 Répertoire de travail: ${workDir}`);
-      
+
       // Charger les métriques de performance des agents
       const agentMetrics = this.loadAgentPerformanceMetrics();
-      
+
       // Déterminer quels agents exécuter en fonction du mode
       const agentsToRun = this.getAgentsForMode(context.mode);
-      logs.push(`📋 Agents à exécuter: ${agentsToRun.map(a => a.name).join(', ')}`);
-      
+      logs.push(`📋 Agents à exécuter: ${agentsToRun.map((a) => a.name).join(', ')}`);
+
       // Optimiser l'ordre des agents en fonction des métriques si priorité = speed
       if (context.priority === 'speed') {
         this.optimizeAgentsOrder(agentsToRun, agentMetrics, logs);
       }
-      
+
       // Configurer un intervalle pour les checkpoints si activé
       let checkpointInterval: NodeJS.Timeout | null = null;
       if (context.checkpointFrequency && context.checkpointFrequency > 0) {
         checkpointInterval = setInterval(() => {
           const checkpoint = {
             timestamp: new Date().toISOString(),
-            completedAgents: report.agents.map(a => a.name),
-            state: report.sharedData
+            completedAgents: report.agents.map((a) => a.name),
+            state: report.sharedData,
           };
           report.checkpoints?.push(checkpoint);
           this.saveCheckpoint(checkpoint, context.pipelineId as string);
@@ -154,67 +159,77 @@ export const orchestratorAgent = {
           }
         }, context.checkpointFrequency);
       }
-      
+
       // Exécuter chaque agent (séquentiellement ou en parallèle)
       if (context.runParallel) {
         logs.push(`⚡ Exécution en parallèle des agents compatibles`);
-        
+
         // Regrouper les agents qui peuvent être exécutés en parallèle
         const parallelGroups = this.groupAgentsForParallelExecution(agentsToRun);
         logs.push(`🔀 Groupes en parallèle: ${parallelGroups.length}`);
-        
+
         for (const group of parallelGroups) {
           if (group.length === 1) {
             logs.push(`\n🔄 Exécution de l'agent: ${group[0].name}`);
             await this.runSingleAgent(group[0], context, report, logs, workDir, agentMetrics);
           } else {
-            logs.push(`\n🔀 Exécution en parallèle du groupe: ${group.map(a => a.name).join(', ')}`);
-            
+            logs.push(
+              `\n🔀 Exécution en parallèle du groupe: ${group.map((a) => a.name).join(', ')}`
+            );
+
             // Exécuter les agents en parallèle avec gestion des délais d'attente
-            const promises = group.map(agent => {
+            const promises = group.map((agent) => {
               // Créer une promesse avec délai d'attente si configuré
               if (context.timeoutPerAgent && context.timeoutPerAgent > 0) {
                 return Promise.race([
                   this.runSingleAgent(agent, context, report, logs, workDir, agentMetrics),
                   new Promise<void>((_, reject) => {
                     setTimeout(() => {
-                      logs.push(`⏱️ L'agent ${agent.name} a dépassé le délai d'expiration de ${context.timeoutPerAgent}ms`);
+                      logs.push(
+                        `⏱️ L'agent ${agent.name} a dépassé le délai d'expiration de ${context.timeoutPerAgent}ms`
+                      );
                       reject(new Error(`Timeout for agent ${agent.name}`));
                     }, context.timeoutPerAgent);
-                  })
-                ]).catch(err => {
+                  }),
+                ]).catch((err) => {
                   // En cas d'erreur de délai d'attente, enregistrer l'échec
-                  logs.push(`⚠️ Erreur lors de l'exécution en parallèle de l'agent ${agent.name}: ${err.message}`);
+                  logs.push(
+                    `⚠️ Erreur lors de l'exécution en parallèle de l'agent ${agent.name}: ${err.message}`
+                  );
                   report.agents.push({
                     name: agent.name,
                     status: 'error',
                     startTime: new Date().toISOString(),
                     endTime: new Date().toISOString(),
                     duration: 0,
-                    error: `Timeout: ${err.message}`
+                    error: `Timeout: ${err.message}`,
                   });
                 });
               } else {
                 return this.runSingleAgent(agent, context, report, logs, workDir, agentMetrics);
               }
             });
-            
+
             await Promise.all(promises);
           }
-          
+
           // Sauvegarder un point de contrôle après chaque groupe
           if (context.checkpointFrequency) {
             const checkpoint = {
               timestamp: new Date().toISOString(),
-              completedAgents: report.agents.map(a => a.name),
-              state: report.sharedData
+              completedAgents: report.agents.map((a) => a.name),
+              state: report.sharedData,
             };
             report.checkpoints?.push(checkpoint);
             this.saveCheckpoint(checkpoint, context.pipelineId as string);
           }
-          
+
           // Vérifier si nous devons continuer après le groupe
-          if (!context.continueOnError && report.overallStatus === 'failed' && context.skipIfPrevious) {
+          if (
+            !context.continueOnError &&
+            report.overallStatus === 'failed' &&
+            context.skipIfPrevious
+          ) {
             logs.push(`⚠️ Arrêt après échec d'un groupe d'agents`);
             break;
           }
@@ -224,88 +239,98 @@ export const orchestratorAgent = {
         for (const agent of agentsToRun) {
           logs.push(`\n🔄 Exécution de l'agent: ${agent.name}`);
           await this.runSingleAgent(agent, context, report, logs, workDir, agentMetrics);
-          
+
           // Sauvegarder un point de contrôle après chaque agent
           if (context.checkpointFrequency) {
             const checkpoint = {
               timestamp: new Date().toISOString(),
-              completedAgents: report.agents.map(a => a.name),
-              state: report.sharedData
+              completedAgents: report.agents.map((a) => a.name),
+              state: report.sharedData,
             };
             report.checkpoints?.push(checkpoint);
             this.saveCheckpoint(checkpoint, context.pipelineId as string);
           }
-          
+
           // Vérifier si nous devons continuer
-          if (!context.continueOnError && report.overallStatus === 'failed' && context.skipIfPrevious) {
+          if (
+            !context.continueOnError &&
+            report.overallStatus === 'failed' &&
+            context.skipIfPrevious
+          ) {
             logs.push(`⚠️ Arrêt après échec de l'agent ${agent.name}`);
             break;
           }
         }
       }
-      
+
       // Arrêter l'intervalle de checkpoint s'il est actif
       if (checkpointInterval) {
         clearInterval(checkpointInterval);
       }
-      
+
       // Exécuter les benchmarks de performance si demandé
       if (context.benchmarkPerformance) {
         logs.push(`\n📊 Exécution des benchmarks de performance`);
-        report.benchmarks = await this.runPerformanceBenchmarks(context.target, report.sharedData, logs);
+        report.benchmarks = await this.runPerformanceBenchmarks(
+          context.target,
+          report.sharedData,
+          logs
+        );
       }
-      
+
       // Générer un rapport global si demandé
       if (context.generateReport) {
         this.generateGlobalReport(report, logs, workDir);
       }
-      
+
       // Mettre à jour le tableau de bord
       await this.updateDashboard(report, logs);
-      
+
       // Sauvegarder les données partagées pour une utilisation future si activé
       if (context.saveSharedData) {
         this.saveSharedData(report.sharedData, context.pipelineId as string);
       }
-      
+
       // Mettre à jour les métriques de performance des agents
       this.updateAgentPerformanceMetrics(report, agentMetrics);
-      
+
       // Notifier l'équipe si demandé
       if (context.notifyTeam) {
         this.notifyTeam(report, logs);
       }
-      
+
       // Finaliser le rapport
       const endTime = new Date();
       report.endTime = endTime.toISOString();
       report.duration = endTime.getTime() - startTime.getTime();
-      
-      logs.push(`\n✅ Orchestration terminée en ${report.duration}ms avec statut: ${report.overallStatus}`);
-      
+
+      logs.push(
+        `\n✅ Orchestration terminée en ${report.duration}ms avec statut: ${report.overallStatus}`
+      );
+
       // Sauvegarder le rapport complet
       this.saveOrchestratorReport(report, workDir);
-      
-      return { 
-        status: report.overallStatus, 
-        logs, 
-        report 
+
+      return {
+        status: report.overallStatus,
+        logs,
+        report,
       };
     } catch (err: any) {
       const endTime = new Date();
       report.endTime = endTime.toISOString();
       report.duration = endTime.getTime() - startTime.getTime();
       report.overallStatus = 'failed';
-      
+
       logs.push(`❌ Erreur générale dans l'orchestrateur: ${err.message}`);
-      
+
       // Sauvegarder le rapport d'erreur
       this.saveOrchestratorReport(report);
-      
-      return { 
-        status: 'error', 
-        logs, 
-        report 
+
+      return {
+        status: 'error',
+        logs,
+        report,
       };
     }
   },
@@ -317,87 +342,97 @@ export const orchestratorAgent = {
     // Valeurs par défaut
     return {
       ...context,
-      pipelineId: context.pipelineId || `pipeline-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+      pipelineId:
+        context.pipelineId || `pipeline-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
       retryCount: context.retryCount !== undefined ? context.retryCount : 2,
       checkpointFrequency: context.checkpointFrequency || 0,
       priority: context.priority || 'balanced',
       timeoutPerAgent: context.timeoutPerAgent || 0,
       saveSharedData: context.saveSharedData !== undefined ? context.saveSharedData : false,
-      verboseLogging: context.verboseLogging !== undefined ? context.verboseLogging : false
+      verboseLogging: context.verboseLogging !== undefined ? context.verboseLogging : false,
     };
   },
 
   /**
    * Optimise l'ordre des agents en fonction des métriques de performance
    */
-  optimizeAgentsOrder(agents: any[], metrics: Record<string, AgentPerformanceMetrics>, logs: string[]): void {
+  optimizeAgentsOrder(
+    agents: any[],
+    metrics: Record<string, AgentPerformanceMetrics>,
+    logs: string[]
+  ): void {
     if (Object.keys(metrics).length === 0) {
       return; // Pas de métriques à utiliser pour l'optimisation
     }
-    
+
     logs.push(`🔄 Optimisation de l'ordre des agents basée sur les métriques de performance`);
-    
+
     // Trier les agents par temps d'exécution moyen (du plus rapide au plus lent)
     // tout en respectant les dépendances entre agents
     const dependencies: Record<string, string[]> = {
-      'DiffVerifier': [],  // Pas de dépendances
-      'DevLinter': [],     // Pas de dépendances
-      'DevChecker': ['DevLinter'],  // Dépend de DevLinter
-      'DevIntegrator': ['DiffVerifier', 'DevChecker'],  // Dépend de DiffVerifier et DevChecker
-      'CiTester': ['DevChecker']   // Dépend de DevChecker
+      DiffVerifier: [], // Pas de dépendances
+      DevLinter: [], // Pas de dépendances
+      DevChecker: ['DevLinter'], // Dépend de DevLinter
+      DevIntegrator: ['DiffVerifier', 'DevChecker'], // Dépend de DiffVerifier et DevChecker
+      CiTester: ['DevChecker'], // Dépend de DevChecker
     };
-    
+
     // Classer les agents par niveaux de dépendance
     const levels: Record<string, number> = {};
     for (const agent of agents) {
       this.calculateDependencyLevel(agent.name, dependencies, levels);
     }
-    
+
     // Trier d'abord par niveau de dépendance, puis par temps d'exécution
     agents.sort((a, b) => {
       // D'abord trier par niveau de dépendance
       const levelDiff = (levels[a.name] || 0) - (levels[b.name] || 0);
       if (levelDiff !== 0) return levelDiff;
-      
+
       // Ensuite par temps d'exécution moyen s'il existe
       const timeA = metrics[a.name]?.averageExecutionTime || 0;
       const timeB = metrics[b.name]?.averageExecutionTime || 0;
       return timeA - timeB;
     });
-    
-    logs.push(`📋 Nouvel ordre des agents: ${agents.map(a => a.name).join(', ')}`);
+
+    logs.push(`📋 Nouvel ordre des agents: ${agents.map((a) => a.name).join(', ')}`);
   },
 
   /**
    * Calcule le niveau de dépendance d'un agent
    */
-  calculateDependencyLevel(agentName: string, dependencies: Record<string, string[]>, levels: Record<string, number>, visited: Set<string> = new Set()): number {
+  calculateDependencyLevel(
+    agentName: string,
+    dependencies: Record<string, string[]>,
+    levels: Record<string, number>,
+    visited: Set<string> = new Set()
+  ): number {
     // Éviter les boucles infinies
     if (visited.has(agentName)) {
       return levels[agentName] || 0;
     }
-    
+
     visited.add(agentName);
-    
+
     // Si le niveau est déjà calculé, le retourner
     if (levels[agentName] !== undefined) {
       return levels[agentName];
     }
-    
+
     // Si pas de dépendances, niveau 0
     const deps = dependencies[agentName] || [];
     if (deps.length === 0) {
       levels[agentName] = 0;
       return 0;
     }
-    
+
     // Calculer le niveau en fonction des dépendances
     let maxLevel = 0;
     for (const dep of deps) {
       const depLevel = this.calculateDependencyLevel(dep, dependencies, levels, visited);
       maxLevel = Math.max(maxLevel, depLevel);
     }
-    
+
     // Le niveau est le max des niveaux des dépendances + 1
     levels[agentName] = maxLevel + 1;
     return levels[agentName];
@@ -406,81 +441,89 @@ export const orchestratorAgent = {
   /**
    * Exécute un agent unique avec le contexte approprié et gestion des erreurs/retries
    */
-  async runSingleAgent(agent: any, globalContext: OrchestratorContext, report: OrchestratorReport, logs: string[], workDir: string, metrics: Record<string, AgentPerformanceMetrics>): Promise<void> {
+  async runSingleAgent(
+    agent: any,
+    globalContext: OrchestratorContext,
+    report: OrchestratorReport,
+    logs: string[],
+    workDir: string,
+    metrics: Record<string, AgentPerformanceMetrics>
+  ): Promise<void> {
     const agentStartTime = new Date();
     let attempts = 0;
     let success = false;
     let agentResult: any = null;
     let lastError: Error | null = null;
-    
+
     // Déterminer le nombre max de tentatives
     const maxAttempts = globalContext.retryCount !== undefined ? globalContext.retryCount + 1 : 1;
-    
+
     while (attempts < maxAttempts && !success) {
       attempts++;
-      
+
       if (attempts > 1) {
         logs.push(`🔄 Tentative ${attempts}/${maxAttempts} pour l'agent ${agent.name}`);
       }
-      
+
       try {
         // Adapter le contexte pour l'agent spécifique
         const agentContext = this.prepareAgentContext(agent.name, globalContext, report.sharedData);
-        
+
         // Ajouter le répertoire de travail pour les artefacts de cet agent
         agentContext.workDir = path.join(workDir, agent.name);
         if (!fs.existsSync(agentContext.workDir)) {
           fs.mkdirSync(agentContext.workDir, { recursive: true });
         }
-        
+
         // Ajouter des informations sur la tentative en cours
         agentContext.attempt = attempts;
         agentContext.maxAttempts = maxAttempts;
-        
+
         // Mesurer les ressources utilisées si possible
         const resourceUsageBefore = this.measureResourceUsage();
-        
+
         // Exécuter l'agent avec gestion du délai d'attente
         if (globalContext.timeoutPerAgent && globalContext.timeoutPerAgent > 0) {
           const timeoutPromise = new Promise<never>((_, reject) => {
             setTimeout(() => {
-              reject(new Error(`Agent ${agent.name} timed out after ${globalContext.timeoutPerAgent}ms`));
+              reject(
+                new Error(`Agent ${agent.name} timed out after ${globalContext.timeoutPerAgent}ms`)
+              );
             }, globalContext.timeoutPerAgent);
           });
-          
-          agentResult = await Promise.race([
-            agent.run(agentContext),
-            timeoutPromise
-          ]);
+
+          agentResult = await Promise.race([agent.run(agentContext), timeoutPromise]);
         } else {
           agentResult = await agent.run(agentContext);
         }
-        
+
         // Mesurer l'utilisation des ressources après exécution
         const resourceUsageAfter = this.measureResourceUsage();
         const resourceDelta = {
           cpu: resourceUsageAfter.cpu - resourceUsageBefore.cpu,
-          memory: resourceUsageAfter.memory - resourceUsageBefore.memory
+          memory: resourceUsageAfter.memory - resourceUsageBefore.memory,
         };
-        
+
         // Ajouter les logs de l'agent
-        logs.push(...agentResult.logs.map(log => `  ${log}`));
-        
+        logs.push(...agentResult.logs.map((log) => `  ${log}`));
+
         success = true;
       } catch (err: any) {
         lastError = err;
-        logs.push(`❌ Erreur lors de la tentative ${attempts}/${maxAttempts} pour l'agent ${agent.name}: ${err.message}`);
-        
+        logs.push(
+          `❌ Erreur lors de la tentative ${attempts}/${maxAttempts} pour l'agent ${agent.name}: ${err.message}`
+        );
+
         // Si c'est la dernière tentative, enregistrer l'échec
         if (attempts >= maxAttempts) {
           logs.push(`❌ Toutes les tentatives ont échoué pour l'agent ${agent.name}`);
         }
       }
     }
-    
+
     const agentEndTime = new Date();
     const duration = agentEndTime.getTime() - agentStartTime.getTime();
-    
+
     // Enregistrer le résultat dans le rapport
     if (success) {
       const agentReport = {
@@ -491,16 +534,16 @@ export const orchestratorAgent = {
         duration: duration,
         attempts: attempts,
         summary: agentResult.summary || null,
-        details: agentResult.details || null
+        details: agentResult.details || null,
       };
-      
+
       report.agents.push(agentReport);
-      
+
       // Partager les données de l'agent pour les agents suivants
       if (agentResult.data) {
         report.sharedData[agent.name] = agentResult.data;
       }
-      
+
       // Mettre à jour le statut global
       if (agentResult.status === 'error') {
         report.overallStatus = 'failed';
@@ -516,11 +559,11 @@ export const orchestratorAgent = {
         endTime: agentEndTime.toISOString(),
         duration: duration,
         attempts: attempts,
-        error: lastError?.message || 'Échec inconnu'
+        error: lastError?.message || 'Échec inconnu',
       });
-      
+
       report.overallStatus = 'failed';
-      
+
       // Récupérer et stocker la raison de l'échec pour les métriques
       if (metrics[agent.name]) {
         if (!metrics[agent.name].failureReasons) {
@@ -534,7 +577,7 @@ export const orchestratorAgent = {
       }
     }
   },
-  
+
   /**
    * Mesure l'utilisation des ressources système
    */
@@ -543,17 +586,17 @@ export const orchestratorAgent = {
       // Tentative de mesure de l'utilisation des ressources
       // Note: Ceci est une implémentation simplifiée
       const memoryUsage = process.memoryUsage();
-      
+
       return {
         cpu: process.cpuUsage().user / 1000, // en millisecondes
-        memory: memoryUsage.rss / (1024 * 1024) // en MB
+        memory: memoryUsage.rss / (1024 * 1024), // en MB
       };
     } catch (err) {
       // En cas d'erreur, retourner des valeurs par défaut
       return { cpu: 0, memory: 0 };
     }
   },
-  
+
   /**
    * Charge les métriques de performance des agents
    */
@@ -568,37 +611,38 @@ export const orchestratorAgent = {
     }
     return {};
   },
-  
+
   /**
    * Met à jour les métriques de performance des agents
    */
-  updateAgentPerformanceMetrics(report: OrchestratorReport, metrics: Record<string, AgentPerformanceMetrics>): void {
+  updateAgentPerformanceMetrics(
+    report: OrchestratorReport,
+    metrics: Record<string, AgentPerformanceMetrics>
+  ): void {
     for (const agent of report.agents) {
       if (!metrics[agent.name]) {
         metrics[agent.name] = {
           averageExecutionTime: agent.duration,
           successRate: agent.status === 'success' ? 1 : 0,
           lastExecutionTimestamp: agent.endTime,
-          resourceUsage: { cpu: 0, memory: 0 }
+          resourceUsage: { cpu: 0, memory: 0 },
         };
       } else {
         // Mettre à jour la moyenne du temps d'exécution (moyenne mobile)
         const prevAvg = metrics[agent.name].averageExecutionTime;
         const alpha = 0.3; // Facteur de pondération pour la moyenne mobile exponentielle
-        metrics[agent.name].averageExecutionTime = 
-          alpha * agent.duration + (1 - alpha) * prevAvg;
-        
+        metrics[agent.name].averageExecutionTime = alpha * agent.duration + (1 - alpha) * prevAvg;
+
         // Mettre à jour le taux de réussite (moyenne mobile)
         const prevRate = metrics[agent.name].successRate;
         const success = agent.status === 'success' ? 1 : 0;
-        metrics[agent.name].successRate = 
-          alpha * success + (1 - alpha) * prevRate;
-        
+        metrics[agent.name].successRate = alpha * success + (1 - alpha) * prevRate;
+
         // Mettre à jour l'horodatage
         metrics[agent.name].lastExecutionTimestamp = agent.endTime;
       }
     }
-    
+
     // Sauvegarder les métriques mises à jour
     try {
       const metricsFile = path.resolve('reports', 'agent_performance_metrics.json');
@@ -607,7 +651,7 @@ export const orchestratorAgent = {
       // Ignorer les erreurs d'écriture
     }
   },
-  
+
   /**
    * Sauvegarde un point de contrôle
    */
@@ -617,14 +661,14 @@ export const orchestratorAgent = {
       if (!fs.existsSync(checkpointDir)) {
         fs.mkdirSync(checkpointDir, { recursive: true });
       }
-      
+
       const checkpointFile = path.resolve(checkpointDir, `${pipelineId}_${Date.now()}.json`);
       fs.writeFileSync(checkpointFile, JSON.stringify(checkpoint, null, 2));
     } catch (err) {
       // Ignorer les erreurs d'écriture
     }
   },
-  
+
   /**
    * Sauvegarde les données partagées pour une utilisation future
    */
@@ -634,14 +678,14 @@ export const orchestratorAgent = {
       if (!fs.existsSync(dataDir)) {
         fs.mkdirSync(dataDir, { recursive: true });
       }
-      
+
       const dataFile = path.resolve(dataDir, `${pipelineId}_shared_data.json`);
       fs.writeFileSync(dataFile, JSON.stringify(sharedData, null, 2));
     } catch (err) {
       // Ignorer les erreurs d'écriture
     }
   },
-  
+
   /**
    * Restaure les données partagées d'une exécution précédente
    */
@@ -651,17 +695,18 @@ export const orchestratorAgent = {
       if (!fs.existsSync(dataDir)) {
         return;
       }
-      
+
       // Trouver le fichier de données partagées le plus récent
-      const files = fs.readdirSync(dataDir)
-        .filter(file => file.endsWith('_shared_data.json'))
-        .map(file => ({
+      const files = fs
+        .readdirSync(dataDir)
+        .filter((file) => file.endsWith('_shared_data.json'))
+        .map((file) => ({
           name: file,
           path: path.resolve(dataDir, file),
-          time: fs.statSync(path.resolve(dataDir, file)).mtime.getTime()
+          time: fs.statSync(path.resolve(dataDir, file)).mtime.getTime(),
         }))
         .sort((a, b) => b.time - a.time);
-      
+
       if (files.length > 0) {
         const latestFile = files[0];
         const sharedData = JSON.parse(fs.readFileSync(latestFile.path, 'utf-8'));
@@ -679,34 +724,34 @@ export const orchestratorAgent = {
   groupAgentsForParallelExecution(agents: any[]): any[][] {
     // Définir les dépendances entre agents
     const dependencies: Record<string, string[]> = {
-      'DiffVerifier': [],  // Pas de dépendances
-      'DevLinter': [],     // Pas de dépendances
-      'DevChecker': ['DevLinter'],  // Dépend de DevLinter
-      'DevIntegrator': ['DiffVerifier', 'DevChecker'],  // Dépend de DiffVerifier et DevChecker
-      'CiTester': ['DevChecker']   // Dépend de DevChecker
+      DiffVerifier: [], // Pas de dépendances
+      DevLinter: [], // Pas de dépendances
+      DevChecker: ['DevLinter'], // Dépend de DevLinter
+      DevIntegrator: ['DiffVerifier', 'DevChecker'], // Dépend de DiffVerifier et DevChecker
+      CiTester: ['DevChecker'], // Dépend de DevChecker
     };
-    
+
     // Grouper les agents en respectant les dépendances
     const groups: any[][] = [];
     const processed = new Set<string>();
-    
+
     while (processed.size < agents.length) {
       const currentGroup: any[] = [];
-      
+
       for (const agent of agents) {
         if (processed.has(agent.name)) continue;
-        
+
         // Vérifier si toutes les dépendances de cet agent sont déjà traitées
         const deps = dependencies[agent.name] || [];
-        const allDepsProcessed = deps.every(dep => 
-          processed.has(dep) || !agents.some(a => a.name === dep)
+        const allDepsProcessed = deps.every(
+          (dep) => processed.has(dep) || !agents.some((a) => a.name === dep)
         );
-        
+
         if (allDepsProcessed) {
           currentGroup.push(agent);
         }
       }
-      
+
       if (currentGroup.length === 0) {
         // Si aucun agent ne peut être ajouté, c'est qu'il y a une dépendance circulaire
         // Dans ce cas, ajouter le premier agent non traité
@@ -717,14 +762,14 @@ export const orchestratorAgent = {
           }
         }
       }
-      
+
       groups.push(currentGroup);
-      currentGroup.forEach(agent => processed.add(agent.name));
+      currentGroup.forEach((agent) => processed.add(agent.name));
     }
-    
+
     return groups;
   },
-  
+
   /**
    * Détermine quels agents exécuter en fonction du mode
    */
@@ -736,139 +781,126 @@ export const orchestratorAgent = {
           devLinterAgent,
           devCheckerAgent,
           diffVerifierAgent,
-          devIntegratorAgent
+          devIntegratorAgent,
         ];
       case 'lite':
-        return [
-          devLinterAgent,
-          devCheckerAgent,
-          diffVerifierAgent
-        ];
+        return [devLinterAgent, devCheckerAgent, diffVerifierAgent];
       case 'verification':
-        return [
-          diffVerifierAgent,
-          devCheckerAgent
-        ];
+        return [diffVerifierAgent, devCheckerAgent];
       case 'remediation':
-        return [
-          diffVerifierAgent,
-          devIntegratorAgent
-        ];
+        return [diffVerifierAgent, devIntegratorAgent];
       case 'ci':
-        return [
-          ciTesterAgent,
-          devLinterAgent,
-          devCheckerAgent
-        ];
+        return [ciTesterAgent, devLinterAgent, devCheckerAgent];
       default:
         return [diffVerifierAgent];
     }
   },
-  
+
   /**
    * Prépare le contexte spécifique pour chaque agent
    */
-  prepareAgentContext(agentName: string, globalContext: OrchestratorContext, sharedData: any = {}): any {
+  prepareAgentContext(
+    agentName: string,
+    globalContext: OrchestratorContext,
+    sharedData: any = {}
+  ): any {
     const baseContext: any = {
       file: globalContext.target,
       directory: globalContext.target,
       generateReport: globalContext.generateReport,
       pipelineId: globalContext.pipelineId,
-      sharedData  // Nouveau: passer les données partagées
+      sharedData, // Nouveau: passer les données partagées
     };
-    
+
     switch (agentName) {
       case 'DiffVerifier':
         return {
           ...baseContext,
           autoRemediate: globalContext.autoRemediate,
           updateDiscoveryMap: globalContext.updateDiscoveryMap,
-          batchMode: !globalContext.target
+          batchMode: !globalContext.target,
         };
       case 'DevIntegrator':
         return {
           ...baseContext,
-          autoFix: globalContext.autoRemediate
+          autoFix: globalContext.autoRemediate,
         };
       case 'DevChecker':
         return {
           ...baseContext,
           deep: globalContext.mode === 'full',
-          fixImports: globalContext.autoRemediate
+          fixImports: globalContext.autoRemediate,
         };
       case 'DevLinter':
         return {
           ...baseContext,
           autoFix: globalContext.autoRemediate,
-          strict: globalContext.mode === 'ci'
+          strict: globalContext.mode === 'ci',
         };
       case 'CiTester':
         return {
           ...baseContext,
           validateOnly: globalContext.mode !== 'full',
-          updateWorkflows: globalContext.mode === 'full'
+          updateWorkflows: globalContext.mode === 'full',
         };
       default:
         return baseContext;
     }
   },
-  
+
   /**
    * Exécute des benchmarks de performance comparant le code legacy et migré
    */
-  async runPerformanceBenchmarks(target: string | undefined, sharedData: any, logs: string[]): Promise<any[]> {
+  async runPerformanceBenchmarks(
+    target: string | undefined,
+    sharedData: any,
+    logs: string[]
+  ): Promise<any[]> {
     logs.push(`📊 Exécution des benchmarks de performance`);
-    
+
     const benchmarks = [];
-    
+
     try {
       // Si aucune cible n'est fournie, utiliser des endpoints test standard
-      const endpointsToTest = target 
+      const endpointsToTest = target
         ? this.getEndpointsFromTarget(target)
-        : [
-            '/api/users', 
-            '/api/products', 
-            '/api/orders',
-            '/api/dashboard',
-            '/api/search'
-          ];
-      
+        : ['/api/users', '/api/products', '/api/orders', '/api/dashboard', '/api/search'];
+
       logs.push(`📊 Endpoints à tester: ${endpointsToTest.join(', ')}`);
-      
+
       // Pour chaque endpoint, comparer les performances PHP vs NestJS
       for (const endpoint of endpointsToTest) {
         logs.push(`📊 Benchmark pour ${endpoint}`);
-        
+
         // Mesurer les performances du code PHP legacy
         const legacyResult = this.measureEndpointPerformance('legacy', endpoint);
-        
+
         // Mesurer les performances du code migré (NestJS)
         const migratedResult = this.measureEndpointPerformance('migrated', endpoint);
-        
+
         // Calculer l'amélioration en pourcentage
-        const improvement = legacyResult > 0 
-          ? ((legacyResult - migratedResult) / legacyResult) * 100 
-          : 0;
-        
+        const improvement =
+          legacyResult > 0 ? ((legacyResult - migratedResult) / legacyResult) * 100 : 0;
+
         benchmarks.push({
           name: endpoint,
           legacy: legacyResult,
           migrated: migratedResult,
-          improvement
+          improvement,
         });
-        
+
         logs.push(`  - Legacy: ${legacyResult.toFixed(2)}ms`);
         logs.push(`  - Migré: ${migratedResult.toFixed(2)}ms`);
         logs.push(`  - Amélioration: ${improvement.toFixed(2)}%`);
       }
-      
+
       return benchmarks;
     } catch (err: any) {
       logs.push(`❌ Erreur lors des benchmarks: ${err.message}`);
       return [];
     }
   },
-  
+
   /**
    * Extrait les endpoints à tester à partir de la cible fournie
    */
@@ -876,31 +908,33 @@ export const orchestratorAgent = {
     // Si la cible est un fichier, extraire les endpoints de ce fichier
     if (fs.existsSync(target) && fs.statSync(target).isFile()) {
       const fileContent = fs.readFileSync(target, 'utf-8');
-      
+
       // Chercher des endpoints dans le format /api/...
       const endpointMatches = fileContent.match(/['"]\/api\/[a-zA-Z0-9\/_-]+['"]/g);
-      
+
       if (endpointMatches) {
-        return endpointMatches.map(match => match.replace(/['"]/g, ''));
+        return endpointMatches.map((match) => match.replace(/['"]/g, ''));
       }
-      
+
       return ['/api/test'];
     }
-    
+
     // Si la cible est un dossier, trouver des contrôleurs et extraire des endpoints
     if (fs.existsSync(target) && fs.statSync(target).isDirectory()) {
       const controllerFiles = glob.sync(path.join(target, '**/*.controller.ts'));
-      
+
       if (controllerFiles.length > 0) {
         // Extraire jusqu'à 5 endpoints des contrôleurs
         const endpoints: string[] = [];
-        
+
         for (const file of controllerFiles) {
           if (endpoints.length >= 5) break;
-          
+
           const fileContent = fs.readFileSync(file, 'utf-8');
-          const endpointMatches = fileContent.match(/@(Get|Post|Put|Delete|Patch)\(['"]([^'"]+)['"]\)/g);
-          
+          const endpointMatches = fileContent.match(
+            /@(Get|Post|Put|Delete|Patch)\(['"]([^'"]+)['"]\)/g
+          );
+
           if (endpointMatches) {
             for (const match of endpointMatches) {
               const routeMatch = match.match(/['"]([^'"]+)['"]/);
@@ -911,27 +945,28 @@ export const orchestratorAgent = {
             }
           }
         }
-        
+
         if (endpoints.length > 0) {
           return endpoints;
         }
       }
     }
-    
+
     // Par défaut, retourner des endpoints génériques
     return ['/api/test', '/api/users', '/api/products'];
   },
-  
+
   /**
    * Mesure les performances d'un endpoint spécifique
    */
   measureEndpointPerformance(type: 'legacy' | 'migrated', endpoint: string): number {
     try {
       // Déterminer l'URL de base en fonction du type
-      const baseUrl = type === 'legacy' 
-        ? 'http://localhost:8080'  // URL du serveur PHP legacy
-        : 'http://localhost:3000'; // URL du serveur NestJS migré
-      
+      const baseUrl =
+        type === 'legacy'
+          ? 'http://localhost:8080' // URL du serveur PHP legacy
+          : 'http://localhost:3000'; // URL du serveur NestJS migré
+
       // Effectuer 5 requêtes pour chauffer
       for (let i = 0; i < 5; i++) {
         try {
@@ -940,11 +975,11 @@ export const orchestratorAgent = {
           // Ignorer les erreurs pendant la phase d'échauffement
         }
       }
-      
+
       // Effectuer 10 requêtes de test et calculer la moyenne
       let totalTime = 0;
       let successfulRequests = 0;
-      
+
       for (let i = 0; i < 10; i++) {
         try {
           const result = execSync(`curl -s -o /dev/null -w "%{time_total}" ${baseUrl}${endpoint}`);
@@ -955,7 +990,7 @@ export const orchestratorAgent = {
           // Ignorer les requêtes en échec
         }
       }
-      
+
       // Retourner le temps moyen en ms (ou 0 si toutes les requêtes ont échoué)
       return successfulRequests > 0 ? totalTime / successfulRequests : 0;
     } catch (err) {
@@ -963,13 +998,16 @@ export const orchestratorAgent = {
       return 0;
     }
   },
-  
+
   /**
    * Génère un rapport global HTML
    */
   generateGlobalReport(report: OrchestratorReport, logs: string[], workDir: string): void {
-    const reportPath = path.resolve(workDir, `orchestrator_report_${new Date().toISOString().replace(/:/g, '-')}.html`);
-    
+    const reportPath = path.resolve(
+      workDir,
+      `orchestrator_report_${new Date().toISOString().replace(/:/g, '-')}.html`
+    );
+
     // Créer un rapport HTML
     let html = `
 <!DOCTYPE html>
@@ -1019,12 +1057,18 @@ export const orchestratorAgent = {
       <strong>Durée:</strong> ${(report.duration / 1000).toFixed(2)} secondes<br>
       <strong>Mode:</strong> ${report.mode}<br>
       ${report.target ? `<strong>Cible:</strong> ${report.target}<br>` : ''}
-      <strong>Statut:</strong> <span class="status-badge status-${report.overallStatus === 'success' ? 'success' : report.overallStatus === 'partial' ? 'warning' : 'error'}">${report.overallStatus}</span>
+      <strong>Statut:</strong> <span class="status-badge status-${
+        report.overallStatus === 'success'
+          ? 'success'
+          : report.overallStatus === 'partial'
+            ? 'warning'
+            : 'error'
+      }">${report.overallStatus}</span>
     </p>
   </div>
   
   <h2>Détails par agent</h2>`;
-    
+
     // Ajouter les détails pour chaque agent
     for (const agent of report.agents) {
       html += `
@@ -1035,13 +1079,13 @@ export const orchestratorAgent = {
       <strong>Fin:</strong> ${new Date(agent.endTime).toLocaleString()}<br>
       <strong>Durée:</strong> ${(agent.duration / 1000).toFixed(2)} secondes
     </p>`;
-      
+
       // Ajouter le résumé spécifique de l'agent s'il existe
       if (agent.summary) {
         html += `
     <div class="agent-summary">
       <h4>Résumé</h4>`;
-        
+
         if (typeof agent.summary === 'object') {
           html += `
       <ul>`;
@@ -1055,15 +1099,15 @@ export const orchestratorAgent = {
           html += `
       <p>${agent.summary}</p>`;
         }
-        
+
         html += `
     </div>`;
       }
-      
+
       html += `
   </div>`;
     }
-    
+
     // Ajouter les résultats de benchmark s'ils existent
     if (report.benchmarks && report.benchmarks.length > 0) {
       html += `
@@ -1078,10 +1122,11 @@ export const orchestratorAgent = {
       </tr>
     </thead>
     <tbody>`;
-      
+
       for (const benchmark of report.benchmarks) {
-        const improvementClass = benchmark.improvement > 0 ? 'improvement-positive' : 'improvement-negative';
-        
+        const improvementClass =
+          benchmark.improvement > 0 ? 'improvement-positive' : 'improvement-negative';
+
         html += `
       <tr>
         <td>${benchmark.name}</td>
@@ -1090,20 +1135,20 @@ export const orchestratorAgent = {
         <td class="${improvementClass}">${benchmark.improvement?.toFixed(2) ?? 'N/A'}%</td>
       </tr>`;
       }
-      
+
       html += `
     </tbody>
   </table>`;
     }
-    
+
     html += `
 </body>
 </html>`;
-    
+
     fs.writeFileSync(reportPath, html);
     logs.push(`📊 Rapport global généré: ${reportPath}`);
   },
-  
+
   /**
    * Notifie l'équipe des résultats via webhook
    */
@@ -1115,44 +1160,50 @@ export const orchestratorAgent = {
         logs.push(`⚠️ Pas de configuration de notification trouvée`);
         return;
       }
-      
+
       const config = JSON.parse(fs.readFileSync(configFile, 'utf-8'));
       if (!config.webhookUrl) {
         logs.push(`⚠️ Pas d'URL de webhook configurée`);
         return;
       }
-      
+
       // Préparer le résumé pour la notification
-      const agentStatuses = report.agents.map(a => 
-        `- ${a.name}: ${a.status.toUpperCase()}`
-      ).join('\n');
-      
-      const benchmarkSummary = report.benchmarks && report.benchmarks.length > 0
-        ? report.benchmarks.map(b => 
-            `- ${b.name}: ${b.improvement?.toFixed(2)}% d'amélioration`
-          ).join('\n')
-        : 'Aucun benchmark exécuté';
-      
+      const agentStatuses = report.agents
+        .map((a) => `- ${a.name}: ${a.status.toUpperCase()}`)
+        .join('\n');
+
+      const benchmarkSummary =
+        report.benchmarks && report.benchmarks.length > 0
+          ? report.benchmarks
+              .map((b) => `- ${b.name}: ${b.improvement?.toFixed(2)}% d'amélioration`)
+              .join('\n')
+          : 'Aucun benchmark exécuté';
+
       // Préparer le message
       const message = {
-        text: `*Rapport d'orchestration de migration*\n\n` +
-              `*Mode:* ${report.mode}\n` +
-              `*Cible:* ${report.target || 'Globale'}\n` +
-              `*Statut:* ${report.overallStatus.toUpperCase()}\n` +
-              `*Durée:* ${(report.duration / 1000).toFixed(2)} secondes\n\n` +
-              `*Statut des agents:*\n${agentStatuses}\n\n` +
-              `*Benchmarks:*\n${benchmarkSummary}`
+        text:
+          `*Rapport d'orchestration de migration*\n\n` +
+          `*Mode:* ${report.mode}\n` +
+          `*Cible:* ${report.target || 'Globale'}\n` +
+          `*Statut:* ${report.overallStatus.toUpperCase()}\n` +
+          `*Durée:* ${(report.duration / 1000).toFixed(2)} secondes\n\n` +
+          `*Statut des agents:*\n${agentStatuses}\n\n` +
+          `*Benchmarks:*\n${benchmarkSummary}`,
       };
-      
+
       // Envoyer la notification
-      execSync(`curl -X POST -H "Content-Type: application/json" -d '${JSON.stringify(message)}' ${config.webhookUrl}`);
-      
+      execSync(
+        `curl -X POST -H "Content-Type: application/json" -d '${JSON.stringify(message)}' ${
+          config.webhookUrl
+        }`
+      );
+
       logs.push(`📣 Notification envoyée à l'équipe`);
     } catch (err: any) {
       logs.push(`⚠️ Échec de la notification: ${err.message}`);
     }
   },
-  
+
   /**
    * Sauvegarde le rapport d'orchestration complet
    */
@@ -1160,11 +1211,11 @@ export const orchestratorAgent = {
     const reportDir = workDir || path.resolve('reports');
     const timestamp = new Date().toISOString().replace(/:/g, '-');
     const reportPath = path.resolve(reportDir, `orchestrator_report_${timestamp}.json`);
-    
+
     if (!fs.existsSync(reportDir)) {
       fs.mkdirSync(reportDir, { recursive: true });
     }
-    
+
     fs.writeFileSync(reportPath, JSON.stringify(report, null, 2));
   },
 
@@ -1173,16 +1224,16 @@ export const orchestratorAgent = {
    */
   async updateDashboard(report: OrchestratorReport, logs: string[]): Promise<void> {
     logs.push(`📊 Mise à jour du tableau de bord de monitoring`);
-    
+
     try {
       // Vérifier si le fichier de tableau de bord existe
       const dashboardFile = path.resolve('dashboard', 'migration-status.json');
-      
+
       // Créer le répertoire si nécessaire
       if (!fs.existsSync(path.dirname(dashboardFile))) {
         fs.mkdirSync(path.dirname(dashboardFile), { recursive: true });
       }
-      
+
       // Lire les données existantes ou initialiser
       let dashboardData = {};
       if (fs.existsSync(dashboardFile)) {
@@ -1195,16 +1246,16 @@ export const orchestratorAgent = {
             total: 0,
             success: 0,
             partial: 0,
-            failed: 0
+            failed: 0,
           },
           agentPerformance: {},
-          recentBenchmarks: []
+          recentBenchmarks: [],
         };
       }
-      
+
       // Mettre à jour les informations du tableau de bord
       dashboardData.lastUpdated = new Date().toISOString();
-      
+
       // Ajouter ce pipeline
       const pipelineInfo = {
         id: report.pipelineId,
@@ -1213,21 +1264,31 @@ export const orchestratorAgent = {
         status: report.overallStatus,
         startTime: report.startTime,
         duration: report.duration,
-        agents: report.agents.map(a => ({ name: a.name, status: a.status, duration: a.duration }))
+        agents: report.agents.map((a) => ({
+          name: a.name,
+          status: a.status,
+          duration: a.duration,
+        })),
       };
-      
+
       // Garder uniquement les 100 derniers pipelines
       dashboardData.pipelines.unshift(pipelineInfo);
       if (dashboardData.pipelines.length > 100) {
         dashboardData.pipelines = dashboardData.pipelines.slice(0, 100);
       }
-      
+
       // Mettre à jour le résumé
       dashboardData.summary.total = dashboardData.pipelines.length;
-      dashboardData.summary.success = dashboardData.pipelines.filter(p => p.status === 'success').length;
-      dashboardData.summary.partial = dashboardData.pipelines.filter(p => p.status === 'partial').length;
-      dashboardData.summary.failed = dashboardData.pipelines.filter(p => p.status === 'failed').length;
-      
+      dashboardData.summary.success = dashboardData.pipelines.filter(
+        (p) => p.status === 'success'
+      ).length;
+      dashboardData.summary.partial = dashboardData.pipelines.filter(
+        (p) => p.status === 'partial'
+      ).length;
+      dashboardData.summary.failed = dashboardData.pipelines.filter(
+        (p) => p.status === 'failed'
+      ).length;
+
       // Mettre à jour les performances des agents
       for (const agent of report.agents) {
         if (!dashboardData.agentPerformance[agent.name]) {
@@ -1236,56 +1297,57 @@ export const orchestratorAgent = {
             success: 0,
             warning: 0,
             error: 0,
-            avgDuration: 0
+            avgDuration: 0,
           };
         }
-        
+
         const perf = dashboardData.agentPerformance[agent.name];
         perf.executions++;
-        
+
         if (agent.status === 'success') perf.success++;
         else if (agent.status === 'warning') perf.warning++;
         else if (agent.status === 'error') perf.error++;
-        
+
         // Mettre à jour la durée moyenne
-        perf.avgDuration = (perf.avgDuration * (perf.executions - 1) + agent.duration) / perf.executions;
+        perf.avgDuration =
+          (perf.avgDuration * (perf.executions - 1) + agent.duration) / perf.executions;
       }
-      
+
       // Ajouter les benchmarks récents s'ils existent
       if (report.benchmarks && report.benchmarks.length > 0) {
         // Ajouter un timestamp aux benchmarks
         const benchmarksWithTime = {
           timestamp: new Date().toISOString(),
           pipelineId: report.pipelineId,
-          results: report.benchmarks
+          results: report.benchmarks,
         };
-        
+
         dashboardData.recentBenchmarks.unshift(benchmarksWithTime);
-        
+
         // Garder uniquement les 20 derniers benchmarks
         if (dashboardData.recentBenchmarks.length > 20) {
           dashboardData.recentBenchmarks = dashboardData.recentBenchmarks.slice(0, 20);
         }
       }
-      
+
       // Sauvegarder les données du tableau de bord
       fs.writeFileSync(dashboardFile, JSON.stringify(dashboardData, null, 2));
-      
+
       // Générer le fichier HTML du tableau de bord
       await this.generateDashboardHtml(dashboardData);
-      
+
       logs.push(`✅ Tableau de bord mis à jour avec succès`);
     } catch (err: any) {
       logs.push(`⚠️ Erreur lors de la mise à jour du tableau de bord: ${err.message}`);
     }
   },
-  
+
   /**
    * Génère le fichier HTML du tableau de bord
    */
   async generateDashboardHtml(dashboardData: any): Promise<void> {
     const dashboardHtml = path.resolve('dashboard', 'index.html');
-    
+
     // Code HTML du tableau de bord (version simple)
     const html = `
 <!DOCTYPE html>
@@ -1317,7 +1379,9 @@ export const orchestratorAgent = {
 <body>
   <div class="container-fluid">
     <h1 class="my-4">Tableau de bord de migration</h1>
-    <p class="text-muted">Dernière mise à jour: ${new Date(dashboardData.lastUpdated).toLocaleString()}</p>
+    <p class="text-muted">Dernière mise à jour: ${new Date(
+      dashboardData.lastUpdated
+    ).toLocaleString()}</p>
     
     <div class="row">
       <div class="col-md-3">
@@ -1410,7 +1474,10 @@ export const orchestratorAgent = {
                   </tr>
                 </thead>
                 <tbody>
-                  ${dashboardData.pipelines.slice(0, 10).map(p => `
+                  ${dashboardData.pipelines
+                    .slice(0, 10)
+                    .map(
+                      (p) => `
                   <tr class="pipeline-row">
                     <td>${p.id}</td>
                     <td>${p.mode}</td>
@@ -1419,7 +1486,9 @@ export const orchestratorAgent = {
                     <td>${new Date(p.startTime).toLocaleString()}</td>
                     <td>${(p.duration / 1000).toFixed(2)}s</td>
                   </tr>
-                  `).join('')}
+                  `
+                    )
+                    .join('')}
                 </tbody>
               </table>
             </div>
@@ -1560,7 +1629,7 @@ export const orchestratorAgent = {
   </script>
 </body>
 </html>`;
-    
+
     fs.writeFileSync(dashboardHtml, html);
-  }
+  },
 };

@@ -1,6 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
-import type { Database } from './types';
 import dotenv from 'dotenv';
+import type { Database } from './types';
 
 // Charger les variables d'environnement
 dotenv.config();
@@ -38,7 +38,7 @@ export const supabase = createClient<Database>(
  */
 export async function checkSupabaseConnection(): Promise<boolean> {
   try {
-    const { error } = await supabase.from(DoDotmcp_events').select('id').limit(1);
+    const { error } = await supabase.from(mcp_events').select('id').limit(1);
     
     if (error) {
       throw new Error(`Erreur de connexion à Supabase: ${error.message}`);
@@ -63,11 +63,11 @@ export async function logMcpEvent(
   eventType: string,
   payload: Record<string, any>,
   source: string,
-  priority: number = 3
+  priority = 3
 ): Promise<number> {
   try {
     const { data, error } = await supabase
-      .from(DoDotmcp_events')
+      .from(mcp_events')
       .insert({
         event_type: eventType,
         payload,
@@ -108,7 +108,7 @@ export async function updateMcpEventStatus(
     };
 
     const { error } = await supabase
-      .from(DoDotmcp_events')
+      .from(mcp_events')
       .update(updateData)
       .eq('id', eventId);
 

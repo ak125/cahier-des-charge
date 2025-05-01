@@ -11,12 +11,8 @@ import { OrchestrationAgentOptions, OrchestrationResult } from './types';
  */
 export abstract class BaseOrchestrationAgent<
   TOptions extends OrchestrationAgentOptions = OrchestrationAgentOptions,
-  TResult = any
+  TResult = any,
 > extends BaseAgent<TOptions, TResult> {
-  constructor(options?: Partial<TOptions>) {
-    super(options);
-  }
-
   /**
    * Fonctions utilitaires spécifiques à la catégorie orchestration
    */

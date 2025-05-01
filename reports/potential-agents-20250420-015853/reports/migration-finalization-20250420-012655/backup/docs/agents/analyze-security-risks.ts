@@ -120,7 +120,7 @@ export class SecurityRiskAnalyzer implements BaseAgent, BusinessAgent, BaseAgent
         
         for (const match of matches) {
           // Déterminer le type et la recommandation
-          let type = pattern.type as DynamicBehavior['type'];
+          const type = pattern.type as DynamicBehavior['type'];
           let recommendation = '';
           
           switch (type) {

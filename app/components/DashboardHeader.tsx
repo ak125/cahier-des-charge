@@ -1,4 +1,4 @@
-import { Link } from "@remix-run/react";
+import { Link } from '@remix-run/react';
 
 interface DashboardHeaderProps {
   title: string;
@@ -14,8 +14,12 @@ export default function DashboardHeader({ title, subtitle }: DashboardHeaderProp
       </div>
       <div className="dashboard-actions">
         <button className="dashboard-button primary">Rafraîchir</button>
-        <Link to="/admin/reports" className="dashboard-button secondary">Rapports</Link>
-        <Link to="/admin/settings" className="dashboard-button secondary">Paramètres</Link>
+        <Link to="/admin/reports" className="dashboard-button secondary">
+          Rapports
+        </Link>
+        <Link to="/admin/settings" className="dashboard-button secondary">
+          Paramètres
+        </Link>
       </div>
     </div>
   );

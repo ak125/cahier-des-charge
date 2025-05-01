@@ -11,12 +11,8 @@ import { IntegrationAgentOptions, IntegrationResult } from './types';
  */
 export abstract class BaseIntegrationAgent<
   TOptions extends IntegrationAgentOptions = IntegrationAgentOptions,
-  TResult = any
+  TResult = any,
 > extends BaseAgent<TOptions, TResult> {
-  constructor(options?: Partial<TOptions>) {
-    super(options);
-  }
-
   /**
    * Fonctions utilitaires spécifiques à la catégorie integration
    */

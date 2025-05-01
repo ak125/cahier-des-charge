@@ -2,18 +2,18 @@
 
 /**
  * Détecteur automatique des méthodes implémentées par les agents
- * 
+ *
  * Ce script analyse les fichiers d'agents MCP pour déterminer:
  * 1. Si la classe est abstraite
  * 2. Si le module exporte une classe ou un objet
  * 3. Quelles méthodes sont réellement implémentées
- * 
+ *
  * Il génère un rapport JSON qui pourra être utilisé pour adapter les tests
  */
 
-import * as fs from fs-extrastructure-agent';
-import * as path from pathstructure-agent';
-import * as ts from typescriptstructure-agent';
+import * as fs from 'fs-extrastructure-agent';
+import * as path from 'pathstructure-agent';
+import * as ts from 'typescriptstructure-agent';
 
 // Configurations
 const PACKAGES_DIR = '/workspaces/cahier-des-charge/packagesDoDotmcp-agents';
@@ -24,8 +24,16 @@ const REPORT_PATH = path.join(REPORT_DIR, `agent-methods-${TIMESTAMP}.json`);
 
 // Liste des méthodes standard à rechercher
 const STANDARD_METHODS = [
-  'initialize', 'validate', 'execute', 'run', 'process',
-  'analyze', 'generate', 'validateData', 'getStatus', 'cleanup'
+  'initialize',
+  'validate',
+  'execute',
+  'run',
+  'process',
+  'analyze',
+  'generate',
+  'validateData',
+  'getStatus',
+  'cleanup',
 ];
 
 // Interfaces pour les résultats
@@ -60,7 +68,7 @@ const report: AnalysisReport = {
   instanceExports: 0,
   classExports: 0,
   noExports: 0,
-  agents: []
+  agents: [],
 };
 
 /**
@@ -82,16 +90,19 @@ function createTypeScriptCompiler(files: string[]): ts.Program {
  * Analyse le fichier source d'un agent
  */
 function analyzeAgentFile(sourceFile: ts.SourceFile, program: ts.Program): AgentAnalysis | null {
-  const checker = program.getTypeChecker();
+  const _checker = program.getTypeChecker();
   let agentClass: ts.ClassDeclaration | undefined;
   let isExportedAsInstance = false;
   let exportType: 'class' | 'instance' | 'none' = 'none';
 
   // Trouver la classe d'agent dans le fichier
-  ts.forEachChild(sourceFile, node => {
-    if (ts.isClassDeclaration(node) && 
-        node.name && 
-        (node.name.text.includes('Agent') || path.basename(sourceFile.fileName).toLowerCase().includes('agent'))) {
+  ts.forEachChild(sourceFile, (node) => {
+    if (
+      ts.isClassDeclaration(node) &&
+      node.name &&
+      (node.name.text.includes('Agent') ||
+        path.basename(sourceFile.fileName).toLowerCase().includes('agent'))
+    ) {
       agentClass = node;
     }
 
@@ -110,13 +121,13 @@ function analyzeAgentFile(sourceFile: ts.SourceFile, program: ts.Program): Agent
   }
 
   // Vérifier si la classe est exportée
-  if (agentClass.modifiers?.some(m => m.kind === ts.SyntaxKind.ExportKeyword)) {
+  if (agentClass.modifiers?.some((m) => m.kind === ts.SyntaxKind.ExportKeyword)) {
     exportType = 'class';
   }
 
   const className = agentClass.name?.text || 'UnnamedAgent';
-  const isAbstract = !!agentClass.modifiers?.some(m => m.kind === ts.SyntaxKind.AbstractKeyword);
-  
+  const isAbstract = !!agentClass.modifiers?.some((m) => m.kind === ts.SyntaxKind.AbstractKeyword);
+
   // Collecter les méthodes implémentées
   const implementedMethods: string[] = [];
   const properties: string[] = [];
@@ -148,7 +159,7 @@ function analyzeAgentFile(sourceFile: ts.SourceFile, program: ts.Program): Agent
   }
 
   // Déterminer les méthodes manquantes
-  const missingMethods = STANDARD_METHODS.filter(method => !implementedMethods.includes(method));
+  const missingMethods = STANDARD_METHODS.filter((method) => !implementedMethods.includes(method));
 
   return {
     filePath: sourceFile.fileName,
@@ -160,7 +171,7 @@ function analyzeAgentFile(sourceFile: ts.SourceFile, program: ts.Program): Agent
     properties,
     missingMethods,
     inheritance,
-    interfaces
+    interfaces,
   };
 }
 
@@ -180,15 +191,18 @@ function findTypeScriptFiles(dir: string): string[] {
         if (entry.name !== 'node_modules' && entry.name !== 'dist') {
           search(entryPath);
         }
-      } else if (entry.name.endsWith('.ts') && 
-                !entry.name.endsWith('.test.ts') && 
-                !entry.name.endsWith('.spec.ts')) {
+      } else if (
+        entry.name.endsWith('.ts') &&
+        !entry.name.endsWith('.test.ts') &&
+        !entry.name.endsWith('.spec.ts')
+      ) {
         const content = fs.readFileSync(entryPath, 'utf8');
         // Vérifier s'il s'DoDoDoDotgit probablement d'un fichier d'agent
-        if ((content.includes('class') && 
-             (content.includes('Agent') || content.includes('agent'))) || 
-             entry.name.includes('Agent') || 
-             entry.name.includes('agent')) {
+        if (
+          (content.includes('class') && (content.includes('Agent') || content.includes('agent'))) ||
+          entry.name.includes('Agent') ||
+          entry.name.includes('agent')
+        ) {
           files.push(entryPath);
         }
       }
@@ -203,25 +217,25 @@ function findTypeScriptFiles(dir: string): string[] {
  * Programme principal
  */
 async function main() {
-  console.log("Détection des méthodes implémentées par les agents MCP...");
-  
+  console.log('Détection des méthodes implémentées par les agents MCP...');
+
   // Créer le répertoire de rapport
   await fs.ensureDir(REPORT_DIR);
-  
+
   // Trouver tous les fichiers d'agents
   console.log("Recherche des fichiers d'agents...");
   const packagesFiles = findTypeScriptFiles(PACKAGES_DIR);
   const agentFiles = findTypeScriptFiles(AGENTS_DIR);
   const allFiles = [...packagesFiles, ...agentFiles];
-  
+
   console.log(`Trouvé ${allFiles.length} fichiers potentiels d'agents`);
-  
+
   // Créer le programme TypeScript pour analyser les fichiers
-  console.log("Création du compilateur TypeScript...");
+  console.log('Création du compilateur TypeScript...');
   const program = createTypeScriptCompiler(allFiles);
-  
+
   // Analyser chaque fichier
-  console.log("Analyse des fichiers...");
+  console.log('Analyse des fichiers...');
   for (const filePath of allFiles) {
     const sourceFile = program.getSourceFile(filePath);
     if (sourceFile) {
@@ -229,11 +243,11 @@ async function main() {
       if (analysis) {
         report.agentsAnalyzed++;
         report.agents.push(analysis);
-        
+
         if (analysis.isAbstract) {
           report.abstractClasses++;
         }
-        
+
         if (analysis.exportType === 'instance') {
           report.instanceExports++;
         } else if (analysis.exportType === 'class') {
@@ -241,16 +255,18 @@ async function main() {
         } else {
           report.noExports++;
         }
-        
-        console.log(`  ✓ Analysé: ${analysis.className} (${analysis.implementedMethods.length} méthodes)`);
+
+        console.log(
+          `  ✓ Analysé: ${analysis.className} (${analysis.implementedMethods.length} méthodes)`
+        );
       }
     }
   }
-  
+
   // Écriture du rapport
   console.log(`Génération du rapport dans ${REPORT_PATH}...`);
   await fs.writeJson(REPORT_PATH, report, { spaces: 2 });
-  
+
   console.log("\nRésumé de l'analyse:");
   console.log(`  - Agents analysés: ${report.agentsAnalyzed}`);
   console.log(`  - Classes abstraites: ${report.abstractClasses}`);
@@ -261,7 +277,7 @@ async function main() {
 }
 
 // Exécuter le programme principal
-main().catch(error => {
-  console.error("Erreur:", error);
+main().catch((error) => {
+  console.error('Erreur:', error);
   process.exit(1);
 });

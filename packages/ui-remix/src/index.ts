@@ -1,3 +1,4 @@
-// Point d'entrée principal pour @mcp/ui-remix
-export * from './hooks';
+// Export principal du package ui-remix
 export * from './components';
+export * from './hooks';
+export * from './utils';

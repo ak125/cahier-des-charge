@@ -1,13 +1,13 @@
-import dotenv from 'dotenv';
-import { McpServer } from '@model-context-protocol/server';
 import path from 'path';
-import { createLogger } from './utils/logger';
+import { McpServer } from '@model-context-protocol/server';
+import dotenv from 'dotenv';
 import { phpAnalyzerRoute } from './routes/phpAnalyzer';
+import { createLogger } from './utils/logger';
 
 // Chargement des variables d'environnement
 dotenv.config();
 
-const logger = createLogger(DoDotmcp-server-php');
+const logger = createLogger('mcp-server-php');
 const port = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
 
 async function startServer() {
@@ -18,14 +18,14 @@ async function startServer() {
       version: '1.0.0',
       name: 'PHP Analyzer MCP Server',
       description: "Serveur MCP pour l'analyse de code PHP avec intégration Supabase",
-      "baseUrl": process.env.BASE_URL || `http://localhost:${port}`,
+      baseUrl: process.env.BASE_URL || `http://localhost:${port}`
     });
 
     // Configuration des routes
     server.app.use('/api/analyze', phpAnalyzerRoute);
 
     // Endpoint pour la vérification de santé
-    server.app.get('/health', (req, res) => {
+    server.app.get('/health', (_req, res) => {
       res.status(200).json({ status: 'ok', timestamp: new Date().toISOString() });
     });
 

@@ -3,8 +3,8 @@
  * Agent export file
  */
 
-import { RemixRouteGenerator } from './remix-route-generator';
 import { GeneratorAgent } from '../../core/interfaces';
+import { RemixRouteGenerator } from './remix-route-generator';
 
 export { RemixRouteGenerator };
 export default RemixRouteGenerator;

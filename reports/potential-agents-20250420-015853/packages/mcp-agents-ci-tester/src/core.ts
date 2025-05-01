@@ -1,8 +1,8 @@
+import { exec } from 'child_process';
 import fs from 'fs';
 import path from 'path';
-import { exec } from 'child_process';
 import { promisify } from 'util';
-import { CITest, PackageScripts, CIReport } from './types';
+import { CIReport, CITest, PackageScripts } from './types';
 
 const execAsync = promisify(exec);
 
@@ -10,77 +10,87 @@ const execAsync = promisify(exec);
  * Détecte les tests CI disponibles dans le projet
  * @returns Liste des tests CI détectés
  */
-export async function detectCITests(
-  rootDir: string = process.cwd()
-): Promise<CITest[]> {
+export async function detectCITests(rootDir: string = process.cwd()): Promise<CITest[]> {
   const tests: CITest[] = [];
   const packageJsonPath = path.join(rootDir, 'package.json');
-  
+
   if (!fs.existsSync(packageJsonPath)) {
     console.error(`⚠️ Aucun fichier package.json trouvé dans ${rootDir}`);
     return tests;
   }
-  
+
   try {
     const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
     const scripts = packageJson.scripts || {};
-    
+
     // Tests unitaires
     if (scripts.test) {
       tests.push({
         name: 'Tests Unitaires',
         command: 'npm test',
         description: 'Exécute les tests unitaires avec la commande configurée dans package.json',
-        required: true
+        required: true,
       });
     }
-    
+
     // ESLint
-    if (scripts.lint || fs.existsSync(path.join(rootDir, '.eslintrc')) || 
-        fs.existsSync(path.join(rootDir, '.eslintrc.js')) ||
-        fs.existsSync(path.join(rootDir, '.eslintrc.json'))) {
+    if (
+      scripts.lint ||
+      fs.existsSync(path.join(rootDir, '.eslintrc')) ||
+      fs.existsSync(path.join(rootDir, '.eslintrc.js')) ||
+      fs.existsSync(path.join(rootDir, '.eslintrc.json'))
+    ) {
       tests.push({
         name: 'Linting (ESLint)',
         command: scripts.lint || 'npx eslint .',
         description: 'Vérifie la qualité du code avec ESLint',
-        required: false
+        required: false,
       });
     }
-    
+
     // TypeScript
-    if (scripts['typecheck'] || scripts['check-types'] || 
-        fs.existsSync(path.join(rootDir, 'tsconfig.json'))) {
+    if (
+      scripts['typecheck'] ||
+      scripts['check-types'] ||
+      fs.existsSync(path.join(rootDir, 'tsconfig.json'))
+    ) {
       tests.push({
         name: 'Vérification TypeScript',
         command: scripts['typecheck'] || scripts['check-types'] || 'npx tsc --noEmit',
         description: 'Vérifie les types TypeScript',
-        required: fs.existsSync(path.join(rootDir, 'tsconfig.json'))
+        required: fs.existsSync(path.join(rootDir, 'tsconfig.json')),
       });
     }
-    
+
     // Prettier
-    if (scripts['format'] || scripts['prettier'] ||
-        fs.existsSync(path.join(rootDir, '.prettierrc')) ||
-        fs.existsSync(path.join(rootDir, '.prettierrc.js')) ||
-        fs.existsSync(path.join(rootDir, '.prettierrc.json'))) {
+    if (
+      scripts['format'] ||
+      scripts['prettier'] ||
+      fs.existsSync(path.join(rootDir, '.prettierrc')) ||
+      fs.existsSync(path.join(rootDir, '.prettierrc.js')) ||
+      fs.existsSync(path.join(rootDir, '.prettierrc.json'))
+    ) {
       tests.push({
         name: 'Formatage (Prettier)',
-        command: scripts['format'] || scripts['prettier'] || 'npx prettier --check "**/*.{js,ts,tsx,json,md}"',
+        command:
+          scripts['format'] ||
+          scripts['prettier'] ||
+          'npx prettier --check "**/*.{js,ts,tsx,json,md}"',
         description: 'Vérifie le formatage du code avec Prettier',
-        required: false
+        required: false,
       });
     }
-    
+
     // Build
     if (scripts.build) {
       tests.push({
         name: 'Build',
         command: 'npm run build',
         description: 'Compile le projet',
-        required: true
+        required: true,
       });
     }
-    
+
     return tests;
   } catch (error) {
     console.error(`⚠️ Erreur lors de l'analyse du package.json: ${error}`);
@@ -98,21 +108,17 @@ export function validateSetup(
   tests: CITest[],
   packageScripts: PackageScripts
 ): Array<{ test: CITest; present: boolean }> {
-  return tests.map(test => {
+  return tests.map((test) => {
     const commandParts = test.command.split(' ');
     let present = false;
-    
+
     if (commandParts[0] === 'npm' && commandParts[1] === 'run') {
       // Cherche le script dans n'importe quel package
       const scriptName = commandParts[2];
-      present = Object.values(packageScripts).some(pkg => 
-        Object.keys(pkg).includes(scriptName)
-      );
+      present = Object.values(packageScripts).some((pkg) => Object.keys(pkg).includes(scriptName));
     } else if (commandParts[0] === 'npm' && commandParts[1] === 'test') {
       // Cherche si test existe
-      present = Object.values(packageScripts).some(pkg => 
-        Object.keys(pkg).includes('test')
-      );
+      present = Object.values(packageScripts).some((pkg) => Object.keys(pkg).includes('test'));
     } else if (commandParts[0] === 'npx') {
       // Vérifie si le binaire existe dans node_modules/.bin
       try {
@@ -125,7 +131,7 @@ export function validateSetup(
       // Commande système, suppose qu'elle existe
       present = true;
     }
-    
+
     return { test, present };
   });
 }
@@ -139,24 +145,24 @@ export function validateSetup(
  */
 export function generateGitHubWorkflow(
   tests: CITest[],
-  outputPath: string = 'DoDoDoDoDoDotgithub/workflows/ci.yml',
+  outputPath = 'DoDoDoDoDoDotgithub/workflows/ci.yml',
   branches: { push: string[]; pullRequest: string[] } = { push: ['main'], pullRequest: ['*'] }
 ): string {
   const workflowDir = path.dirname(outputPath);
   const fullWorkflowDir = path.join(process.cwd(), workflowDir);
-  
+
   if (!fs.existsSync(fullWorkflowDir)) {
     fs.mkdirSync(fullWorkflowDir, { recursive: true });
   }
-  
+
   const workflow = `# Workflow CI généré automatiquement parDoDotmcp-agents-ci-tester
 name: CI Tests
 
 on:
   push:
-    branches: [${branches.push.map(b => `'${b}'`).join(', ')}]
+    branches: [${branches.push.map((b) => `'${b}'`).join(', ')}]
   pull_request:
-    branches: [${branches.pullRequest.map(b => `'${b}'`).join(', ')}]
+    branches: [${branches.pullRequest.map((b) => `'${b}'`).join(', ')}]
 
 jobs:
   test:
@@ -175,13 +181,17 @@ jobs:
       - name: Installation des dépendances
         run: npm ci
       
-${tests.map(test => `      - name: ${test.name}
-        run: ${test.command}`).join('\n\n')}
+${tests
+  .map(
+    (test) => `      - name: ${test.name}
+        run: ${test.command}`
+  )
+  .join('\n\n')}
 `;
 
   const fullOutputPath = path.join(process.cwd(), outputPath);
   fs.writeFileSync(fullOutputPath, workflow);
-  
+
   return fullOutputPath;
 }
 
@@ -195,7 +205,7 @@ export async function analyzePackageScripts(
 ): Promise<PackageScripts> {
   const scripts: PackageScripts = {};
   const rootPackagePath = path.join(process.cwd(), 'package.json');
-  
+
   if (fs.existsSync(rootPackagePath)) {
     try {
       const packageJson = JSON.parse(fs.readFileSync(rootPackagePath, 'utf8'));
@@ -204,12 +214,12 @@ export async function analyzePackageScripts(
       console.error(`⚠️ Erreur lors de la lecture du package.json racine: ${error}`);
     }
   }
-  
+
   // Analyser les packages de l'espace de travail
   if (workspacePackages.length > 0) {
     for (const pkg of workspacePackages) {
       const packageJsonPath = path.join(process.cwd(), pkg, 'package.json');
-      
+
       if (fs.existsSync(packageJsonPath)) {
         try {
           const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
@@ -221,7 +231,7 @@ export async function analyzePackageScripts(
       }
     }
   }
-  
+
   return scripts;
 }
 
@@ -245,6 +255,6 @@ export function generateCIReport(options: {
     packageScripts: options.packageScripts,
     generatedFiles: options.generatedFiles,
     timestamp: new Date().toISOString(),
-    logs: options.logs
+    logs: options.logs,
   };
 }

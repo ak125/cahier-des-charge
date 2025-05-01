@@ -3,8 +3,8 @@
  * Agent export file
  */
 
-import { TypeAuditor } from './type-auditor';
 import { BusinessAgent } from '../../core/interfaces';
+import { TypeAuditor } from './type-auditor';
 
 export { TypeAuditor };
 export default TypeAuditor;

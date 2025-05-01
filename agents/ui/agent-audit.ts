@@ -1,6 +1,6 @@
 /**
  * Tableau de bord unifié d'audit pour la migration
- * 
+ *
  * Ce script fournit un tableau de bord web pour visualiser l'état des audits
  * et permet de déclencher manuellement des audits sur les modules.
  */
@@ -60,14 +60,14 @@ const config = {
   PORT: process.env.AUDIT_DASHBOARD_PORT || 3002,
   AUDIT_REPORTS_DIR: path.join(process.cwd(), 'audit', 'reports'),
   MODULES_DIR: path.join(process.cwd(), 'modules'),
-  DASHBOARD_STATIC_DIR: path.join(process.cwd(), 'dashboard', 'audit')
+  DASHBOARD_STATIC_DIR: path.join(process.cwd(), 'dashboard', 'audit'),
 };
 
 // Créer les dossiers nécessaires s'ils n'existent pas
 fs.mkdirSync(config.AUDIT_REPORTS_DIR, { recursive: true });
 
 // État global des audits
-let auditState: AuditState = {
+const auditState: AuditState = {
   lastUpdated: new Date(),
   modules: {},
   metrics: {
@@ -76,8 +76,8 @@ let auditState: AuditState = {
     passedModules: 0,
     warningModules: 0,
     failedModules: 0,
-    avgScore: 0
-  }
+    avgScore: 0,
+  },
 };
 
 /**
@@ -88,7 +88,7 @@ async function auditModule(moduleName: string): Promise<boolean> {
 
   try {
     // Simulation de l'exécution d'un audit (dans un projet réel, appeler les outils d'audit appropriés)
-    await new Promise(resolve => setTimeout(resolve, 1500));
+    await new Promise((resolve) => setTimeout(resolve, 1500));
 
     // Générer un score d'audit aléatoire entre 50 et 100 pour la démo
     const score = Math.floor(Math.random() * 51) + 50;
@@ -105,9 +105,9 @@ async function auditModule(moduleName: string): Promise<boolean> {
           severity: score < 60 ? 'error' : 'warning',
           code: 'AUDIT-001',
           message: `Problème d'audit démontré pour ${moduleName}`,
-          location: `${moduleName}/index.ts`
-        }
-      ]
+          location: `${moduleName}/index.ts`,
+        },
+      ],
     };
 
     // Sauvegarder le rapport dans un fichier
@@ -120,7 +120,7 @@ async function auditModule(moduleName: string): Promise<boolean> {
       lastAudit: new Date(),
       score,
       status,
-      reportPath
+      reportPath,
     };
 
     spinner.succeed(`Audit du module ${moduleName} terminé avec un score de ${score}/100`);
@@ -140,11 +140,15 @@ async function updateAuditState(): Promise<void> {
     let files: string[] = [];
     try {
       files = await fs.readdir(config.AUDIT_REPORTS_DIR);
-    } catch (error: any) {
-      console.log(chalk.yellow(`Répertoire de rapports d'audit non trouvé ou vide: ${config.AUDIT_REPORTS_DIR}`));
+    } catch (_error: any) {
+      console.log(
+        chalk.yellow(
+          `Répertoire de rapports d'audit non trouvé ou vide: ${config.AUDIT_REPORTS_DIR}`
+        )
+      );
     }
 
-    const auditReports = files.filter(f => f.endsWith('.audit.json'));
+    const auditReports = files.filter((f) => f.endsWith('.audit.json'));
 
     // Réinitialiser l'état des métriques
     auditState.metrics = {
@@ -153,7 +157,7 @@ async function updateAuditState(): Promise<void> {
       passedModules: 0,
       warningModules: 0,
       failedModules: 0,
-      avgScore: 0
+      avgScore: 0,
     };
 
     let totalScore = 0;
@@ -172,7 +176,7 @@ async function updateAuditState(): Promise<void> {
           lastAudit: new Date(report.timestamp),
           score: report.score,
           status: report.status,
-          reportPath
+          reportPath,
         };
 
         // Mettre à jour les métriques
@@ -192,8 +196,18 @@ async function updateAuditState(): Promise<void> {
     // S'il n'y a pas de modules réels dans le projet, créer des données de démo
     if (Object.keys(auditState.modules).length === 0) {
       const demoModules = [
-        'authentication', 'users', 'products', 'cart', 'orders', 'payment', 'shipping',
-        'notifications', 'search', 'admin', 'reviews', 'inventory'
+        'authentication',
+        'users',
+        'products',
+        'cart',
+        'orders',
+        'payment',
+        'shipping',
+        'notifications',
+        'search',
+        'admin',
+        'reviews',
+        'inventory',
       ];
 
       for (const moduleName of demoModules) {
@@ -206,7 +220,7 @@ async function updateAuditState(): Promise<void> {
           lastAudit: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000), // Jusqu'à 7 jours dans le passé
           score,
           status,
-          reportPath: `demo/${moduleName}.audit.json`
+          reportPath: `demo/${moduleName}.audit.json`,
         };
 
         totalScore += score;
@@ -238,21 +252,31 @@ async function updateAuditState(): Promise<void> {
  * Lance un audit complet sur tous les modules
  */
 async function runFullAudit(): Promise<void> {
-  console.log(chalk.blue('🔍 Lancement de l\'audit complet...'));
+  console.log(chalk.blue("🔍 Lancement de l'audit complet..."));
 
   try {
     // Rechercher les modules du projet
     let moduleDirs: string[] = [];
     try {
       moduleDirs = await fs.readdir(config.MODULES_DIR);
-    } catch (error: any) {
+    } catch (_error: any) {
       console.log(chalk.yellow(`Répertoire des modules non trouvé: ${config.MODULES_DIR}`));
       console.log(chalk.yellow('Utilisation des modules démo à la place.'));
 
       // Si aucun module réel n'est trouvé, utiliser les noms de modules de démo
       moduleDirs = [
-        'authentication', 'users', 'products', 'cart', 'orders', 'payment', 'shipping',
-        'notifications', 'search', 'admin', 'reviews', 'inventory'
+        'authentication',
+        'users',
+        'products',
+        'cart',
+        'orders',
+        'payment',
+        'shipping',
+        'notifications',
+        'search',
+        'admin',
+        'reviews',
+        'inventory',
       ];
     }
 
@@ -272,7 +296,11 @@ async function runFullAudit(): Promise<void> {
     await updateAuditState();
 
     console.log(chalk.green('✅ Audit complet terminé.'));
-    console.log(chalk.blue(`📊 Modules audités: ${auditState.metrics.auditedModules}/${auditState.metrics.totalModules}`));
+    console.log(
+      chalk.blue(
+        `📊 Modules audités: ${auditState.metrics.auditedModules}/${auditState.metrics.totalModules}`
+      )
+    );
     console.log(chalk.blue(`🟢 Modules en succès: ${auditState.metrics.passedModules}`));
     console.log(chalk.blue(`🟠 Modules avec avertissements: ${auditState.metrics.warningModules}`));
     console.log(chalk.blue(`🔴 Modules en échec: ${auditState.metrics.failedModules}`));
@@ -291,7 +319,7 @@ if (isDashboardMode) {
   app.use(express.static(config.DASHBOARD_STATIC_DIR));
 
   // Créer une page HTML basique si le répertoire dashboard/audit n'existe pas
-  app.get('/', async (req: ExpressRequestType, res: ExpressResponseType) => {
+  app.get('/', async (_req: ExpressRequestType, res: ExpressResponseType) => {
     try {
       // Vérifier si index.html existe dans le répertoire du dashboard
       const indexPath = path.join(config.DASHBOARD_STATIC_DIR, 'index.html');
@@ -303,9 +331,15 @@ if (isDashboardMode) {
       await updateAuditState();
 
       const moduleRows = Object.values(auditState.modules)
-        .map(module => {
-          const statusColor = module.status === 'pass' ? 'green' : module.status === 'warning' ? 'orange' : 'red';
-          const statusText = module.status === 'pass' ? 'Succès' : module.status === 'warning' ? 'Avertissement' : 'Échec';
+        .map((module) => {
+          const statusColor =
+            module.status === 'pass' ? 'green' : module.status === 'warning' ? 'orange' : 'red';
+          const statusText =
+            module.status === 'pass'
+              ? 'Succès'
+              : module.status === 'warning'
+                ? 'Avertissement'
+                : 'Échec';
           return `
             <tr>
               <td>${module.name}</td>
@@ -534,7 +568,7 @@ if (isDashboardMode) {
   });
 
   // API pour récupérer l'état actuel des audits
-  app.get('/api/audit/state', async (req: ExpressRequestType, res: ExpressResponseType) => {
+  app.get('/api/audit/state', async (_req: ExpressRequestType, res: ExpressResponseType) => {
     try {
       await updateAuditState();
       res.json(auditState);
@@ -564,13 +598,13 @@ if (isDashboardMode) {
   });
 
   // API pour lancer un audit complet
-  app.post('/api/audit/full', async (req: ExpressRequestType, res: ExpressResponseType) => {
+  app.post('/api/audit/full', async (_req: ExpressRequestType, res: ExpressResponseType) => {
     // Lancer l'audit complet en arrière-plan
     res.json({ success: true, message: 'Audit complet lancé en arrière-plan' });
 
     // Exécuter l'audit complet après avoir envoyé la réponse
     setTimeout(() => {
-      runFullAudit().catch(error => {
+      runFullAudit().catch((error) => {
         console.error(`Erreur lors de l'audit complet: ${error.message}`);
       });
     }, 100);
@@ -580,10 +614,10 @@ if (isDashboardMode) {
   const PORT = config.PORT;
   app.listen(PORT, () => {
     console.log(chalk.green(`🚀 Tableau de bord d'audit démarré sur http://localhost:${PORT}`));
-    console.log(chalk.blue('📊 Accédez au tableau de bord pour visualiser l\'état des audits'));
+    console.log(chalk.blue("📊 Accédez au tableau de bord pour visualiser l'état des audits"));
 
     // Mettre à jour l'état initial
-    updateAuditState().catch(error => {
+    updateAuditState().catch((error) => {
       console.error(chalk.red(`Erreur lors de l'initialisation de l'état: ${error.message}`));
     });
   });
@@ -598,5 +632,5 @@ if (isDashboardMode) {
 module.exports = {
   auditModule,
   updateAuditState,
-  runFullAudit
+  runFullAudit,
 };

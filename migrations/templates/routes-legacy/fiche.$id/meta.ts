@@ -1,5 +1,5 @@
-import type { MetaFunction } from @remix-run/nodestructure-agent";
-import { getCanonicalUrl } from ~/utils/seostructure-agent";
+import type { MetaFunction } from '@remix-run/nodestructure-agent'
+import { getCanonicalUrl } from './~/utils/seostructure-agent'
 
 /**
  * Métadonnées SEO pour la page de fiche

@@ -28,23 +28,26 @@ export function parseConnectionString(connectionString: string): ConnectionConfi
     database: 'postgres',
     user: 'postgres',
     password: '',
-    ssl: false
+    ssl: false,
   };
 
   try {
     // Cas 1: URL complète avec postgres:// ou postgresql://
-    if (connectionString.startsWith('postgres://') || connectionString.startsWith('postgresql://')) {
+    if (
+      connectionString.startsWith('postgres://') ||
+      connectionString.startsWith('postgresql://')
+    ) {
       return parseConnectionUrl(connectionString);
     }
 
     // Cas 2: Chaîne au format clé=valeur séparée par des espaces
     if (connectionString.includes('=') && !connectionString.includes('://')) {
       const parts = connectionString.split(/\s+/);
-      
+
       for (const part of parts) {
         const [key, value] = part.split('=');
         if (!key || !value) continue;
-        
+
         switch (key.toLowerCase()) {
           case 'host':
           case 'hostname':
@@ -82,13 +85,12 @@ export function parseConnectionString(connectionString: string): ConnectionConfi
             break;
         }
       }
-      
+
       return config;
     }
-    
+
     // Cas 3: Format non reconnu, on lance une erreur
     throw new Error('Format de chaîne de connexion non reconnu');
-    
   } catch (error) {
     throw new Error(`Erreur lors de l'analyse de la chaîne de connexion: ${error.message}`);
   }
@@ -102,32 +104,34 @@ export function parseConnectionString(connectionString: string): ConnectionConfi
 function parseConnectionUrl(url: string): ConnectionConfig {
   try {
     const parsedUrl = new URL(url);
-    
+
     // Extraire le nom d'utilisateur et le mot de passe
-    const auth = parsedUrl.username ? {
-      user: decodeURIComponent(parsedUrl.username),
-      password: parsedUrl.password ? decodeURIComponent(parsedUrl.password) : ''
-    } : {
-      user: 'postgres',
-      password: ''
-    };
-    
+    const auth = parsedUrl.username
+      ? {
+          user: decodeURIComponent(parsedUrl.username),
+          password: parsedUrl.password ? decodeURIComponent(parsedUrl.password) : '',
+        }
+      : {
+          user: 'postgres',
+          password: '',
+        };
+
     // Extraire le nom de la base de données du chemin (sans le premier slash)
     const database = parsedUrl.pathname ? parsedUrl.pathname.substring(1) : 'postgres';
-    
+
     // Extraire les paramètres de l'URL
     const ssl = parsedUrl.searchParams.get('ssl') === 'true';
     const schema = parsedUrl.searchParams.get('schema') || undefined;
-    const connectionTimeoutMillis = parsedUrl.searchParams.get('connectionTimeoutMillis') 
-      ? parseInt(parsedUrl.searchParams.get('connectionTimeoutMillis')!, 10) 
+    const connectionTimeoutMillis = parsedUrl.searchParams.get('connectionTimeoutMillis')
+      ? parseInt(parsedUrl.searchParams.get('connectionTimeoutMillis')!, 10)
       : undefined;
-    const idleTimeoutMillis = parsedUrl.searchParams.get('idleTimeoutMillis') 
-      ? parseInt(parsedUrl.searchParams.get('idleTimeoutMillis')!, 10) 
+    const idleTimeoutMillis = parsedUrl.searchParams.get('idleTimeoutMillis')
+      ? parseInt(parsedUrl.searchParams.get('idleTimeoutMillis')!, 10)
       : undefined;
-    const max = parsedUrl.searchParams.get('max') 
-      ? parseInt(parsedUrl.searchParams.get('max')!, 10) 
+    const max = parsedUrl.searchParams.get('max')
+      ? parseInt(parsedUrl.searchParams.get('max')!, 10)
       : undefined;
-    
+
     return {
       host: parsedUrl.hostname || 'localhost',
       port: parsedUrl.port ? parseInt(parsedUrl.port, 10) : 5432,
@@ -137,7 +141,7 @@ function parseConnectionUrl(url: string): ConnectionConfig {
       schema,
       connectionTimeoutMillis,
       idleTimeoutMillis,
-      max
+      max,
     };
   } catch (error) {
     throw new Error(`Erreur lors de l'analyse de l'URL de connexion: ${error.message}`);
@@ -151,42 +155,42 @@ function parseConnectionUrl(url: string): ConnectionConfig {
  */
 export function formatConnectionString(config: ConnectionConfig): string {
   const { host, port, database, user, password, ssl, schema } = config;
-  
+
   let connectionString = `postgresql://${encodeURIComponent(user)}`;
-  
+
   if (password) {
     connectionString += `:${encodeURIComponent(password)}`;
   }
-  
+
   connectionString += `@${host}:${port}/${database}`;
-  
+
   // Ajouter les paramètres supplémentaires si nécessaire
   const params: string[] = [];
-  
+
   if (ssl !== undefined) {
     params.push(`ssl=${ssl}`);
   }
-  
+
   if (schema) {
     params.push(`schema=${schema}`);
   }
-  
+
   if (config.connectionTimeoutMillis !== undefined) {
     params.push(`connectionTimeoutMillis=${config.connectionTimeoutMillis}`);
   }
-  
+
   if (config.idleTimeoutMillis !== undefined) {
     params.push(`idleTimeoutMillis=${config.idleTimeoutMillis}`);
   }
-  
+
   if (config.max !== undefined) {
     params.push(`max=${config.max}`);
   }
-  
+
   if (params.length > 0) {
     connectionString += `?${params.join('&')}`;
   }
-  
+
   return connectionString;
 }
 
@@ -198,23 +202,24 @@ export function formatConnectionString(config: ConnectionConfig): string {
 export function maskConnectionString(connectionString: string): string {
   try {
     const config = parseConnectionString(connectionString);
-    
+
     // Masquer le mot de passe
     if (config.password) {
       config.password = '********';
     }
-    
+
     return formatConnectionString(config);
-  } catch (error) {
+  } catch (_error) {
     // Si on n'arrive pas à analyser la chaîne, on fait un masquage simple
     if (connectionString.includes('@')) {
       // Format URL
       return connectionString.replace(/\/\/([^:]+):([^@]+)@/, '//$1:********@');
-    } else if (connectionString.includes('password=')) {
+    }
+    if (connectionString.includes('password=')) {
       // Format clé=valeur
       return connectionString.replace(/password=([^\s]+)/, 'password=********');
     }
-    
+
     // Si on ne peut pas masquer de façon fiable, on retourne une chaîne générique
     return '[Chaîne de connexion masquée]';
   }
@@ -229,7 +234,7 @@ export function isValidConnectionString(connectionString: string): boolean {
   try {
     parseConnectionString(connectionString);
     return true;
-  } catch (error) {
+  } catch (_error) {
     return false;
   }
 }

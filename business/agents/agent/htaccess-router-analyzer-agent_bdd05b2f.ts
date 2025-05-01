@@ -1,11 +1,11 @@
 /**
  * Htaccess Router Analyzer
  * Agent export file
- * 
+ *
  * Version corrigée: 2025-04-19
  */
 
-import { HtaccessRouterAnalyzer } from ./htaccess-router-analyzerstructure-agent';
+import { HtaccessRouterAnalyzer } from './htaccess-router-analyzerstructure-agent';
 
 // Définir l'interface AgentContext directement ici
 export interface AgentContext {
@@ -32,37 +32,8 @@ export { HtaccessRouterAnalyzer };
 // Export par défaut de l'instance agent
 export default agent;
 
-
-
-
-
-
-
-import { BaseAgent } from @workspaces/cahier-des-charge/src/core/interfaces/BaseAgentstructure-agent';
-import { BusinessAgent, AnalyzerAgent } from @workspaces/cahier-des-charge/src/core/interfaces/businessstructure-agent';
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+import { BaseAgent } from '@workspaces/cahier-des-charge/src/core/interfaces/BaseAgent';
+import {
+  AnalyzerAgent,
+  BusinessAgent,
+} from '@workspaces/cahier-des-charge/src/core/interfaces/business';

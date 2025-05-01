@@ -15,14 +15,8 @@
       "caracteristiques",
       "options"
     ],
-    "missingFields": [
-      "ref_oem",
-      "img_url"
-    ],
-    "unexpectedFields": [
-      "createdAt",
-      "hiddenFlag"
-    ],
+    "missingFields": ["ref_oem", "img_url"],
+    "unexpectedFields": ["createdAt", "hiddenFlag"],
     "score": 92,
     "status": "partial",
     "details": {
@@ -54,9 +48,7 @@
           "options",
           "img_url"
         ],
-        "hiddenFields": [
-          "id"
-        ]
+        "hiddenFields": ["id"]
       },
       "tsx": {
         "formFields": [
@@ -86,9 +78,7 @@
           "createdAt",
           "hiddenFlag"
         ],
-        "hiddenFields": [
-          "id"
-        ]
+        "hiddenFields": ["id"]
       },
       "prisma": {
         "modelFields": [
@@ -114,59 +104,21 @@
     }
   },
   "panier.tsx": {
-    "matchedFields": [
-      "id",
-      "produits",
-      "total",
-      "quantite",
-      "remise",
-      "client",
-      "dateCommande"
-    ],
+    "matchedFields": ["id", "produits", "total", "quantite", "remise", "client", "dateCommande"],
     "missingFields": [],
     "unexpectedFields": [],
     "score": 100,
     "status": "success",
     "details": {
       "php": {
-        "formFields": [
-          "id",
-          "produits",
-          "quantite",
-          "remise",
-          "client"
-        ],
-        "displayFields": [
-          "produits",
-          "total",
-          "quantite",
-          "remise",
-          "client",
-          "dateCommande"
-        ],
-        "hiddenFields": [
-          "id"
-        ]
+        "formFields": ["id", "produits", "quantite", "remise", "client"],
+        "displayFields": ["produits", "total", "quantite", "remise", "client", "dateCommande"],
+        "hiddenFields": ["id"]
       },
       "tsx": {
-        "formFields": [
-          "id",
-          "produits",
-          "quantite",
-          "remise",
-          "client"
-        ],
-        "displayFields": [
-          "produits",
-          "total",
-          "quantite",
-          "remise",
-          "client",
-          "dateCommande"
-        ],
-        "hiddenFields": [
-          "id"
-        ]
+        "formFields": ["id", "produits", "quantite", "remise", "client"],
+        "displayFields": ["produits", "total", "quantite", "remise", "client", "dateCommande"],
+        "hiddenFields": ["id"]
       },
       "prisma": {
         "modelFields": [
@@ -184,41 +136,20 @@
     }
   },
   "contact.tsx": {
-    "matchedFields": [
-      "nom",
-      "email",
-      "message"
-    ],
-    "missingFields": [
-      "telephone",
-      "objet"
-    ],
+    "matchedFields": ["nom", "email", "message"],
+    "missingFields": ["telephone", "objet"],
     "unexpectedFields": [],
     "score": 60,
     "status": "partial",
     "details": {
       "php": {
-        "formFields": [
-          "nom",
-          "email",
-          "telephone",
-          "objet",
-          "message"
-        ],
+        "formFields": ["nom", "email", "telephone", "objet", "message"],
         "displayFields": [],
         "hiddenFields": []
       },
       "tsx": {
-        "formFields": [
-          "nom",
-          "email",
-          "message"
-        ],
-        "displayFields": [
-          "nom",
-          "email",
-          "message"
-        ],
+        "formFields": ["nom", "email", "message"],
+        "displayFields": ["nom", "email", "message"],
         "hiddenFields": []
       }
     }

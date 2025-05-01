@@ -8,9 +8,9 @@
  * Génère des rapports JSON détaillés et un résumé au format Markdown
  */
 
+import { execSync } from 'child_process';
 import fs from 'fs';
 import path from 'path';
-import { execSync } from 'child_process';
 import { Logger } from '@nestjs/common';
 
 // Types

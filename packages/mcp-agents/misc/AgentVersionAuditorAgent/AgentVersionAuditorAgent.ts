@@ -3,8 +3,8 @@
  * Agent export file
  */
 
-import { agent } from './agent-version-auditor';
 import { BusinessAgent } from '../../core/interfaces';
+import { agent } from './agent-version-auditor';
 
 export { agent };
 export default agent;

@@ -1,117 +1,93 @@
 {
-    "$schema": "http://json-schema.org/draft-07/schema#",
-    "title": "Schema for MCP Input Module",
-    "description": "Définit un module d'entrée pour le pipeline MCP capable de traiter différents types de sources",
-    "type": "object",
-    "required": [
-        "inputType",
-        "entry",
-        "expectedOutputs"
-    ],
-    "properties": {
-        "id": {
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Schema for MCP Input Module",
+  "description": "Définit un module d'entrée pour le pipeline MCP capable de traiter différents types de sources",
+  "type": "object",
+  "required": ["inputType", "entry", "expectedOutputs"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Identifiant unique du module d'entrée"
+    },
+    "name": {
+      "type": "string",
+      "description": "Nom descriptif du module"
+    },
+    "inputType": {
+      "type": "string",
+      "description": "Type de source à traiter",
+      "enum": ["php", "html", "tpl", "json", "sql", "yml", "xml", "jsx", "other"]
+    },
+    "entry": {
+      "type": "string",
+      "description": "Chemin vers le fichier source principal à traiter"
+    },
+    "entryPoints": {
+      "type": "array",
+      "description": "Points d'entrée multiples pour les traitements complexes",
+      "items": {
+        "type": "object",
+        "required": ["path", "role"],
+        "properties": {
+          "path": {
             "type": "string",
-            "description": "Identifiant unique du module d'entrée"
-        },
-        "name": {
+            "description": "Chemin du fichier"
+          },
+          "role": {
             "type": "string",
-            "description": "Nom descriptif du module"
-        },
-        "inputType": {
-            "type": "string",
-            "description": "Type de source à traiter",
-            "enum": [
-                "php",
-                "html",
-                "tpl",
-                "json",
-                "sql",
-                "yml",
-                "xml",
-                "jsx",
-                "other"
-            ]
-        },
-        "entry": {
-            "type": "string",
-            "description": "Chemin vers le fichier source principal à traiter"
-        },
-        "entryPoints": {
-            "type": "array",
-            "description": "Points d'entrée multiples pour les traitements complexes",
-            "items": {
-                "type": "object",
-                "required": [
-                    "path",
-                    "role"
-                ],
-                "properties": {
-                    "path": {
-                        "type": "string",
-                        "description": "Chemin du fichier"
-                    },
-                    "role": {
-                        "type": "string",
-                        "description": "Rôle de ce fichier dans le traitement",
-                        "enum": [
-                            "main",
-                            "helper",
-                            "config",
-                            "template",
-                            "data",
-                            "style"
-                        ]
-                    }
-                }
-            }
-        },
-        "dependencies": {
-            "type": "array",
-            "description": "Liste des fichiers dont dépend le module d'entrée",
-            "items": {
-                "type": "string"
-            }
-        },
-        "expectedOutputs": {
-            "type": "array",
-            "description": "Liste des fichiers qui devraient être générés après traitement",
-            "items": {
-                "type": "string"
-            }
-        },
-        "parserOptions": {
-            "type": "object",
-            "description": "Options spécifiques pour l'analyse de ce module",
-            "additionalProperties": true
-        },
-        "generatorOptions": {
-            "type": "object",
-            "description": "Options spécifiques pour la génération de code à partir de ce module",
-            "additionalProperties": true
-        },
-        "metadata": {
-            "type": "object",
-            "description": "Métadonnées supplémentaires pour ce module",
-            "properties": {
-                "author": {
-                    "type": "string"
-                },
-                "createdAt": {
-                    "type": "string",
-                    "format": "date-time"
-                },
-                "priority": {
-                    "type": "integer",
-                    "description": "Priorité de traitement (plus petit = plus prioritaire)",
-                    "minimum": 1
-                },
-                "tags": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                }
-            }
+            "description": "Rôle de ce fichier dans le traitement",
+            "enum": ["main", "helper", "config", "template", "data", "style"]
+          }
         }
+      }
+    },
+    "dependencies": {
+      "type": "array",
+      "description": "Liste des fichiers dont dépend le module d'entrée",
+      "items": {
+        "type": "string"
+      }
+    },
+    "expectedOutputs": {
+      "type": "array",
+      "description": "Liste des fichiers qui devraient être générés après traitement",
+      "items": {
+        "type": "string"
+      }
+    },
+    "parserOptions": {
+      "type": "object",
+      "description": "Options spécifiques pour l'analyse de ce module",
+      "additionalProperties": true
+    },
+    "generatorOptions": {
+      "type": "object",
+      "description": "Options spécifiques pour la génération de code à partir de ce module",
+      "additionalProperties": true
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Métadonnées supplémentaires pour ce module",
+      "properties": {
+        "author": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "priority": {
+          "type": "integer",
+          "description": "Priorité de traitement (plus petit = plus prioritaire)",
+          "minimum": 1
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
     }
+  }
 }

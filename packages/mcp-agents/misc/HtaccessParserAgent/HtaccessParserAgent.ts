@@ -3,8 +3,8 @@
  * Agent export file
  */
 
-import { HtaccessParser } from './htaccess-parser';
 import { BusinessAgent } from '../../core/interfaces';
+import { HtaccessParser } from './htaccess-parser';
 
 export { HtaccessParser };
 export default HtaccessParser;

@@ -1,21 +1,21 @@
-import { Injectable, Logger } from '@nestjs/common';
+import * as path from 'path';
 import { HttpService } from '@nestjs/axios';
+import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
 import { Cron } from '@nestjs/schedule';
-import { firstValueFrom } from 'rxjs';
 import * as fs from 'fs/promises';
-import * as path from 'path';
 import { parse as parseMarkdown } from 'marked';
+import { Model } from 'mongoose';
+import { firstValueFrom } from 'rxjs';
 
+import { DocumentUpdater } from '../documentation/document-updater.service';
 import {
+  ObsolescenceAlert,
   Technology,
   TechnologyAssessment,
-  ObsolescenceAlert,
   TechnologyStatus
 } from './interfaces';
-import { DocumentUpdater } from '../documentation/document-updater.service';
 
 @Injectable()
 export class ObsolescenceDetectorService {
@@ -28,7 +28,7 @@ export class ObsolescenceDetectorService {
     private readonly httpService: HttpService,
     private readonly configService: ConfigService,
     private readonly documentUpdater: DocumentUpdater,
-    @InjectModel('Technology') private technologyModel: Model<Technology>
+    @InjectModel('Technology') private _technologyModel: Model<Technology>
   ) {
     this.cdcDir = this.configService.get<string>('CDC_DIRECTORY', 'cahier-des-charges');
     this.npmRegistry = 'https://registry.npmjs.org';
@@ -231,12 +231,12 @@ export class ObsolescenceDetectorService {
     let securityIssues = 0;
     
     // Facteur 1: Dernière mise à jour
-    if (npmInfo && npmInfo.time && npmInfo.time.modified) {
+    if (npmInfo?.time?.modified) {
       const lastModified = new Date(npmInfo.time.modified);
       lastUpdate = lastModified;
       const daysSinceUpdate = Math.floor((Date.now() - lastModified.getTime()) / (1000 * 60 * 60 * 24));
       obsolescenceScore += Math.min(daysSinceUpdate / 365 * 25, 25);
-    } else if DoDoDoDoDoDotgithubInfo &&DoDoDoDoDoDotgithubInfo.updated_at) {
+    } else if DoDoDoDoDoDotgithubInfo?.updated_at) {
       const lastModified = new DateDoDoDoDoDoDotgithubInfo.updated_at);
       lastUpdate = lastModified;
       const daysSinceUpdate = Math.floor((Date.now() - lastModified.getTime()) / (1000 * 60 * 60 * 24));
@@ -302,7 +302,7 @@ export class ObsolescenceDetectorService {
         const content = await fs.readFile(filePath, 'utf-8');
         
         // Ajouter le marqueur d'obsolescence s'il n'existe pas déjà
-        if (!content.includes(`[!OBSOLESCENCE]`) && !content.includes(`technology-status: obsolete`)) {
+        if (!content.includes("[!OBSOLESCENCE]") && !content.includes("technology-status: obsolete")) {
           const warningBox = this.generateObsolescenceWarning(alert);
           
           // Trouver la première occurrence de la technologie
@@ -315,9 +315,8 @@ export class ObsolescenceDetectorService {
             
             if (sectionStart !== -1) {
               const updatedContent = 
-                content.substring(0, sectionStart) +
-                warningBox + '\n\n' +
-                content.substring(sectionStart);
+                `${content.substring(0, sectionStart) +
+                warningBox}\n\n${content.substring(sectionStart)}`;
               
               // Mettre à jour le fichier
               await fs.writeFile(filePath, updatedContent, 'utf-8');
@@ -353,21 +352,21 @@ export class ObsolescenceDetectorService {
   /**
    * Trouver des alternatives à une technologie
    */
-  private async findAlternatives(name: string, category: string): Promise<string[]> {
+  private async findAlternatives(name: string, _category: string): Promise<string[]> {
     // Mapping des alternatives connues
     const alternativesMap = {
-      'Express': ['Fastify', 'NestJS', 'Koa'],
+      Express: ['Fastify', 'NestJS', 'Koa'],
       'Moment.js': ['Day.js', 'date-fns', 'Luxon'],
-      'jQuery': ['Vanilla JS', 'React', 'Vue'],
-      'Redux': ['Zustand', 'MobX', 'Recoil'],
-      'Webpack': ['Vite', 'Parcel', 'esbuild'],
-      'MongoDB': ['PostgreSQL', 'MySQL', 'SQLite'],
-      'MySQL': ['PostgreSQL', 'MariaDB'],
-      'Enzyme': ['React Testing Library', 'Vitest'],
-      'CoffeeScript': ['TypeScript', 'JavaScript'],
-      'Bower': ['npm', 'Yarn', 'pnpm'],
-      'Grunt': ['Webpack', 'npm scripts', 'Vite'],
-      'Gulp': ['npm scripts', 'Webpack', 'Vite'],
+      jQuery: ['Vanilla JS', 'React', 'Vue'],
+      Redux: ['Zustand', 'MobX', 'Recoil'],
+      Webpack: ['Vite', 'Parcel', 'esbuild'],
+      MongoDB: ['PostgreSQL', 'MySQL', 'SQLite'],
+      MySQL: ['PostgreSQL', 'MariaDB'],
+      Enzyme: ['React Testing Library', 'Vitest'],
+      CoffeeScript: ['TypeScript', 'JavaScript'],
+      Bower: ['npm', 'Yarn', 'pnpm'],
+      Grunt: ['Webpack', 'npm scripts', 'Vite'],
+      Gulp: ['npm scripts', 'Webpack', 'Vite'],
     };
     
     return alternativesMap[name] || [];
@@ -382,8 +381,8 @@ export class ObsolescenceDetectorService {
     const securityIssuesMap = {
       'Express 4': 2,
       'Moment.js': 3,
-      'jQuery': 5,
-      'Lodash': 1,
+      jQuery: 5,
+      Lodash: 1,
       'Webpack 4': 2
     };
     
@@ -413,7 +412,7 @@ export class ObsolescenceDetectorService {
     
     try {
       const headers =DoDoDoDoDoDotgithubToken 
-        ? { Authorization: `token $DoDoDoDoDoDotgithubToken}` }
+        ? { Authorization: "token $DoDoDoDoDoDotgithubToken}" }
         : {};
       
       const response = await firstValueFrom(
@@ -449,16 +448,16 @@ export class ObsolescenceDetectorService {
     if (obsolescenceScore >= 75) {
       return alternatives.length > 0
         ? `**Action recommandée:** Migration urgente vers ${alternatives[0]}.`
-        : `**Action recommandée:** Réévaluation immédiate de cette technologie.`;
+        : "**Action recommandée:** Réévaluation immédiate de cette technologie.";
     }
     
     if (obsolescenceScore >= 50) {
       return alternatives.length > 0
         ? `**Action recommandée:** Planifier la migration vers ${alternatives[0]}.`
-        : `**Action recommandée:** Surveiller cette technologie de près.`;
+        : "**Action recommandée:** Surveiller cette technologie de près.";
     }
     
-    return `**Action recommandée:** Mettre à jour régulièrement.`;
+    return "**Action recommandée:** Mettre à jour régulièrement.";
   }
   
   /**

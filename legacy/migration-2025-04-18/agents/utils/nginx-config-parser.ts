@@ -4,7 +4,7 @@
  * Date: 12 avril 2025
  */
 
-import { ServerConfig, RouteConfig, TLSConfig } from '../migration/CaddyfileGenerator';
+import { RouteConfig, ServerConfig, TLSConfig } from '../migration/CaddyfileGenerator';
 
 export interface NginxServer {
   listen: string[];
@@ -70,13 +70,13 @@ export class NginxConfigParser {
       http: {
         server: [],
         upstream: {},
-        globalSettings: {}
-      }
+        globalSettings: {},
+      },
     };
-    
+
     // Découper le contenu en blocs
     const blocks = this.parseBlocks(content);
-    
+
     // Parcourir les blocs de premier niveau
     for (const block of blocks) {
       if (block.name === 'http') {
@@ -95,21 +95,21 @@ export class NginxConfigParser {
         Object.assign(config, directives);
       }
     }
-    
+
     return config;
   }
-  
+
   /**
    * Parse les blocs dans le contenu
    */
   private parseBlocks(content: string): { name: string; content: string }[] {
     const blocks: { name: string; content: string }[] = [];
     let currentPosition = 0;
-    
+
     while (currentPosition < content.length) {
       // Trouver le prochain bloc ou directive
       const blockStart = this.findNextBlockStart(content, currentPosition);
-      
+
       if (blockStart.start === -1) {
         // Plus de blocs, ajouter le reste comme directives
         const remainingContent = content.substring(currentPosition).trim();
@@ -118,7 +118,7 @@ export class NginxConfigParser {
         }
         break;
       }
-      
+
       // Ajouter les directives précédant le bloc
       if (blockStart.start > currentPosition) {
         const directivesContent = content.substring(currentPosition, blockStart.start).trim();
@@ -126,43 +126,46 @@ export class NginxConfigParser {
           blocks.push({ name: '', content: directivesContent });
         }
       }
-      
+
       // Trouver la fin du bloc
       const blockEnd = this.findMatchingBrace(content, blockStart.contentStart);
       if (blockEnd === -1) {
         throw new Error(`Bloc non fermé commençant à la position ${blockStart.start}`);
       }
-      
+
       // Ajouter le bloc
       const blockContent = content.substring(blockStart.contentStart, blockEnd).trim();
       blocks.push({ name: blockStart.name, content: blockContent });
-      
+
       // Continuer après la fin du bloc
       currentPosition = blockEnd + 1;
     }
-    
+
     return blocks;
   }
-  
+
   /**
    * Trouve le prochain début de bloc
    */
-  private findNextBlockStart(content: string, startPosition: number): { name: string; start: number; contentStart: number } {
+  private findNextBlockStart(
+    content: string,
+    startPosition: number
+  ): { name: string; start: number; contentStart: number } {
     const regex = /\s*([a-zA-Z0-9_-]+)\s*\{/g;
     regex.lastIndex = startPosition;
-    
+
     const match = regex.exec(content);
     if (!match) {
       return { name: '', start: -1, contentStart: -1 };
     }
-    
+
     return {
       name: match[1],
       start: match.index,
-      contentStart: regex.lastIndex
+      contentStart: regex.lastIndex,
     };
   }
-  
+
   /**
    * Trouve l'accolade fermante correspondante
    */
@@ -171,34 +174,34 @@ export class NginxConfigParser {
     let inQuotes = false;
     let inSingleQuotes = false;
     let escaped = false;
-    
+
     for (let i = startPosition; i < content.length; i++) {
       const char = content[i];
-      
+
       if (escaped) {
         escaped = false;
         continue;
       }
-      
+
       if (char === '\\') {
         escaped = true;
         continue;
       }
-      
+
       if (char === '"' && !inSingleQuotes) {
         inQuotes = !inQuotes;
         continue;
       }
-      
+
       if (char === "'" && !inQuotes) {
         inSingleQuotes = !inSingleQuotes;
         continue;
       }
-      
+
       if (inQuotes || inSingleQuotes) {
         continue;
       }
-      
+
       if (char === '{') {
         braceCount++;
       } else if (char === '}') {
@@ -208,38 +211,38 @@ export class NginxConfigParser {
         }
       }
     }
-    
+
     return -1;
   }
-  
+
   /**
    * Parse les directives simples
    */
   private parseDirectives(content: string): Record<string, any> {
     const directives: Record<string, any> = {};
     const lines = content.split('\n');
-    
+
     for (const line of lines) {
       const trimmedLine = line.trim();
-      
+
       // Ignorer les commentaires et les lignes vides
       if (trimmedLine.startsWith('#') || trimmedLine === '') {
         continue;
       }
-      
+
       // Trouver la fin de la directive (avant le point-virgule)
       const endIndex = trimmedLine.lastIndexOf(';');
       if (endIndex === -1) {
         continue; // Ignorer les lignes sans point-virgule
       }
-      
+
       const directive = trimmedLine.substring(0, endIndex).trim();
       const parts = directive.split(/\s+/);
-      
+
       if (parts.length >= 2) {
         const name = parts[0];
         const value = parts.slice(1).join(' ');
-        
+
         // Gérer les directives à valeurs multiples
         if (directives[name]) {
           if (Array.isArray(directives[name])) {
@@ -252,16 +255,16 @@ export class NginxConfigParser {
         }
       }
     }
-    
+
     return directives;
   }
-  
+
   /**
    * Parse le bloc HTTP
    */
   private async parseHttpBlock(content: string, config: NginxConfig): Promise<void> {
     const blocks = this.parseBlocks(content);
-    
+
     for (const block of blocks) {
       if (block.name === 'server') {
         const server = await this.parseServerBlock(block.content);
@@ -275,7 +278,7 @@ export class NginxConfigParser {
         }
       } else if (block.name === 'location') {
         // Ignorer les blocs de location en dehors d'un serveur
-        console.warn('Bloc location trouvé en dehors d\'un bloc server - ignoré');
+        console.warn("Bloc location trouvé en dehors d'un bloc server - ignoré");
       } else if (block.name) {
         // Autres blocs dans http
         config.http.globalSettings![block.name] = this.parseDirectives(block.content);
@@ -286,7 +289,7 @@ export class NginxConfigParser {
       }
     }
   }
-  
+
   /**
    * Parse le bloc server
    */
@@ -294,11 +297,11 @@ export class NginxConfigParser {
     const server: NginxServer = {
       listen: [],
       serverName: [],
-      location: []
+      location: [],
     };
-    
+
     const blocks = this.parseBlocks(content);
-    
+
     for (const block of blocks) {
       if (block.name === 'location') {
         const locationPath = block.name.split(/\s+/).slice(1).join(' ');
@@ -313,7 +316,7 @@ export class NginxConfigParser {
       } else {
         // Directives dans server
         const directives = this.parseDirectives(block.content);
-        
+
         // Traiter les directives spécifiques
         for (const [key, value] of Object.entries(directives)) {
           switch (key) {
@@ -369,20 +372,20 @@ export class NginxConfigParser {
         }
       }
     }
-    
+
     return server;
   }
-  
+
   /**
    * Parse le bloc location
    */
   private async parseLocationBlock(path: string, content: string): Promise<NginxLocation> {
     const location: NginxLocation = {
-      path
+      path,
     };
-    
+
     const directives = this.parseDirectives(content);
-    
+
     // Traiter les directives spécifiques
     for (const [key, value] of Object.entries(directives)) {
       switch (key) {
@@ -437,17 +440,17 @@ export class NginxConfigParser {
           }
       }
     }
-    
+
     return location;
   }
-  
+
   /**
    * Parse les serveurs dans un bloc upstream
    */
   private parseUpstreamServers(content: string): string[] {
     const servers: string[] = [];
     const directives = this.parseDirectives(content);
-    
+
     for (const [key, value] of Object.entries(directives)) {
       if (key === 'server') {
         if (Array.isArray(value)) {
@@ -457,54 +460,54 @@ export class NginxConfigParser {
         }
       }
     }
-    
+
     return servers;
   }
-  
+
   /**
    * Convertit la configuration Nginx en configuration pour Caddy
    */
   async convertToServerConfigs(config: NginxConfig): Promise<ServerConfig[]> {
     const serverConfigs: ServerConfig[] = [];
-    
+
     // Traiter chaque serveur Nginx
     for (const nginxServer of config.http.server) {
       const serverNames = nginxServer.serverName || ['_'];
-      
+
       // Créer une configuration de serveur pour chaque nom de serveur
       for (const domainName of serverNames) {
         if (domainName === '_' || domainName === 'default_server') {
           continue; // Ignorer les serveurs par défaut
         }
-        
+
         const serverConfig: ServerConfig = {
           domain: domainName,
-          routes: []
+          routes: [],
         };
-        
+
         // Configurer TLS si le serveur utilise SSL
         if (nginxServer.ssl) {
           serverConfig.tls = {
             type: 'manual',
             certFile: nginxServer.ssl.certificate,
-            keyFile: nginxServer.ssl.certificateKey
+            keyFile: nginxServer.ssl.certificateKey,
           };
         }
-        
+
         // Ajouter les en-têtes personnalisés
         if (nginxServer.headers) {
           serverConfig.headers = { ...nginxServer.headers };
         }
-        
+
         // Traiter la racine de fichiers statiques
         if (nginxServer.root) {
           serverConfig.routes.push({
             path: '/',
             type: 'static',
-            target: nginxServer.root
+            target: nginxServer.root,
           });
         }
-        
+
         // Ajouter les règles de réécriture au niveau du serveur
         if (nginxServer.rewrite) {
           for (const rewrite of nginxServer.rewrite) {
@@ -512,23 +515,25 @@ export class NginxConfigParser {
             const parts = rewrite.split(/\s+/);
             if (parts.length >= 3) {
               const [, pattern, target] = parts;
-              const hasRedirectFlag = parts.length > 3 && (parts[3].includes('redirect') || parts[3].includes('permanent'));
-              
+              const hasRedirectFlag =
+                parts.length > 3 &&
+                (parts[3].includes('redirect') || parts[3].includes('permanent'));
+
               serverConfig.routes.push({
                 path: pattern,
                 type: hasRedirectFlag ? 'redirect' : 'rewrite',
                 target,
-                status: parts[3]?.includes('permanent') ? 301 : undefined
+                status: parts[3]?.includes('permanent') ? 301 : undefined,
               });
             }
           }
         }
-        
+
         // Convertir les blocs de localisation
         for (const location of nginxServer.location) {
           await this.convertLocation(serverConfig, location);
         }
-        
+
         // Ajouter les pages d'erreur
         if (nginxServer.errorPage) {
           for (const [code, page] of Object.entries(nginxServer.errorPage)) {
@@ -538,53 +543,59 @@ export class NginxConfigParser {
               status: parseInt(code, 10),
               target: page,
               options: {
-                code: parseInt(code, 10)
-              }
+                code: parseInt(code, 10),
+              },
             });
           }
         }
-        
+
         serverConfigs.push(serverConfig);
       }
     }
-    
+
     return serverConfigs;
   }
-  
+
   /**
    * Convertit un bloc location en routes Caddy
    */
-  private async convertLocation(serverConfig: ServerConfig, location: NginxLocation): Promise<void> {
+  private async convertLocation(
+    serverConfig: ServerConfig,
+    location: NginxLocation
+  ): Promise<void> {
     const path = location.path;
-    
+
     // Proxy
     if (location.proxyPass) {
       serverConfig.routes.push({
         path,
         type: 'proxy',
         target: location.proxyPass,
-        headers: location.addHeader
+        headers: location.addHeader,
       });
       return;
     }
-    
+
     // Redirection (return)
     if (location.returnDirective) {
       const parts = location.returnDirective.split(/\s+/);
       if (parts.length >= 2) {
         const status = parseInt(parts[0], 10);
-        const target = parts.slice(1).join(' ').replace(/^"(.*)"$/, '$1');
-        
+        const target = parts
+          .slice(1)
+          .join(' ')
+          .replace(/^"(.*)"$/, '$1');
+
         serverConfig.routes.push({
           path,
           type: 'redirect',
           target,
-          status
+          status,
         });
       }
       return;
     }
-    
+
     // Fichiers statiques (root/alias)
     if (location.root || location.alias) {
       const target = location.alias || location.root!;
@@ -593,12 +604,12 @@ export class NginxConfigParser {
         type: 'static',
         target,
         options: {
-          index: location.index?.join(' ') || 'index.html'
-        }
+          index: location.index?.join(' ') || 'index.html',
+        },
       });
       return;
     }
-    
+
     // Réécritures
     if (location.rewrite) {
       for (const rewrite of location.rewrite) {
@@ -606,49 +617,53 @@ export class NginxConfigParser {
         if (parts.length >= 3) {
           const [, pattern, target] = parts;
           const fullPattern = path === '/' ? pattern : `${path}${pattern}`;
-          const hasRedirectFlag = parts.length > 3 && (parts[3].includes('redirect') || parts[3].includes('permanent'));
-          
+          const hasRedirectFlag =
+            parts.length > 3 && (parts[3].includes('redirect') || parts[3].includes('permanent'));
+
           serverConfig.routes.push({
             path: fullPattern,
             type: hasRedirectFlag ? 'redirect' : 'rewrite',
             target,
-            status: parts[3]?.includes('permanent') ? 301 : undefined
+            status: parts[3]?.includes('permanent') ? 301 : undefined,
           });
         }
       }
       return;
     }
-    
+
     // Try_files (fallback)
     if (location.tryFiles) {
       // try_files est souvent utilisé pour le routage frontend (ex: Remix, SPA)
       // Dans Caddy, on peut gérer cela avec une combinaison de routes
       const fallbackFile = location.tryFiles[location.tryFiles.length - 1];
-      
+
       if (fallbackFile.startsWith('=')) {
         // Si le fallback est une réponse HTTP, c'est probablement un routage frontend
         serverConfig.routes.push({
           path: path === '/' ? '/*' : `${path}/*`,
           type: 'rewrite',
-          target: path === '/' ? '/index.html' : `${path}/index.html`
+          target: path === '/' ? '/index.html' : `${path}/index.html`,
         });
       } else if (fallbackFile.includes('$uri')) {
         // Cas classique pour SPA: try_files $uri $uri/ /index.html
         serverConfig.routes.push({
           path: path === '/' ? '/*' : `${path}/*`,
           type: 'rewrite',
-          target: fallbackFile.replace('$uri', '{path}')
+          target: fallbackFile.replace('$uri', '{path}'),
         });
       }
       return;
     }
-    
+
     // Si aucun traitement spécial n'est trouvé, ajouter une route par défaut
     if (!location.internalOnly) {
       serverConfig.routes.push({
         path,
         type: 'static',
-        target: location.root || serverConfig.routes.find(r => r.type === 'static')?.target || '/var/www/html'
+        target:
+          location.root ||
+          serverConfig.routes.find((r) => r.type === 'static')?.target ||
+          '/var/www/html',
       });
     }
   }

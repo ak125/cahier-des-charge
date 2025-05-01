@@ -5,12 +5,12 @@
  * pour améliorer leur référencement naturel
  */
 
-import { MCPAgent, AgentContext, AgentConfig } from '../packagesDoDotmcp-core';
-import fs from 'fs-extra';
 import path from 'path';
+import fs from 'fs-extra';
 import glob from 'glob';
 import { JSDOM } from 'jsdom';
 import { BaseAgent, BusinessAgent } from '../core/interfaces/BaseAgent';
+import { AgentConfig, AgentContext, MCPAgent } from '../packagesDoDotmcp-core';
 
 
 interface EnhancerTarget {

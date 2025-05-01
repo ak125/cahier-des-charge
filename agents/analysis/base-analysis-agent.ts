@@ -4,19 +4,15 @@
  */
 
 import { BaseAgent } from '../core/base-agent';
-import { AnalysisAgentOptions, AnalysisResult } from './types';
+import { AnalysisAgentOptions } from './types';
 
 /**
  * Classe de base pour tous les agents analysis
  */
 export abstract class BaseAnalysisAgent<
   TOptions extends AnalysisAgentOptions = AnalysisAgentOptions,
-  TResult = any
+  TResult = any,
 > extends BaseAgent<TOptions, TResult> {
-  constructor(options?: Partial<TOptions>) {
-    super(options);
-  }
-
   /**
    * Fonctions utilitaires spécifiques à la catégorie analysis
    */
@@ -25,7 +21,7 @@ export abstract class BaseAnalysisAgent<
    * Analyser un contenu et retourner les résultats
    */
   protected async analyzeContent(content: string): Promise<any> {
-    this.log('info', 'Analyse du contenu (' + content.length + ' caractères)');
+    this.log('info', `Analyse du contenu (${content.length} caractères)`);
     // Logique d'analyse à implémenter
     return { analyzed: true };
   }

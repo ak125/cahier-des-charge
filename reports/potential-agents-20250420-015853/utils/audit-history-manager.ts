@@ -1,7 +1,7 @@
-import { createClient } from '@supabase/supabase-js';
-import dotenv from 'dotenv';
 import fs from 'fs';
 import path from 'path';
+import { createClient } from '@supabase/supabase-js';
+import dotenv from 'dotenv';
 
 // Charger les variables d'environnement
 dotenv.config();
@@ -34,7 +34,7 @@ interface FileMapping {
  */
 export class AuditHistoryManager {
   private supabase;
-  private isInitialized: boolean = false;
+  private isInitialized = false;
 
   constructor() {
     // Initialiser Supabase
@@ -42,7 +42,9 @@ export class AuditHistoryManager {
     const supabaseKey = process.env.SUPABASE_KEY;
 
     if (!supabaseUrl || !supabaseKey) {
-      console.warn('⚠️ Variables d\'environnement SUPABASE_URL et/ou SUPABASE_KEY non définies. Historisation désactivée.');
+      console.warn(
+        "⚠️ Variables d'environnement SUPABASE_URL et/ou SUPABASE_KEY non définies. Historisation désactivée."
+      );
       return;
     }
 
@@ -61,7 +63,7 @@ export class AuditHistoryManager {
     tags: string[] = []
   ): Promise<string | null> {
     if (!this.isInitialized) {
-      console.warn('⚠️ AuditHistoryManager non initialisé. Impossible de sauvegarder l\'historique.');
+      console.warn("⚠️ AuditHistoryManager non initialisé. Impossible de sauvegarder l'historique.");
       return null;
     }
 
@@ -86,23 +88,24 @@ export class AuditHistoryManager {
         report_type: reportType,
         agent_id: agentId,
         report_summary: reportSummary,
-        tags
+        tags,
       };
 
       // Enregistrer dans Supabase
-      const { error } = await this.supabase
-        .from('audit_history')
-        .insert(auditData);
+      const { error } = await this.supabase.from('audit_history').insert(auditData);
 
       if (error) {
-        console.error('❌ Erreur lors de l\'enregistrement de l\'historique d\'audit dans Supabase:', error);
+        console.error(
+          "❌ Erreur lors de l'enregistrement de l'historique d'audit dans Supabase:",
+          error
+        );
         return null;
       }
 
       console.log(`✅ Historique d'audit enregistré avec l'ID: ${auditId}`);
       return auditId;
     } catch (err) {
-      console.error('❌ Exception lors de l\'enregistrement de l\'historique d\'audit:', err);
+      console.error("❌ Exception lors de l'enregistrement de l'historique d'audit:", err);
       return null;
     }
   }
@@ -118,7 +121,9 @@ export class AuditHistoryManager {
     migrationStatus: 'pending' | 'in_progress' | 'completed' | 'failed' = 'pending'
   ): Promise<string | null> {
     if (!this.isInitialized) {
-      console.warn('⚠️ AuditHistoryManager non initialisé. Impossible de sauvegarder le mapping de fichier.');
+      console.warn(
+        '⚠️ AuditHistoryManager non initialisé. Impossible de sauvegarder le mapping de fichier.'
+      );
       return null;
     }
 
@@ -134,23 +139,24 @@ export class AuditHistoryManager {
         target_file: targetFile,
         component_type: componentType,
         migration_status: migrationStatus,
-        updated_at: new Date().toISOString()
+        updated_at: new Date().toISOString(),
       };
 
       // Enregistrer dans Supabase
-      const { error } = await this.supabase
-        .from('file_mappings')
-        .insert(mappingData);
+      const { error } = await this.supabase.from('file_mappings').insert(mappingData);
 
       if (error) {
-        console.error('❌ Erreur lors de l\'enregistrement du mapping de fichier dans Supabase:', error);
+        console.error(
+          "❌ Erreur lors de l'enregistrement du mapping de fichier dans Supabase:",
+          error
+        );
         return null;
       }
 
       console.log(`✅ Mapping de fichier enregistré avec l'ID: ${mappingId}`);
       return mappingId;
     } catch (err) {
-      console.error('❌ Exception lors de l\'enregistrement du mapping de fichier:', err);
+      console.error("❌ Exception lors de l'enregistrement du mapping de fichier:", err);
       return null;
     }
   }
@@ -163,7 +169,9 @@ export class AuditHistoryManager {
     migrationStatus: 'pending' | 'in_progress' | 'completed' | 'failed'
   ): Promise<boolean> {
     if (!this.isInitialized) {
-      console.warn('⚠️ AuditHistoryManager non initialisé. Impossible de mettre à jour le statut de mapping.');
+      console.warn(
+        '⚠️ AuditHistoryManager non initialisé. Impossible de mettre à jour le statut de mapping.'
+      );
       return false;
     }
 
@@ -173,12 +181,15 @@ export class AuditHistoryManager {
         .from('file_mappings')
         .update({
           migration_status: migrationStatus,
-          updated_at: new Date().toISOString()
+          updated_at: new Date().toISOString(),
         })
         .eq('id', mappingId);
 
       if (error) {
-        console.error('❌ Erreur lors de la mise à jour du statut de mapping dans Supabase:', error);
+        console.error(
+          '❌ Erreur lors de la mise à jour du statut de mapping dans Supabase:',
+          error
+        );
         return false;
       }
 
@@ -193,9 +204,11 @@ export class AuditHistoryManager {
   /**
    * Récupère l'historique des audits
    */
-  async getAuditHistory(limit: number = 20): Promise<AuditHistory[]> {
+  async getAuditHistory(limit = 20): Promise<AuditHistory[]> {
     if (!this.isInitialized) {
-      console.warn('⚠️ AuditHistoryManager non initialisé. Impossible de récupérer l\'historique d\'audit.');
+      console.warn(
+        "⚠️ AuditHistoryManager non initialisé. Impossible de récupérer l'historique d'audit."
+      );
       return [];
     }
 
@@ -207,13 +220,13 @@ export class AuditHistoryManager {
         .limit(limit);
 
       if (error) {
-        console.error('❌ Erreur lors de la récupération de l\'historique d\'audit:', error);
+        console.error("❌ Erreur lors de la récupération de l'historique d'audit:", error);
         return [];
       }
 
       return data as AuditHistory[];
     } catch (err) {
-      console.error('❌ Exception lors de la récupération de l\'historique d\'audit:', err);
+      console.error("❌ Exception lors de la récupération de l'historique d'audit:", err);
       return [];
     }
   }
@@ -223,7 +236,9 @@ export class AuditHistoryManager {
    */
   async getFileMappings(auditId: string): Promise<FileMapping[]> {
     if (!this.isInitialized) {
-      console.warn('⚠️ AuditHistoryManager non initialisé. Impossible de récupérer les mappings de fichiers.');
+      console.warn(
+        '⚠️ AuditHistoryManager non initialisé. Impossible de récupérer les mappings de fichiers.'
+      );
       return [];
     }
 
@@ -251,7 +266,9 @@ export class AuditHistoryManager {
    */
   async getAuditReport(auditId: string): Promise<AuditHistory | null> {
     if (!this.isInitialized) {
-      console.warn('⚠️ AuditHistoryManager non initialisé. Impossible de récupérer le rapport d\'audit.');
+      console.warn(
+        "⚠️ AuditHistoryManager non initialisé. Impossible de récupérer le rapport d'audit."
+      );
       return null;
     }
 
@@ -263,13 +280,13 @@ export class AuditHistoryManager {
         .single();
 
       if (error || !data) {
-        console.error('❌ Erreur lors de la récupération du rapport d\'audit:', error);
+        console.error("❌ Erreur lors de la récupération du rapport d'audit:", error);
         return null;
       }
 
       return data as AuditHistory;
     } catch (err) {
-      console.error('❌ Exception lors de la récupération du rapport d\'audit:', err);
+      console.error("❌ Exception lors de la récupération du rapport d'audit:", err);
       return null;
     }
   }
@@ -279,7 +296,9 @@ export class AuditHistoryManager {
    */
   async getLatestAuditForSource(sourceDir: string): Promise<AuditHistory | null> {
     if (!this.isInitialized) {
-      console.warn('⚠️ AuditHistoryManager non initialisé. Impossible de récupérer le dernier rapport d\'audit.');
+      console.warn(
+        "⚠️ AuditHistoryManager non initialisé. Impossible de récupérer le dernier rapport d'audit."
+      );
       return null;
     }
 
@@ -293,13 +312,13 @@ export class AuditHistoryManager {
         .single();
 
       if (error || !data) {
-        console.error('❌ Erreur lors de la récupération du dernier rapport d\'audit:', error);
+        console.error("❌ Erreur lors de la récupération du dernier rapport d'audit:", error);
         return null;
       }
 
       return data as AuditHistory;
     } catch (err) {
-      console.error('❌ Exception lors de la récupération du dernier rapport d\'audit:', err);
+      console.error("❌ Exception lors de la récupération du dernier rapport d'audit:", err);
       return null;
     }
   }
@@ -309,12 +328,14 @@ export class AuditHistoryManager {
    */
   async initializeDatabase(): Promise<boolean> {
     if (!this.isInitialized) {
-      console.warn('⚠️ AuditHistoryManager non initialisé. Impossible d\'initialiser la base de données.');
+      console.warn(
+        "⚠️ AuditHistoryManager non initialisé. Impossible d'initialiser la base de données."
+      );
       return false;
     }
 
     try {
-      console.log('🔄 Création des tables pour l\'historisation des audits dans Supabase...');
+      console.log("🔄 Création des tables pour l'historisation des audits dans Supabase...");
 
       // Vérifier si les tables existent déjà
       const { data: auditData, error: auditError } = await this.supabase
@@ -343,7 +364,7 @@ export class AuditHistoryManager {
         `;
 
         const { error: createError } = await this.supabase.rpc('exec_sql', {
-          query: createAuditTable
+          query: createAuditTable,
         });
 
         if (createError) {
@@ -382,7 +403,7 @@ export class AuditHistoryManager {
         `;
 
         const { error: createError } = await this.supabase.rpc('exec_sql', {
-          query: createMappingTable
+          query: createMappingTable,
         });
 
         if (createError) {
@@ -397,7 +418,7 @@ export class AuditHistoryManager {
 
       return true;
     } catch (err) {
-      console.error('❌ Exception lors de l\'initialisation de la base de données:', err);
+      console.error("❌ Exception lors de l'initialisation de la base de données:", err);
       return false;
     }
   }
@@ -412,9 +433,11 @@ if (require.main === module) {
     try {
       const success = await auditHistoryManager.initializeDatabase();
       if (success) {
-        console.log('✅ Base de données initialisée avec succès pour l\'historisation des audits.');
+        console.log("✅ Base de données initialisée avec succès pour l'historisation des audits.");
       } else {
-        console.error('❌ Échec de l\'initialisation de la base de données pour l\'historisation des audits.');
+        console.error(
+          "❌ Échec de l'initialisation de la base de données pour l'historisation des audits."
+        );
         process.exit(1);
       }
     } catch (err) {

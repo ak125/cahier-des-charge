@@ -3,8 +3,8 @@
  * Agent export file
  */
 
-import { dev } from './dev-integrator';
 import { BusinessAgent } from '../../core/interfaces';
+import { dev } from './dev-integrator';
 
 export { dev };
 export default dev;

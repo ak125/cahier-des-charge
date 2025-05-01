@@ -3,7 +3,7 @@
 /**
  * Ce script génère des rapports interactifs au format HTML
  * avec des graphiques et des fonctionnalités d'export vers PDF
- * 
+ *
  * Utilisation:
  * node generate-interactive-report.js --type=itération --date="13/04/2025"
  */
@@ -27,7 +27,13 @@ const today = new Date().toLocaleDateString('fr-FR');
 const reportType = options.type || 'itération';
 const reportDate = options.date || today;
 const outputFormat = options.format || 'html';
-const outputPath = options.output || path.join(__dirname, '..', `reports/rapport-${reportType}-${reportDate.replace(/\//g, '-')}.${outputFormat}`);
+const outputPath =
+  options.output ||
+  path.join(
+    __dirname,
+    '..',
+    `reports/rapport-${reportType}-${reportDate.replace(/\//g, '-')}.${outputFormat}`
+  );
 
 // Créer le répertoire de sortie s'il n'existe pas
 const reportsDir = path.dirname(outputPath);
@@ -37,45 +43,45 @@ if (!fs.existsSync(reportsDir)) {
 
 // Configuration pour différents types de rapports
 const reportConfigs = {
-  'itération': {
+  itération: {
     title: `Rapport d'itération - ${reportDate}`,
     sections: [
-      { id: 'resume', title: 'Résumé de l\'itération' },
+      { id: 'resume', title: "Résumé de l'itération" },
       { id: 'accomplissements', title: 'Accomplissements' },
       { id: 'problemes', title: 'Problèmes rencontrés' },
-      { id: 'plans', title: 'Plans pour la prochaine itération' }
+      { id: 'plans', title: 'Plans pour la prochaine itération' },
     ],
     charts: [
       { id: 'progression', title: 'Progression des tâches', type: 'bar' },
-      { id: 'repartition', title: 'Répartition du travail', type: 'pie' }
-    ]
+      { id: 'repartition', title: 'Répartition du travail', type: 'pie' },
+    ],
   },
-  'routes': {
+  routes: {
     title: `Rapport des routes - ${reportDate}`,
     sections: [
       { id: 'resume', title: 'Résumé des routes' },
       { id: 'manquees', title: 'Routes manquées' },
       { id: 'redirections', title: 'Redirections' },
-      { id: 'seo', title: 'Impact SEO' }
+      { id: 'seo', title: 'Impact SEO' },
     ],
     charts: [
       { id: 'routes-status', title: 'Statut des routes', type: 'bar' },
-      { id: 'routes-categories', title: 'Catégories de routes', type: 'pie' }
-    ]
+      { id: 'routes-categories', title: 'Catégories de routes', type: 'pie' },
+    ],
   },
-  'performance': {
+  performance: {
     title: `Rapport de performance - ${reportDate}`,
     sections: [
       { id: 'resume', title: 'Résumé des performances' },
       { id: 'metrics', title: 'Métriques clés' },
       { id: 'comparaison', title: 'Comparaison avec la version précédente' },
-      { id: 'recommandations', title: 'Recommandations' }
+      { id: 'recommandations', title: 'Recommandations' },
     ],
     charts: [
       { id: 'temps-chargement', title: 'Temps de chargement', type: 'line' },
-      { id: 'taille-bundle', title: 'Taille des bundles', type: 'bar' }
-    ]
-  }
+      { id: 'taille-bundle', title: 'Taille des bundles', type: 'bar' },
+    ],
+  },
 };
 
 // Vérifier si le type de rapport est supporté
@@ -90,56 +96,65 @@ function generateMockData(chartType) {
   if (chartType === 'bar') {
     return {
       labels: ['Tâche 1', 'Tâche 2', 'Tâche 3', 'Tâche 4', 'Tâche 5'],
-      datasets: [{
-        label: 'Progrès (%)',
-        data: [75, 100, 40, 60, 20],
-        backgroundColor: 'rgba(54, 162, 235, 0.5)',
-        borderColor: 'rgba(54, 162, 235, 1)',
-        borderWidth: 1
-      }]
-    };
-  } else if (chartType === 'pie') {
-    return {
-      labels: ['Terminé', 'En cours', 'À faire', 'Bloqué'],
-      datasets: [{
-        data: [40, 30, 20, 10],
-        backgroundColor: [
-          'rgba(75, 192, 192, 0.5)',
-          'rgba(54, 162, 235, 0.5)',
-          'rgba(255, 206, 86, 0.5)',
-          'rgba(255, 99, 132, 0.5)'
-        ],
-        borderColor: [
-          'rgba(75, 192, 192, 1)',
-          'rgba(54, 162, 235, 1)',
-          'rgba(255, 206, 86, 1)',
-          'rgba(255, 99, 132, 1)'
-        ],
-        borderWidth: 1
-      }]
-    };
-  } else if (chartType === 'line') {
-    return {
-      labels: ['Semaine 1', 'Semaine 2', 'Semaine 3', 'Semaine 4'],
-      datasets: [{
-        label: 'Temps (ms)',
-        data: [1200, 950, 800, 650],
-        fill: false,
-        borderColor: 'rgba(75, 192, 192, 1)',
-        tension: 0.1
-      }]
+      datasets: [
+        {
+          label: 'Progrès (%)',
+          data: [75, 100, 40, 60, 20],
+          backgroundColor: 'rgba(54, 162, 235, 0.5)',
+          borderColor: 'rgba(54, 162, 235, 1)',
+          borderWidth: 1,
+        },
+      ],
     };
   }
-  
+  if (chartType === 'pie') {
+    return {
+      labels: ['Terminé', 'En cours', 'À faire', 'Bloqué'],
+      datasets: [
+        {
+          data: [40, 30, 20, 10],
+          backgroundColor: [
+            'rgba(75, 192, 192, 0.5)',
+            'rgba(54, 162, 235, 0.5)',
+            'rgba(255, 206, 86, 0.5)',
+            'rgba(255, 99, 132, 0.5)',
+          ],
+          borderColor: [
+            'rgba(75, 192, 192, 1)',
+            'rgba(54, 162, 235, 1)',
+            'rgba(255, 206, 86, 1)',
+            'rgba(255, 99, 132, 1)',
+          ],
+          borderWidth: 1,
+        },
+      ],
+    };
+  }
+  if (chartType === 'line') {
+    return {
+      labels: ['Semaine 1', 'Semaine 2', 'Semaine 3', 'Semaine 4'],
+      datasets: [
+        {
+          label: 'Temps (ms)',
+          data: [1200, 950, 800, 650],
+          fill: false,
+          borderColor: 'rgba(75, 192, 192, 1)',
+          tension: 0.1,
+        },
+      ],
+    };
+  }
+
   return { labels: [], datasets: [] };
 }
 
 // Générer le contenu du rapport HTML
 function generateHtmlReport(config) {
   // Générer les sections pour les graphiques
-  const chartSections = config.charts.map(chart => {
-    const chartData = JSON.stringify(generateMockData(chart.type));
-    return `
+  const chartSections = config.charts
+    .map((chart) => {
+      const chartData = JSON.stringify(generateMockData(chart.type));
+      return `
       <div class="chart-container">
         <h3>${chart.title}</h3>
         <canvas id="${chart.id}" width="400" height="200"></canvas>
@@ -167,11 +182,13 @@ function generateHtmlReport(config) {
         </script>
       </div>
     `;
-  }).join('\n');
+    })
+    .join('\n');
 
   // Générer les sections de contenu
-  const contentSections = config.sections.map(section => {
-    return `
+  const contentSections = config.sections
+    .map((section) => {
+      return `
       <section id="${section.id}" class="report-section">
         <h2>${section.title}</h2>
         <div class="section-content" contenteditable="true">
@@ -179,7 +196,8 @@ function generateHtmlReport(config) {
         </div>
       </section>
     `;
-  }).join('\n');
+    })
+    .join('\n');
 
   // Générer le HTML complet
   return `<!DOCTYPE html>
@@ -364,14 +382,14 @@ if (outputFormat === 'html') {
   // Générer le HTML
   const reportConfig = reportConfigs[reportType];
   const htmlContent = generateHtmlReport(reportConfig);
-  
+
   // Écrire le fichier HTML
   fs.writeFileSync(outputPath, htmlContent, 'utf8');
   console.log(`Rapport HTML généré avec succès: ${outputPath}`);
 } else if (outputFormat === 'pdf') {
-  // Note: Pour générer un PDF en ligne de commande, 
+  // Note: Pour générer un PDF en ligne de commande,
   // il faudrait utiliser une bibliothèque comme puppeteer
-  console.error('La génération directe de PDF n\'est pas encore supportée en ligne de commande.');
+  console.error("La génération directe de PDF n'est pas encore supportée en ligne de commande.");
   console.error('Veuillez générer un rapport HTML puis utiliser le bouton "Exporter en PDF".');
   process.exit(1);
 } else {

@@ -1,63 +1,63 @@
 /**
  * Tableau de bord unifié pour les orchestrateurs
- * 
+ *
  * Ce module fournit une interface web pour surveiller l'état des tâches
  * dans tous les orchestrateurs (BullMQ, Temporal, n8n).
  */
 
-import express, { Request, Response } from 'express';
-import cors from 'cors';
 import { createBullBoard } from '@bull-board/api';
 import { BullMQAdapter as BullBoardMQAdapter } from '@bull-board/api/bullMQAdapter';
 import { ExpressAdapter } from '@bull-board/express';
-import { Queue } from 'bullmq';
-import { orchestrationService, OrchestratorType, TaskResult } from '../orchestrator-adapter';
 import axios from 'axios';
+import { Queue } from 'bullmq';
+import cors from 'cors';
+import express, { Request, Response } from 'express';
+import { OrchestratorType, TaskResult, orchestrationService } from '../orchestrator-adapter';
 
 // Configuration
 const DEFAULT_PORT = 3000;
-const N8N_API_URL = process.env.N8N_API_URL || 'http://localhost:5678/api/v1';
-const N8N_API_KEY = process.env.N8N_API_KEY || '';
+const _N8N_API_URL = process.env.N8N_API_URL || 'http://localhost:5678/api/v1';
+const _N8N_API_KEY = process.env.N8N_API_KEY || '';
 
 interface TaskStatusSummary {
-    id: string;
-    name: string;
-    status: string;
-    source: OrchestratorType;
-    createdAt: Date;
-    updatedAt: Date;
-    startedAt?: Date;
-    completedAt?: Date;
-    error?: string;
-    duration?: number;
+  id: string;
+  name: string;
+  status: string;
+  source: OrchestratorType;
+  createdAt: Date;
+  updatedAt: Date;
+  startedAt?: Date;
+  completedAt?: Date;
+  error?: string;
+  duration?: number;
 }
 
 export class UnifiedMonitoringDashboard {
-    private app = express();
-    private port: number;
-    private queues: Map<string, Queue> = new Map();
-    private temporalNamespace: string = 'default';
-    private refreshInterval: NodeJS.Timeout | null = null;
-    private taskCache: Map<string, TaskStatusSummary> = new Map();
+  private app = express();
+  private port: number;
+  private queues: Map<string, Queue> = new Map();
+  private temporalNamespace = 'default';
+  private refreshInterval: NodeJS.Timeout | null = null;
+  private taskCache: Map<string, TaskStatusSummary> = new Map();
 
-    constructor(port: number = DEFAULT_PORT) {
-        this.port = port;
-        this.setupExpress();
-    }
+  constructor(port: number = DEFAULT_PORT) {
+    this.port = port;
+    this.setupExpress();
+  }
 
-    private setupExpress() {
-        // Configuration Express
-        this.app.use(cors());
-        this.app.use(express.json());
+  private setupExpress() {
+    // Configuration Express
+    this.app.use(cors());
+    this.app.use(express.json());
 
-        // Configurer les routes
-        this.setupRoutes();
-    }
+    // Configurer les routes
+    this.setupRoutes();
+  }
 
-    private setupRoutes() {
-        // Route principale - affiche le tableau de bord
-        this.app.get('/', async (req: Request, res: Response) => {
-            res.send(`
+  private setupRoutes() {
+    // Route principale - affiche le tableau de bord
+    this.app.get('/', async (_req: Request, res: Response) => {
+      res.send(`
         <!DOCTYPE html>
         <html lang="fr">
         <head>
@@ -297,155 +297,157 @@ export class UnifiedMonitoringDashboard {
         </body>
         </html>
       `);
-        });
+    });
 
-        // API pour obtenir toutes les tâches
-        this.app.get('/api/tasks', async (req: Request, res: Response) => {
-            try {
-                const allTasks = Array.from(this.taskCache.values());
-                res.json(allTasks);
-            } catch (error) {
-                console.error('Erreur lors de la récupération des tâches:', error);
-                res.status(500).json({ error: 'Erreur serveur' });
-            }
-        });
+    // API pour obtenir toutes les tâches
+    this.app.get('/api/tasks', async (_req: Request, res: Response) => {
+      try {
+        const allTasks = Array.from(this.taskCache.values());
+        res.json(allTasks);
+      } catch (error) {
+        console.error('Erreur lors de la récupération des tâches:', error);
+        res.status(500).json({ error: 'Erreur serveur' });
+      }
+    });
 
-        // API pour obtenir une tâche spécifique
-        this.app.get('/api/tasks/:id', async (req: Request, res: Response) => {
-            try {
-                const taskId = req.params.id;
-                const task = this.taskCache.get(taskId);
+    // API pour obtenir une tâche spécifique
+    this.app.get('/api/tasks/:id', async (req: Request, res: Response) => {
+      try {
+        const taskId = req.params.id;
+        const task = this.taskCache.get(taskId);
 
-                if (!task) {
-                    return res.status(404).json({ error: 'Tâche non trouvée' });
-                }
-
-                res.json(task);
-            } catch (error) {
-                console.error(`Erreur lors de la récupération de la tâche ${req.params.id}:`, error);
-                res.status(500).json({ error: 'Erreur serveur' });
-            }
-        });
-
-        // API pour annuler une tâche
-        this.app.delete('/api/tasks/:id', async (req: Request, res: Response) => {
-            try {
-                const taskId = req.params.id;
-                const task = this.taskCache.get(taskId);
-
-                if (!task) {
-                    return res.status(404).json({ error: 'Tâche non trouvée' });
-                }
-
-                const orchestrator = orchestrationService.getOrchestratorByType(task.source);
-                if (!orchestrator) {
-                    return res.status(400).json({ error: `Orchestrateur ${task.source} non disponible` });
-                }
-
-                const success = await orchestrator.cancelTask(taskId);
-
-                if (success) {
-                    task.status = 'cancelled';
-                    this.taskCache.set(taskId, task);
-                    res.json({ success: true, message: 'Tâche annulée avec succès' });
-                } else {
-                    res.status(500).json({ error: 'Échec de l\'annulation de la tâche' });
-                }
-            } catch (error) {
-                console.error(`Erreur lors de l'annulation de la tâche ${req.params.id}:`, error);
-                res.status(500).json({ error: 'Erreur serveur' });
-            }
-        });
-
-        // Redirection vers le tableau de bord BullMQ
-        this.app.get('/bullmq', (req: Request, res: Response) => {
-            res.redirect('http://localhost:3020/bullmq/queues');
-        });
-
-        // Redirection vers le tableau de bord Temporal
-        this.app.get('/temporal', (req: Request, res: Response) => {
-            res.redirect('http://localhost:8088');
-        });
-
-        // Redirection vers le tableau de bord n8n
-        this.app.get('/n8n', (req: Request, res: Response) => {
-            res.redirect('http://localhost:5678');
-        });
-    }
-
-    public async start() {
-        // Démarrer la mise à jour régulière du cache des tâches
-        await this.updateTaskCache();
-        this.refreshInterval = setInterval(() => this.updateTaskCache(), 10000);
-
-        // Démarrer le serveur
-        return new Promise<void>((resolve) => {
-            this.app.listen(this.port, () => {
-                console.log(`Tableau de bord d'orchestration unifié démarré sur http://localhost:${this.port}`);
-                resolve();
-            });
-        });
-    }
-
-    public async stop() {
-        if (this.refreshInterval) {
-            clearInterval(this.refreshInterval);
-            this.refreshInterval = null;
+        if (!task) {
+          return res.status(404).json({ error: 'Tâche non trouvée' });
         }
-    }
 
-    private async updateTaskCache() {
-        try {
-            // Mise à jour du cache BullMQ
-            await this.updateBullMQTasks();
+        res.json(task);
+      } catch (error) {
+        console.error(`Erreur lors de la récupération de la tâche ${req.params.id}:`, error);
+        res.status(500).json({ error: 'Erreur serveur' });
+      }
+    });
 
-            // Mise à jour du cache Temporal
-            await this.updateTemporalTasks();
+    // API pour annuler une tâche
+    this.app.delete('/api/tasks/:id', async (req: Request, res: Response) => {
+      try {
+        const taskId = req.params.id;
+        const task = this.taskCache.get(taskId);
 
-            // Mise à jour du cache n8n
-            await this.updateN8nTasks();
-        } catch (error) {
-            console.error('Erreur lors de la mise à jour du cache des tâches:', error);
+        if (!task) {
+          return res.status(404).json({ error: 'Tâche non trouvée' });
         }
-    }
 
-    private async updateBullMQTasks() {
-        // Cette méthode serait implémentée pour récupérer les jobs BullMQ
-        // et les ajouter au cache avec le format normalisé
-        try {
-            // Pour une implémentation réelle, nous interrogerions Redis pour obtenir les jobs BullMQ
-            // Placeholder pour la démonstration
-        } catch (error) {
-            console.error('Erreur lors de la mise à jour des tâches BullMQ:', error);
+        const orchestrator = orchestrationService.getOrchestratorByType(task.source);
+        if (!orchestrator) {
+          return res.status(400).json({ error: `Orchestrateur ${task.source} non disponible` });
         }
-    }
 
-    private async updateTemporalTasks() {
-        // Cette méthode serait implémentée pour récupérer les workflows Temporal
-        // et les ajouter au cache avec le format normalisé
-        try {
-            // Pour une implémentation réelle, nous utiliserions le client Temporal
-            // pour récupérer les workflows en cours
-            // Placeholder pour la démonstration
-        } catch (error) {
-            console.error('Erreur lors de la mise à jour des tâches Temporal:', error);
+        const success = await orchestrator.cancelTask(taskId);
+
+        if (success) {
+          task.status = 'cancelled';
+          this.taskCache.set(taskId, task);
+          res.json({ success: true, message: 'Tâche annulée avec succès' });
+        } else {
+          res.status(500).json({ error: "Échec de l'annulation de la tâche" });
         }
-    }
+      } catch (error) {
+        console.error(`Erreur lors de l'annulation de la tâche ${req.params.id}:`, error);
+        res.status(500).json({ error: 'Erreur serveur' });
+      }
+    });
 
-    private async updateN8nTasks() {
-        // Cette méthode serait implémentée pour récupérer les exécutions n8n
-        // et les ajouter au cache avec le format normalisé
-        try {
-            // Pour une implémentation réelle, nous utiliserions l'API REST n8n
-            // Placeholder pour la démonstration
-        } catch (error) {
-            console.error('Erreur lors de la mise à jour des tâches n8n:', error);
-        }
-    }
+    // Redirection vers le tableau de bord BullMQ
+    this.app.get('/bullmq', (_req: Request, res: Response) => {
+      res.redirect('http://localhost:3020/bullmq/queues');
+    });
 
-    public registerBullMQQueue(queue: Queue) {
-        this.queues.set(queue.name, queue);
+    // Redirection vers le tableau de bord Temporal
+    this.app.get('/temporal', (_req: Request, res: Response) => {
+      res.redirect('http://localhost:8088');
+    });
+
+    // Redirection vers le tableau de bord n8n
+    this.app.get('/n8n', (_req: Request, res: Response) => {
+      res.redirect('http://localhost:5678');
+    });
+  }
+
+  public async start() {
+    // Démarrer la mise à jour régulière du cache des tâches
+    await this.updateTaskCache();
+    this.refreshInterval = setInterval(() => this.updateTaskCache(), 10000);
+
+    // Démarrer le serveur
+    return new Promise<void>((resolve) => {
+      this.app.listen(this.port, () => {
+        console.log(
+          `Tableau de bord d'orchestration unifié démarré sur http://localhost:${this.port}`
+        );
+        resolve();
+      });
+    });
+  }
+
+  public async stop() {
+    if (this.refreshInterval) {
+      clearInterval(this.refreshInterval);
+      this.refreshInterval = null;
     }
+  }
+
+  private async updateTaskCache() {
+    try {
+      // Mise à jour du cache BullMQ
+      await this.updateBullMQTasks();
+
+      // Mise à jour du cache Temporal
+      await this.updateTemporalTasks();
+
+      // Mise à jour du cache n8n
+      await this.updateN8nTasks();
+    } catch (error) {
+      console.error('Erreur lors de la mise à jour du cache des tâches:', error);
+    }
+  }
+
+  private async updateBullMQTasks() {
+    // Cette méthode serait implémentée pour récupérer les jobs BullMQ
+    // et les ajouter au cache avec le format normalisé
+    try {
+      // Pour une implémentation réelle, nous interrogerions Redis pour obtenir les jobs BullMQ
+      // Placeholder pour la démonstration
+    } catch (error) {
+      console.error('Erreur lors de la mise à jour des tâches BullMQ:', error);
+    }
+  }
+
+  private async updateTemporalTasks() {
+    // Cette méthode serait implémentée pour récupérer les workflows Temporal
+    // et les ajouter au cache avec le format normalisé
+    try {
+      // Pour une implémentation réelle, nous utiliserions le client Temporal
+      // pour récupérer les workflows en cours
+      // Placeholder pour la démonstration
+    } catch (error) {
+      console.error('Erreur lors de la mise à jour des tâches Temporal:', error);
+    }
+  }
+
+  private async updateN8nTasks() {
+    // Cette méthode serait implémentée pour récupérer les exécutions n8n
+    // et les ajouter au cache avec le format normalisé
+    try {
+      // Pour une implémentation réelle, nous utiliserions l'API REST n8n
+      // Placeholder pour la démonstration
+    } catch (error) {
+      console.error('Erreur lors de la mise à jour des tâches n8n:', error);
+    }
+  }
+
+  public registerBullMQQueue(queue: Queue) {
+    this.queues.set(queue.name, queue);
+  }
 }
 
 // Export un singleton pour faciliter l'utilisation dans tout le projet

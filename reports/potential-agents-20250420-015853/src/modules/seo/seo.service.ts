@@ -1,17 +1,14 @@
-import { Injectable, Logger } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
-import { ConfigService } from '@nestjs/config';
 import * as fs from 'fs';
 import * as path from 'path';
+import { Injectable, Logger } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class SeoService {
   private readonly logger = new Logger(SeoService.name);
 
-  constructor(
-    private prisma: PrismaService,
-    private configService: ConfigService,
-  ) {}
+  constructor(private prisma: PrismaService, private configService: ConfigService) {}
 
   /**
    * Récupère toutes les pages SEO avec filtres
@@ -25,14 +22,14 @@ export class SeoService {
     offset?: number;
   }) {
     const { status, score, sort = 'url', dir = 'asc', limit = 100, offset = 0 } = filters;
-    
+
     // Construction des filtres
     const where: any = {};
-    
+
     if (status && status !== 'all') {
       where.status = status;
     }
-    
+
     if (score && score !== 'all') {
       const [min, max] = score.split('-').map(Number);
       where.score = {
@@ -40,10 +37,10 @@ export class SeoService {
         lte: max,
       };
     }
-    
+
     // Obtenir le nombre total pour la pagination
     const total = await this.prisma.seoPage.count({ where });
-    
+
     // Récupérer les pages avec leurs problèmes associés
     const pages = await this.prisma.seoPage.findMany({
       where,
@@ -56,7 +53,7 @@ export class SeoService {
       take: limit,
       skip: offset,
     });
-    
+
     return {
       pages,
       total,
@@ -113,18 +110,21 @@ export class SeoService {
    */
   async runSeoAudit() {
     try {
-      this.logger.log('Démarrage d\'un audit SEO complet');
-      
+      this.logger.log("Démarrage d'un audit SEO complet");
+
       // Lire la configuration SEO
-      const configPath = this.configService.get<string>('SEO_CONFIG_PATH', path.resolve(process.cwd(), 'config/seo-config.json'));
+      const configPath = this.configService.get<string>(
+        'SEO_CONFIG_PATH',
+        path.resolve(process.cwd(), 'config/seo-config.json')
+      );
       const configExists = fs.existsSync(configPath);
-      
+
       if (!configExists) {
         throw new Error(`Fichier de configuration SEO introuvable: ${configPath}`);
       }
-      
+
       const config = JSON.parse(fs.readFileSync(configPath, 'utf-8'));
-      
+
       // Créer un rapport d'audit vide
       const auditReport = await this.prisma.seoAuditReport.create({
         data: {
@@ -137,14 +137,14 @@ export class SeoService {
           successful: 0,
         },
       });
-      
+
       // On déclenche ici le job d'audit qui sera traité par notre agent MCP
       // dans un processus asynchrone
-      
+
       // Dans un environnement réel, nous utiliserions un système de file d'attente comme BullMQ
       // pour gérer les tâches d'audit de manière asynchrone
       const auditJobId = `seo-audit-${Date.now()}`;
-      
+
       await this.prismaDoDotmcpJob.create({
         data: {
           jobId: auditJobId,
@@ -157,9 +157,9 @@ export class SeoService {
           },
         },
       });
-      
+
       this.logger.log(`Audit SEO planifié avec l'ID: ${auditReport.id}`);
-      
+
       return {
         message: 'Audit SEO démarré avec succès',
         reportId: auditReport.id,
@@ -181,21 +181,21 @@ export class SeoService {
     offset?: number;
   }) {
     const { severity, type, limit = 100, offset = 0 } = filters;
-    
+
     // Construction des filtres
     const where: any = { fixed: false };
-    
+
     if (severity && severity !== 'all') {
       where.severity = severity;
     }
-    
+
     if (type && type !== 'all') {
       where.type = type;
     }
-    
+
     // Obtenir le nombre total pour la pagination
     const total = await this.prisma.seoIssue.count({ where });
-    
+
     // Récupérer les problèmes avec leurs pages associées
     const issues = await this.prisma.seoIssue.findMany({
       where,
@@ -208,14 +208,11 @@ export class SeoService {
           },
         },
       },
-      orderBy: [
-        { severity: 'desc' },
-        { createdAt: 'desc' },
-      ],
+      orderBy: [{ severity: 'desc' }, { createdAt: 'desc' }],
       take: limit,
       skip: offset,
     });
-    
+
     return {
       issues,
       total,
@@ -239,16 +236,16 @@ export class SeoService {
       if (!page) {
         // Créer la page si elle n'existe pas
         page = await this.prisma.seoPage.create({
-          data: { 
+          data: {
             url,
             status: 'pending',
           },
         });
       }
-      
+
       // On déclenche ici le job d'audit pour une page qui sera traité par notre agent MCP
       const auditJobId = `seo-page-audit-${Date.now()}`;
-      
+
       await this.prismaDoDotmcpJob.create({
         data: {
           jobId: auditJobId,
@@ -261,16 +258,19 @@ export class SeoService {
           },
         },
       });
-      
+
       this.logger.log(`Audit SEO de page planifié pour: ${url}`);
-      
+
       return {
         message: `Audit SEO démarré pour ${url}`,
         pageId: page.id,
         jobId: auditJobId,
       };
     } catch (error) {
-      this.logger.error(`Erreur lors du lancement de l'audit SEO de page: ${error.message}`, error.stack);
+      this.logger.error(
+        `Erreur lors du lancement de l'audit SEO de page: ${error.message}`,
+        error.stack
+      );
       throw error;
     }
   }
@@ -278,27 +278,30 @@ export class SeoService {
   /**
    * Met à jour les données d'une page après un audit
    */
-  async updatePageAfterAudit(pageId: number, auditData: {
-    title?: string;
-    description?: string;
-    canonical?: string;
-    score: number;
-    status: string;
-    issues: Array<{
-      type: string;
-      severity: string;
-      message: string;
-      details?: any;
-    }>;
-  }) {
+  async updatePageAfterAudit(
+    pageId: number,
+    auditData: {
+      title?: string;
+      description?: string;
+      canonical?: string;
+      score: number;
+      status: string;
+      issues: Array<{
+        type: string;
+        severity: string;
+        message: string;
+        details?: any;
+      }>;
+    }
+  ) {
     const { title, description, canonical, score, status, issues } = auditData;
-    
+
     // Récupérer la page existante pour vérifier les changements de score
     const existingPage = await this.prisma.seoPage.findUnique({
       where: { id: pageId },
       select: { score: true },
     });
-    
+
     // Mise à jour de la page
     const updatedPage = await this.prisma.seoPage.update({
       where: { id: pageId },
@@ -311,7 +314,7 @@ export class SeoService {
         lastChecked: new Date(),
       },
     });
-    
+
     // Supprimer les anciens problèmes non résolus
     await this.prisma.seoIssue.deleteMany({
       where: {
@@ -319,11 +322,11 @@ export class SeoService {
         fixed: false,
       },
     });
-    
+
     // Ajouter les nouveaux problèmes
     if (issues && issues.length > 0) {
       await this.prisma.seoIssue.createMany({
-        data: issues.map(issue => ({
+        data: issues.map((issue) => ({
           type: issue.type,
           severity: issue.severity,
           message: issue.message,
@@ -332,14 +335,14 @@ export class SeoService {
         })),
       });
     }
-    
+
     // Ajouter une entrée d'historique si le score a changé
     if (!existingPage || existingPage.score !== score) {
       await this.prisma.seoHistory.create({
         data: {
           pageId,
           score,
-          event: existingPage 
+          event: existingPage
             ? `Score SEO passé de ${existingPage.score} à ${score}`
             : `Premier audit SEO: score ${score}`,
           details: {
@@ -350,7 +353,7 @@ export class SeoService {
         },
       });
     }
-    
+
     return updatedPage;
   }
 
@@ -387,12 +390,12 @@ export class SeoService {
 
     // Dans un environnement réel, nous utiliserions une bibliothèque comme PDFKit
     // pour générer un PDF avec ces données
-    
+
     // Pour l'exemple, nous retournons simplement les données structurées
     return {
       timestamp: new Date().toISOString(),
       stats,
-      pages: pages.map(p => ({
+      pages: pages.map((p) => ({
         url: p.url,
         score: p.score,
         status: p.status,
@@ -401,25 +404,25 @@ export class SeoService {
       issuesSummary: issues,
     };
   }
-  
+
   /**
    * Gère les redirections SEO
    */
   async getRedirects(active?: boolean) {
     const where = active !== undefined ? { active } : {};
-    
+
     return this.prisma.seoRedirect.findMany({
       where,
       orderBy: { source: 'asc' },
     });
   }
-  
+
   /**
    * Ajoute une redirection
    */
   async addRedirect(data: { source: string; destination: string; statusCode?: number }) {
     const { source, destination, statusCode = 301 } = data;
-    
+
     return this.prisma.seoRedirect.create({
       data: {
         source,
@@ -428,21 +431,21 @@ export class SeoService {
       },
     });
   }
-  
+
   /**
    * Importe des redirections depuis un fichier htaccess
    */
   async importRedirectsFromHtaccess(htaccessContent: string) {
     const redirects = [];
     const lines = htaccessContent.split('\n');
-    
+
     // Expression régulière simplifiée pour les règles de redirection dans htaccess
     const redirectRegex = /RedirectMatch\s+(\d+)\s+(.+?)\s+(.+)/i;
     const rewriteRegex = /RewriteRule\s+(.+?)\s+(.+?)\s+\[R=(\d+).*\]/i;
-    
+
     for (const line of lines) {
       let match = line.match(redirectRegex);
-      
+
       if (match) {
         redirects.push({
           source: match[2],
@@ -451,9 +454,9 @@ export class SeoService {
         });
         continue;
       }
-      
+
       match = line.match(rewriteRegex);
-      
+
       if (match) {
         redirects.push({
           source: match[1],
@@ -462,17 +465,17 @@ export class SeoService {
         });
       }
     }
-    
+
     if (redirects.length === 0) {
       return { imported: 0 };
     }
-    
+
     // Insérer les redirections dans la base de données
     const result = await this.prisma.seoRedirect.createMany({
       data: redirects,
       skipDuplicates: true,
     });
-    
+
     return { imported: result.count };
   }
 

@@ -21,8 +21,8 @@ function makeRequest(method, endpoint, data = null) {
       method,
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Basic ${AUTH_STRING}`
-      }
+        Authorization: `Basic ${AUTH_STRING}`,
+      },
     };
 
     const req = (N8N_PROTOCOL === 'https' ? https : http).request(url, options, (res) => {
@@ -36,7 +36,7 @@ function makeRequest(method, endpoint, data = null) {
         if (res.statusCode >= 200 && res.statusCode < 300) {
           try {
             resolve(JSON.parse(responseData));
-          } catch (e) {
+          } catch (_e) {
             resolve(responseData);
           }
         } else {
@@ -62,7 +62,7 @@ function makeRequest(method, endpoint, data = null) {
 async function createWorkflow(workflow) {
   try {
     console.log(`🔄 Importation du workflow: ${workflow.name || workflow.id}`);
-    
+
     // Formater les données pour l'API n8n
     const data = {
       name: workflow.name || `Workflow ${workflow.id}`,
@@ -70,7 +70,7 @@ async function createWorkflow(workflow) {
       connections: workflow.connections || {},
       active: workflow.active === true,
       settings: workflow.settings || {},
-      tags: workflow.tags || []
+      tags: workflow.tags || [],
     };
 
     // Vérifier si le workflow existe déjà
@@ -81,22 +81,25 @@ async function createWorkflow(workflow) {
       console.log(`⚠️ Erreur lors de la récupération des workflows existants: ${error.message}`);
       existingWorkflows = { data: [] };
     }
-    
-    const existingWorkflow = (existingWorkflows.data || []).find(w => 
-      w.name === data.name || (workflow.id && w.name.includes(workflow.id))
+
+    const existingWorkflow = (existingWorkflows.data || []).find(
+      (w) => w.name === data.name || (workflow.id && w.name.includes(workflow.id))
     );
 
     if (existingWorkflow) {
       console.log(`📝 Mise à jour du workflow existant: ${data.name}`);
       await makeRequest('PUT', `/rest/workflows/${existingWorkflow.id}`, data);
       return { id: existingWorkflow.id, name: data.name };
-    } else {
-      console.log(`📝 Création d'un nouveau workflow: ${data.name}`);
-      const result = await makeRequest('POST', '/rest/workflows', data);
-      return { id: result.id, name: data.name };
     }
+    console.log(`📝 Création d'un nouveau workflow: ${data.name}`);
+    const result = await makeRequest('POST', '/rest/workflows', data);
+    return { id: result.id, name: data.name };
   } catch (error) {
-    console.error(`❌ Erreur lors de l'importation du workflow ${workflow.name || workflow.id}: ${error.message}`);
+    console.error(
+      `❌ Erreur lors de l'importation du workflow ${workflow.name || workflow.id}: ${
+        error.message
+      }`
+    );
     return null;
   }
 }
@@ -105,15 +108,15 @@ async function createWorkflow(workflow) {
 async function main() {
   try {
     console.log('📥 Importation des workflows dans n8n...');
-    
+
     // Lire le fichier principal du pipeline
     const pipelineFile = path.resolve(__dirname, 'n8n.pipeline.clean.json');
     if (!fs.existsSync(pipelineFile)) {
       throw new Error(`Fichier ${pipelineFile} non trouvé`);
     }
-    
+
     const pipelineData = JSON.parse(fs.readFileSync(pipelineFile, 'utf8'));
-    
+
     // Importer les workflows du pipeline principal
     const importedWorkflows = [];
     if (pipelineData.workflows && Array.isArray(pipelineData.workflows)) {
@@ -124,15 +127,15 @@ async function main() {
         }
       }
     }
-    
+
     // Lire et importer les workflows depuis le dossier workflows
     const workflowsDir = path.resolve(__dirname, 'workflows');
     if (fs.existsSync(workflowsDir)) {
-      const files = fs.readdirSync(workflowsDir).filter(f => f.endsWith('.json'));
+      const files = fs.readdirSync(workflowsDir).filter((f) => f.endsWith('.json'));
       for (const file of files) {
         const filePath = path.join(workflowsDir, file);
         console.log(`🔄 Traitement du fichier workflow: ${filePath}`);
-        
+
         try {
           const workflowData = JSON.parse(fs.readFileSync(filePath, 'utf8'));
           const result = await createWorkflow(workflowData);
@@ -144,14 +147,14 @@ async function main() {
         }
       }
     }
-    
+
     console.log('✅ Importation des workflows terminée');
     console.log(`📊 ${importedWorkflows.length} workflows importés:`);
-    importedWorkflows.forEach(w => console.log(`   - ${w.name} (ID: ${w.id})`));
-    
+    importedWorkflows.forEach((w) => console.log(`   - ${w.name} (ID: ${w.id})`));
+
     // Écrire les IDs des workflows dans un fichier pour référence future
     fs.writeFileSync('workflow-ids.json', JSON.stringify(importedWorkflows, null, 2));
-    
+
     return importedWorkflows;
   } catch (error) {
     console.error(`❌ Erreur: ${error.message}`);

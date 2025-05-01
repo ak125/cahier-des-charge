@@ -1,5 +1,5 @@
-import { Link } from "@remix-run/react";
-import type { BacklogStatus as BacklogStatusType } from "~/models/backlog.server";
+import { Link } from '@remix-run/react';
+import type { BacklogStatus as BacklogStatusType } from '~/models/backlog.server';
 
 interface BacklogStatusProps {
   backlog: BacklogStatusType;
@@ -8,7 +8,7 @@ interface BacklogStatusProps {
 export default function BacklogStatus({ backlog }: BacklogStatusProps) {
   // Calculer le pourcentage de complétion
   const completionPercentage = Math.round((backlog.completed / backlog.total) * 100);
-  
+
   // Formater le temps estimé
   const formatEstimatedTime = (hours: number) => {
     if (hours < 24) return `${hours} heures`;
@@ -56,7 +56,7 @@ export default function BacklogStatus({ backlog }: BacklogStatusProps) {
             </div>
           </div>
         </div>
-        
+
         <div className="time-estimate">
           <span className="estimate-label">Temps restant estimé:</span>
           <span className="estimate-value">
@@ -64,27 +64,23 @@ export default function BacklogStatus({ backlog }: BacklogStatusProps) {
           </span>
         </div>
       </div>
-      
+
       <div className="backlog-priority-items">
         <h3>Modules prioritaires</h3>
         <div className="priority-items-list">
           {backlog.items
-            .filter(item => item.priority >= 4)
+            .filter((item) => item.priority >= 4)
             .sort((a, b) => b.priority - a.priority)
             .slice(0, 3)
-            .map(item => (
+            .map((item) => (
               <div key={item.id} className="priority-item">
                 <div className="item-priority">P{item.priority}</div>
                 <div className="item-details">
                   <div className="item-name">{item.name}</div>
                   <div className="item-path">{item.modulePath}</div>
                   <div className="item-metrics">
-                    <span className="item-complexity">
-                      Complexité: {item.complexity}/5
-                    </span>
-                    <span className="item-effort">
-                      Effort: {item.estimatedEffort}h
-                    </span>
+                    <span className="item-complexity">Complexité: {item.complexity}/5</span>
+                    <span className="item-effort">Effort: {item.estimatedEffort}h</span>
                   </div>
                 </div>
                 <div className="item-status">
@@ -98,14 +94,12 @@ export default function BacklogStatus({ backlog }: BacklogStatusProps) {
             ))}
         </div>
       </div>
-      
+
       <div className="backlog-footer">
         <Link to="/admin/backlog" className="view-all-link">
           Voir tout le backlog
         </Link>
-        <button className="priority-button">
-          Planifier prochaine migration
-        </button>
+        <button className="priority-button">Planifier prochaine migration</button>
       </div>
     </div>
   );

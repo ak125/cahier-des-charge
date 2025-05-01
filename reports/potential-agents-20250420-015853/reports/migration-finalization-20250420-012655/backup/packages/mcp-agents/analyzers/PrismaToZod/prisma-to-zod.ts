@@ -1,14 +1,14 @@
 #!/usr/bin/env ts-node
 /**
  * 🧠 prisma-to-zod.ts — Générateur automatique de schémas Zod à partir de Prisma
- * 
+ *
  * Cet outil analyse votre schéma Prisma et génère automatiquement les schémas
  * Zod correspondants pour la validation côté client et serveur.
  */
 
-import * as fs from 'fs/promises';
-import * as path from 'path';
 import { execSync } from 'child_process';
+import * as path from 'path';
+import * as fs from 'fs/promises';
 import * as minimist from 'minimist';
 import * as prettier from 'prettier';
 import { BaseAgent } from './core/interfaces/BaseAgent';
@@ -91,7 +91,7 @@ interface GeneratorConfig {
     [key: string]: {
       type: string;
       imports?: string[];
-    }
+    };
   };
 
   /**
@@ -100,7 +100,7 @@ interface GeneratorConfig {
   customValidations: {
     [modelName: string]: {
       [fieldName: string]: string[];
-    }
+    };
   };
 
   /**
@@ -109,7 +109,7 @@ interface GeneratorConfig {
   transforms: {
     [modelName: string]: {
       [fieldName: string]: string;
-    }
+    };
   };
 
   /**
@@ -119,21 +119,21 @@ interface GeneratorConfig {
     [modelName: string]: {
       [fieldName: string]: {
         [validationType: string]: string;
-      }
-    }
+      };
+    };
   };
 }
 
 /**
  * Classe principale pour la génération de schémas Zod à partir de Prisma
  */
-class PrismaToZodGenerator implements BaseAgent, BusinessAgent , AnalyzerAgent{
+class PrismaToZodGenerator implements BaseAgent, BusinessAgent, AnalyzerAgent {
   private schema: PrismaSchema = { models: [], enums: [] };
   private config: GeneratorConfig = {
     customTypes: {},
     customValidations: {},
     transforms: {},
-    customErrors: {}
+    customErrors: {},
   };
   private logger: Console = console;
 
@@ -175,29 +175,39 @@ class PrismaToZodGenerator implements BaseAgent, BusinessAgent , AnalyzerAgent{
     try {
       // Utiliser prisma-json-schema-generator pour obtenir une représentation JSON du schéma
       // Cette commande nécessite l'installation de prisma-json-schema-generator
-      const tempJsonPath = path.join(path.dirname(this.options.outputDir), 'prisma-schema-temp.json');
-      
+      const tempJsonPath = path.join(
+        path.dirname(this.options.outputDir),
+        'prisma-schema-temp.json'
+      );
+
       try {
-        execSync(`npx prisma-json-schema-generator --schemaPath ${this.options.schemaPath} --outputPath ${tempJsonPath}`, { 
-          stdio: 'inherit' 
-        });
-        
+        execSync(
+          `npx prisma-json-schema-generator --schemaPath ${this.options.schemaPath} --outputPath ${tempJsonPath}`,
+          {
+            stdio: 'inherit',
+          }
+        );
+
         const jsonSchema = await fs.readFile(tempJsonPath, 'utf8');
         const parsedSchema = JSON.parse(jsonSchema);
-        
+
         // Extraction des modèles
         this.extractModelsFromJsonSchema(parsedSchema);
-        
+
         // Nettoyage
         await fs.unlink(tempJsonPath).catch(() => {});
       } catch (error) {
         // Fallback: Analyser le fichier schema.prisma directement
-        this.logger.warn("⚠️ Impossible d'utiliser prisma-json-schema-generator, analyse manuelle du schéma...");
+        this.logger.warn(
+          "⚠️ Impossible d'utiliser prisma-json-schema-generator, analyse manuelle du schéma..."
+        );
         const content = await fs.readFile(this.options.schemaPath, 'utf8');
         await this.parseSchemaContent(content);
       }
-      
-      this.logger.info(`✅ Schéma Prisma analysé: ${this.schema.models.length} modèles, ${this.schema.enums.length} enums`);
+
+      this.logger.info(
+        `✅ Schéma Prisma analysé: ${this.schema.models.length} modèles, ${this.schema.enums.length} enums`
+      );
     } catch (error) {
       this.logger.error('❌ Erreur lors de la lecture du schéma Prisma:', error);
       throw error;
@@ -209,11 +219,11 @@ class PrismaToZodGenerator implements BaseAgent, BusinessAgent , AnalyzerAgent{
    */
   private extractModelsFromJsonSchema(jsonSchema: any): void {
     const definitions = jsonSchema.definitions || {};
-    
+
     // Parcourir les définitions
     for (const [name, definition] of Object.entries(definitions)) {
       const def = definition as any;
-      
+
       if (def.enum) {
         // C'est une énumération
         this.schema.enums.push({
@@ -221,22 +231,22 @@ class PrismaToZodGenerator implements BaseAgent, BusinessAgent , AnalyzerAgent{
           fields: [],
           isEnum: true,
           enumValues: def.enum,
-          documentation: def.description
+          documentation: def.description,
         });
       } else if (def.properties) {
         // C'est un modèle
         const fields: PrismaField[] = [];
-        
+
         // Parcourir les propriétés
         for (const [fieldName, fieldDef] of Object.entries(def.properties || {})) {
           const field = fieldDef as any;
           const required = (def.required || []).includes(fieldName);
-          
+
           // Détecter si c'est une relation
           const isRelation = field.$ref || (field.items && field.items.$ref);
           let relationType: 'object' | 'array' | undefined;
           let relationName: string | undefined;
-          
+
           if (isRelation) {
             if (field.$ref) {
               relationType = 'object';
@@ -246,7 +256,7 @@ class PrismaToZodGenerator implements BaseAgent, BusinessAgent , AnalyzerAgent{
               relationName = field.items.$ref.replace('#/definitions/', '');
             }
           }
-          
+
           fields.push({
             name: fieldName,
             type: this.getFieldType(field),
@@ -259,14 +269,14 @@ class PrismaToZodGenerator implements BaseAgent, BusinessAgent , AnalyzerAgent{
             isRelation,
             relationName,
             relationType,
-            documentation: field.description
+            documentation: field.description,
           });
         }
-        
+
         this.schema.models.push({
           name,
           fields,
-          documentation: def.description
+          documentation: def.description,
         });
       }
     }
@@ -298,15 +308,18 @@ class PrismaToZodGenerator implements BaseAgent, BusinessAgent , AnalyzerAgent{
     // Expression régulière pour extraire les modèles
     const modelRegex = /model\s+(\w+)\s*{([^}]*)}/g;
     let modelMatch;
-    
+
     while ((modelMatch = modelRegex.exec(content)) !== null) {
       const modelName = modelMatch[1];
       const modelBody = modelMatch[2];
       const fields: PrismaField[] = [];
-      
+
       // Expression régulière pour extraire les champs
-      const fieldLines = modelBody.split('\n').map(line => line.trim()).filter(line => line && !line.startsWith('//'));
-      
+      const fieldLines = modelBody
+        .split('\n')
+        .map((line) => line.trim())
+        .filter((line) => line && !line.startsWith('//'));
+
       for (const line of fieldLines) {
         const fieldMatch = line.match(/(\w+)\s+(\w+)(\?)?(\[\])?(.+)?/);
         if (fieldMatch) {
@@ -315,26 +328,26 @@ class PrismaToZodGenerator implements BaseAgent, BusinessAgent , AnalyzerAgent{
           const isRequired = !fieldMatch[3];
           const isArray = !!fieldMatch[4];
           const rest = fieldMatch[5] || '';
-          
+
           // Vérifier les attributs supplémentaires
           const isId = rest.includes('@id');
           const isUnique = rest.includes('@unique');
           const hasDefault = rest.includes('@default');
-          
+
           // Vérifier si c'est une relation
           const isRelation = rest.includes('@relation');
           let relationName: string | undefined;
           let relationType: 'object' | 'array' | undefined;
-          
+
           if (isRelation) {
             // Extraire le nom de la relation
             const relationMatch = rest.match(/@relation\([^)]*name:\s*["']([^"']+)["']/);
             relationName = relationMatch ? relationMatch[1] : undefined;
-            
+
             // Déterminer le type de relation
             relationType = isArray ? 'array' : 'object';
           }
-          
+
           fields.push({
             name: fieldName,
             type: fieldType,
@@ -346,36 +359,37 @@ class PrismaToZodGenerator implements BaseAgent, BusinessAgent , AnalyzerAgent{
             isReadonly: false,
             isRelation,
             relationName,
-            relationType
+            relationType,
           });
         }
       }
-      
+
       this.schema.models.push({
         name: modelName,
-        fields
+        fields,
       });
     }
-    
+
     // Expression régulière pour extraire les enums
     const enumRegex = /enum\s+(\w+)\s*{([^}]*)}/g;
     let enumMatch;
-    
+
     while ((enumMatch = enumRegex.exec(content)) !== null) {
       const enumName = enumMatch[1];
       const enumBody = enumMatch[2];
-      
+
       // Extraire les valeurs de l'enum
-      const enumValues = enumBody.split('\n')
-        .map(line => line.trim())
-        .filter(line => line && !line.startsWith('//'))
-        .map(line => line.replace(/,$/, ''));
-      
+      const enumValues = enumBody
+        .split('\n')
+        .map((line) => line.trim())
+        .filter((line) => line && !line.startsWith('//'))
+        .map((line) => line.replace(/,$/, ''));
+
       this.schema.enums.push({
         name: enumName,
         fields: [],
         isEnum: true,
-        enumValues
+        enumValues,
       });
     }
   }
@@ -385,41 +399,43 @@ class PrismaToZodGenerator implements BaseAgent, BusinessAgent , AnalyzerAgent{
    */
   private async loadConfig(): Promise<void> {
     const configPath = path.join(path.dirname(this.options.outputDir), 'prisma-to-zod.config.json');
-    
+
     try {
       await fs.access(configPath);
       const content = await fs.readFile(configPath, 'utf8');
       this.config = JSON.parse(content);
       this.logger.info('✅ Configuration chargée avec succès');
     } catch (error) {
-      this.logger.warn('⚠️ Pas de fichier de configuration trouvé, utilisation des paramètres par défaut');
+      this.logger.warn(
+        '⚠️ Pas de fichier de configuration trouvé, utilisation des paramètres par défaut'
+      );
       // Créer une configuration par défaut
       this.config = {
         customTypes: {
           DateTime: {
             type: 'z.string().datetime()',
-            imports: []
+            imports: [],
           },
           Json: {
             type: 'z.record(z.any())',
-            imports: []
+            imports: [],
           },
           Decimal: {
             type: 'z.number()',
-            imports: []
+            imports: [],
           },
           BigInt: {
             type: 'z.bigint()',
-            imports: []
+            imports: [],
           },
           Bytes: {
             type: 'z.instanceof(Buffer)',
-            imports: []
-          }
+            imports: [],
+          },
         },
         customValidations: {},
         transforms: {},
-        customErrors: {}
+        customErrors: {},
       };
     }
   }
@@ -444,50 +460,50 @@ class PrismaToZodGenerator implements BaseAgent, BusinessAgent , AnalyzerAgent{
     // Créer le dossier pour les schémas
     const schemasDir = path.join(this.options.outputDir, 'schemas');
     await fs.mkdir(schemasDir, { recursive: true });
-    
+
     // Créer un fichier d'index pour exporter tous les schémas
     let indexContent = `// Généré automatiquement par prisma-to-zod.ts - ne pas modifier manuellement\n\n`;
-    
+
     // Générer les schémas pour les enums
     for (const enumModel of this.schema.enums) {
       const { name } = enumModel;
       const fileName = `${this.camelToKebab(name)}.schema.ts`;
       const filePath = path.join(schemasDir, fileName);
-      
+
       // Générer le contenu du schéma
       const content = this.generateEnumSchema(enumModel);
-      
+
       // Écrire le fichier
       await this.writeFormattedFile(filePath, content);
-      
+
       // Mettre à jour le fichier d'index
       indexContent += `export * from './schemas/${this.camelToKebab(name)}.schema';\n`;
-      
+
       this.logger.info(`✅ Schéma Zod généré pour l'enum ${name}`);
     }
-    
+
     // Générer les schémas pour les modèles
     for (const model of this.schema.models) {
       const { name } = model;
       const fileName = `${this.camelToKebab(name)}.schema.ts`;
       const filePath = path.join(schemasDir, fileName);
-      
+
       // Générer le contenu du schéma
       const content = this.generateModelSchema(model);
-      
+
       // Écrire le fichier
       await this.writeFormattedFile(filePath, content);
-      
+
       // Mettre à jour le fichier d'index
       indexContent += `export * from './schemas/${this.camelToKebab(name)}.schema';\n`;
-      
+
       this.logger.info(`✅ Schéma Zod généré pour le modèle ${name}`);
     }
-    
+
     // Écrire le fichier d'index
     const indexPath = path.join(this.options.outputDir, 'index.ts');
     await this.writeFormattedFile(indexPath, indexContent);
-    
+
     this.logger.info(`✅ Fichier d'index généré`);
   }
 
@@ -497,10 +513,10 @@ class PrismaToZodGenerator implements BaseAgent, BusinessAgent , AnalyzerAgent{
   private async generateCombinedSchema(): Promise<void> {
     let content = `// Généré automatiquement par prisma-to-zod.ts - ne pas modifier manuellement
 import { z } from 'zod';\n\n`;
-    
+
     // Imports personnalisés
     const customImports = new Set<string>();
-    
+
     // Ajouter les imports personnalisés des types
     for (const customType of Object.values(this.config.customTypes)) {
       if (customType.imports && customType.imports.length > 0) {
@@ -509,105 +525,105 @@ import { z } from 'zod';\n\n`;
         }
       }
     }
-    
+
     // Ajouter les imports personnalisés
     if (customImports.size > 0) {
-      customImports.forEach(importStatement => {
+      customImports.forEach((importStatement) => {
         content += `${importStatement}\n`;
       });
       content += '\n';
     }
-    
+
     // Générer les schémas pour les enums
     for (const enumModel of this.schema.enums) {
       content += this.generateEnumSchema(enumModel, false);
       content += '\n\n';
     }
-    
+
     // Générer les schémas pour les modèles
     for (const model of this.schema.models) {
       content += this.generateModelSchema(model, false);
       content += '\n\n';
     }
-    
+
     // Écrire le fichier
     const filePath = path.join(this.options.outputDir, 'zod-schemas.ts');
     await this.writeFormattedFile(filePath, content);
-    
+
     this.logger.info(`✅ Schémas Zod combinés générés à ${filePath}`);
   }
 
   /**
    * Générer le schéma Zod pour un enum
    */
-  private generateEnumSchema(enumModel: PrismaModel, withImports: boolean = true): string {
+  private generateEnumSchema(enumModel: PrismaModel, withImports = true): string {
     const { name, enumValues = [] } = enumModel;
-    
+
     let content = '';
-    
+
     // Ajouter les imports si nécessaire
     if (withImports) {
       content += `// Généré automatiquement par prisma-to-zod.ts - ne pas modifier manuellement
 import { z } from 'zod';\n\n`;
     }
-    
+
     // Documentation
     if (enumModel.documentation) {
       content += `/**\n * ${enumModel.documentation}\n */\n`;
     }
-    
+
     // Générer le schéma enum
     content += `export const ${name}Schema = z.enum([\n`;
-    enumValues.forEach(value => {
+    enumValues.forEach((value) => {
       content += `  '${value}',\n`;
     });
     content += `]);\n\n`;
-    
+
     // Export du type
     content += `export type ${name} = z.infer<typeof ${name}Schema>;\n`;
-    
+
     return content;
   }
 
   /**
    * Générer le schéma Zod pour un modèle
    */
-  private generateModelSchema(model: PrismaModel, withImports: boolean = true): string {
+  private generateModelSchema(model: PrismaModel, withImports = true): string {
     const { name, fields } = model;
-    
+
     let content = '';
-    
+
     // Ajouter les imports si nécessaire
     if (withImports) {
       content += `// Généré automatiquement par prisma-to-zod.ts - ne pas modifier manuellement
 import { z } from 'zod';\n`;
-      
+
       // Ajouter les imports pour les relations si nécessaire
       if (this.options.withRelations) {
         const relationImports = new Set<string>();
-        
-        fields.forEach(field => {
+
+        fields.forEach((field) => {
           if (field.isRelation && field.relationName) {
             // Vérifier si c'est un modèle ou un enum
-            const isEnum = this.schema.enums.some(e => e.name === field.relationName);
-            
+            const isEnum = this.schema.enums.some((e) => e.name === field.relationName);
+
             if (!isEnum) {
               relationImports.add(field.relationName!);
             }
           }
         });
-        
+
         if (relationImports.size > 0) {
           // Ajouter les imports
           if (this.options.importPrefix) {
             // Avec préfixe (ex: import { UserSchema } from './user.schema')
-            relationImports.forEach(relationName => {
+            relationImports.forEach((relationName) => {
               const fileName = this.camelToKebab(relationName);
               content += `import { ${relationName}Schema } from '${this.options.importPrefix}${fileName}.schema';\n`;
             });
           } else {
             // Sans préfixe (import relatif)
-            relationImports.forEach(relationName => {
+            relationImports.forEach((relationName) => {
               const fileName = this.camelToKebab(relationName);
               content += `import { ${relationName}Schema } from './${fileName}.schema';\n`;
             });
@@ -615,75 +631,75 @@ import { z } from 'zod';\n`;
           content += '\n';
         }
       }
-      
+
       // Imports personnalisés
       const customImports = new Set<string>();
-      
+
       // Parcourir les champs pour trouver les types personnalisés
-      fields.forEach(field => {
+      fields.forEach((field) => {
         const customType = this.config.customTypes[field.type];
         if (customType && customType.imports) {
-          customType.imports.forEach(importStatement => {
+          customType.imports.forEach((importStatement) => {
             customImports.add(importStatement);
           });
         }
       });
-      
+
       if (customImports.size > 0) {
-        customImports.forEach(importStatement => {
+        customImports.forEach((importStatement) => {
           content += `${importStatement}\n`;
         });
         content += '\n';
       }
     }
-    
+
     // Documentation
     if (model.documentation) {
       content += `/**\n * ${model.documentation}\n */\n`;
     }
-    
+
     // Générer le schéma pour la création (tous les champs sauf ceux générés automatiquement)
     content += `export const ${name}CreateSchema = z.object({\n`;
-    
-    fields.forEach(field => {
+
+    fields.forEach((field) => {
       // Ignorer les champs générés automatiquement pour le schéma de création
       const isGenerated = field.hasDefault || field.isReadonly || (field.isId && field.hasDefault);
-      
+
       if (!isGenerated || !field.isRequired) {
         content += this.generateFieldSchema(field, model.name, true);
       }
     });
-    
+
     content += `});\n\n`;
-    
+
     // Générer le schéma pour la mise à jour (tous les champs optionnels)
     content += `export const ${name}UpdateSchema = z.object({\n`;
-    
-    fields.forEach(field => {
+
+    fields.forEach((field) => {
       // Ignorer les champs générés automatiquement ou en lecture seule pour le schéma de mise à jour
       const isReadOnly = field.isReadonly || (field.isId && !field.hasDefault);
-      
+
       if (!isReadOnly) {
         content += this.generateFieldSchema(field, model.name, false, true);
       }
     });
-    
+
     content += `});\n\n`;
-    
+
     // Générer le schéma complet
     content += `export const ${name}Schema = z.object({\n`;
-    
-    fields.forEach(field => {
+
+    fields.forEach((field) => {
       content += this.generateFieldSchema(field, model.name);
     });
-    
+
     content += `});\n\n`;
-    
+
     // Export des types
     content += `export type ${name}Create = z.infer<typeof ${name}CreateSchema>;\n`;
     content += `export type ${name}Update = z.infer<typeof ${name}UpdateSchema>;\n`;
     content += `export type ${name} = z.infer<typeof ${name}Schema>;\n`;
-    
+
     return content;
   }
 
@@ -691,27 +707,27 @@ import { z } from 'zod';\n`;
    * Générer le schéma Zod pour un champ
    */
   private generateFieldSchema(
-    field: PrismaField, 
-    modelName: string, 
-    isCreateSchema: boolean = false, 
-    isUpdateSchema: boolean = false
+    field: PrismaField,
+    modelName: string,
+    isCreateSchema = false,
+    isUpdateSchema = false
   ): string {
     const { name, type, isRequired, isArray, isRelation, relationName, relationType } = field;
-    
+
     let fieldSchema = '';
-    
+
     // Documentation
     if (field.documentation) {
       fieldSchema += `  /** ${field.documentation} */\n`;
     }
-    
+
     fieldSchema += `  ${name}: `;
-    
+
     // Gérer les relations si elles sont activées
     if (isRelation && this.options.withRelations && relationName) {
       // Vérifier si c'est un enum
-      const isEnum = this.schema.enums.some(e => e.name === relationName);
-      
+      const isEnum = this.schema.enums.some((e) => e.name === relationName);
+
       if (isEnum) {
         fieldSchema += `${relationName}Schema`;
       } else if (relationType === 'array') {
@@ -723,31 +739,31 @@ import { z } from 'zod';\n`;
       // Gérer les types standards
       fieldSchema += this.getZodTypeForField(field, modelName);
     }
-    
+
     // Rendre optionnel si nécessaire pour le schéma de création et le champ n'est pas requis
     if (isCreateSchema && !isRequired) {
       fieldSchema += '.optional()';
     }
-    
+
     // Rendre optionnel pour le schéma de mise à jour
     if (isUpdateSchema) {
       fieldSchema += '.optional()';
     }
-    
+
     // Ajouter les validations personnalisées
     const customValidations = this.config.customValidations[modelName]?.[name];
     if (customValidations) {
-      customValidations.forEach(validation => {
+      customValidations.forEach((validation) => {
         fieldSchema += `.${validation}`;
       });
     }
-    
+
     // Ajouter les transformations personnalisées
     const transform = this.config.transforms[modelName]?.[name];
     if (transform) {
       fieldSchema += `.transform(${transform})`;
     }
-    
+
     // Ajouter les erreurs personnalisées
     const customErrors = this.config.customErrors[modelName]?.[name];
     if (customErrors) {
@@ -755,9 +771,9 @@ import { z } from 'zod';\n`;
         fieldSchema += `.${validationType}({ message: "${errorMessage}" })`;
       }
     }
-    
+
     fieldSchema += ',\n';
-    
+
     return fieldSchema;
   }
 
@@ -766,7 +782,7 @@ import { z } from 'zod';\n`;
    */
   private getZodTypeForField(field: PrismaField, modelName: string): string {
     const { type, isArray, isRequired } = field;
-    
+
     // Vérifier si c'est un type personnalisé
     const customType = this.config.customTypes[type];
     if (customType) {
@@ -775,10 +791,10 @@ import { z } from 'zod';\n`;
       }
       return customType.type;
     }
-    
+
     // Types standards
     let zodType: string;
-    
+
     switch (type.toLowerCase()) {
       case 'string':
         zodType = 'z.string()';
@@ -805,7 +821,7 @@ import { z } from 'zod';\n`;
         break;
       default:
         // Si c'est probablement un enum
-        const isEnum = this.schema.enums.some(e => e.name === type);
+        const isEnum = this.schema.enums.some((e) => e.name === type);
         if (isEnum) {
           zodType = `${type}Schema`;
         } else {
@@ -813,17 +829,17 @@ import { z } from 'zod';\n`;
           zodType = 'z.any()';
         }
     }
-    
+
     // Gérer les arrays
     if (isArray) {
       zodType = `z.array(${zodType})`;
     }
-    
+
     // Gérer les champs optionnels pour le schéma principal
     if (!isRequired) {
       zodType = `${zodType}.nullable()`;
     }
-    
+
     return zodType;
   }
 
@@ -841,7 +857,7 @@ import { z } from 'zod';\n`;
         printWidth: 100,
         semi: true,
       });
-      
+
       // Écrire le fichier
       await fs.writeFile(filePath, formattedContent, 'utf8');
     } catch (error) {
@@ -865,29 +881,33 @@ import { z } from 'zod';\n`;
 async function main() {
   // Analyser les arguments de ligne de commande
   const args = minimist(process.argv.slice(2));
-  
+
   if (!args.schemaPath) {
     console.error('❌ Erreur: Le paramètre --schemaPath est requis');
-    console.log('Utilisation: node prisma-to-zod.ts --schemaPath=/chemin/vers/schema.prisma --outputDir=/chemin/sortie [--importPrefix=@schemas/] [--withRelations=true] [--splitByModel=true]');
+    console.log(
+      'Utilisation: node prisma-to-zod.ts --schemaPath=/chemin/vers/schema.prisma --outputDir=/chemin/sortie [--importPrefix=@schemas/] [--withRelations=true] [--splitByModel=true]'
+    );
     process.exit(1);
   }
-  
+
   if (!args.outputDir) {
     console.error('❌ Erreur: Le paramètre --outputDir est requis');
-    console.log('Utilisation: node prisma-to-zod.ts --schemaPath=/chemin/vers/schema.prisma --outputDir=/chemin/sortie [--importPrefix=@schemas/] [--withRelations=true] [--splitByModel=true]');
+    console.log(
+      'Utilisation: node prisma-to-zod.ts --schemaPath=/chemin/vers/schema.prisma --outputDir=/chemin/sortie [--importPrefix=@schemas/] [--withRelations=true] [--splitByModel=true]'
+    );
     process.exit(1);
   }
-  
+
   const options: CliOptions = {
     schemaPath: args.schemaPath,
     outputDir: args.outputDir,
     importPrefix: args.importPrefix,
     withRelations: args.withRelations === 'true' || args.withRelations === true,
-    splitByModel: args.splitByModel === 'true' || args.splitByModel === true
+    splitByModel: args.splitByModel === 'true' || args.splitByModel === true,
   };
-  
+
   console.log(`🔍 Génération des schémas Zod à partir du schéma Prisma: ${options.schemaPath}`);
-  
+
   try {
     const generator = new PrismaToZodGenerator(options);
     await generator.generate();
@@ -905,1557 +925,4 @@ if (require.main === module) {
 // Export pour les tests et l'utilisation comme module
 export { PrismaToZodGenerator };
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 import { AnalyzerAgent } from '@workspaces/cahier-des-charge/src/core/interfaces/business';
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

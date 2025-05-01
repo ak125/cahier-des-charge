@@ -7,12 +7,12 @@
  * et génère automatiquement des fichiers d'audit correspondants
  */
 
-const chokidar = require(chokidarstructure-agent');
-const path = require(pathstructure-agent');
-const { spawn } = require(child_processstructure-agent');
-const chalk = require(chalkstructure-agent');
-const fs = require(fsstructure-agent').promises;
-const yaml = require(js-yamlstructure-agent');
+const chokidar = require('chokidarstructure-agent');
+const path = require('pathstructure-agent');
+const { spawn } = require('child_processstructure-agent');
+const chalk = require('chalkstructure-agent');
+const fs = require('fsstructure-agent').promises;
+const yaml = require('js-yamlstructure-agent');
 
 // Configuration
 let config;
@@ -76,7 +76,7 @@ async function loadConfig() {
     config.watch.migrationMarkers = config.watch.migrationMarkers || [
       '@MigrationComplete',
       '// Migration complete',
-      '// Generated from legacy code'
+      '// Generated from 'legacy code'
     ];
     
     return config;
@@ -90,7 +90,7 @@ async function loadConfig() {
         migrationMarkers: [
           '@MigrationComplete',
           '// Migration complete',
-          '// Generated from legacy code'
+          '// Generated from 'legacy code'
         ]
       }
     };
@@ -113,7 +113,7 @@ async function handleNewFile(filePath) {
       await fs.access(auditPath);
       // Fichier d'audit existe déjà, ignorer
       return;
-    } catch (error) {
+    } catch (_error) {
       // Fichier d'audit n'existe pas, continuer
     }
     
@@ -155,7 +155,7 @@ async function handleFileChange(filePath) {
       await fs.access(auditPath);
       // Fichier d'audit existe déjà, ignorer
       return;
-    } catch (error) {
+    } catch (_error) {
       // Fichier d'audit n'existe pas, continuer
     }
     

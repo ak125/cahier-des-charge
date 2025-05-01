@@ -11,12 +11,8 @@ import { QualityAgentOptions, QualityResult } from './types';
  */
 export abstract class BaseQualityAgent<
   TOptions extends QualityAgentOptions = QualityAgentOptions,
-  TResult = any
+  TResult = any,
 > extends BaseAgent<TOptions, TResult> {
-  constructor(options?: Partial<TOptions>) {
-    super(options);
-  }
-
   /**
    * Fonctions utilitaires spécifiques à la catégorie quality
    */

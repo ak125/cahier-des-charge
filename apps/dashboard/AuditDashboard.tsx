@@ -1,65 +1,73 @@
-import React, { useState, useEffect } from 'react';
 import {
-  Container,
-  Heading,
-  Tabs,
-  TabList,
-  Tab,
-  TabPanels,
-  TabPanel,
-  Box,
-  Text,
-  Progress,
   Badge,
-  Table,
-  Thead,
-  Tbody,
-  Tr,
-  Th,
-  Td,
-  Link,
-  Flex,
-  Stat,
-  StatLabel,
-  StatNumber,
-  StatHelpText,
-  StatGroup,
-  Icon,
-  Grid,
-  useColorModeValue,
+  Box,
   Button,
+  Code,
+  Container,
+  Flex,
+  Grid,
+  Heading,
+  Icon,
+  Link,
   Modal,
-  ModalOverlay,
+  ModalBody,
+  ModalCloseButton,
   ModalContent,
   ModalHeader,
-  ModalCloseButton,
-  ModalBody,
+  ModalOverlay,
+  Progress,
+  Stat,
+  StatGroup,
+  StatHelpText,
+  StatLabel,
+  StatNumber,
+  Tab,
+  TabList,
+  TabPanel,
+  TabPanels,
+  Table,
+  Tabs,
+  Tbody,
+  Td,
+  Text,
+  Th,
+  Thead,
+  Tr,
+  useColorModeValue,
   useDisclosure,
-  Code
 } from '@chakra-ui/react';
-import { FiFile, FiCheck, FiAlertTriangle, FiAlertCircle, FiPieChart, FiList, FiCode } from 'react-icons/fi';
-import { ReactMarkdown } from 'react-markdown/lib/react-markdown';
-import { PrismLight as SyntaxHighlighter } from 'react-syntax-highlighter';
-import php from 'react-syntax-highlighter/dist/esm/languages/prism/php';
-import tsx from 'react-syntax-highlighter/dist/esm/languages/prism/tsx';
-import json from 'react-syntax-highlighter/dist/esm/languages/prism/json';
-import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
-import { json as remixJson, LoaderFunction } from '@remix-run/node';
+import { LoaderFunction, json as remixJson } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 import { createClient } from '@supabase/supabase-js';
-import { Bar, Pie, Line } from 'react-chartjs-2';
 import {
-  Chart as ChartJS,
+  ArcElement,
+  BarElement,
   CategoryScale,
+  Chart as ChartJS,
+  Legend,
+  LineElement,
   LinearScale,
   PointElement,
-  LineElement,
-  BarElement,
-  ArcElement,
   Title,
   Tooltip,
-  Legend,
 } from 'chart.js';
+import React, { useEffect, useState } from 'react';
+import { Bar, Line, Pie } from 'react-chartjs-2';
+import {
+  FiAlertCircle,
+  FiAlertTriangle,
+  FiCheck,
+  FiCode,
+  FiFile,
+  FiList,
+  FiPieChart,
+} from 'react-icons/fi';
+import { ReactMarkdown } from 'react-markdown/lib/react-markdown';
+import { PrismLight as SyntaxHighlighter } from 'react-syntax-highlighter';
+import json from 'react-syntax-highlighter/dist/esm/languages/prism/json';
+import php from 'react-syntax-highlighter/dist/esm/languages/prism/php';
+import tsx from 'react-syntax-highlighter/dist/esm/languages/prism/tsx';
+import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 // Enregistrement des éléments nécessaires pour Chart.js
 ChartJS.register(
@@ -103,25 +111,27 @@ interface AuditReport {
 }
 
 // Données factices pour la démo
-const mockAudits: AuditReport[] = [
+const _mockAudits: AuditReport[] = [
   {
     id: '1',
     fileName: 'fiche.php',
     status: 'completed',
     completedSections: 24,
     totalSections: 24,
-    auditContent: '# Audit fiche.php\n\n## 1. Rôle métier principal\nAffiche une fiche produit complète...',
+    auditContent:
+      '# Audit fiche.php\n\n## 1. Rôle métier principal\nAffiche une fiche produit complète...',
     backlogTasks: [
       { type: 'generate.dto', target: 'backend', status: 'pending' },
       { type: 'generate.controller', target: 'backend', status: 'pending' },
-      { type: 'generate.loader', target: 'frontend', status: 'pending' }
+      { type: 'generate.loader', target: 'frontend', status: 'pending' },
     ],
     securityIssues: [
       { type: 'XSS', severity: 'high', description: 'Pas de filtrage XSS' },
-      { type: 'SQL Injection', severity: 'medium', description: 'Variables non échappées' }
+      { type: 'SQL Injection', severity: 'medium', description: 'Variables non échappées' },
     ],
-    migrationPlan: '## Plan de migration\n\n1. Créer DTO\n2. Implémenter controller\n3. Créer loader Remix',
-    generatedOn: new Date('2023-05-15')
+    migrationPlan:
+      '## Plan de migration\n\n1. Créer DTO\n2. Implémenter controller\n3. Créer loader Remix',
+    generatedOn: new Date('2023-05-15'),
   },
   {
     id: '2',
@@ -129,7 +139,7 @@ const mockAudits: AuditReport[] = [
     status: 'in-progress',
     completedSections: 16,
     totalSections: 24,
-    generatedOn: new Date('2023-05-16')
+    generatedOn: new Date('2023-05-16'),
   },
   {
     id: '3',
@@ -137,8 +147,8 @@ const mockAudits: AuditReport[] = [
     status: 'pending',
     completedSections: 0,
     totalSections: 24,
-    generatedOn: new Date('2023-05-17')
-  }
+    generatedOn: new Date('2023-05-17'),
+  },
 ];
 
 // Interfaces pour typer les données
@@ -184,13 +194,13 @@ export const loader: LoaderFunction = async () => {
   const supabaseKey = process.env.SUPABASE_SERVICE_KEY; // Clé de service pour le backend
 
   if (!supabaseUrl || !supabaseKey) {
-    console.error('Variables d\'environnement Supabase manquantes');
-    return remixJson({ 
-      audits: [], 
-      componentStats: [], 
-      statusStats: [], 
+    console.error("Variables d'environnement Supabase manquantes");
+    return remixJson({
+      audits: [],
+      componentStats: [],
+      statusStats: [],
       progressHistory: [],
-      latestAudit: null 
+      latestAudit: null,
     });
   }
 
@@ -207,20 +217,23 @@ export const loader: LoaderFunction = async () => {
     if (auditsError) throw auditsError;
 
     // Récupérer les statistiques par type de composant
-    const { data: componentStats, error: componentStatsError } = await supabase
-      .rpc('get_component_type_stats');
+    const { data: componentStats, error: componentStatsError } = await supabase.rpc(
+      'get_component_type_stats'
+    );
 
     if (componentStatsError) throw componentStatsError;
 
     // Récupérer les statistiques par statut de migration
-    const { data: statusStats, error: statusStatsError } = await supabase
-      .rpc('get_migration_status_stats');
+    const { data: statusStats, error: statusStatsError } = await supabase.rpc(
+      'get_migration_status_stats'
+    );
 
     if (statusStatsError) throw statusStatsError;
 
     // Récupérer l'historique de progression
-    const { data: progressHistory, error: progressHistoryError } = await supabase
-      .rpc('get_migration_progress_history');
+    const { data: progressHistory, error: progressHistoryError } = await supabase.rpc(
+      'get_migration_progress_history'
+    );
 
     if (progressHistoryError) throw progressHistoryError;
 
@@ -247,22 +260,22 @@ export const loader: LoaderFunction = async () => {
     });
   } catch (error) {
     console.error('Erreur lors du chargement des données:', error);
-    return remixJson({ 
-      audits: [], 
-      componentStats: [], 
-      statusStats: [], 
+    return remixJson({
+      audits: [],
+      componentStats: [],
+      statusStats: [],
       progressHistory: [],
       latestAudit: null,
-      error: 'Erreur lors du chargement des données'
+      error: 'Erreur lors du chargement des données',
     });
   }
 };
 
 // Composant principal
 export default function Dashboard() {
-  const { audits, componentStats, statusStats, progressHistory, latestAudit } = 
+  const { audits, componentStats, statusStats, progressHistory, latestAudit } =
     useLoaderData<LoaderData>();
-  
+
   // État pour stocker les données des graphiques
   const [componentChartData, setComponentChartData] = useState<any>(null);
   const [statusChartData, setStatusChartData] = useState<any>(null);
@@ -272,11 +285,11 @@ export default function Dashboard() {
   useEffect(() => {
     if (componentStats.length > 0) {
       setComponentChartData({
-        labels: componentStats.map(stat => formatComponentType(stat.component_type)),
+        labels: componentStats.map((stat) => formatComponentType(stat.component_type)),
         datasets: [
           {
             label: 'Nombre de fichiers par type de composant',
-            data: componentStats.map(stat => stat.count),
+            data: componentStats.map((stat) => stat.count),
             backgroundColor: [
               'rgba(255, 99, 132, 0.6)',
               'rgba(54, 162, 235, 0.6)',
@@ -301,11 +314,11 @@ export default function Dashboard() {
 
     if (statusStats.length > 0) {
       setStatusChartData({
-        labels: statusStats.map(stat => formatMigrationStatus(stat.migration_status)),
+        labels: statusStats.map((stat) => formatMigrationStatus(stat.migration_status)),
         datasets: [
           {
             label: 'Statut de migration',
-            data: statusStats.map(stat => stat.count),
+            data: statusStats.map((stat) => stat.count),
             backgroundColor: [
               'rgba(255, 99, 132, 0.6)',
               'rgba(54, 162, 235, 0.6)',
@@ -326,11 +339,11 @@ export default function Dashboard() {
 
     if (progressHistory.length > 0) {
       setProgressChartData({
-        labels: progressHistory.map(entry => entry.date),
+        labels: progressHistory.map((entry) => entry.date),
         datasets: [
           {
             label: 'Progression de la migration (%)',
-            data: progressHistory.map(entry => entry.progress),
+            data: progressHistory.map((entry) => entry.progress),
             fill: false,
             backgroundColor: 'rgba(75, 192, 192, 0.6)',
             borderColor: 'rgba(75, 192, 192, 1)',
@@ -385,8 +398,8 @@ export default function Dashboard() {
         {latestAudit && (
           <div className="latest-audit-info">
             <p>
-              Dernière analyse: <strong>{formatDate(latestAudit.timestamp)}</strong> |
-              Répertoire: <strong>{latestAudit.source_dir}</strong>
+              Dernière analyse: <strong>{formatDate(latestAudit.timestamp)}</strong> | Répertoire:{' '}
+              <strong>{latestAudit.source_dir}</strong>
             </p>
           </div>
         )}
@@ -399,11 +412,15 @@ export default function Dashboard() {
         </div>
         <div className="card">
           <h3>Complexité</h3>
-          <p className="number">{latestAudit?.report_summary?.complexity?.toFixed(1) || 'N/A'}/10</p>
+          <p className="number">
+            {latestAudit?.report_summary?.complexity?.toFixed(1) || 'N/A'}/10
+          </p>
         </div>
         <div className="card">
           <h3>Progression</h3>
-          <p className="number">{latestAudit?.report_summary?.migrationProgress?.toFixed(1) || 0}%</p>
+          <p className="number">
+            {latestAudit?.report_summary?.migrationProgress?.toFixed(1) || 0}%
+          </p>
         </div>
         <div className="card">
           <h3>Taux de succès</h3>
@@ -415,8 +432,8 @@ export default function Dashboard() {
         <div className="chart-box">
           <h2>Progression de la migration</h2>
           {progressChartData ? (
-            <Line 
-              data={progressChartData} 
+            <Line
+              data={progressChartData}
               options={{
                 responsive: true,
                 plugins: {
@@ -425,20 +442,18 @@ export default function Dashboard() {
                   },
                   title: {
                     display: true,
-                    text: 'Évolution de la progression dans le temps'
-                  }
+                    text: 'Évolution de la progression dans le temps',
+                  },
                 },
                 scales: {
                   y: {
                     min: 0,
                     max: 100,
                     ticks: {
-                      callback: function(value) {
-                        return value + '%';
-                      }
-                    }
-                  }
-                }
+                      callback: (value) => `${value}%`,
+                    },
+                  },
+                },
               }}
             />
           ) : (
@@ -449,8 +464,8 @@ export default function Dashboard() {
         <div className="chart-box">
           <h2>Types de composants</h2>
           {componentChartData ? (
-            <Bar 
-              data={componentChartData} 
+            <Bar
+              data={componentChartData}
               options={{
                 responsive: true,
                 plugins: {
@@ -459,9 +474,9 @@ export default function Dashboard() {
                   },
                   title: {
                     display: true,
-                    text: 'Répartition par type de composant'
-                  }
-                }
+                    text: 'Répartition par type de composant',
+                  },
+                },
               }}
             />
           ) : (
@@ -472,8 +487,8 @@ export default function Dashboard() {
         <div className="chart-box">
           <h2>Statut de migration</h2>
           {statusChartData ? (
-            <Pie 
-              data={statusChartData} 
+            <Pie
+              data={statusChartData}
               options={{
                 responsive: true,
                 plugins: {
@@ -482,9 +497,9 @@ export default function Dashboard() {
                   },
                   title: {
                     display: true,
-                    text: 'Répartition par statut de migration'
-                  }
-                }
+                    text: 'Répartition par statut de migration',
+                  },
+                },
               }}
             />
           ) : (
@@ -508,7 +523,7 @@ export default function Dashboard() {
             </thead>
             <tbody>
               {audits.length > 0 ? (
-                audits.map(audit => (
+                audits.map((audit) => (
                   <tr key={audit.id}>
                     <td>{formatDate(audit.timestamp)}</td>
                     <td>{audit.source_dir}</td>

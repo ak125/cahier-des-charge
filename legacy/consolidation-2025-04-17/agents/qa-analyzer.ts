@@ -5,17 +5,17 @@
  * que tous les éléments essentiels ont été correctement migrés et respectent les standards de qualité.
  */
 
-import fs from 'fs-extra';
-import path from 'path';
-import { createClient } from '@supabase/supabase-js';
-import { Logger } from '@nestjs/common';
-import { diffLines } from 'diff';
-import { parse as parsePhp } from 'php-parser';
-import { BaseAgent, AgentResult, AuditSection } from './core/BaseAgent';
-import { Octokit } from '@octokit/rest';
 import { exec } from 'child_process';
+import path from 'path';
 import { promisify } from 'util';
+import { Logger } from '@nestjs/common';
+import { Octokit } from '@octokit/rest';
+import { createClient } from '@supabase/supabase-js';
+import { diffLines } from 'diff';
+import fs from 'fs-extra';
+import { parse as parsePhp } from 'php-parser';
 import * as DashboardIntegration from '../apps/dashboard/integration/qa-dashboard';
+import { AgentResult, AuditSection, BaseAgent } from './core/BaseAgent';
 
 const execAsync = promisify(exec);
 

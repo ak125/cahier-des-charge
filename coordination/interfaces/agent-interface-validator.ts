@@ -5,12 +5,12 @@
  * avec les standards du framework MCP (Model Context Protocol).
  */
 
-import fs from 'fs-extra';
 import path from 'path';
-import ts from 'typescript';
 import { Logger } from '@nestjs/common';
-import { AgentManifest, AgentManifestEntry } from './agentRegistry';
+import fs from 'fs-extra';
+import ts from 'typescript';
 import { z } from 'zod';
+import { AgentManifest, AgentManifestEntry } from './agentRegistry';
 
 const logger = new Logger('AgentValidator');
 
@@ -414,7 +414,7 @@ export class AgentInterfaceValidator {
     if (!agent.description || agent.description.length < 10) {
       result.warnings.push({
         type: ValidationErrorType.MISSING_DOCUMENTATION,
-        message: `Description insuffisante (moins de 10 caractères)`,
+        message: "Description insuffisante (moins de 10 caractères)",
         severity: 'warning',
         agent: agent.id
       });
@@ -497,11 +497,11 @@ export class AgentInterfaceValidator {
       this.initTypeScriptCompiler();
     }
     
-    logger.log(`Validation de ${this.manifest!.agents.length} agents...`);
+    logger.log(`Validation de ${this.manifest?.agents.length} agents...`);
     
     this.results.clear();
     
-    for (const agent of this.manifest!.agents) {
+    for (const agent of this.manifest?.agents) {
       logger.log(`Validation de l'agent ${agent.name} (${agent.id})...`);
       const result = this.validateAgentInterface(agent);
       this.results.set(agent.id, result);
@@ -528,7 +528,7 @@ export class AgentInterfaceValidator {
       this.initTypeScriptCompiler();
     }
     
-    const agent = this.manifest!.agents.find(a => a.id === agentId);
+    const agent = this.manifest?.agents.find(a => a.id === agentId);
     
     if (!agent) {
       logger.warn(`Agent avec l'ID '${agentId}' non trouvé dans le manifest`);
@@ -588,17 +588,13 @@ export class AgentInterfaceValidator {
                 <h5>Erreurs</h5>
                 ${result.errors.length === 0 ? 
                   '<p class="text-muted">Aucune erreur</p>' : 
-                  '<ul class="text-danger">' + 
-                    result.errors.map(err => `<li>${err.message} (${err.type}${err.location ? ' - ' + err.location : ''})</li>`).join('') + 
-                  '</ul>'
+                  `<ul class="text-danger">${result.errors.map(err => `<li>${err.message} (${err.type}${err.location ? ` - ${err.location}` : ''})</li>`).join('')}</ul>`
                 }
                 
                 <h5>Avertissements</h5>
                 ${result.warnings.length === 0 ? 
                   '<p class="text-muted">Aucun avertissement</p>' : 
-                  '<ul class="text-warning">' + 
-                    result.warnings.map(warn => `<li>${warn.message} (${warn.type}${warn.location ? ' - ' + warn.location : ''})</li>`).join('') + 
-                  '</ul>'
+                  `<ul class="text-warning">${result.warnings.map(warn => `<li>${warn.message} (${warn.type}${warn.location ? ` - ${warn.location}` : ''})</li>`).join('')}</ul>`
                 }
               </div>
             </div>
@@ -800,7 +796,7 @@ if (!fs.existsSync(REPORT_DIR)) {
 
 // Formatter le fichier rapport
 const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-const reportFile = path.join(REPORT_DIR, `interface-implementation-results.md`);
+const reportFile = path.join(REPORT_DIR, "interface-implementation-results.md");
 fs.writeFileSync(reportFile, `# Rapport d'implémentation des interfaces - ${timestamp}\n\n`);
 
 // Map pour collecter les statistiques
@@ -881,7 +877,7 @@ function implementInterfaces(filePath: string): void {
   console.log(`Traitement de ${filePath}`);
   
   // Lire le contenu du fichier
-  let content = fs.readFileSync(filePath, 'utf8');
+  const content = fs.readFileSync(filePath, 'utf8');
   
   // Déterminer la couche et le type
   const layer = determineLayer(filePath);
@@ -911,7 +907,7 @@ function implementInterfaces(filePath: string): void {
   
   // Si aucune interface manquante, on passe
   if (requiredInterfaces.length === 0) {
-    console.log(`  ✓ Aucune interface manquante`);
+    console.log("  ✓ Aucune interface manquante");
     stats.skipped++;
     stats.details[filePath] = [];
     return;
@@ -959,7 +955,7 @@ function implementInterfaces(filePath: string): void {
       
       if (classMatch[2]) {
         // Il y a déjà une clause implements
-        let implementsList = classMatch[3];
+        const implementsList = classMatch[3];
         const alreadyImplemented = implementsList.split(',').map(i => i.trim());
         const interfacesToAdd = requiredInterfaces.filter(i => !alreadyImplemented.includes(i));
         
@@ -985,7 +981,7 @@ function implementInterfaces(filePath: string): void {
     
     console.log(`  ✓ Interfaces ajoutées: ${requiredInterfaces.join(', ')}`);
   } else {
-    console.log(`  ✗ Aucune classe trouvée pour ajouter les interfaces`);
+    console.log("  ✗ Aucune classe trouvée pour ajouter les interfaces");
     stats.skipped++;
     stats.details[filePath] = [];
   }
@@ -1047,21 +1043,21 @@ async function main() {
   
   // Générer le rapport final
   let report = `# Rapport d'implémentation des interfaces - ${timestamp}\n\n`;
-  report += `## Résumé\n\n`;
+  report += "## Résumé\n\n";
   report += `- Total des fichiers traités: ${stats.total}\n`;
   report += `- Fichiers mis à jour: ${stats.updated}\n`;
   report += `- Fichiers ignorés: ${stats.skipped}\n\n`;
   
-  report += `## Détails\n\n`;
+  report += "## Détails\n\n";
   
   Object.entries(stats.details).forEach(([filePath, interfaces]) => {
     report += `### ${filePath}\n`;
     if (interfaces.length > 0) {
       report += `- Ajout des imports pour: ${interfaces.join(', ')}\n`;
       report += `- Ajout des interfaces à la classe: ${interfaces.join(', ')}\n`;
-      report += `- Ajout des méthodes requises par les interfaces\n\n`;
+      report += "- Ajout des méthodes requises par les interfaces\n\n";
     } else {
-      report += `- Déjà conforme, aucun changement\n\n`;
+      report += "- Déjà conforme, aucun changement\n\n";
     }
   });
   

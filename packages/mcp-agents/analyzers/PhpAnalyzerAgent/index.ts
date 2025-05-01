@@ -5,7 +5,4 @@
 
 import { PhpAnalyzerAgent } from './PhpAnalyzerAgent';
 
-export {
-  PhpAnalyzerAgent,
-};
-
+export { PhpAnalyzerAgent };

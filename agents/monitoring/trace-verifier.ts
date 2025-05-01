@@ -1,7 +1,7 @@
-import * as fs from 'fs/promises';
 import * as path from 'path';
-import glob from 'glob';
 import { promisify } from 'util';
+import * as fs from 'fs/promises';
+import glob from 'glob';
 
 const globAsync = promisify(glob);
 
@@ -36,10 +36,13 @@ interface MigrationTrace {
 
 interface PipelineConfig {
   version: string;
-  migrationTypes: Record<string, {
-    requiredSteps: string[];
-    statusSequence: string[];
-  }>;
+  migrationTypes: Record<
+    string,
+    {
+      requiredSteps: string[];
+      statusSequence: string[];
+    }
+  >;
   timeouts: Record<string, number>;
   metrics: {
     requiredForDashboard: string[];
@@ -57,46 +60,46 @@ async function loadPipelineConfig(): Promise<PipelineConfig> {
     console.error('Erreur lors du chargement de la configuration du pipeline:', error);
     // Configuration par défaut
     return {
-      version: "1.0.0",
+      version: '1.0.0',
       migrationTypes: {
-        "standard": {
+        standard: {
           requiredSteps: [
-            "php-analyzer",
-            "structure-classifier-agent",
-            "remix-generator",
-            "qa-analyzer",
-            "seo-checker",
-            "pr-creator"
+            'php-analyzer',
+            'structure-classifier-agent',
+            'remix-generator',
+            'qa-analyzer',
+            'seo-checker',
+            'pr-creator',
           ],
           statusSequence: [
-            "planned",
-            "detected",
-            "analyzed",
-            "structured",
-            "generated",
-            "validated",
-            "integrated",
-            "completed"
-          ]
-        }
+            'planned',
+            'detected',
+            'analyzed',
+            'structured',
+            'generated',
+            'validated',
+            'integrated',
+            'completed',
+          ],
+        },
       },
       timeouts: {
-        "planned": 14,
-        "detected": 7,
-        "analyzed": 5,
-        "structured": 3,
-        "generated": 3,
-        "validated": 5,
-        "integrated": 2
+        planned: 14,
+        detected: 7,
+        analyzed: 5,
+        structured: 3,
+        generated: 3,
+        validated: 5,
+        integrated: 2,
       },
       metrics: {
         requiredForDashboard: [
-          "completion_rate",
-          "missing_agents_count",
-          "blocked_migrations_count",
-          "age_distribution"
-        ]
-      }
+          'completion_rate',
+          'missing_agents_count',
+          'blocked_migrations_count',
+          'age_distribution',
+        ],
+      },
     };
   }
 }
@@ -109,7 +112,11 @@ export async function verifyMigrationTraces(): Promise<void> {
 
   // Charger la configuration
   const config = await loadPipelineConfig();
-  console.log(`📝 Configuration chargée: ${config.migrationTypes ? Object.keys(config.migrationTypes).length : 0} types de migration définis`);
+  console.log(
+    `📝 Configuration chargée: ${
+      config.migrationTypes ? Object.keys(config.migrationTypes).length : 0
+    } types de migration définis`
+  );
 
   // Recherche des manifestes
   const manifestFiles = await globAsync('**/MCPManifest.json', { ignore: 'node_modules/**' });
@@ -134,7 +141,7 @@ export async function verifyMigrationTraces(): Promise<void> {
 
       // Construire le chemin de trace
       const traceDir = path.dirname(file);
-      const traceFilePath = path.join(traceDir, `migration.trace.json`);
+      const traceFilePath = path.join(traceDir, 'migration.trace.json');
 
       // Vérifier si le type de migration existe dans la configuration
       const typeConfig = config.migrationTypes[migrationType];
@@ -147,7 +154,7 @@ export async function verifyMigrationTraces(): Promise<void> {
       const trace = await generateMigrationTrace(manifest, agentLogs, typeConfig);
 
       // Vérifier s'il y a des étapes manquantes
-      const missingSteps = trace.trace.filter(step => step.status === 'missing');
+      const missingSteps = trace.trace.filter((step) => step.status === 'missing');
       if (missingSteps.length > 0) {
         tracesWithMissing++;
         console.log(`⚠️ Migration ${manifest.id} : ${missingSteps.length} étapes manquantes`);
@@ -156,7 +163,6 @@ export async function verifyMigrationTraces(): Promise<void> {
       // Écrire le fichier de trace
       await fs.writeFile(traceFilePath, JSON.stringify(trace, null, 2));
       tracesGenerated++;
-
     } catch (error) {
       console.error(`Erreur lors de la génération de trace pour ${file}:`, error);
     }
@@ -168,12 +174,16 @@ export async function verifyMigrationTraces(): Promise<void> {
     totalManifests: manifestFiles.length,
     tracesGenerated,
     tracesWithMissing,
-    completionPercentage: tracesGenerated > 0 ?
-      Math.round(((tracesGenerated - tracesWithMissing) / tracesGenerated) * 100) : 0
+    completionPercentage:
+      tracesGenerated > 0
+        ? Math.round(((tracesGenerated - tracesWithMissing) / tracesGenerated) * 100)
+        : 0,
   };
 
   await fs.writeFile('trace-verification-report.json', JSON.stringify(report, null, 2));
-  console.log(`✅ Vérification terminée : ${tracesGenerated} traces générées, ${tracesWithMissing} avec des étapes manquantes`);
+  console.log(
+    `✅ Vérification terminée : ${tracesGenerated} traces générées, ${tracesWithMissing} avec des étapes manquantes`
+  );
   console.log(`📈 Taux de complétion: ${report.completionPercentage}%`);
 }
 
@@ -183,7 +193,7 @@ export async function verifyMigrationTraces(): Promise<void> {
 async function generateMigrationTrace(
   manifest: MCPManifest,
   agentLogs: Record<string, any[]>,
-  typeConfig: { requiredSteps: string[], statusSequence: string[] }
+  typeConfig: { requiredSteps: string[]; statusSequence: string[] }
 ): Promise<MigrationTrace> {
   const trace: MigrationTrace = {
     id: manifest.id,
@@ -192,7 +202,7 @@ async function generateMigrationTrace(
     file: manifest.file,
     status: manifest.status,
     trace: [],
-    lastUpdated: manifest.lastUpdated
+    lastUpdated: manifest.lastUpdated,
   };
 
   // Pour chaque agent attendu selon le type, vérifier s'il a été exécuté
@@ -204,8 +214,8 @@ async function generateMigrationTrace(
 
     // Vérifier dans les logs si l'agent a traité cette migration
     if (agentLogs[agent]) {
-      const logEntry = agentLogs[agent].find(log =>
-        log.migrationId === manifest.id || (manifest.file && log.file === manifest.file)
+      const logEntry = agentLogs[agent].find(
+        (log) => log.migrationId === manifest.id || (manifest.file && log.file === manifest.file)
       );
 
       if (logEntry) {
@@ -220,7 +230,7 @@ async function generateMigrationTrace(
     }
 
     // Vérifier dans les agentsExecuted du manifest
-    if (manifest.agentsExecuted && manifest.agentsExecuted.includes(agent)) {
+    if (manifest.agentsExecuted?.includes(agent)) {
       // Si l'agent est listé mais pas trouvé dans les logs
       if (execution.status === 'missing') {
         execution.status = 'ok';
@@ -263,11 +273,11 @@ async function loadAgentLogs(logFiles: string[]): Promise<Record<string, any[]>>
       // Analyser chaque ligne comme un JSON
       const entries = content
         .split('\n')
-        .filter(line => line.trim())
-        .map(line => {
+        .filter((line) => line.trim())
+        .map((line) => {
           try {
             return JSON.parse(line);
-          } catch (e) {
+          } catch (_e) {
             return null;
           }
         })
@@ -286,5 +296,5 @@ async function loadAgentLogs(logFiles: string[]): Promise<Record<string, any[]>>
 if (require.main === module) {
   verifyMigrationTraces()
     .then(() => console.log('🎯 Vérification des traces terminée'))
-    .catch(error => console.error('❌ Erreur pendant la vérification:', error));
+    .catch((error) => console.error('❌ Erreur pendant la vérification:', error));
 }

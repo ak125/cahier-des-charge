@@ -1,8 +1,0 @@
-packages:
-  - 'tools/agents/*'
-  - 'dashboard'
-  - 'monorepo/apps/*'
-  - 'monorepo/packages/*'
-  - 'packages/*'
-  - 'apps/*'
-  - 'agents'

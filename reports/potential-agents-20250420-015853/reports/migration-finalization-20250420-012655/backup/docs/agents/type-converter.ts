@@ -8,8 +8,8 @@ import { AnalyzerAgent } from '@workspaces/cahier-des-charge/src/core/interfaces
  * - Détection et génération d'énumérations
  */
 
-import { MySQLSchema, TableInfo, ColumnInfo } from '../models/schema';
 import { BaseAgent, BusinessAgent } from '../core/interfaces/BaseAgent';
+import { ColumnInfo, MySQLSchema, TableInfo } from '../models/schema';
 
 
 interface TypeConversionMap {

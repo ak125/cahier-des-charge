@@ -41,13 +41,13 @@ try {
   if (fs.existsSync(mcpBinPath)) {
     fs.unlinkSync(mcpBinPath);
   }
-  
+
   // Créer un lien symbolique ou copier le fichier selon la plateforme
   const isWindows = process.platform === 'win32';
   if (isWindows) {
     // Sur Windows, créer un script batch pour exécuter node avec le chemin du CLI
     const batchContent = `@echo off\r\nnode "${cliPath}" %*`;
-    fs.writeFileSync(mcpBinPath + '.cmd', batchContent);
+    fs.writeFileSync(`${mcpBinPath}.cmd`, batchContent);
     console.log('✅ Script batch Windows créé');
   } else {
     // Sur Unix, créer un lien symbolique

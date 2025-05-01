@@ -1,17 +1,17 @@
 /**
  * nestjs-module-generator.ts
- * 
+ *
  * Générateur automatique de modules NestJS basé sur les plans de migration
  * Créé les fichiers controller.ts, service.ts, dto.ts, entity.ts, module.ts
- * 
+ *
  * Usage: ts-node nestjs-module-generator.ts <chemin-plan-migration.md> [--dry-run]
- * 
+ *
  * Date: 11 avril 2025
  */
 
+import { execSync } from 'child_process';
 import * as fs from 'fs';
 import * as path from 'path';
-import { execSync } from 'child_process';
 
 interface MigrationPlan {
   fileName: string;
@@ -45,19 +45,19 @@ function extractMigrationInfo(filePath: string): MigrationPlan {
   const fileName = path.basename(filePath, '.migration_plan.md');
   const phpFileName = fileName.endsWith('.php') ? fileName : `${fileName}.php`;
   const baseName = phpFileName.replace('.php', '');
-  
+
   // Convertir le nom en camelCase pour les conventions NestJS
   const camelCaseName = baseName
     .replace(/-([a-z])/g, (g) => g[1].toUpperCase())
     .replace(/[\-_]([a-z])/g, (g) => g[1].toUpperCase());
-  
+
   // Convertir en PascalCase pour les noms de classes
   const pascalCaseName = camelCaseName.charAt(0).toUpperCase() + camelCaseName.slice(1);
-  
+
   // Extraire les informations sur les endpoints à partir du contenu du plan
   const endpointsRegex = /## 🧱 Plan de migration NestJS\s+([\s\S]+?)(?=##|$)/;
   const endpointsMatch = content.match(endpointsRegex);
-  
+
   const endpoints = [];
   if (endpointsMatch) {
     const endpointsContent = endpointsMatch[1];
@@ -67,7 +67,7 @@ function extractMigrationInfo(filePath: string): MigrationPlan {
     while ((match = tableRowsRegex.exec(endpointsContent)) !== null) {
       const source = match[1].trim();
       const target = match[2].trim();
-      
+
       if (source !== 'Élément PHP' && target !== 'Cible NestJS') {
         // Déduire le type d'endpoint à partir des éléments du plan
         if (source.toLowerCase().includes('requête') || source.toLowerCase().includes('sql')) {
@@ -75,59 +75,60 @@ function extractMigrationInfo(filePath: string): MigrationPlan {
             method: 'GET',
             path: `/${camelCaseName}`,
             description: `Récupérer les ${camelCaseName}`,
-            returns: `${pascalCaseName}[]`
+            returns: `${pascalCaseName}[]`,
           });
-          
+
           endpoints.push({
             method: 'GET',
             path: `/${camelCaseName}/:id`,
             description: `Récupérer un ${camelCaseName} par ID`,
             returns: pascalCaseName,
-            params: ['id']
+            params: ['id'],
           });
-          
+
           endpoints.push({
             method: 'POST',
             path: `/${camelCaseName}`,
             description: `Créer un nouveau ${camelCaseName}`,
-            returns: pascalCaseName
+            returns: pascalCaseName,
           });
-          
+
           endpoints.push({
             method: 'PUT',
             path: `/${camelCaseName}/:id`,
             description: `Mettre à jour un ${camelCaseName}`,
             returns: pascalCaseName,
-            params: ['id']
+            params: ['id'],
           });
-          
+
           endpoints.push({
             method: 'DELETE',
             path: `/${camelCaseName}/:id`,
             description: `Supprimer un ${camelCaseName}`,
             returns: 'void',
-            params: ['id']
+            params: ['id'],
           });
         }
       }
     }
   }
-  
+
   // Extraire des champs potentiels depuis le contenu
   const fields = [];
-  
+
   // Chercher les mentions de champs ou de propriétés dans le contenu
-  const fieldsRegex = /(field|property|champ|propriété|colonne)\s+['"]?(\w+)['"]?\s+(is|of type|de type)\s+['"]?(\w+)['"]?/gi;
+  const fieldsRegex =
+    /(field|property|champ|propriété|colonne)\s+['"]?(\w+)['"]?\s+(is|of type|de type)\s+['"]?(\w+)['"]?/gi;
   let fieldMatch;
-  
+
   while ((fieldMatch = fieldsRegex.exec(content)) !== null) {
     fields.push({
       name: fieldMatch[2],
       type: mapPhpTypeToTypescript(fieldMatch[4]),
-      isRequired: true
+      isRequired: true,
     });
   }
-  
+
   // Si aucun champ n'a été détecté, ajouter des champs par défaut
   if (fields.length === 0) {
     fields.push(
@@ -138,10 +139,10 @@ function extractMigrationInfo(filePath: string): MigrationPlan {
       { name: 'updatedAt', type: 'Date', isRequired: true }
     );
   }
-  
+
   // Déterminer si le module utilise Prisma (basé sur les mentions dans le plan)
   const prismaModel = content.includes('Prisma') || content.includes('prisma');
-  
+
   return {
     fileName: phpFileName,
     outputDir: `dist/modules/${camelCaseName}`,
@@ -152,7 +153,7 @@ function extractMigrationInfo(filePath: string): MigrationPlan {
     dtoName: `Create${pascalCaseName}Dto`,
     fields,
     endpoints,
-    prismaModel
+    prismaModel,
   };
 }
 
@@ -161,25 +162,25 @@ function extractMigrationInfo(filePath: string): MigrationPlan {
  */
 function mapPhpTypeToTypescript(phpType: string): string {
   const typeMap: { [key: string]: string } = {
-    'int': 'number',
-    'integer': 'number',
-    'float': 'number',
-    'double': 'number',
-    'string': 'string',
-    'bool': 'boolean',
-    'boolean': 'boolean',
-    'array': 'any[]',
-    'object': 'Record<string, any>',
-    'mixed': 'any',
-    'null': 'null',
-    'resource': 'any',
-    'callable': 'Function',
-    'iterable': 'any[]',
-    'void': 'void',
-    'date': 'Date',
-    'datetime': 'Date'
+    int: 'number',
+    integer: 'number',
+    float: 'number',
+    double: 'number',
+    string: 'string',
+    bool: 'boolean',
+    boolean: 'boolean',
+    array: 'any[]',
+    object: 'Record<string, any>',
+    mixed: 'any',
+    null: 'null',
+    resource: 'any',
+    callable: 'Function',
+    iterable: 'any[]',
+    void: 'void',
+    date: 'Date',
+    datetime: 'Date',
   };
-  
+
   return typeMap[phpType.toLowerCase()] || 'any';
 }
 
@@ -188,45 +189,65 @@ function mapPhpTypeToTypescript(phpType: string): string {
  */
 function generateController(plan: MigrationPlan): string {
   const { controllerName, serviceName, moduleName, dtoName, entityName, endpoints } = plan;
-  
+
   let methods = '';
-  
-  endpoints.forEach(endpoint => {
-    const params = endpoint.params?.map(param => `@Param('${param}') ${param}: string`).join(', ') || '';
-    const bodyParam = endpoint.method === 'POST' || endpoint.method === 'PUT' ? `@Body() dto: ${endpoint.method === 'POST' ? dtoName : `Update${entityName}Dto`}` : '';
+
+  endpoints.forEach((endpoint) => {
+    const params =
+      endpoint.params?.map((param) => `@Param('${param}') ${param}: string`).join(', ') || '';
+    const bodyParam =
+      endpoint.method === 'POST' || endpoint.method === 'PUT'
+        ? `@Body() dto: ${endpoint.method === 'POST' ? dtoName : `Update${entityName}Dto`}`
+        : '';
     const allParams = [params, bodyParam].filter(Boolean).join(', ');
-    
-    const methodName = 
-      endpoint.method === 'GET' && endpoint.path.includes(':id') ? 'findOne' :
-      endpoint.method === 'GET' ? 'findAll' :
-      endpoint.method === 'POST' ? 'create' :
-      endpoint.method === 'PUT' ? 'update' :
-      endpoint.method === 'DELETE' ? 'remove' : 'unknown';
-    
-    const returnType = endpoint.returns ? 
-      (endpoint.returns === 'void' ? 'Promise<void>' : `Promise<${endpoint.returns}>`) : 
-      'Promise<any>';
-    
+
+    const methodName =
+      endpoint.method === 'GET' && endpoint.path.includes(':id')
+        ? 'findOne'
+        : endpoint.method === 'GET'
+          ? 'findAll'
+          : endpoint.method === 'POST'
+            ? 'create'
+            : endpoint.method === 'PUT'
+              ? 'update'
+              : endpoint.method === 'DELETE'
+                ? 'remove'
+                : 'unknown';
+
+    const returnType = endpoint.returns
+      ? endpoint.returns === 'void'
+        ? 'Promise<void>'
+        : `Promise<${endpoint.returns}>`
+      : 'Promise<any>';
+
     methods += `
   /**
    * ${endpoint.description}
    */
   @${endpoint.method}('${endpoint.path}')
   ${methodName}(${allParams}): ${returnType} {
-    ${endpoint.method === 'GET' && endpoint.path.includes(':id') ? 
-      `return this.${serviceName.charAt(0).toLowerCase() + serviceName.slice(1)}.findOne(+id);` :
-      endpoint.method === 'GET' ? 
-      `return this.${serviceName.charAt(0).toLowerCase() + serviceName.slice(1)}.findAll();` :
-      endpoint.method === 'POST' ? 
-      `return this.${serviceName.charAt(0).toLowerCase() + serviceName.slice(1)}.create(dto);` :
-      endpoint.method === 'PUT' ? 
-      `return this.${serviceName.charAt(0).toLowerCase() + serviceName.slice(1)}.update(+id, dto);` :
-      endpoint.method === 'DELETE' ? 
-      `return this.${serviceName.charAt(0).toLowerCase() + serviceName.slice(1)}.remove(+id);` : ''
+    ${
+      endpoint.method === 'GET' && endpoint.path.includes(':id')
+        ? `return this.${serviceName.charAt(0).toLowerCase() + serviceName.slice(1)}.findOne(+id);`
+        : endpoint.method === 'GET'
+          ? `return this.${serviceName.charAt(0).toLowerCase() + serviceName.slice(1)}.findAll();`
+          : endpoint.method === 'POST'
+            ? `return this.${
+                serviceName.charAt(0).toLowerCase() + serviceName.slice(1)
+              }.create(dto);`
+            : endpoint.method === 'PUT'
+              ? `return this.${
+                  serviceName.charAt(0).toLowerCase() + serviceName.slice(1)
+                }.update(+id, dto);`
+              : endpoint.method === 'DELETE'
+                ? `return this.${
+                    serviceName.charAt(0).toLowerCase() + serviceName.slice(1)
+                  }.remove(+id);`
+                : ''
     }
   }`;
   });
-  
+
   return `import { Controller, Get, Post, Body, Put, Param, Delete } from '@nestjs/common';
 import { ${serviceName} } from './${entityName.toLowerCase()}.service';
 import { ${dtoName} } from './dto/create-${entityName.toLowerCase()}.dto';
@@ -234,7 +255,9 @@ import { Update${entityName}Dto } from './dto/update-${entityName.toLowerCase()}
 
 @Controller('${entityName.toLowerCase()}')
 export class ${controllerName} {
-  constructor(private readonly ${serviceName.charAt(0).toLowerCase() + serviceName.slice(1)}: ${serviceName}) {}
+  constructor(private readonly ${
+    serviceName.charAt(0).toLowerCase() + serviceName.slice(1)
+  }: ${serviceName}) {}
 ${methods}
 }
 `;
@@ -245,11 +268,9 @@ ${methods}
  */
 function generateService(plan: MigrationPlan): string {
   const { serviceName, entityName, dtoName, prismaModel } = plan;
-  
-  const serviceContent = prismaModel ? 
-    generatePrismaService(plan) : 
-    generateStandardService(plan);
-  
+
+  const serviceContent = prismaModel ? generatePrismaService(plan) : generateStandardService(plan);
+
   return serviceContent;
 }
 
@@ -258,7 +279,7 @@ function generateService(plan: MigrationPlan): string {
  */
 function generateStandardService(plan: MigrationPlan): string {
   const { serviceName, entityName, dtoName } = plan;
-  
+
   return `import { Injectable } from '@nestjs/common';
 import { ${dtoName} } from './dto/create-${entityName.toLowerCase()}.dto';
 import { Update${entityName}Dto } from './dto/update-${entityName.toLowerCase()}.dto';
@@ -317,7 +338,7 @@ export class ${serviceName} {
  */
 function generatePrismaService(plan: MigrationPlan): string {
   const { serviceName, entityName, dtoName } = plan;
-  
+
   return `import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { ${dtoName} } from './dto/create-${entityName.toLowerCase()}.dto';
@@ -364,12 +385,16 @@ export class ${serviceName} {
  */
 function generateEntity(plan: MigrationPlan): string {
   const { entityName, fields } = plan;
-  
-  const fieldDefinitions = fields.map(field => {
-    return `
-  ${field.description ? `/**\n   * ${field.description}\n   */\n  ` : ''}${field.name}${field.isRequired ? '' : '?'}: ${field.type};`;
-  }).join('');
-  
+
+  const fieldDefinitions = fields
+    .map((field) => {
+      return `
+  ${field.description ? `/**\n   * ${field.description}\n   */\n  ` : ''}${field.name}${
+    field.isRequired ? '' : '?'
+  }: ${field.type};`;
+    })
+    .join('');
+
   return `export class ${entityName} {${fieldDefinitions}
 }
 `;
@@ -380,14 +405,19 @@ function generateEntity(plan: MigrationPlan): string {
  */
 function generateCreateDto(plan: MigrationPlan): string {
   const { dtoName, fields, entityName } = plan;
-  
+
   const fieldDefinitions = fields
-    .filter(field => field.name !== 'id' && field.name !== 'createdAt' && field.name !== 'updatedAt')
-    .map(field => {
+    .filter(
+      (field) => field.name !== 'id' && field.name !== 'createdAt' && field.name !== 'updatedAt'
+    )
+    .map((field) => {
       return `
-  ${field.description ? `/**\n   * ${field.description}\n   */\n  ` : ''}${field.name}${field.isRequired ? '' : '?'}: ${field.type};`;
-    }).join('');
-  
+  ${field.description ? `/**\n   * ${field.description}\n   */\n  ` : ''}${field.name}${
+    field.isRequired ? '' : '?'
+  }: ${field.type};`;
+    })
+    .join('');
+
   return `import { IsNotEmpty, IsOptional, IsString, IsNumber } from 'class-validator';
 
 export class ${dtoName} {${fieldDefinitions}
@@ -400,7 +430,7 @@ export class ${dtoName} {${fieldDefinitions}
  */
 function generateUpdateDto(plan: MigrationPlan): string {
   const { dtoName, entityName } = plan;
-  
+
   return `import { PartialType } from '@nestjs/mapped-types';
 import { ${dtoName} } from './create-${entityName.toLowerCase()}.dto';
 
@@ -413,7 +443,7 @@ export class Update${entityName}Dto extends PartialType(${dtoName}) {}
  */
 function generateModule(plan: MigrationPlan): string {
   const { moduleName, controllerName, serviceName, prismaModel, entityName } = plan;
-  
+
   return `import { Module } from '@nestjs/common';
 import { ${controllerName} } from './${entityName.toLowerCase()}.controller';
 import { ${serviceName} } from './${entityName.toLowerCase()}.service';
@@ -434,66 +464,66 @@ export class ${moduleName} {}
  */
 function generateNestJSModule(plan: MigrationPlan, dryRun = false): void {
   const { outputDir, entityName, fileName } = plan;
-  
+
   console.log(`📦 Génération du module NestJS pour ${fileName}...`);
-  
+
   // Créer les fichiers
   const files = [
     {
       name: `${entityName.toLowerCase()}.controller.ts`,
-      content: generateController(plan)
+      content: generateController(plan),
     },
     {
       name: `${entityName.toLowerCase()}.service.ts`,
-      content: generateService(plan)
+      content: generateService(plan),
     },
     {
       name: `${entityName.toLowerCase()}.entity.ts`,
-      content: generateEntity(plan)
+      content: generateEntity(plan),
     },
     {
       name: `${entityName.toLowerCase()}.module.ts`,
-      content: generateModule(plan)
+      content: generateModule(plan),
     },
     {
       name: `dto/create-${entityName.toLowerCase()}.dto.ts`,
-      content: generateCreateDto(plan)
+      content: generateCreateDto(plan),
     },
     {
       name: `dto/update-${entityName.toLowerCase()}.dto.ts`,
-      content: generateUpdateDto(plan)
-    }
+      content: generateUpdateDto(plan),
+    },
   ];
-  
+
   if (dryRun) {
     console.log('🔍 Mode dry-run: les fichiers ne seront pas créés');
-    
-    files.forEach(file => {
+
+    files.forEach((file) => {
       console.log(`\n📄 ${file.name}:`);
       console.log('-'.repeat(50));
       console.log(file.content);
       console.log('-'.repeat(50));
     });
-    
+
     return;
   }
-  
+
   // Créer le répertoire de sortie s'il n'existe pas
   if (!fs.existsSync(outputDir)) {
     fs.mkdirSync(outputDir, { recursive: true });
   }
-  
+
   // Créer le répertoire DTO s'il n'existe pas
   if (!fs.existsSync(`${outputDir}/dto`)) {
     fs.mkdirSync(`${outputDir}/dto`, { recursive: true });
   }
-  
+
   // Écrire les fichiers
-  files.forEach(file => {
+  files.forEach((file) => {
     fs.writeFileSync(`${outputDir}/${file.name}`, file.content);
     console.log(`✅ Fichier généré: ${outputDir}/${file.name}`);
   });
-  
+
   console.log(`\n🚀 Module NestJS généré avec succès pour ${fileName}!`);
 }
 
@@ -503,7 +533,7 @@ function generateNestJSModule(plan: MigrationPlan, dryRun = false): void {
 function main() {
   // Récupérer les arguments de la ligne de commande
   const args = process.argv.slice(2);
-  
+
   if (args.length === 0 || args[0] === '--help') {
     console.log(`
     Usage: ts-node nestjs-module-generator.ts <chemin-plan-migration.md> [--dry-run]
@@ -512,18 +542,18 @@ function main() {
     `);
     process.exit(0);
   }
-  
+
   const filePath = args[0];
   const dryRun = args.includes('--dry-run');
-  
+
   if (!fs.existsSync(filePath)) {
     console.error(`❌ Le fichier ${filePath} n'existe pas`);
     process.exit(1);
   }
-  
+
   // Extraire les informations du plan de migration
   const plan = extractMigrationInfo(filePath);
-  
+
   // Générer le module NestJS
   generateNestJSModule(plan, dryRun);
 }

@@ -1,5 +1,5 @@
 import { BaseAgent } from '@workspaces/cahier-des-charge/src/core/interfaces/BaseAgent';
-import { BusinessAgent , AnalyzerAgent} from '@workspaces/cahier-des-charge/src/core/interfaces/business';
+import { AnalyzerAgent,BusinessAgent  } from '@workspaces/cahier-des-charge/src/core/interfaces/business';
 
 export class DataAgent implements BusinessAgent, AnalyzerAgent extends BaseAgent {
   /**

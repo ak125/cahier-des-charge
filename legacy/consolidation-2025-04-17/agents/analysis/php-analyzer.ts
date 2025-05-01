@@ -16,21 +16,21 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
-import { program } from 'commander';
 import chalk from 'chalk';
+import { program } from 'commander';
+import dotenv from 'dotenv';
 import { glob } from 'glob';
 import { performance } from 'perf_hooks';
-import dotenv from 'dotenv';
 
 // Charger les variables d'environnement
 dotenv.config();
 
-// Importer le client Supabase
-import { supabase, logMcpEvent, updateMcpEventStatus } from '../../utils/supabaseClient';
-import fs from 'fs/promises';
-import path from 'path';
 import { exec } from 'child_process';
+import path from 'path';
 import { promisify } from 'util';
+import fs from 'fs/promises';
+// Importer le client Supabase
+import { logMcpEvent, supabase, updateMcpEventStatus } from '../../utils/supabaseClient';
 
 const execAsync = promisify(exec);
 
@@ -827,7 +827,7 @@ export async function analyzePhpFile(options: PhpAnalysisOptions): Promise<PhpAn
     const methodMatches = [...content.matchAll(/(?:public|private|protected)\s+function\s+(\w+)\s*\(([^)]*)\)/g)];
     
     // Analyser la complexité si demandé
-    let complexity = {
+    const complexity = {
       methodCount: methodMatches.length,
       functionCount: functionMatches.length,
       classCount: classMatches.length,

@@ -1,129 +1,89 @@
+import { Box } from '@chakra-ui/react';
 /**
  * Dashboard spécifique pour la couche métier
  * Affiche les KPIs business, l'état des domaines et l'utilisation du modèle
  */
-import React, { useState, useEffect } from 'react';
-import BaseDashboard, { DashboardConfig } from './base-dashboard';
-import { Box } from '@chakra-ui/react';
+import React, { useEffect, useState } from 'react';
 import { CircuitState } from '../utils/circuit-breaker/base-circuit-breaker';
 import { TraceEvent } from '../utils/traceability/traceability-service';
-
-// Types pour les domaines métier
-interface BusinessDomain {
-  id: string;
-  name: string;
-  type: string;
-  status: 'active' | 'pending-migration' | 'failed' | 'migrated' | 'maintenance';
-  migrationProgress: number;
-  migrationSuccessRate: number;
-  startDate?: Date;
-  endDate?: Date;
-  complexity: 'low' | 'medium' | 'high' | 'very-high';
-  isolationState: CircuitState;
-}
-
-// Types pour les modèles métier
-interface BusinessModel {
-  id: string;
-  name: string;
-  tokensConsumed: number;
-  requests: number;
-  costEstimate: number;
-  averageLatency: number;
-  lastUsed?: Date;
-  errorRate: number;
-}
-
-// Types pour les circuit breakers métier
-interface BusinessCircuitBreakerDetail {
-  id: string;
-  domainId: string;
-  domainName: string;
-  state: CircuitState;
-  failureCount: number;
-  successCount: number;
-  lastFailureTime?: Date;
-  failureReason?: string;
-  resetTimeout: number;
-  fallbackEnabled: boolean;
-}
+import BaseDashboard, { DashboardConfig } from './base-dashboard';
 
 // Configuration du tableau de bord pour la couche métier
 const defaultBusinessConfig: DashboardConfig = {
-  title: "Tableau de bord Métier",
-  description: "Monitoring des domaines métier, KPIs et utilisation des modèles",
+  title: 'Tableau de bord Métier',
+  description: 'Monitoring des domaines métier, KPIs et utilisation des modèles',
   layer: 'business',
   refreshInterval: 45, // Rafraîchir toutes les 45 secondes
-  
+
   // Sources de données pour ce dashboard
   dataSources: [
     {
       id: 'business-domains',
       name: 'Business Domains',
       url: '/api/business/domains',
-      refreshInterval: 60
+      refreshInterval: 60,
     },
     {
       id: 'model-usage',
       name: 'Model Usage',
       url: '/api/business/models/usage',
-      refreshInterval: 30
+      refreshInterval: 30,
     },
     {
       id: 'business-kpis',
       name: 'Business KPIs',
       url: '/api/business/kpis',
-      refreshInterval: 120
+      refreshInterval: 120,
     },
     {
       id: 'circuit-breaker',
       name: 'Circuit Breaker',
       url: '/api/business/circuit-breaker/status',
-      refreshInterval: 20
+      refreshInterval: 20,
     },
     {
       id: 'business-trace-events',
       name: 'Business Trace Events',
       url: '/api/traceability/events?layer=business',
-      refreshInterval: 15
+      refreshInterval: 15,
     },
     {
       id: 'cross-layer-metrics',
       name: 'Cross-Layer Metrics',
       url: '/api/traceability/cross-layer-metrics?sourceLayer=business',
-      refreshInterval: 30
+      refreshInterval: 30,
     },
     {
       id: 'domain-details',
       name: 'Domain Details',
       url: '/api/business/domains/details',
-      refreshInterval: 60
+      refreshInterval: 60,
     },
     {
       id: 'model-details',
       name: 'Model Details',
       url: '/api/business/models/details',
-      refreshInterval: 60
+      refreshInterval: 60,
     },
     {
       id: 'governance-decisions',
       name: 'Governance Decisions',
       url: '/api/governance/decisions?layer=business',
-      refreshInterval: 60
+      refreshInterval: 60,
     },
     {
       id: 'migration-metrics',
       name: 'Migration Metrics',
       url: '/api/business/migrations/metrics',
-      refreshInterval: 90
-    }
+      refreshInterval: 90,
+    },
   ],
-  
+
   // Sections du tableau de bord
   sections: [
     {
       id: 'overview',
-      title: 'Vue d\'ensemble',
+      title: "Vue d'ensemble",
       description: 'État global des domaines métier',
       widgets: [
         {
@@ -137,23 +97,23 @@ const defaultBusinessConfig: DashboardConfig = {
               name: 'Domaines actifs',
               value: 0,
               status: 'success',
-              dataSourceId: 'business-domains'
+              dataSourceId: 'business-domains',
             },
             {
               id: 'pending-migrations',
               name: 'Migrations en attente',
               value: 0,
               status: 'warning',
-              dataSourceId: 'business-domains'
+              dataSourceId: 'business-domains',
             },
             {
               id: 'failed-domains',
               name: 'Domaines en échec',
               value: 0,
               status: 'error',
-              dataSourceId: 'business-domains'
-            }
-          ]
+              dataSourceId: 'business-domains',
+            },
+          ],
         },
         {
           id: 'model-usage-summary',
@@ -165,21 +125,21 @@ const defaultBusinessConfig: DashboardConfig = {
               id: 'tokens-consumed',
               name: 'Tokens consommés',
               value: 0,
-              dataSourceId: 'model-usage'
+              dataSourceId: 'model-usage',
             },
             {
               id: 'api-requests',
               name: 'Requêtes API',
               value: 0,
-              dataSourceId: 'model-usage'
+              dataSourceId: 'model-usage',
             },
             {
               id: 'cost-estimate',
               name: 'Coût estimé',
               value: '0 €',
-              dataSourceId: 'model-usage'
-            }
-          ]
+              dataSourceId: 'model-usage',
+            },
+          ],
         },
         {
           id: 'business-kpis-summary',
@@ -192,21 +152,21 @@ const defaultBusinessConfig: DashboardConfig = {
               name: 'Taux de migration réussie',
               value: '0%',
               status: 'success',
-              dataSourceId: 'business-kpis'
+              dataSourceId: 'business-kpis',
             },
             {
               id: 'avg-migration-time',
               name: 'Temps moyen de migration',
               value: '0 jours',
-              dataSourceId: 'business-kpis'
+              dataSourceId: 'business-kpis',
             },
             {
               id: 'business-complexity',
               name: 'Complexité métier',
               value: 'Faible',
-              dataSourceId: 'business-kpis'
-            }
-          ]
+              dataSourceId: 'business-kpis',
+            },
+          ],
         },
         {
           id: 'circuit-breaker-status',
@@ -219,24 +179,24 @@ const defaultBusinessConfig: DashboardConfig = {
               name: 'État du circuit',
               value: 'CLOSED',
               status: 'success',
-              dataSourceId: 'circuit-breaker'
+              dataSourceId: 'circuit-breaker',
             },
             {
               id: 'isolated-domains',
               name: 'Domaines isolés',
               value: 0,
-              dataSourceId: 'circuit-breaker'
+              dataSourceId: 'circuit-breaker',
             },
             {
               id: 'migration-rejections',
               name: 'Migrations rejetées',
               value: 0,
               dataSourceId: 'circuit-breaker',
-              status: 'warning'
-            }
-          ]
-        }
-      ]
+              status: 'warning',
+            },
+          ],
+        },
+      ],
     },
     {
       id: 'circuit-breaker-management',
@@ -253,77 +213,95 @@ const defaultBusinessConfig: DashboardConfig = {
             columns: [
               { id: 'id', label: 'ID', sortable: true },
               { id: 'domainName', label: 'Domaine', sortable: true },
-              { id: 'state', label: 'État', sortable: true, 
+              {
+                id: 'state',
+                label: 'État',
+                sortable: true,
                 formatter: (value) => {
-                  switch(value) {
-                    case 'open': return { value: 'Ouvert', status: 'error' };
-                    case 'half-open': return { value: 'Semi-ouvert', status: 'warning' };
-                    case 'closed': return { value: 'Fermé', status: 'success' };
-                    default: return { value: value, status: 'info' };
+                  switch (value) {
+                    case 'open':
+                      return { value: 'Ouvert', status: 'error' };
+                    case 'half-open':
+                      return { value: 'Semi-ouvert', status: 'warning' };
+                    case 'closed':
+                      return { value: 'Fermé', status: 'success' };
+                    default:
+                      return { value: value, status: 'info' };
                   }
-                }
+                },
               },
               { id: 'failureCount', label: 'Échecs', sortable: true },
               { id: 'successCount', label: 'Succès', sortable: true },
               { id: 'lastFailureTime', label: 'Dernier échec', sortable: true },
               { id: 'failureReason', label: 'Raison', sortable: false },
-              { id: 'fallbackEnabled', label: 'Repli actif', sortable: true, 
-                formatter: (value) => ({ 
-                  value: value ? 'Oui' : 'Non', 
-                  status: value ? 'success' : 'warning' 
-                })
+              {
+                id: 'fallbackEnabled',
+                label: 'Repli actif',
+                sortable: true,
+                formatter: (value) => ({
+                  value: value ? 'Oui' : 'Non',
+                  status: value ? 'success' : 'warning',
+                }),
               },
-              { id: 'actions', label: 'Actions', sortable: false, 
-                formatter: (value, row) => ({
+              {
+                id: 'actions',
+                label: 'Actions',
+                sortable: false,
+                formatter: (_value, row) => ({
                   actions: [
-                    { 
-                      label: 'Réinitialiser', 
+                    {
+                      label: 'Réinitialiser',
                       action: `resetCircuitBreaker:${row.id}`,
-                      status: row.state === 'closed' ? 'disabled' : 'primary' 
+                      status: row.state === 'closed' ? 'disabled' : 'primary',
                     },
-                    { 
-                      label: row.fallbackEnabled ? 'Désactiver repli' : 'Activer repli', 
-                      action: row.fallbackEnabled ? 
-                        `disableFallback:${row.domainId}` : 
-                        `enableFallback:${row.domainId}`,
-                      status: row.fallbackEnabled ? 'warning' : 'success' 
+                    {
+                      label: row.fallbackEnabled ? 'Désactiver repli' : 'Activer repli',
+                      action: row.fallbackEnabled
+                        ? `disableFallback:${row.domainId}`
+                        : `enableFallback:${row.domainId}`,
+                      status: row.fallbackEnabled ? 'warning' : 'success',
                     },
-                    { 
-                      label: 'Détails', 
+                    {
+                      label: 'Détails',
                       action: `showCircuitBreakerDetails:${row.id}`,
-                      status: 'info' 
-                    }
-                  ]
-                })
-              }
+                      status: 'info',
+                    },
+                  ],
+                }),
+              },
             ],
             actions: {
               resetCircuitBreaker: async (id) => {
                 console.log(`Réinitialisation du circuit breaker ${id}...`);
                 await fetch(`/api/business/circuit-breakers/${id}/reset`, {
-                  method: 'POST'
+                  method: 'POST',
                 });
                 return { success: true, message: `Circuit breaker ${id} réinitialisé` };
               },
               enableFallback: async (domainId) => {
                 console.log(`Activation du repli pour le domaine ${domainId}...`);
                 await fetch(`/api/business/domains/${domainId}/fallback/enable`, {
-                  method: 'POST'
+                  method: 'POST',
                 });
                 return { success: true, message: `Repli activé pour le domaine ${domainId}` };
               },
               disableFallback: async (domainId) => {
                 console.log(`Désactivation du repli pour le domaine ${domainId}...`);
                 await fetch(`/api/business/domains/${domainId}/fallback/disable`, {
-                  method: 'POST'
+                  method: 'POST',
                 });
                 return { success: true, message: `Repli désactivé pour le domaine ${domainId}` };
               },
               showCircuitBreakerDetails: async (id) => {
-                return { success: true, action: 'showModal', modalId: 'circuit-breaker-detail', modalProps: { breakerId: id } };
-              }
-            }
-          }
+                return {
+                  success: true,
+                  action: 'showModal',
+                  modalId: 'circuit-breaker-detail',
+                  modalProps: { breakerId: id },
+                };
+              },
+            },
+          },
         },
         {
           id: 'circuit-breaker-history',
@@ -336,10 +314,10 @@ const defaultBusinessConfig: DashboardConfig = {
             titleField: 'event',
             descriptionField: 'description',
             statusField: 'status',
-            filters: ['domainId']
-          }
-        }
-      ]
+            filters: ['domainId'],
+          },
+        },
+      ],
     },
     {
       id: 'domain-details',
@@ -356,19 +334,31 @@ const defaultBusinessConfig: DashboardConfig = {
               { id: 'id', label: 'ID', sortable: true },
               { id: 'name', label: 'Nom', sortable: true },
               { id: 'type', label: 'Type', sortable: true },
-              { id: 'status', label: 'Statut', sortable: true, 
+              {
+                id: 'status',
+                label: 'Statut',
+                sortable: true,
                 formatter: (value) => {
-                  switch(value) {
-                    case 'active': return { value: 'Actif', status: 'success' };
-                    case 'pending-migration': return { value: 'Attente migration', status: 'warning' };
-                    case 'failed': return { value: 'Échec', status: 'error' };
-                    case 'migrated': return { value: 'Migré', status: 'info' };
-                    case 'maintenance': return { value: 'Maintenance', status: 'warning' };
-                    default: return { value: value, status: 'info' };
+                  switch (value) {
+                    case 'active':
+                      return { value: 'Actif', status: 'success' };
+                    case 'pending-migration':
+                      return { value: 'Attente migration', status: 'warning' };
+                    case 'failed':
+                      return { value: 'Échec', status: 'error' };
+                    case 'migrated':
+                      return { value: 'Migré', status: 'info' };
+                    case 'maintenance':
+                      return { value: 'Maintenance', status: 'warning' };
+                    default:
+                      return { value: value, status: 'info' };
                   }
-                }
+                },
               },
-              { id: 'migrationProgress', label: 'Progression', sortable: true,
+              {
+                id: 'migrationProgress',
+                label: 'Progression',
+                sortable: true,
                 formatter: (value) => {
                   const percentage = typeof value === 'number' ? `${value.toFixed(1)}%` : value;
                   let status = 'info';
@@ -378,78 +368,104 @@ const defaultBusinessConfig: DashboardConfig = {
                     else status = 'error';
                   }
                   return { value: percentage, status };
-                }
+                },
               },
-              { id: 'complexity', label: 'Complexité', sortable: true,
+              {
+                id: 'complexity',
+                label: 'Complexité',
+                sortable: true,
                 formatter: (value) => {
-                  switch(value) {
-                    case 'low': return { value: 'Faible', status: 'success' };
-                    case 'medium': return { value: 'Moyenne', status: 'info' };
-                    case 'high': return { value: 'Élevée', status: 'warning' };
-                    case 'very-high': return { value: 'Très élevée', status: 'error' };
-                    default: return { value: value, status: 'info' };
+                  switch (value) {
+                    case 'low':
+                      return { value: 'Faible', status: 'success' };
+                    case 'medium':
+                      return { value: 'Moyenne', status: 'info' };
+                    case 'high':
+                      return { value: 'Élevée', status: 'warning' };
+                    case 'very-high':
+                      return { value: 'Très élevée', status: 'error' };
+                    default:
+                      return { value: value, status: 'info' };
                   }
-                }
+                },
               },
-              { id: 'isolationState', label: 'Isolation', sortable: true, 
+              {
+                id: 'isolationState',
+                label: 'Isolation',
+                sortable: true,
                 formatter: (value) => {
-                  switch(value) {
-                    case CircuitState.OPEN: return { value: 'Isolé', status: 'error' };
-                    case CircuitState.HALF_OPEN: return { value: 'Test', status: 'warning' };
-                    case CircuitState.CLOSED: return { value: 'Normal', status: 'success' };
-                    default: return { value: value || 'N/A', status: 'info' };
+                  switch (value) {
+                    case CircuitState.OPEN:
+                      return { value: 'Isolé', status: 'error' };
+                    case CircuitState.HALF_OPEN:
+                      return { value: 'Test', status: 'warning' };
+                    case CircuitState.CLOSED:
+                      return { value: 'Normal', status: 'success' };
+                    default:
+                      return { value: value || 'N/A', status: 'info' };
                   }
-                }
+                },
               },
-              { id: 'actions', label: 'Actions', sortable: false, 
-                formatter: (value, row) => ({
+              {
+                id: 'actions',
+                label: 'Actions',
+                sortable: false,
+                formatter: (_value, row) => ({
                   actions: [
-                    { 
-                      label: row.status === 'maintenance' ? 'Activer' : 'Maintenance', 
-                      action: row.status === 'maintenance' ? `activateDomain:${row.id}` : `maintenanceDomain:${row.id}`,
-                      status: row.status === 'maintenance' ? 'success' : 'warning'
+                    {
+                      label: row.status === 'maintenance' ? 'Activer' : 'Maintenance',
+                      action:
+                        row.status === 'maintenance'
+                          ? `activateDomain:${row.id}`
+                          : `maintenanceDomain:${row.id}`,
+                      status: row.status === 'maintenance' ? 'success' : 'warning',
                     },
-                    { 
-                      label: 'Analyser', 
+                    {
+                      label: 'Analyser',
                       action: `analyzeDomain:${row.id}`,
-                      status: 'primary' 
+                      status: 'primary',
                     },
-                    { 
-                      label: 'Historique', 
+                    {
+                      label: 'Historique',
                       action: `showDomainHistory:${row.id}`,
-                      status: 'info' 
-                    }
-                  ]
-                })
-              }
+                      status: 'info',
+                    },
+                  ],
+                }),
+              },
             ],
             actions: {
               activateDomain: async (id) => {
                 console.log(`Activation du domaine ${id}...`);
                 await fetch(`/api/business/domains/${id}/activate`, {
-                  method: 'POST'
+                  method: 'POST',
                 });
                 return { success: true, message: `Domaine ${id} activé` };
               },
               maintenanceDomain: async (id) => {
                 console.log(`Mise en maintenance du domaine ${id}...`);
                 await fetch(`/api/business/domains/${id}/maintenance`, {
-                  method: 'POST'
+                  method: 'POST',
                 });
                 return { success: true, message: `Domaine ${id} mis en maintenance` };
               },
               analyzeDomain: async (id) => {
                 console.log(`Analyse du domaine ${id}...`);
                 await fetch(`/api/business/domains/${id}/analyze`, {
-                  method: 'POST'
+                  method: 'POST',
                 });
                 return { success: true, message: `Analyse du domaine ${id} démarrée` };
               },
               showDomainHistory: async (id) => {
-                return { success: true, action: 'showModal', modalId: 'domain-history', modalProps: { domainId: id } };
-              }
-            }
-          }
+                return {
+                  success: true,
+                  action: 'showModal',
+                  modalId: 'domain-history',
+                  modalProps: { domainId: id },
+                };
+              },
+            },
+          },
         },
         {
           id: 'domain-distribution',
@@ -461,15 +477,15 @@ const defaultBusinessConfig: DashboardConfig = {
             title: 'Distribution des domaines',
             type: 'pie',
             data: {},
-            dataSourceId: 'business-domains'
-          }
-        }
-      ]
+            dataSourceId: 'business-domains',
+          },
+        },
+      ],
     },
     {
       id: 'traceability-analytics',
       title: 'Traçabilité & Analytics',
-      description: 'Analyse des traces d\'exécution dans le domaine métier',
+      description: "Analyse des traces d'exécution dans le domaine métier",
       widgets: [
         {
           id: 'business-flow-visualization',
@@ -481,8 +497,8 @@ const defaultBusinessConfig: DashboardConfig = {
             nodeField: 'event',
             edgesField: 'connections',
             nodeMetricField: 'count',
-            nodeColorField: 'successRate'
-          }
+            nodeColorField: 'successRate',
+          },
         },
         {
           id: 'business-trace-events-table',
@@ -497,39 +513,50 @@ const defaultBusinessConfig: DashboardConfig = {
               { id: 'timestamp', label: 'Horodatage', sortable: true },
               { id: 'duration', label: 'Durée', sortable: true },
               { id: 'domainId', label: 'ID Domaine', sortable: true },
-              { id: 'success', label: 'Succès', sortable: true,
-                formatter: (value) => ({ 
-                  value: value ? 'Oui' : 'Non', 
-                  status: value ? 'success' : 'error' 
-                })
+              {
+                id: 'success',
+                label: 'Succès',
+                sortable: true,
+                formatter: (value) => ({
+                  value: value ? 'Oui' : 'Non',
+                  status: value ? 'success' : 'error',
+                }),
               },
               { id: 'parentTraceId', label: 'ID parent', sortable: true },
-              { id: 'actions', label: 'Actions', sortable: false, 
-                formatter: (value, row) => ({
+              {
+                id: 'actions',
+                label: 'Actions',
+                sortable: false,
+                formatter: (_value, row) => ({
                   actions: [
-                    { 
-                      label: 'Détails', 
+                    {
+                      label: 'Détails',
                       action: `showTraceDetails:${row.traceId}`,
-                      status: 'info' 
+                      status: 'info',
                     },
-                    { 
-                      label: 'Suivre', 
+                    {
+                      label: 'Suivre',
                       action: `traceEvent:${row.traceId}`,
-                      status: 'primary' 
-                    }
-                  ]
-                })
-              }
+                      status: 'primary',
+                    },
+                  ],
+                }),
+              },
             ],
             actions: {
               showTraceDetails: async (id) => {
-                return { success: true, action: 'showModal', modalId: 'trace-details', modalProps: { traceId: id } };
+                return {
+                  success: true,
+                  action: 'showModal',
+                  modalId: 'trace-details',
+                  modalProps: { traceId: id },
+                };
               },
               traceEvent: async (id) => {
                 return { success: true, action: 'navigate', url: `/trace-explorer/${id}` };
-              }
-            }
-          }
+              },
+            },
+          },
         },
         {
           id: 'cross-layer-business-impact',
@@ -542,10 +569,10 @@ const defaultBusinessConfig: DashboardConfig = {
             title: 'Impact métier des interactions',
             type: 'radar',
             data: {},
-            refreshInterval: 60
-          }
-        }
-      ]
+            refreshInterval: 60,
+          },
+        },
+      ],
     },
     {
       id: 'model-usage',
@@ -561,70 +588,90 @@ const defaultBusinessConfig: DashboardConfig = {
             columns: [
               { id: 'id', label: 'ID', sortable: true },
               { id: 'name', label: 'Nom', sortable: true },
-              { id: 'tokensConsumed', label: 'Tokens consommés', sortable: true,
+              {
+                id: 'tokensConsumed',
+                label: 'Tokens consommés',
+                sortable: true,
                 formatter: (value) => {
-                  return { 
-                    value: value.toLocaleString(), 
-                    status: value > 1000000 ? 'warning' : 'info'
+                  return {
+                    value: value.toLocaleString(),
+                    status: value > 1000000 ? 'warning' : 'info',
                   };
-                }
+                },
               },
               { id: 'requests', label: 'Requêtes', sortable: true },
-              { id: 'costEstimate', label: 'Coût estimé', sortable: true,
+              {
+                id: 'costEstimate',
+                label: 'Coût estimé',
+                sortable: true,
                 formatter: (value) => {
-                  return { 
-                    value: `${value.toFixed(2)} €`, 
-                    status: value > 100 ? 'warning' : 'info'
+                  return {
+                    value: `${value.toFixed(2)} €`,
+                    status: value > 100 ? 'warning' : 'info',
                   };
-                }
+                },
               },
-              { id: 'averageLatency', label: 'Latence moyenne', sortable: true,
+              {
+                id: 'averageLatency',
+                label: 'Latence moyenne',
+                sortable: true,
                 formatter: (value) => {
-                  return { 
-                    value: `${value} ms`, 
-                    status: value > 1000 ? 'error' : (value > 500 ? 'warning' : 'success')
+                  return {
+                    value: `${value} ms`,
+                    status: value > 1000 ? 'error' : value > 500 ? 'warning' : 'success',
                   };
-                }
+                },
               },
-              { id: 'errorRate', label: 'Taux d\'erreur', sortable: true,
+              {
+                id: 'errorRate',
+                label: "Taux d'erreur",
+                sortable: true,
                 formatter: (value) => {
-                  return { 
-                    value: `${value.toFixed(2)}%`, 
-                    status: value > 5 ? 'error' : (value > 1 ? 'warning' : 'success')
+                  return {
+                    value: `${value.toFixed(2)}%`,
+                    status: value > 5 ? 'error' : value > 1 ? 'warning' : 'success',
                   };
-                }
+                },
               },
               { id: 'lastUsed', label: 'Dernière utilisation', sortable: true },
-              { id: 'actions', label: 'Actions', sortable: false, 
-                formatter: (value, row) => ({
+              {
+                id: 'actions',
+                label: 'Actions',
+                sortable: false,
+                formatter: (_value, row) => ({
                   actions: [
-                    { 
-                      label: 'Optimiser', 
+                    {
+                      label: 'Optimiser',
                       action: `optimizeModel:${row.id}`,
-                      status: 'primary'
+                      status: 'primary',
                     },
-                    { 
-                      label: 'Historique', 
+                    {
+                      label: 'Historique',
                       action: `showModelHistory:${row.id}`,
-                      status: 'info' 
-                    }
-                  ]
-                })
-              }
+                      status: 'info',
+                    },
+                  ],
+                }),
+              },
             ],
             actions: {
               optimizeModel: async (id) => {
                 console.log(`Optimisation du modèle ${id}...`);
                 await fetch(`/api/business/models/${id}/optimize`, {
-                  method: 'POST'
+                  method: 'POST',
                 });
                 return { success: true, message: `Optimisation du modèle ${id} démarrée` };
               },
               showModelHistory: async (id) => {
-                return { success: true, action: 'showModal', modalId: 'model-history', modalProps: { modelId: id } };
-              }
-            }
-          }
+                return {
+                  success: true,
+                  action: 'showModal',
+                  modalId: 'model-history',
+                  modalProps: { modelId: id },
+                };
+              },
+            },
+          },
         },
         {
           id: 'model-usage-chart',
@@ -636,12 +683,12 @@ const defaultBusinessConfig: DashboardConfig = {
             title: 'Consommation par modèle',
             type: 'bar',
             data: {},
-            dataSourceId: 'model-usage'
-          }
+            dataSourceId: 'model-usage',
+          },
         },
         {
           id: 'token-usage-trend',
-          title: 'Tendance d\'utilisation des tokens',
+          title: "Tendance d'utilisation des tokens",
           type: 'chart',
           size: 'lg',
           chart: {
@@ -649,10 +696,10 @@ const defaultBusinessConfig: DashboardConfig = {
             title: 'Consommation de tokens sur 30 jours',
             type: 'line',
             data: {},
-            dataSourceId: 'model-usage'
-          }
-        }
-      ]
+            dataSourceId: 'model-usage',
+          },
+        },
+      ],
     },
     {
       id: 'governance-dashboard',
@@ -670,49 +717,60 @@ const defaultBusinessConfig: DashboardConfig = {
               { id: 'name', label: 'Nom', sortable: true },
               { id: 'description', label: 'Description', sortable: false },
               { id: 'priority', label: 'Priorité', sortable: true },
-              { id: 'enabled', label: 'Active', sortable: true,
-                formatter: (value) => ({ 
-                  value: value ? 'Oui' : 'Non', 
-                  status: value ? 'success' : 'error' 
-                })
+              {
+                id: 'enabled',
+                label: 'Active',
+                sortable: true,
+                formatter: (value) => ({
+                  value: value ? 'Oui' : 'Non',
+                  status: value ? 'success' : 'error',
+                }),
               },
               { id: 'domainScope', label: 'Portée', sortable: true },
               { id: 'triggeredCount', label: 'Déclenchements', sortable: true },
-              { id: 'actions', label: 'Actions', sortable: false, 
-                formatter: (value, row) => ({
+              {
+                id: 'actions',
+                label: 'Actions',
+                sortable: false,
+                formatter: (_value, row) => ({
                   actions: [
-                    { 
-                      label: row.enabled ? 'Désactiver' : 'Activer', 
+                    {
+                      label: row.enabled ? 'Désactiver' : 'Activer',
                       action: row.enabled ? `disableRule:${row.id}` : `enableRule:${row.id}`,
-                      status: row.enabled ? 'warning' : 'success'
+                      status: row.enabled ? 'warning' : 'success',
                     },
-                    { 
-                      label: 'Éditer', 
+                    {
+                      label: 'Éditer',
                       action: `editRule:${row.id}`,
-                      status: 'info' 
-                    }
-                  ]
-                })
-              }
+                      status: 'info',
+                    },
+                  ],
+                }),
+              },
             ],
             actions: {
               disableRule: async (id) => {
                 await fetch(`/api/governance/rules/${id}/disable`, {
-                  method: 'POST'
+                  method: 'POST',
                 });
                 return { success: true, message: `Règle ${id} désactivée` };
               },
               enableRule: async (id) => {
                 await fetch(`/api/governance/rules/${id}/enable`, {
-                  method: 'POST'
+                  method: 'POST',
                 });
                 return { success: true, message: `Règle ${id} activée` };
               },
               editRule: async (id) => {
-                return { success: true, action: 'showModal', modalId: 'edit-rule', modalProps: { ruleId: id } };
-              }
-            }
-          }
+                return {
+                  success: true,
+                  action: 'showModal',
+                  modalId: 'edit-rule',
+                  modalProps: { ruleId: id },
+                };
+              },
+            },
+          },
         },
         {
           id: 'recent-business-decisions',
@@ -724,12 +782,12 @@ const defaultBusinessConfig: DashboardConfig = {
             dateField: 'timestamp',
             titleField: 'ruleName',
             descriptionField: 'decision',
-            statusField: 'result'
-          }
+            statusField: 'result',
+          },
         },
         {
           id: 'domain-influence-map',
-          title: 'Cartographie d\'influence des domaines',
+          title: "Cartographie d'influence des domaines",
           type: 'network',
           size: 'xl',
           dataSourceId: 'domain-details',
@@ -739,10 +797,10 @@ const defaultBusinessConfig: DashboardConfig = {
             nodeValueField: 'migrationProgress',
             nodeGroupField: 'type',
             directed: true,
-            physics: true
-          }
-        }
-      ]
+            physics: true,
+          },
+        },
+      ],
     },
     {
       id: 'business-analytics',
@@ -759,8 +817,8 @@ const defaultBusinessConfig: DashboardConfig = {
             title: 'Performance des migrations par domaine',
             type: 'scatter',
             data: {},
-            refreshInterval: 90
-          }
+            refreshInterval: 90,
+          },
         },
         {
           id: 'kpi-trends',
@@ -772,8 +830,8 @@ const defaultBusinessConfig: DashboardConfig = {
             title: 'Évolution des KPIs',
             type: 'line',
             data: {},
-            dataSourceId: 'business-kpis'
-          }
+            dataSourceId: 'business-kpis',
+          },
         },
         {
           id: 'migration-progress',
@@ -785,13 +843,13 @@ const defaultBusinessConfig: DashboardConfig = {
             title: 'Progression par domaine',
             type: 'bar',
             data: {},
-            dataSourceId: 'business-domains'
-          }
-        }
-      ]
-    }
+            dataSourceId: 'business-domains',
+          },
+        },
+      ],
+    },
   ],
-  
+
   // Filtres disponibles
   filters: [
     {
@@ -803,9 +861,9 @@ const defaultBusinessConfig: DashboardConfig = {
         { value: 'content', label: 'Contenu' },
         { value: 'marketing', label: 'Marketing' },
         { value: 'cms', label: 'CMS' },
-        { value: 'api', label: 'API' }
+        { value: 'api', label: 'API' },
       ],
-      defaultValue: 'all'
+      defaultValue: 'all',
     },
     {
       id: 'migrationStatus',
@@ -815,9 +873,9 @@ const defaultBusinessConfig: DashboardConfig = {
         { value: 'not-started', label: 'Non démarré' },
         { value: 'in-progress', label: 'En cours' },
         { value: 'completed', label: 'Terminé' },
-        { value: 'failed', label: 'Échec' }
+        { value: 'failed', label: 'Échec' },
       ],
-      defaultValue: 'all'
+      defaultValue: 'all',
     },
     {
       id: 'period',
@@ -827,9 +885,9 @@ const defaultBusinessConfig: DashboardConfig = {
         { value: '30d', label: '30 jours' },
         { value: '90d', label: '90 jours' },
         { value: 'ytd', label: 'Depuis début année' },
-        { value: 'all', label: 'Tout l\'historique' }
+        { value: 'all', label: "Tout l'historique" },
       ],
-      defaultValue: '30d'
+      defaultValue: '30d',
     },
     {
       id: 'circuitBreakerState',
@@ -838,9 +896,9 @@ const defaultBusinessConfig: DashboardConfig = {
         { value: 'all', label: 'Tous les états' },
         { value: 'open', label: 'Ouverts' },
         { value: 'half-open', label: 'Semi-ouverts' },
-        { value: 'closed', label: 'Fermés' }
+        { value: 'closed', label: 'Fermés' },
       ],
-      defaultValue: 'all'
+      defaultValue: 'all',
     },
     {
       id: 'traceStatus',
@@ -848,9 +906,9 @@ const defaultBusinessConfig: DashboardConfig = {
       options: [
         { value: 'all', label: 'Toutes' },
         { value: 'success', label: 'Réussies' },
-        { value: 'error', label: 'En erreur' }
+        { value: 'error', label: 'En erreur' },
       ],
-      defaultValue: 'all'
+      defaultValue: 'all',
     },
     {
       id: 'complexityLevel',
@@ -860,12 +918,12 @@ const defaultBusinessConfig: DashboardConfig = {
         { value: 'low', label: 'Faible' },
         { value: 'medium', label: 'Moyen' },
         { value: 'high', label: 'Élevé' },
-        { value: 'very-high', label: 'Très élevé' }
+        { value: 'very-high', label: 'Très élevé' },
       ],
-      defaultValue: 'all'
-    }
+      defaultValue: 'all',
+    },
   ],
-  
+
   // Actions disponibles
   actions: [
     {
@@ -875,13 +933,13 @@ const defaultBusinessConfig: DashboardConfig = {
         try {
           const response = await fetch('/api/business/generate-report', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' }
+            headers: { 'Content-Type': 'application/json' },
           });
-          
+
           if (!response.ok) {
             throw new Error(`HTTP error ${response.status}`);
           }
-          
+
           console.log('Report generated successfully');
           return Promise.resolve();
         } catch (error) {
@@ -889,7 +947,7 @@ const defaultBusinessConfig: DashboardConfig = {
           return Promise.reject(error);
         }
       },
-      colorScheme: 'green'
+      colorScheme: 'green',
     },
     {
       id: 'analyze-domains',
@@ -898,13 +956,13 @@ const defaultBusinessConfig: DashboardConfig = {
         try {
           const response = await fetch('/api/business/analyze-domains', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' }
+            headers: { 'Content-Type': 'application/json' },
           });
-          
+
           if (!response.ok) {
             throw new Error(`HTTP error ${response.status}`);
           }
-          
+
           console.log('Domain analysis started successfully');
           return Promise.resolve();
         } catch (error) {
@@ -912,7 +970,7 @@ const defaultBusinessConfig: DashboardConfig = {
           return Promise.reject(error);
         }
       },
-      colorScheme: 'blue'
+      colorScheme: 'blue',
     },
     {
       id: 'optimize-model-usage',
@@ -921,13 +979,13 @@ const defaultBusinessConfig: DashboardConfig = {
         try {
           const response = await fetch('/api/business/optimize-model-usage', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' }
+            headers: { 'Content-Type': 'application/json' },
           });
-          
+
           if (!response.ok) {
             throw new Error(`HTTP error ${response.status}`);
           }
-          
+
           console.log('Model usage optimization started');
           return Promise.resolve();
         } catch (error) {
@@ -935,7 +993,7 @@ const defaultBusinessConfig: DashboardConfig = {
           return Promise.reject(error);
         }
       },
-      colorScheme: 'purple'
+      colorScheme: 'purple',
     },
     {
       id: 'reset-business-circuit-breakers',
@@ -944,7 +1002,7 @@ const defaultBusinessConfig: DashboardConfig = {
         try {
           await fetch('/api/business/circuit-breakers/reset-all', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' }
+            headers: { 'Content-Type': 'application/json' },
           });
           return { success: true, message: 'Tous les circuit breakers réinitialisés' };
         } catch (error) {
@@ -952,7 +1010,7 @@ const defaultBusinessConfig: DashboardConfig = {
           return { success: false, message: 'Échec de la réinitialisation des circuit breakers' };
         }
       },
-      colorScheme: 'red'
+      colorScheme: 'red',
     },
     {
       id: 'toggle-fallback-mode',
@@ -961,7 +1019,7 @@ const defaultBusinessConfig: DashboardConfig = {
         try {
           await fetch('/api/business/fallback/toggle-global', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' }
+            headers: { 'Content-Type': 'application/json' },
           });
           return { success: true, message: 'Mode de repli global basculé avec succès' };
         } catch (error) {
@@ -969,7 +1027,7 @@ const defaultBusinessConfig: DashboardConfig = {
           return { success: false, message: 'Échec du basculement du mode de repli' };
         }
       },
-      colorScheme: 'orange'
+      colorScheme: 'orange',
     },
     {
       id: 'update-migration-plan',
@@ -978,7 +1036,7 @@ const defaultBusinessConfig: DashboardConfig = {
         try {
           await fetch('/api/business/migrations/update-plan', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' }
+            headers: { 'Content-Type': 'application/json' },
           });
           return { success: true, message: 'Plan de migration mis à jour avec succès' };
         } catch (error) {
@@ -986,9 +1044,9 @@ const defaultBusinessConfig: DashboardConfig = {
           return { success: false, message: 'Échec de la mise à jour du plan de migration' };
         }
       },
-      colorScheme: 'teal'
-    }
-  ]
+      colorScheme: 'teal',
+    },
+  ],
 };
 
 // Interface pour les props du composant
@@ -1004,32 +1062,20 @@ interface BusinessDashboardProps {
 const BusinessDashboard: React.FC<BusinessDashboardProps> = ({
   config = {},
   onLayerChange,
-  className
+  className,
 }) => {
   // État local pour la configuration fusionnée
   const [dashboardConfig, setDashboardConfig] = useState<DashboardConfig>({
     ...defaultBusinessConfig,
     ...config,
     // Fusionner les sources de données
-    dataSources: [
-      ...defaultBusinessConfig.dataSources,
-      ...(config.dataSources || [])
-    ],
+    dataSources: [...defaultBusinessConfig.dataSources, ...(config.dataSources || [])],
     // Fusionner les sections
-    sections: [
-      ...defaultBusinessConfig.sections,
-      ...(config.sections || [])
-    ],
+    sections: [...defaultBusinessConfig.sections, ...(config.sections || [])],
     // Fusionner les filtres
-    filters: [
-      ...(defaultBusinessConfig.filters || []),
-      ...(config.filters || [])
-    ],
+    filters: [...(defaultBusinessConfig.filters || []), ...(config.filters || [])],
     // Fusionner les actions
-    actions: [
-      ...(defaultBusinessConfig.actions || []),
-      ...(config.actions || [])
-    ]
+    actions: [...(defaultBusinessConfig.actions || []), ...(config.actions || [])],
   });
 
   // États locaux pour les données temps réel
@@ -1042,7 +1088,7 @@ const BusinessDashboard: React.FC<BusinessDashboardProps> = ({
     open: 1,
     halfOpen: 0,
     closed: 8,
-    total: 9
+    total: 9,
   });
 
   const [recentTraces, setRecentTraces] = useState<TraceEvent[]>([]);
@@ -1066,14 +1112,14 @@ const BusinessDashboard: React.FC<BusinessDashboardProps> = ({
           setRecentTraces(traces);
         }
       } catch (error) {
-        console.error("Erreur lors du chargement des données du tableau de bord:", error);
+        console.error('Erreur lors du chargement des données du tableau de bord:', error);
       }
     };
 
     // Charger les données immédiatement et configurer l'intervalle
     loadDashboardData();
     const intervalId = setInterval(loadDashboardData, 30000);
-    
+
     // Nettoyage
     return () => clearInterval(intervalId);
   }, []);
@@ -1081,15 +1127,15 @@ const BusinessDashboard: React.FC<BusinessDashboardProps> = ({
   // Effet pour simuler le chargement de données réelles
   useEffect(() => {
     const simulateDataUpdate = () => {
-      setDashboardConfig(prevConfig => {
+      setDashboardConfig((prevConfig) => {
         // Simuler des mises à jour pour quelques métriques
-        const updatedSections = prevConfig.sections.map(section => ({
+        const updatedSections = prevConfig.sections.map((section) => ({
           ...section,
-          widgets: section.widgets.map(widget => {
+          widgets: section.widgets.map((widget) => {
             if (widget.id === 'domain-status' && widget.metrics) {
               return {
                 ...widget,
-                metrics: widget.metrics.map(metric => {
+                metrics: widget.metrics.map((metric) => {
                   if (metric.id === 'active-domains') {
                     return { ...metric, value: Math.floor(Math.random() * 20) + 5 };
                   }
@@ -1100,13 +1146,13 @@ const BusinessDashboard: React.FC<BusinessDashboardProps> = ({
                     return { ...metric, value: Math.floor(Math.random() * 3) };
                   }
                   return metric;
-                })
+                }),
               };
             }
             if (widget.id === 'model-usage-summary' && widget.metrics) {
               return {
                 ...widget,
-                metrics: widget.metrics.map(metric => {
+                metrics: widget.metrics.map((metric) => {
                   if (metric.id === 'tokens-consumed') {
                     return { ...metric, value: Math.floor(Math.random() * 500000) + 100000 };
                   }
@@ -1117,19 +1163,19 @@ const BusinessDashboard: React.FC<BusinessDashboardProps> = ({
                     return { ...metric, value: `${(Math.random() * 100 + 20).toFixed(2)} €` };
                   }
                   return metric;
-                })
+                }),
               };
             }
             if (widget.id === 'business-kpis-summary' && widget.metrics) {
               return {
                 ...widget,
-                metrics: widget.metrics.map(metric => {
+                metrics: widget.metrics.map((metric) => {
                   if (metric.id === 'migration-success-rate') {
                     const rate = Math.floor(Math.random() * 25) + 75;
-                    return { 
-                      ...metric, 
+                    return {
+                      ...metric,
                       value: `${rate}%`,
-                      status: rate > 90 ? 'success' : rate > 75 ? 'warning' : 'error'
+                      status: rate > 90 ? 'success' : rate > 75 ? 'warning' : 'error',
                     };
                   }
                   if (metric.id === 'avg-migration-time') {
@@ -1137,35 +1183,38 @@ const BusinessDashboard: React.FC<BusinessDashboardProps> = ({
                   }
                   if (metric.id === 'business-complexity') {
                     const complexities = ['Faible', 'Moyenne', 'Élevée', 'Très élevée'];
-                    return { ...metric, value: complexities[Math.floor(Math.random() * complexities.length)] };
+                    return {
+                      ...metric,
+                      value: complexities[Math.floor(Math.random() * complexities.length)],
+                    };
                   }
                   return metric;
-                })
+                }),
               };
             }
             return widget;
-          })
+          }),
         }));
-        
+
         return { ...prevConfig, sections: updatedSections };
       });
     };
-    
+
     // Simuler des mises à jour de données périodiques
     const interval = setInterval(simulateDataUpdate, 7000);
-    
+
     return () => clearInterval(interval);
   }, []);
 
   return (
     <Box className={className}>
-      <BaseDashboard 
+      <BaseDashboard
         config={dashboardConfig}
         onLayerChange={onLayerChange}
         debug={false}
         data={{
           circuitBreakerStats,
-          recentTraces
+          recentTraces,
         }}
         onTabChange={setActiveTab}
         activeTab={activeTab}

@@ -1,0 +1,574 @@
+{
+  "name": "migration-ai-pipeline",
+  "$schema": "node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": ".",
+  "projectType": "application",
+  "targets": {
+    "setup": {
+      "executor": "@nx/js:node",
+      "options": {
+        "script": "scripts/setup.js"
+      }
+    },
+    "generate-agent-configs": {
+      "executor": "@nx/js:node",
+      "options": {
+        "script": "scripts/generate-agent-configs.js"
+      }
+    },
+    "test-agents": {
+      "executor": "@nx/js:node",
+      "options": {
+        "script": "scripts/test-agents.js"
+      }
+    },
+    "setup-n8n": {
+      "executor": "@nx/js:node",
+      "options": {
+        "script": "scripts/workflow-manager.js",
+        "args": ["n8n", "import"]
+      }
+    },
+    "export-workflows": {
+      "executor": "@nx/js:node",
+      "options": {
+        "script": "scripts/export-workflows.js"
+      }
+    },
+    "test-workflows": {
+      "executor": "@nx/js:node",
+      "options": {
+        "script": "scripts/test-workflows.js"
+      }
+    },
+    "setup-github-hooks": {
+      "executor": "@nx/js:node",
+      "options": {
+        "script": "scripts/setup-github-hooks.js"
+      }
+    },
+    "setup-github-actions": {
+      "executor": "@nx/js:node",
+      "options": {
+        "script": "scripts/setup-github-actions.js"
+      }
+    },
+    "verify-installation": {
+      "executor": "@nx/js:node",
+      "options": {
+        "script": "scripts/verify-installation.js"
+      }
+    },
+    "diagnostic": {
+      "executor": "@nx/js:node",
+      "options": {
+        "script": "scripts/diagnostic.js"
+      }
+    },
+    "advanced-diagnostic": {
+      "executor": "@nx/js:node",
+      "options": {
+        "script": "scripts/advanced-diagnostic.js"
+      }
+    },
+    "migration-test": {
+      "executor": "@nx/js:node",
+      "options": {
+        "script": "scripts/migration-test.js"
+      }
+    },
+    "check-migration-results": {
+      "executor": "@nx/js:node",
+      "options": {
+        "script": "scripts/check-migration-results.js"
+      }
+    },
+    "version": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "echo \"Migration AI Pipeline v1.0.0\""
+      }
+    },
+    "update-to-version": {
+      "executor": "@nx/js:node",
+      "options": {
+        "script": "scripts/update-to-version.js"
+      }
+    },
+    "generate-docs": {
+      "executor": "@nx/js:node",
+      "options": {
+        "script": "scripts/generate-docs.js"
+      }
+    },
+    "generate-procedure-pdf": {
+      "executor": "@nx/js:node",
+      "options": {
+        "script": "scripts/generate-procedure-pdf.js"
+      }
+    },
+    "export-config-template": {
+      "executor": "@nx/js:node",
+      "options": {
+        "script": "scripts/export-config-template.js"
+      }
+    },
+    "check-tech": {
+      "executor": "@nx/js:node",
+      "options": {
+        "script": "scripts/check-tech-obsolescence.js"
+      }
+    },
+    "update-tech": {
+      "executor": "@nx/js:node",
+      "options": {
+        "script": "scripts/update-tech.js"
+      }
+    },
+    "watch-migrations": {
+      "executor": "@nx/js:node",
+      "options": {
+        "script": "scripts/migration-watcher.js"
+      }
+    },
+    "version-cdc": {
+      "executor": "@nx/js:node",
+      "options": {
+        "script": "scripts/version-manager.js"
+      }
+    },
+    "archive-version": {
+      "executor": "@nx/js:node",
+      "options": {
+        "script": "scripts/archive-version.js"
+      }
+    },
+    "scheduled-version": {
+      "executor": "@nx/js:node",
+      "options": {
+        "script": "scripts/scheduled-versioning.js"
+      }
+    },
+    "add-journal-entry": {
+      "executor": "@nx/js:node",
+      "options": {
+        "script": "scripts/add-journal-entry.js"
+      }
+    },
+    "install-hooks": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "cp scripts/git-hook-journal.js .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit"
+      }
+    },
+    "generate-view": {
+      "executor": "@nx/js:node",
+      "options": {
+        "script": "scripts/generate-html-view.js"
+      }
+    },
+    "cahier": {
+      "executor": "@nx/js:node",
+      "options": {
+        "script": "migration-orchestrator.ts",
+        "args": ["cahier"]
+      }
+    },
+    "migration-dashboard": {
+      "executor": "@nx/js:node",
+      "options": {
+        "script": "scripts/dashboard.js"
+      }
+    },
+    "unified-audit": {
+      "executor": "@nx/js:node",
+      "options": {
+        "script": "agents/agent-audit.ts"
+      }
+    },
+    "validate-config": {
+      "executor": "@nx/js:node",
+      "options": {
+        "script": "scripts/validate-migration-config.js"
+      }
+    },
+    "n8n:start": {
+      "executor": "@nx/js:node",
+      "options": {
+        "script": "scripts/workflow-manager.js",
+        "args": ["n8n", "start"]
+      }
+    },
+    "n8n:stop": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "docker-compose -f docker-compose.n8n.yml down"
+      }
+    },
+    "n8n:migrate": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "./scripts/migration/run-migration.sh"
+      }
+    },
+    "n8n:logs": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "docker-compose -f docker-compose.n8n.yml logs -f n8n"
+      }
+    },
+    "mcp-verify": {
+      "executor": "@nx/js:node",
+      "options": {
+        "script": "scripts/agent-manager.js",
+        "args": ["run", "mcp-verifier"]
+      }
+    },
+    "bullmq:start": {
+      "executor": "@nx/js:node",
+      "options": {
+        "script": "scripts/agent-manager.js",
+        "args": ["bullmq-orchestrator"]
+      }
+    },
+    "bullmq:stop": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "kill $(ps aux | grep 'ts-node.*bullmq' | awk '{print $2}')"
+      }
+    },
+    "post-generate": {
+      "executor": "@nx/js:node",
+      "options": {
+        "script": "scripts/post-generate-verification.js"
+      }
+    },
+    "start:worker": {
+      "executor": "@nx/js:node",
+      "options": {
+        "script": "src/temporal/worker.ts"
+      }
+    },
+    "start:client": {
+      "executor": "@nx/js:node",
+      "options": {
+        "script": "src/temporal/client.ts"
+      }
+    },
+    "transform": {
+      "executor": "@nx/js:node",
+      "options": {
+        "script": "src/temporal/client.ts"
+      }
+    },
+    "format": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "biome format --write ."
+      }
+    },
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "eslint --config .eslintrc.json \"**/*.{ts,tsx}\" --max-warnings=0"
+      }
+    },
+    "lint:fix": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "eslint --config .eslintrc.json \"**/*.{ts,tsx}\" --fix"
+      }
+    },
+    "lint:ci": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "biome ci ."
+      }
+    },
+    "build:earthly": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "earthly +ci"
+      }
+    },
+    "build:remix": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "earthly +remix-build"
+      }
+    },
+    "build:nestjs": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "earthly +nestjs-build"
+      }
+    },
+    "build:images": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "earthly +deploy"
+      }
+    },
+    "classify:structure": {
+      "executor": "@nx/js:node",
+      "options": {
+        "script": "tools/structure/structure-classifier-loader.js"
+      }
+    },
+    "classify:structure-plan": {
+      "executor": "@nx/js:node",
+      "options": {
+        "script": "tools/structure/structure-refactor-planner.ts"
+      }
+    },
+    "type-check": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsc --noEmit"
+      }
+    },
+    "validate": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "nx type-check && nx lint"
+      }
+    },
+    "validate:lenient": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "nx type-check && nx run lint -- --max-warnings=9999"
+      }
+    },
+    "test:integration": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "jest --config=jest.integration.config.js tests/integration"
+      }
+    },
+    "test:integration:orchestrator": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "jest --config=jest.integration.config.js tests/integration/standardized-orchestrator.integration.test.ts"
+      }
+    },
+    "test:integration:e2e": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "jest --config=jest.integration.config.js tests/integration/orchestration-e2e.integration.test.ts"
+      }
+    },
+    "generate-zod-schemas": {
+      "executor": "@nx/js:node",
+      "options": {
+        "script": "scripts/generate-zod-from-prisma.ts"
+      }
+    },
+    "prisma:generate": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "prisma generate && nx generate-zod-schemas"
+      }
+    },
+    "prisma:zod:generate": {
+      "executor": "@nx/js:node",
+      "options": {
+        "script": "scripts/generate-zod-from-prisma.ts"
+      }
+    },
+    "start:prometheus": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "docker-compose -f docker-compose.monitoring.yml up -d"
+      }
+    },
+    "stop:prometheus": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "docker-compose -f docker-compose.monitoring.yml down"
+      }
+    },
+    "monitor:status": {
+      "executor": "@nx/js:node",
+      "options": {
+        "script": "monitoring/status-check.js"
+      }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "options": {
+        "jestConfig": "jest.config.ts",
+        "passWithNoTests": true
+      }
+    },
+    "dev": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "echo \"Démarrage en mode développement\""
+      },
+      "dependsOn": ["setup"]
+    },
+    "agents": {
+      "executor": "@nx/js:node",
+      "options": {
+        "script": "scripts/agent-manager.js"
+      },
+      "configurations": {
+        "run": {
+          "args": ["run", "{args.name}", "{args.options}"]
+        },
+        "ci-tester": {
+          "script": "agents/ci-tester.js",
+          "args": ["{args.options}"]
+        },
+        "diff-verifier": {
+          "script": "agents/diff-verifier.js",
+          "args": ["{args.options}"]
+        },
+        "auto-pr": {
+          "script": "agents/auto-pr-agent.js",
+          "args": ["{args.options}"]
+        },
+        "orchestrator": {
+          "script": "agents/migration-orchestrator.js",
+          "args": ["{args.options}"]
+        },
+        "bullmq-orchestrator": {
+          "script": "agents/bullmq-orchestrator.js",
+          "args": ["{args.options}"]
+        },
+        "dev-integrator": {
+          "script": "agents/dev-integrator.js",
+          "args": ["{args.options}"]
+        },
+        "dev-linter": {
+          "script": "agents/dev-linter.js",
+          "args": ["{args.options}"]
+        },
+        "status": {
+          "args": ["status"]
+        },
+        "list": {
+          "args": ["list"]
+        },
+        "register": {
+          "args": ["register"]
+        },
+        "verify": {
+          "args": ["verify", "{args.path}"]
+        }
+      }
+    },
+    "organize-project": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node scripts/organize-project.js"
+      },
+      "description": "Réorganise la structure du projet (remplace organize-project.sh)"
+    },
+    "analyze-duplicates": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node scripts/analyze-duplicates.js"
+      },
+      "description": "Analyse les duplications de code (remplace analyze-duplicates.sh)"
+    },
+    "analyze-imports": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node scripts/analyze-imports.js"
+      },
+      "description": "Analyse les importations dans le code (remplace analyze-imports.sh)"
+    },
+    "detect-duplicates": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node scripts/detect-duplicates.js"
+      },
+      "description": "Détecte les fichiers dupliqués (remplace detect-duplicates.sh)"
+    },
+    "deduplicate-agents": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node scripts/deduplicate-agents.js"
+      },
+      "description": "Déduplique les agents (remplace deduplicate-agents.sh)"
+    },
+    "merge-duplicates": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node scripts/merge-duplicates.js"
+      },
+      "description": "Fusionne les fichiers dupliqués (remplace merge-duplicates.sh)"
+    },
+    "merge-folders": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node scripts/merge-folders.js"
+      },
+      "description": "Fusionne les dossiers similaires (remplace merge-folders.sh)"
+    },
+    "standardize-naming": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node scripts/standardize-naming.js"
+      },
+      "description": "Standardise les conventions de nommage (remplace standardize-naming.sh)"
+    },
+    "consolidate-top-agents": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node scripts/consolidate-top-agents.js"
+      },
+      "description": "Consolide les agents principaux (remplace consolidate-top-agents.sh)"
+    },
+    "resolve-conflicts": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node scripts/resolve-conflicts.js"
+      },
+      "description": "Résout les conflits de code (remplace resolve-conflicts.sh)"
+    },
+    "clean-recursive-structure": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node scripts/clean-recursive-structure.js"
+      },
+      "description": "Nettoie la structure récursive (remplace clean-recursive-structure.sh)"
+    },
+    "migrate-documentation": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node scripts/migrate-documentation.js"
+      },
+      "description": "Migre la documentation (remplace migrate-documentation.sh)"
+    },
+    "start-monitoring": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node scripts/start-monitoring.js"
+      },
+      "description": "Démarrage du monitoring (remplace start-monitoring.sh)"
+    },
+    "project-structure": {
+      "executor": "@nx/js:node",
+      "options": {
+        "script": "scripts/project-structure.js"
+      },
+      "description": "Affiche et analyse la structure du projet"
+    },
+    "backup-project": {
+      "executor": "@nx/js:node",
+      "options": {
+        "script": "scripts/backup-project.js"
+      },
+      "description": "Effectue une sauvegarde du projet"
+    },
+    "generate-structure-report": {
+      "executor": "@nx/js:node",
+      "options": {
+        "script": "scripts/generate-structure-report.js"
+      },
+      "description": "Génère un rapport sur la structure du projet"
+    }
+  }
+}

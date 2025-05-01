@@ -1,4 +1,8 @@
-import { SEOMetadata, SEOMetadataSchema, validateSEOMetadata } from '../..DoDotmcp-agents/SeoChecker/SeoMetadataSchema';
+import {
+  SEOMetadata,
+  SEOMetadataSchema,
+  validateSEOMetadata,
+} from '../..DoDotmcp-agents/SeoChecker/SeoMetadataSchema';
 
 /**
  * Utilitaires pour la gestion des métadonnées SEO standardisées
@@ -36,25 +40,47 @@ export function generateSEOMetadata(
   // Fusionner les métadonnées partielles avec les valeurs par défaut
   const metadata: Partial<SEOMetadata> = {
     standard: {
-      title: partialMetadata.standard?.title || options.defaultTitle || defaultOptions.defaultTitle!,
-      description: partialMetadata.standard?.description || options.defaultDescription || defaultOptions.defaultDescription!,
-      canonical: partialMetadata.standard?.canonical || `${options.siteUrl || defaultOptions.siteUrl}${partialMetadata.url || ''}`,
+      title:
+        partialMetadata.standard?.title || options.defaultTitle || defaultOptions.defaultTitle!,
+      description:
+        partialMetadata.standard?.description ||
+        options.defaultDescription ||
+        defaultOptions.defaultDescription!,
+      canonical:
+        partialMetadata.standard?.canonical ||
+        `${options.siteUrl || defaultOptions.siteUrl}${partialMetadata.url || ''}`,
       robots: partialMetadata.standard?.robots || 'index, follow',
       lang: partialMetadata.standard?.lang || 'fr',
     },
     openGraph: {
-      title: partialMetadata.openGraph?.title || partialMetadata.standard?.title || options.defaultTitle || defaultOptions.defaultTitle!,
-      description: partialMetadata.openGraph?.description || partialMetadata.standard?.description || options.defaultDescription || defaultOptions.defaultDescription!,
+      title:
+        partialMetadata.openGraph?.title ||
+        partialMetadata.standard?.title ||
+        options.defaultTitle ||
+        defaultOptions.defaultTitle!,
+      description:
+        partialMetadata.openGraph?.description ||
+        partialMetadata.standard?.description ||
+        options.defaultDescription ||
+        defaultOptions.defaultDescription!,
       image: partialMetadata.openGraph?.image || options.defaultImage,
       type: partialMetadata.openGraph?.type || 'website',
-      site_name: partialMetadata.openGraph?.site_name || options.siteName || defaultOptions.siteName!,
-      locale: partialMetadata.openGraph?.locale || options.defaultLocale || defaultOptions.defaultLocale!,
-      url: partialMetadata.openGraph?.url || `${options.siteUrl || defaultOptions.siteUrl}${partialMetadata.url || ''}`,
+      site_name:
+        partialMetadata.openGraph?.site_name || options.siteName || defaultOptions.siteName!,
+      locale:
+        partialMetadata.openGraph?.locale || options.defaultLocale || defaultOptions.defaultLocale!,
+      url:
+        partialMetadata.openGraph?.url ||
+        `${options.siteUrl || defaultOptions.siteUrl}${partialMetadata.url || ''}`,
     },
     twitterCard: partialMetadata.twitterCard || {
       card: 'summary_large_image',
-      title: partialMetadata.standard?.title || options.defaultTitle || defaultOptions.defaultTitle!,
-      description: partialMetadata.standard?.description || options.defaultDescription || defaultOptions.defaultDescription!,
+      title:
+        partialMetadata.standard?.title || options.defaultTitle || defaultOptions.defaultTitle!,
+      description:
+        partialMetadata.standard?.description ||
+        options.defaultDescription ||
+        defaultOptions.defaultDescription!,
       image: options.defaultImage,
       site: options.twitterUsername,
     },
@@ -70,7 +96,7 @@ export function generateSEOMetadata(
   }
 
   console.error('Erreur de validation SEO:', validationResult.errors);
-  
+
   // En cas d'erreur, retourner une version minimale valide des métadonnées
   return SEOMetadataSchema.parse({
     standard: {
@@ -88,19 +114,19 @@ export function generateMetaTags(metadata: SEOMetadata): Record<string, string> 
   const metaTags: Record<string, string> = {};
 
   // Standard meta tags
-  metaTags['title'] = metadata.standard.title;
-  metaTags['description'] = metadata.standard.description;
-  
+  metaTags.title = metadata.standard.title;
+  metaTags.description = metadata.standard.description;
+
   if (metadata.standard.canonical) {
-    metaTags['canonical'] = metadata.standard.canonical;
+    metaTags.canonical = metadata.standard.canonical;
   }
-  
+
   if (metadata.standard.robots) {
-    metaTags['robots'] = metadata.standard.robots;
+    metaTags.robots = metadata.standard.robots;
   }
-  
+
   if (metadata.standard.keywords) {
-    metaTags['keywords'] = metadata.standard.keywords;
+    metaTags.keywords = metadata.standard.keywords;
   }
 
   // OpenGraph tags
@@ -108,19 +134,19 @@ export function generateMetaTags(metadata: SEOMetadata): Record<string, string> 
     metaTags['og:title'] = metadata.openGraph.title || metadata.standard.title;
     metaTags['og:description'] = metadata.openGraph.description || metadata.standard.description;
     metaTags['og:type'] = metadata.openGraph.type;
-    
+
     if (metadata.openGraph.image) {
       metaTags['og:image'] = metadata.openGraph.image;
     }
-    
+
     if (metadata.openGraph.url) {
       metaTags['og:url'] = metadata.openGraph.url;
     }
-    
+
     if (metadata.openGraph.site_name) {
       metaTags['og:site_name'] = metadata.openGraph.site_name;
     }
-    
+
     if (metadata.openGraph.locale) {
       metaTags['og:locale'] = metadata.openGraph.locale;
     }
@@ -129,23 +155,23 @@ export function generateMetaTags(metadata: SEOMetadata): Record<string, string> 
   // Twitter Card tags
   if (metadata.twitterCard) {
     metaTags['twitter:card'] = metadata.twitterCard.card;
-    
+
     if (metadata.twitterCard.title) {
       metaTags['twitter:title'] = metadata.twitterCard.title;
     }
-    
+
     if (metadata.twitterCard.description) {
       metaTags['twitter:description'] = metadata.twitterCard.description;
     }
-    
+
     if (metadata.twitterCard.image) {
       metaTags['twitter:image'] = metadata.twitterCard.image;
     }
-    
+
     if (metadata.twitterCard.creator) {
       metaTags['twitter:creator'] = metadata.twitterCard.creator;
     }
-    
+
     if (metadata.twitterCard.site) {
       metaTags['twitter:site'] = metadata.twitterCard.site;
     }
@@ -162,10 +188,10 @@ export function generateJsonLdScript(metadata: SEOMetadata): string | null {
     return null;
   }
 
-  const jsonLdData = metadata.schemaOrg.map(schema => ({
+  const jsonLdData = metadata.schemaOrg.map((schema) => ({
     '@context': 'https://schema.org',
     '@type': schema.type,
-    ...schema.data
+    ...schema.data,
   }));
 
   return JSON.stringify(jsonLdData);

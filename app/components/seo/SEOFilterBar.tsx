@@ -1,5 +1,5 @@
-import { Form, useSubmit } from "@remix-run/react";
-import { useEffect, useRef } from "react";
+import { Form, useSubmit } from '@remix-run/react';
+import { useEffect, useRef } from 'react';
 
 interface SEOFilterBarProps {
   currentFilters: {

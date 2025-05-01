@@ -5,7 +5,4 @@
 
 import { GenerateMigrationPlanAgent } from './GenerateMigrationPlanAgent';
 
-export {
-  GenerateMigrationPlanAgent,
-};
-
+export { GenerateMigrationPlanAgent };

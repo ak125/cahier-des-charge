@@ -1,7 +1,0 @@
-🧹 Nettoyage des agents MCP dupliqués...
-
-📁 Répertoire de sauvegarde créé: /workspaces/cahier-des-charge/backups/agents-duplicates-20250419-235845
-📝 Fichier de log créé: /workspaces/cahier-des-charge/backups/agents-duplicates-20250419-235845/cleanup-log.txt
-✅ Répertoire principal des agents trouvé: /workspaces/cahier-des-charge/packages/mcp-agents
-/workspaces/cahier-des-charge/clean-agents-duplicates.sh: line 56: syntax error near unexpected token `}'
-/workspaces/cahier-des-charge/clean-agents-duplicates.sh: line 56: `  }'

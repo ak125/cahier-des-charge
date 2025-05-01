@@ -1,1 +1,1 @@
-export * from ./canonical-validator';
+export * from './canonical-validator';

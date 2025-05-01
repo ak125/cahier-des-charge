@@ -6,11 +6,11 @@ import { BaseAgent } from '@workspaces/cahier-des-charge/src/core/interfaces/Bas
  * Vérifie, valide et corrige les métadonnées SEO pour les sites Remix migrés depuis PHP
  */
 
-import { AgentContext, AgentMetadata } from '../core/interfaces';
-import { BaseValidatorAgent, ValidatorAgentConfig, ValidationResult } from './BaseValidator-agent';
+import { execSync } from 'child_process';
 import path from 'path';
 import fs from 'fs-extra';
-import { execSync } from 'child_process';
+import { AgentContext, AgentMetadata } from '../core/interfaces';
+import { BaseValidatorAgent, ValidationResult, ValidatorAgentConfig } from './BaseValidator-agent';
 
 // Importation de la classe utilitaire SEOChecker
 import { SEOChecker } from '../core/seo/seo-checker';

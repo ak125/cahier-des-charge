@@ -3,8 +3,8 @@
  * Agent export file
  */
 
-import { PostgresqlValidator } from ./postgresql-validatorstructure-agent';
-import { ValidatorAgent } from ../../core/interfacesstructure-agent';
+import { ValidatorAgent } from '../../core/interfacesstructure-agent';
+import { PostgresqlValidator } from './postgresql-validatorstructure-agent';
 
 export { PostgresqlValidator };
 export default PostgresqlValidator;

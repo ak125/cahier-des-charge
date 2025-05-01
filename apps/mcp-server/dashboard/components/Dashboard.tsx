@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { MigrationProgress } from './MigrationProgress';
+import React, { useEffect, useState } from 'react';
 import { FileAnalysis } from './FileAnalysis';
+import { MigrationProgress } from './MigrationProgress';
 import { StatsSummary } from './StatsSummary';
 
 interface DashboardProps {
@@ -48,7 +48,7 @@ const Dashboard: React.FC<DashboardProps> = ({ apiUrl = '/api/stats' }) => {
   if (loading && !stats) {
     return (
       <div className="dashboard-loading">
-        <div className="spinner"></div>
+        <div className="spinner" />
         <p>Chargement du tableau de bord...</p>
       </div>
     );
@@ -68,9 +68,7 @@ const Dashboard: React.FC<DashboardProps> = ({ apiUrl = '/api/stats' }) => {
     <div className="dashboard">
       <header className="dashboard-header">
         <h1>Tableau de Bord MCP</h1>
-        <p className="last-updated">
-          Dernière mise à jour: {stats?.lastUpdated || 'Inconnue'}
-        </p>
+        <p className="last-updated">Dernière mise à jour: {stats?.lastUpdated || 'Inconnue'}</p>
       </header>
 
       <div className="dashboard-grid">

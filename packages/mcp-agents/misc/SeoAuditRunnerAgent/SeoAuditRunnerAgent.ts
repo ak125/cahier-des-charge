@@ -3,8 +3,8 @@
  * Agent export file
  */
 
-import { SEOAuditRunner } from './seo-audit-runner';
 import { BusinessAgent } from '../../core/interfaces';
+import { SEOAuditRunner } from './seo-audit-runner';
 
 export { SEOAuditRunner };
 export default SEOAuditRunner;

@@ -5,7 +5,4 @@
 
 import { NotifierAgent } from './NotifierAgent';
 
-export {
-  NotifierAgent,
-};
-
+export { NotifierAgent };

@@ -176,37 +176,27 @@
   "domIssues": [
     {
       "route": "/blog",
-      "issues": [
-        "missing-element: meta[name=\"description\"]"
-      ],
+      "issues": ["missing-element: meta[name=\"description\"]"],
       "severity": "critical"
     },
     {
       "route": "/produits/detail/123",
-      "issues": [
-        "3 images sans attribut alt"
-      ],
+      "issues": ["3 images sans attribut alt"],
       "severity": "warning"
     },
     {
       "route": "/contact",
-      "issues": [
-        "missing-element: footer"
-      ],
+      "issues": ["missing-element: footer"],
       "severity": "warning"
     },
     {
       "route": "/mon-compte",
-      "issues": [
-        "2 liens vides ou sans texte"
-      ],
+      "issues": ["2 liens vides ou sans texte"],
       "severity": "warning"
     },
     {
       "route": "/a-propos",
-      "issues": [
-        "multiple-h1"
-      ],
+      "issues": ["multiple-h1"],
       "severity": "warning"
     }
   ]

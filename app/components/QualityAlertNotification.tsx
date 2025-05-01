@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from 'react';
 
 export interface QualityAlert {
   type: 'degradation' | 'improvement';
@@ -22,17 +22,17 @@ export const QualityAlertNotification: React.FC<QualityAlertNotificationProps> =
   alerts,
   onDismiss,
   onDismissAll,
-  onMarkAsRead
+  onMarkAsRead,
 }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [unreadCount, setUnreadCount] = useState<number>(0);
 
   useEffect(() => {
     // Compter les alertes non lues
-    setUnreadCount(alerts.filter(alert => !alert.isRead).length);
-    
+    setUnreadCount(alerts.filter((alert) => !alert.isRead).length);
+
     // Ouvrir automatiquement si de nouvelles alertes sont détectées
-    if (alerts.filter(alert => !alert.isRead && alert.type === 'degradation').length > 0) {
+    if (alerts.filter((alert) => !alert.isRead && alert.type === 'degradation').length > 0) {
       setIsOpen(true);
     }
   }, [alerts]);
@@ -61,37 +61,67 @@ export const QualityAlertNotification: React.FC<QualityAlertNotificationProps> =
       case 'seo':
         return (
           <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M13 10V3L4 14h7v7l9-11h-7z"
+            />
           </svg>
         );
       case 'performance':
         return (
           <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M13 10V3L4 14h7v7l9-11h-7z"
+            />
           </svg>
         );
       case 'accessibility':
         return (
           <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"
+            />
           </svg>
         );
       case 'bestPractices':
         return (
           <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
           </svg>
         );
       case 'file':
         return (
           <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+            />
           </svg>
         );
       default:
         return (
           <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
           </svg>
         );
     }
@@ -143,12 +173,18 @@ export const QualityAlertNotification: React.FC<QualityAlertNotificationProps> =
                 <div
                   key={index}
                   className={`p-3 border-b flex ${
-                    alert.isRead ? 'bg-white' : alert.type === 'degradation' ? 'bg-red-50' : 'bg-green-50'
+                    alert.isRead
+                      ? 'bg-white'
+                      : alert.type === 'degradation'
+                        ? 'bg-red-50'
+                        : 'bg-green-50'
                   }`}
                 >
-                  <div className={`flex-shrink-0 ${
-                    alert.type === 'degradation' ? 'text-red-500' : 'text-green-500'
-                  }`}>
+                  <div
+                    className={`flex-shrink-0 ${
+                      alert.type === 'degradation' ? 'text-red-500' : 'text-green-500'
+                    }`}
+                  >
                     {getCategoryIcon(alert.category)}
                   </div>
                   <div className="ml-3 flex-1">
@@ -156,15 +192,17 @@ export const QualityAlertNotification: React.FC<QualityAlertNotificationProps> =
                     <p className="text-xs text-gray-500 mt-1">
                       {new Date(alert.timestamp).toLocaleString()}
                     </p>
-                    {(alert.previousValue !== undefined && alert.currentValue !== undefined) && (
+                    {alert.previousValue !== undefined && alert.currentValue !== undefined && (
                       <div className="mt-1 text-xs">
                         <span className="text-gray-500">Avant: </span>
                         <span className="font-medium">{alert.previousValue}</span>
                         <span className="mx-1 text-gray-500">→</span>
                         <span className="text-gray-500">Après: </span>
-                        <span className={`font-medium ${
-                          alert.type === 'degradation' ? 'text-red-600' : 'text-green-600'
-                        }`}>
+                        <span
+                          className={`font-medium ${
+                            alert.type === 'degradation' ? 'text-red-600' : 'text-green-600'
+                          }`}
+                        >
                           {alert.currentValue}
                         </span>
                       </div>
@@ -193,9 +231,7 @@ export const QualityAlertNotification: React.FC<QualityAlertNotificationProps> =
               ))}
             </div>
           ) : (
-            <div className="p-4 text-center text-sm text-gray-500">
-              Aucune alerte récente
-            </div>
+            <div className="p-4 text-center text-sm text-gray-500">Aucune alerte récente</div>
           )}
         </div>
       )}

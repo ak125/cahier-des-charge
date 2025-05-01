@@ -3,8 +3,8 @@
  * Agent export file
  */
 
-import { table } from ./table-cartographerstructure-agent';
-import { BusinessAgent } from ../../core/interfacesstructure-agent';
+import { BusinessAgent } from '../../core/interfacesstructure-agent';
+import { table } from './table-cartographerstructure-agent';
 
 export { table };
 export default table;

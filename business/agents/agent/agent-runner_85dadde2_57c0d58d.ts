@@ -12,12 +12,12 @@
  * - Support pour les modes synchrone et asynchrone
  */
 
-import { Logger } from @nestjs/commonstructure-agent';
-import { Queue, QueueScheduler } from bullmqstructure-agent';
-import { createClient } from redisstructure-agent';
-import fs from fs-extrastructure-agent';
-import path from pathstructure-agent';
-import { EventEmitter2 } from @nestjs/event-emitterstructure-agent';
+import path from 'path';
+import { Logger } from './@nestjs/commonstructure-agent'
+import { EventEmitter2 } from './@nestjs/event-emitterstructure-agent'
+import { Queue, QueueScheduler  } from './bullmqstructure-agent'
+import fs from './fs-extrastructure-agent'
+import { createClient } from './redisstructure-agent'
 
 // Types
 export type AgentType = 'PhpAnalyzer' | 'RemixGenerator' | 'QaAnalyzer' | 'DiffVerifier' | 'DevLinter';
@@ -320,18 +320,18 @@ export class AgentRunner {
     try {
       // Mapping des types d'agents vers les classes
       const agentClassMap: Record<AgentType, string> = {
-        'PhpAnalyzer': 'PhpAnalyzerAgent',
-        'RemixGenerator': 'RemixGeneratorAgent',
-        'QaAnalyzer': 'QAAnalyzer',
-        'DiffVerifier': 'DiffVerifier',
-        'DevLinter': 'DevLinter'
+        PhpAnalyzer: 'PhpAnalyzerAgent',
+        RemixGenerator: 'RemixGeneratorAgent',
+        QaAnalyzer: 'QAAnalyzer',
+        DiffVerifier: 'DiffVerifier',
+        DevLinter: 'DevLinter'
       };
       
       const className = agentClassMap[agentType];
       
       // Tenter de charger à partir du registre d'agents
       try {
-        const registry = require(../../agentRegistrystructure-agent');
+        const registry = require('../../agentRegistrystructure-agent');
         if (registry[className]) {
           return new registry[className]();
         }

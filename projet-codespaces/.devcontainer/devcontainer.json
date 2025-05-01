@@ -7,11 +7,7 @@
   "settings": {
     "terminal.integrated.shell.linux": "/bin/bash"
   },
-  "extensions": [
-    "ms-azuretools.vscode-docker",
-    "dbaeumer.vscode-eslint",
-    "ms-python.python"
-  ],
+  "extensions": ["ms-azuretools.vscode-docker", "dbaeumer.vscode-eslint", "ms-python.python"],
   "postCreateCommand": "bash scripts/setup.sh",
   "remoteUser": "vscode"
 }

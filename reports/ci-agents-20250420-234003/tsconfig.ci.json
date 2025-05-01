@@ -13,7 +13,5 @@
   "include": [
     "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/HtaccessRouteAnalyzerAgent/index.ts"
   ],
-  "exclude": [
-    "node_modules"
-  ]
+  "exclude": ["node_modules"]
 }

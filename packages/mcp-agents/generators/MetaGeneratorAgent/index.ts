@@ -5,7 +5,4 @@
 
 import { MetaGeneratorAgent } from './MetaGeneratorAgent';
 
-export {
-  MetaGeneratorAgent,
-};
-
+export { MetaGeneratorAgent };

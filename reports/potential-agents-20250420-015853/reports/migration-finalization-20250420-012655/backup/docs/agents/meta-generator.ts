@@ -5,11 +5,11 @@
  * Extrait les données SEO des pages PHP et les convertit en format Remix
  */
 
-import { readFile, writeFile, pathExists } from 'fs-extra';
+import * as path from 'path';
+import { pathExists, readFile, writeFile } from 'fs-extra';
 import { JSDOM } from 'jsdom';
 import { parse } from 'node-html-parser';
-import * as path from 'path';
-import { createTraceabilityService, TraceabilityService } from '../utils/traceability/traceability-service';
+import { TraceabilityService, createTraceabilityService } from '../utils/traceability/traceability-service';
 
 interface MetaGeneratorConfig {
   // Chemins des fichiers source et cible
@@ -66,7 +66,7 @@ export class MetaGenerator implements BaseAgent, BusinessAgent, BaseAgent, Busin
   /**
    * Génère les fichiers meta.ts pour toutes les routes correspondant au pattern
    */
-  async generateAllMetaFiles(routePattern: string = '**/*.tsx'): Promise<{ success: number; failed: number; }> {
+  async generateAllMetaFiles(routePattern = '**/*.tsx'): Promise<{ success: number; failed: number; }> {
     const traceId = this.traceService ? 
       await this.traceService.generateTraceId({ operation: 'generate-all-meta' }) : '';
     
@@ -79,8 +79,8 @@ export class MetaGenerator implements BaseAgent, BusinessAgent, BaseAgent, Busin
       });
     }
     
-    let successCount = 0;
-    let failCount = 0;
+    const successCount = 0;
+    const failCount = 0;
     
     try {
       // Implémenter la logique pour trouver toutes les routes correspondant au pattern

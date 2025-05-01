@@ -1,0 +1,82 @@
+{
+  "version": "1.0.0",
+  "migrationTypes": {
+    "standard": {
+      "requiredSteps": [
+        "php-analyzer",
+        "structure-classifier-agent",
+        "remix-generator",
+        "qa-analyzer",
+        "seo-checker",
+        "pr-creator"
+      ],
+      "statusSequence": [
+        "planned",
+        "detected",
+        "analyzed",
+        "structured",
+        "generated",
+        "validated",
+        "integrated",
+        "completed"
+      ]
+    },
+    "api": {
+      "requiredSteps": [
+        "php-analyzer",
+        "structure-classifier-agent",
+        "nestjs-generator",
+        "qa-analyzer",
+        "pr-creator"
+      ],
+      "statusSequence": [
+        "planned",
+        "detected",
+        "analyzed",
+        "structured",
+        "generated",
+        "validated",
+        "integrated",
+        "completed"
+      ]
+    },
+    "cms": {
+      "requiredSteps": [
+        "php-analyzer",
+        "structure-classifier-agent",
+        "remix-generator",
+        "qa-analyzer",
+        "seo-checker",
+        "seo-redirect-mapper",
+        "pr-creator"
+      ],
+      "statusSequence": [
+        "planned",
+        "detected",
+        "analyzed",
+        "structured",
+        "generated",
+        "validated",
+        "integrated",
+        "completed"
+      ]
+    }
+  },
+  "timeouts": {
+    "planned": 14,
+    "detected": 7,
+    "analyzed": 5,
+    "structured": 3,
+    "generated": 3,
+    "validated": 5,
+    "integrated": 2
+  },
+  "metrics": {
+    "requiredForDashboard": [
+      "completion_rate",
+      "missing_agents_count",
+      "blocked_migrations_count",
+      "age_distribution"
+    ]
+  }
+}

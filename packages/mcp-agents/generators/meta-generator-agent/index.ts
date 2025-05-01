@@ -3,9 +3,6 @@
  * Generated automatically on 2025-04-20
  */
 
-import { MetaGeneratorAgent } from ./MetaGeneratorAgentstructure-agent';
+import { MetaGeneratorAgent } from './MetaGeneratorAgent';
 
-export {
-  MetaGeneratorAgent,
-};
-
+export { MetaGeneratorAgent };

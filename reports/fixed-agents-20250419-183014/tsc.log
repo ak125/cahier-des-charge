@@ -1,8 +1,0 @@
-error TS1149: File name '/workspaces/cahier-des-charge/packages/mcp-agents/business/misc/businessagent/index.ts' differs from already included file name '/workspaces/cahier-des-charge/packages/mcp-agents/business/misc/BusinessAgent/index.ts' only in casing.
-  The file is in the program because:
-    Matched by include pattern '**/*.ts' in '/workspaces/cahier-des-charge/packages/mcp-agents/tsconfig.json'
-    Matched by include pattern '**/*.ts' in '/workspaces/cahier-des-charge/packages/mcp-agents/tsconfig.json'
-error TS1149: File name '/workspaces/cahier-des-charge/packages/mcp-agents/business/misc/qualityagent/index.ts' differs from already included file name '/workspaces/cahier-des-charge/packages/mcp-agents/business/misc/QualityAgent/index.ts' only in casing.
-  The file is in the program because:
-    Matched by include pattern '**/*.ts' in '/workspaces/cahier-des-charge/packages/mcp-agents/tsconfig.json'
-    Matched by include pattern '**/*.ts' in '/workspaces/cahier-des-charge/packages/mcp-agents/tsconfig.json'

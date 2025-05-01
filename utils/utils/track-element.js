@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 
-const fs = require(fsstructure-agent');
-const path = require(pathstructure-agent');
-const { execSync } = require(child_processstructure-agent');
-const chokidar = require(chokidarstructure-agent');
-const yargs = require(yargs/yargsstructure-agent');
-const { hideBin } = require(yargs/helpersstructure-agent');
+const fs = require('fsstructure-agent');
+const path = require('pathstructure-agent');
+const { execSync } = require('child_processstructure-agent');
+const chokidar = require('chokidarstructure-agent');
+const yargs = require('yargs/yargsstructure-agent');
+const { hideBin } = require('yargs/helpersstructure-agent');
 
 // Configuration des arguments
 const argv = yargs(hideBin(process.argv))
@@ -89,12 +89,12 @@ function updateCahierDesCharges(config, changedFile) {
     const changelogDetail = `- Mise à jour automatique suite à des modifications dans \`${changedFile}\`\n`;
     
     fs.appendFileSync(changelogFile, changelogEntry + changelogDetail);
-    log(`Changelog mis à jour`, 'success');
+    log("Changelog mis à jour", 'success');
     
     // Exécuter le script de mise à jour du cahier des charges si disponible
     if (fs.existsSync(path.join(process.cwd(), 'update-cahier.sh'))) {
       execSync('./update-cahier.sh');
-      log(`Script update-cahier.sh exécuté`, 'success');
+      log("Script update-cahier.sh exécuté", 'success');
     }
   } catch (error) {
     log(`Erreur lors de la mise à jour du cahier des charges: ${error.message}`, 'error');
@@ -133,7 +133,7 @@ function updateTrackingFile(config, changedFile) {
         // Mettre à jour le fichier de suivi
         trackingData.last_updated = timestamp;
         fs.writeFileSync(trackingFile, JSON.stringify(trackingData, null, 2));
-        log(`Fichier de suivi mis à jour`, 'success');
+        log("Fichier de suivi mis à jour", 'success');
       }
     }
   } catch (error) {
@@ -178,7 +178,7 @@ async function main() {
       log(`Erreur lors du suivi: ${error.message}`, 'error');
     });
   
-  log(`Suivi démarré - En attente de modifications...`, 'success');
+  log("Suivi démarré - En attente de modifications...", 'success');
 }
 
 // Gérer les signaux d'arrêt

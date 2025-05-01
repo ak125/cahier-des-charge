@@ -1,0 +1,57 @@
+name: Earthly CI
+
+on:
+  push:
+    branches: [main, v3]
+  pull_request:
+    branches: [main, v3]
+
+jobs:
+  earthly:
+    name: Earthly Build & Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Earthly
+        uses: earthly/actions/setup-earthly@v1
+        with:
+          version: v0.7.9
+
+      - name: Earthly version
+        run: earthly --version
+
+      - name: Configure Earthly remote cache
+        if: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/v3' }}
+        run: |
+          mkdir -p ~/.earthly
+          echo "[account]" > ~/.earthly/config.yml
+          echo "  name = cahier-des-charge" >> ~/.earthly/config.yml
+          echo "[remote_cache]" >> ~/.earthly/config.yml
+          echo "  mode = always" >> ~/.earthly/config.yml
+          echo "  org = \"cahier-des-charge\"" >> ~/.earthly/config.yml
+          echo "  secret = \"${{ secrets.EARTHLY_TOKEN }}\"" >> ~/.earthly/config.yml
+
+      - name: Linting
+        run: earthly +lint
+
+      - name: Type checking
+        run: earthly +typecheck
+
+      - name: Run tests
+        run: earthly +test
+
+      - name: Build apps
+        run: earthly +ci
+
+      # Déploiement conditionnel
+      - name: Deploy to staging
+        if: github.event_name == 'push' && github.ref == 'refs/heads/v3'
+        run: earthly +deploy-staging
+
+      - name: Deploy to production
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: earthly +deploy-production

@@ -1,4 +1,4 @@
-import { Link } from "@remix-run/react";
+import { Link } from '@remix-run/react';
 
 interface Column {
   name: string;
@@ -22,7 +22,7 @@ interface TableDebt {
   issues: Array<{
     type: string;
     description: string;
-    severity: "low" | "medium" | "high";
+    severity: 'low' | 'medium' | 'high';
     suggestion: string;
   }>;
 }
@@ -34,7 +34,7 @@ export interface Table {
   description?: string;
   columns: Column[];
   relations: Relation[];
-  migrationStatus: "pending" | "in_progress" | "completed" | "blocked" | "skipped";
+  migrationStatus: 'pending' | 'in_progress' | 'completed' | 'blocked' | 'skipped';
   debt: TableDebt;
   prismaModel?: string;
 }
@@ -46,111 +46,117 @@ interface TableCardProps {
 
 export default function TableCard({ table, onStatusChange }: TableCardProps) {
   const statusColors = {
-    pending: "bg-gray-100 text-gray-800",
-    in_progress: "bg-blue-100 text-blue-800",
-    completed: "bg-green-100 text-green-800",
-    blocked: "bg-red-100 text-red-800",
-    skipped: "bg-yellow-100 text-yellow-800",
+    pending: 'bg-gray-100 text-gray-800',
+    in_progress: 'bg-blue-100 text-blue-800',
+    completed: 'bg-green-100 text-green-800',
+    blocked: 'bg-red-100 text-red-800',
+    skipped: 'bg-yellow-100 text-yellow-800',
   };
-  
+
   const debtScoreColor = (score: number) => {
-    if (score < 25) return "text-green-600";
-    if (score < 50) return "text-yellow-600";
-    if (score < 75) return "text-orange-600";
-    return "text-red-600";
+    if (score < 25) return 'text-green-600';
+    if (score < 50) return 'text-yellow-600';
+    if (score < 75) return 'text-orange-600';
+    return 'text-red-600';
   };
-  
+
   // Créer une liste des PK pour la table
   const primaryKeys = table.columns
-    .filter(col => col.isPrimaryKey)
-    .map(col => col.name)
-    .join(", ");
-  
+    .filter((col) => col.isPrimaryKey)
+    .map((col) => col.name)
+    .join(', ');
+
   // Générer un modèle Prisma basique pour cette table
   const generatePrismaModel = () => {
     if (table.prismaModel) return table.prismaModel;
-    
+
     const modelName = table.name
       .toLowerCase()
-      .split("_")
-      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-      .join("");
-    
-    const columnDefinitions = table.columns.map(col => {
-      let type = mapSqlToPrismaType(col.type);
-      const modifiers = [];
-      
-      if (col.isPrimaryKey) modifiers.push("@id");
-      if (!col.nullable) modifiers.push("@default('')");
-      
-      const modifierStr = modifiers.length > 0 ? " " + modifiers.join(" ") : "";
-      
-      return `  ${col.name} ${type}${col.nullable ? "?" : ""}${modifierStr}`;
-    }).join("\n");
-    
-    const relationDefinitions = table.relations.map(rel => {
-      const relatedModelName = rel.tableName
-        .toLowerCase()
-        .split("_")
-        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-        .join("");
-      
-      if (rel.type === "hasMany") {
-        return `  ${rel.tableName.toLowerCase()}s ${relatedModelName}[]`;
-      } else if (rel.type === "belongsTo") {
-        return `  ${rel.tableName.toLowerCase()} ${relatedModelName}${rel.nullable ? "?" : ""}`;
-      }
-      return "";
-    }).filter(Boolean).join("\n");
-    
+      .split('_')
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join('');
+
+    const columnDefinitions = table.columns
+      .map((col) => {
+        const type = mapSqlToPrismaType(col.type);
+        const modifiers = [];
+
+        if (col.isPrimaryKey) modifiers.push('@id');
+        if (!col.nullable) modifiers.push("@default('')");
+
+        const modifierStr = modifiers.length > 0 ? ` ${modifiers.join(' ')}` : '';
+
+        return `  ${col.name} ${type}${col.nullable ? '?' : ''}${modifierStr}`;
+      })
+      .join('\n');
+
+    const relationDefinitions = table.relations
+      .map((rel) => {
+        const relatedModelName = rel.tableName
+          .toLowerCase()
+          .split('_')
+          .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+          .join('');
+
+        if (rel.type === 'hasMany') {
+          return `  ${rel.tableName.toLowerCase()}s ${relatedModelName}[]`;
+        }
+        if (rel.type === 'belongsTo') {
+          return `  ${rel.tableName.toLowerCase()} ${relatedModelName}${rel.nullable ? '?' : ''}`;
+        }
+        return '';
+      })
+      .filter(Boolean)
+      .join('\n');
+
     return `model ${modelName} {
 ${columnDefinitions}
-${relationDefinitions.length > 0 ? "\n" + relationDefinitions : ""}
+${relationDefinitions.length > 0 ? `\n${relationDefinitions}` : ''}
 }`;
   };
-  
+
   // Fonction helper pour mapper les types SQL vers Prisma
   const mapSqlToPrismaType = (sqlType: string): string => {
     const typeMap: Record<string, string> = {
-      "int": "Int",
-      "bigint": "BigInt",
-      "tinyint": "Int",
-      "smallint": "Int",
-      "mediumint": "Int",
-      "varchar": "String",
-      "char": "String",
-      "text": "String",
-      "longtext": "String",
-      "mediumtext": "String",
-      "tinytext": "String",
-      "decimal": "Decimal",
-      "numeric": "Decimal",
-      "float": "Float",
-      "double": "Float",
-      "date": "DateTime",
-      "datetime": "DateTime",
-      "timestamp": "DateTime",
-      "time": "String",
-      "year": "Int",
-      "boolean": "Boolean",
-      "bool": "Boolean",
-      "tinyint(1)": "Boolean",
-      "enum": "String",
-      "set": "String",
-      "json": "Json",
-      "binary": "Bytes",
-      "varbinary": "Bytes",
-      "blob": "Bytes",
-      "longblob": "Bytes",
-      "mediumblob": "Bytes",
-      "tinyblob": "Bytes",
+      int: 'Int',
+      bigint: 'BigInt',
+      tinyint: 'Int',
+      smallint: 'Int',
+      mediumint: 'Int',
+      varchar: 'String',
+      char: 'String',
+      text: 'String',
+      longtext: 'String',
+      mediumtext: 'String',
+      tinytext: 'String',
+      decimal: 'Decimal',
+      numeric: 'Decimal',
+      float: 'Float',
+      double: 'Float',
+      date: 'DateTime',
+      datetime: 'DateTime',
+      timestamp: 'DateTime',
+      time: 'String',
+      year: 'Int',
+      boolean: 'Boolean',
+      bool: 'Boolean',
+      'tinyint(1)': 'Boolean',
+      enum: 'String',
+      set: 'String',
+      json: 'Json',
+      binary: 'Bytes',
+      varbinary: 'Bytes',
+      blob: 'Bytes',
+      longblob: 'Bytes',
+      mediumblob: 'Bytes',
+      tinyblob: 'Bytes',
     };
-    
+
     // Extraire le type de base (ignorer la taille/précision)
-    const baseType = sqlType.toLowerCase().split("(")[0];
-    return typeMap[baseType] || "String";
+    const baseType = sqlType.toLowerCase().split('(')[0];
+    return typeMap[baseType] || 'String';
   };
-  
+
   return (
     <div className="bg-white shadow rounded-lg overflow-hidden">
       {/* En-tête de la fiche avec nom de table et statut */}
@@ -158,25 +164,34 @@ ${relationDefinitions.length > 0 ? "\n" + relationDefinitions : ""}
         <div>
           <h3 className="text-lg font-medium text-gray-900">{table.name}</h3>
           <p className="text-sm text-gray-500">
-            {table.category === "business" 
-              ? `Table métier${table.module ? ` (${table.module})` : ""}`
-              : table.category === "junction" 
-                ? "Table de jointure" 
-                : table.category === "technical" 
-                  ? "Table technique"
+            {table.category === 'business'
+              ? `Table métier${table.module ? ` (${table.module})` : ''}`
+              : table.category === 'junction'
+                ? 'Table de jointure'
+                : table.category === 'technical'
+                  ? 'Table technique'
                   : table.category}
           </p>
         </div>
         <div>
-          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${statusColors[table.migrationStatus]}`}>
-            {table.migrationStatus === "pending" ? "En attente" :
-             table.migrationStatus === "in_progress" ? "En cours" :
-             table.migrationStatus === "completed" ? "Terminée" :
-             table.migrationStatus === "blocked" ? "Bloquée" : "Ignorée"}
+          <span
+            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+              statusColors[table.migrationStatus]
+            }`}
+          >
+            {table.migrationStatus === 'pending'
+              ? 'En attente'
+              : table.migrationStatus === 'in_progress'
+                ? 'En cours'
+                : table.migrationStatus === 'completed'
+                  ? 'Terminée'
+                  : table.migrationStatus === 'blocked'
+                    ? 'Bloquée'
+                    : 'Ignorée'}
           </span>
         </div>
       </div>
-      
+
       <div className="p-4">
         {/* Description de la table */}
         {table.description && (
@@ -184,12 +199,12 @@ ${relationDefinitions.length > 0 ? "\n" + relationDefinitions : ""}
             <p className="text-sm text-gray-600">{table.description}</p>
           </div>
         )}
-        
+
         {/* Informations clés */}
         <div className="grid grid-cols-2 gap-4 mb-4">
           <div>
             <h4 className="text-sm font-medium text-gray-700">Clé primaire</h4>
-            <p className="text-sm text-gray-900">{primaryKeys || "Aucune"}</p>
+            <p className="text-sm text-gray-900">{primaryKeys || 'Aucune'}</p>
           </div>
           <div>
             <h4 className="text-sm font-medium text-gray-700">Dette technique</h4>
@@ -198,7 +213,7 @@ ${relationDefinitions.length > 0 ? "\n" + relationDefinitions : ""}
             </p>
           </div>
         </div>
-        
+
         {/* Tabs pour colonnes, relations et problèmes */}
         <div className="border-b border-gray-200">
           <nav className="-mb-px flex" aria-label="Tabs">
@@ -213,7 +228,7 @@ ${relationDefinitions.length > 0 ? "\n" + relationDefinitions : ""}
             </button>
           </nav>
         </div>
-        
+
         {/* Colonnes */}
         <div className="mt-4">
           <h4 className="text-sm font-medium text-gray-700 mb-2">Structure des colonnes</h4>
@@ -221,13 +236,22 @@ ${relationDefinitions.length > 0 ? "\n" + relationDefinitions : ""}
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
                 <tr>
-                  <th scope="col" className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th
+                    scope="col"
+                    className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
                     Nom
                   </th>
-                  <th scope="col" className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th
+                    scope="col"
+                    className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
                     Type
                   </th>
-                  <th scope="col" className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th
+                    scope="col"
+                    className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
                     Attributs
                   </th>
                 </tr>
@@ -248,7 +272,7 @@ ${relationDefinitions.length > 0 ? "\n" + relationDefinitions : ""}
                       {column.type}
                     </td>
                     <td className="px-3 py-2 whitespace-nowrap text-sm text-gray-500">
-                      {column.nullable ? "NULL" : "NOT NULL"}
+                      {column.nullable ? 'NULL' : 'NOT NULL'}
                       {column.defaultValue && ` DEFAULT ${column.defaultValue}`}
                     </td>
                   </tr>
@@ -264,18 +288,16 @@ ${relationDefinitions.length > 0 ? "\n" + relationDefinitions : ""}
             </table>
           </div>
         </div>
-        
+
         {/* Modèle Prisma proposé */}
         <div className="mt-4">
           <h4 className="text-sm font-medium text-gray-700 mb-2">Modèle Prisma proposé</h4>
           <div className="bg-gray-50 rounded overflow-x-auto">
-            <pre className="p-3 text-xs text-gray-800 overflow-x-auto">
-              {generatePrismaModel()}
-            </pre>
+            <pre className="p-3 text-xs text-gray-800 overflow-x-auto">{generatePrismaModel()}</pre>
           </div>
         </div>
       </div>
-      
+
       {/* Footer - Actions */}
       <div className="border-t px-4 py-3 flex justify-between items-center bg-gray-50">
         <div>

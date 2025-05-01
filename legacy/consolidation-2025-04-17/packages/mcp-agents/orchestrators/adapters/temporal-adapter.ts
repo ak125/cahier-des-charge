@@ -1,26 +1,29 @@
+import { Client, Connection, WorkflowClient } from '@temporalio/client';
+import { WorkflowExecutionDescription } from '@temporalio/common';
 import { AbstractOrchestratorAgent } from '../AbstractOrchestrator';
-import { 
-  OrchestrationAdapter, 
-  WorkflowDefinition, 
-  ValidationResult, 
-  HealthStatus, 
-  ErrorHandler,
-  OrchestratorCapabilities
-} from '../ThreeLayer/AdapterLayer';
-import { 
+import {
+  ActivityOptions,
   OrchestrationAbstraction,
+  WorkflowExecutionOptions,
   WorkflowInstance,
   WorkflowStatus,
-  WorkflowExecutionOptions,
-  ActivityOptions
 } from '../ThreeLayer/AbstractionLayer';
-import { Connection, Client, WorkflowClient } from '@temporalio/client';
-import { WorkflowExecutionDescription } from '@temporalio/common';
+import {
+  ErrorHandler,
+  HealthStatus,
+  OrchestrationAdapter,
+  OrchestratorCapabilities,
+  ValidationResult,
+  WorkflowDefinition,
+} from '../ThreeLayer/AdapterLayer';
 
 /**
  * Adaptateur pour le système d'orchestration Temporal.io
  */
-export class TemporalAdapter extends AbstractOrchestratorAgent<any, any> implements OrchestrationAdapter {
+export class TemporalAdapter
+  extends AbstractOrchestratorAgent<any, any>
+  implements OrchestrationAdapter
+{
   readonly name = 'Temporal.io';
   readonly version = '1.0.0';
   readonly capabilities: OrchestratorCapabilities = {
@@ -32,14 +35,14 @@ export class TemporalAdapter extends AbstractOrchestratorAgent<any, any> impleme
     retry: true,
     compensation: true,
     monitoring: true,
-    metrics: true
+    metrics: true,
   };
 
   private errorHandler: ErrorHandler | null = null;
   private client: WorkflowClient;
   private connection: Connection;
 
-  constructor(config: { 
+  constructor(config: {
     address?: string;
     namespace?: string;
     tls?: boolean;
@@ -53,7 +56,7 @@ export class TemporalAdapter extends AbstractOrchestratorAgent<any, any> impleme
   /**
    * Initialise le client Temporal.io avec la configuration fournie
    */
-  private async initializeClient(config: { 
+  private async initializeClient(config: {
     address?: string;
     namespace?: string;
     tls?: boolean;
@@ -64,16 +67,16 @@ export class TemporalAdapter extends AbstractOrchestratorAgent<any, any> impleme
       this.connection = await Connection.connect({
         address: config.address || 'localhost:7233',
         tls: config.tls ? {} : undefined,
-        ...config.connectionOptions
+        ...config.connectionOptions,
       });
-      
+
       // Création du client Temporal.io
       this.client = new Client({
         connection: this.connection,
         namespace: config.namespace || 'default',
       });
     } catch (error) {
-      console.error('Erreur lors de l\'initialisation du client Temporal.io:', error);
+      console.error("Erreur lors de l'initialisation du client Temporal.io:", error);
       if (this.errorHandler) {
         this.errorHandler.handleError('connection', error);
       }
@@ -83,29 +86,31 @@ export class TemporalAdapter extends AbstractOrchestratorAgent<any, any> impleme
   /**
    * Valide si une définition de workflow est compatible avec Temporal.io
    */
-  async validateWorkflowDefinition(workflowDefinition: WorkflowDefinition): Promise<ValidationResult> {
+  async validateWorkflowDefinition(
+    workflowDefinition: WorkflowDefinition
+  ): Promise<ValidationResult> {
     try {
       // Validation de la définition selon les contraintes de Temporal.io
       const errors: string[] = [];
-      
+
       // Vérification des contraintes spécifiques à Temporal
       if (!workflowDefinition.id) {
         errors.push("L'ID du workflow est requis pour Temporal.io");
       }
-      
+
       if (workflowDefinition.activities.length === 0) {
-        errors.push("Le workflow doit contenir au moins une activité");
+        errors.push('Le workflow doit contenir au moins une activité');
       }
 
       // Vérifier que les activités ont des noms uniques
-      const activityNames = workflowDefinition.activities.map(a => a.name);
+      const activityNames = workflowDefinition.activities.map((a) => a.name);
       if (new Set(activityNames).size !== activityNames.length) {
-        errors.push("Les noms des activités doivent être uniques dans Temporal.io");
+        errors.push('Les noms des activités doivent être uniques dans Temporal.io');
       }
 
       return {
         valid: errors.length === 0,
-        errors
+        errors,
       };
     } catch (error) {
       if (this.errorHandler) {
@@ -113,7 +118,7 @@ export class TemporalAdapter extends AbstractOrchestratorAgent<any, any> impleme
       }
       return {
         valid: false,
-        errors: [`Erreur de validation: ${error.message}`]
+        errors: [`Erreur de validation: ${error.message}`],
       };
     }
   }
@@ -126,18 +131,22 @@ export class TemporalAdapter extends AbstractOrchestratorAgent<any, any> impleme
     return {
       workflowId: genericDefinition.id,
       taskQueue: genericDefinition.queue || 'default',
-      workflowExecutionTimeout: genericDefinition.timeout ? `${genericDefinition.timeout}s` : undefined,
-      activities: genericDefinition.activities.map(activity => ({
+      workflowExecutionTimeout: genericDefinition.timeout
+        ? `${genericDefinition.timeout}s`
+        : undefined,
+      activities: genericDefinition.activities.map((activity) => ({
         name: activity.name,
         taskQueue: activity.queue || 'default',
-        retryPolicy: activity.retryPolicy ? {
-          maximumAttempts: activity.retryPolicy.maxAttempts || 3,
-          initialInterval: activity.retryPolicy.initialDelay || 1,
-        } : undefined,
-        input: activity.input
+        retryPolicy: activity.retryPolicy
+          ? {
+              maximumAttempts: activity.retryPolicy.maxAttempts || 3,
+              initialInterval: activity.retryPolicy.initialDelay || 1,
+            }
+          : undefined,
+        input: activity.input,
       })),
       signals: genericDefinition.signals || [],
-      queries: genericDefinition.queries || []
+      queries: genericDefinition.queries || [],
     };
   }
 
@@ -152,22 +161,24 @@ export class TemporalAdapter extends AbstractOrchestratorAgent<any, any> impleme
       description: nativeDefinition.description || '',
       version: nativeDefinition.version || '1.0.0',
       queue: nativeDefinition.taskQueue || 'default',
-      timeout: nativeDefinition.workflowExecutionTimeout 
-        ? parseInt(nativeDefinition.workflowExecutionTimeout.replace('s', '')) 
+      timeout: nativeDefinition.workflowExecutionTimeout
+        ? parseInt(nativeDefinition.workflowExecutionTimeout.replace('s', ''))
         : undefined,
-      activities: (nativeDefinition.activities || []).map(activity => ({
+      activities: (nativeDefinition.activities || []).map((activity) => ({
         name: activity.name,
         description: activity.description || '',
         type: 'task',
         queue: activity.taskQueue || 'default',
-        retryPolicy: activity.retryPolicy ? {
-          maxAttempts: activity.retryPolicy.maximumAttempts || 3,
-          initialDelay: activity.retryPolicy.initialInterval || 1,
-        } : undefined,
-        input: activity.input || {}
+        retryPolicy: activity.retryPolicy
+          ? {
+              maxAttempts: activity.retryPolicy.maximumAttempts || 3,
+              initialDelay: activity.retryPolicy.initialInterval || 1,
+            }
+          : undefined,
+        input: activity.input || {},
       })),
       signals: nativeDefinition.signals || [],
-      queries: nativeDefinition.queries || []
+      queries: nativeDefinition.queries || [],
     };
   }
 
@@ -189,8 +200,8 @@ export class TemporalAdapter extends AbstractOrchestratorAgent<any, any> impleme
         healthy: response.ok === true,
         details: {
           service: 'Temporal.io',
-          status: response.ok ? 'connected' : 'disconnected'
-        }
+          status: response.ok ? 'connected' : 'disconnected',
+        },
       };
     } catch (error) {
       if (this.errorHandler) {
@@ -201,18 +212,22 @@ export class TemporalAdapter extends AbstractOrchestratorAgent<any, any> impleme
         details: {
           service: 'Temporal.io',
           status: 'error',
-          message: error.message
-        }
+          message: error.message,
+        },
       };
     }
   }
 
   // Implémentation des méthodes de OrchestrationAbstraction
 
-  async startWorkflow(definition: WorkflowDefinition, input: any, options?: WorkflowExecutionOptions): Promise<WorkflowInstance> {
+  async startWorkflow(
+    definition: WorkflowDefinition,
+    input: any,
+    options?: WorkflowExecutionOptions
+  ): Promise<WorkflowInstance> {
     try {
       const temporalDefinition = this.convertToNativeFormat(definition);
-      
+
       // Utilisation du SDK officiel pour démarrer un workflow
       const handle = await this.client.workflow.start(temporalDefinition.workflowId, {
         taskQueue: temporalDefinition.taskQueue,
@@ -220,7 +235,7 @@ export class TemporalAdapter extends AbstractOrchestratorAgent<any, any> impleme
         args: [input],
         workflowExecutionTimeout: temporalDefinition.workflowExecutionTimeout,
         ...(options?.version ? { workflowIdReusePolicy: options.version } : {}),
-        ...(options?.searchAttributes ? { searchAttributes: options.searchAttributes } : {})
+        ...(options?.searchAttributes ? { searchAttributes: options.searchAttributes } : {}),
       });
 
       return {
@@ -228,7 +243,7 @@ export class TemporalAdapter extends AbstractOrchestratorAgent<any, any> impleme
         status: WorkflowStatus.RUNNING,
         startTime: new Date(),
         definition: definition,
-        handle: handle
+        handle: handle,
       };
     } catch (error) {
       if (this.errorHandler) {
@@ -243,7 +258,7 @@ export class TemporalAdapter extends AbstractOrchestratorAgent<any, any> impleme
       // Récupération du workflow par son ID
       const handle = this.client.workflow.getHandle(instanceId);
       const description = await handle.describe();
-      
+
       // Mappage des statuts Temporal vers statuts génériques
       return this.mapTemporalStatusToGeneric(description.status.name);
     } catch (error) {
@@ -259,14 +274,22 @@ export class TemporalAdapter extends AbstractOrchestratorAgent<any, any> impleme
    */
   private mapTemporalStatusToGeneric(temporalStatus: string): WorkflowStatus {
     switch (temporalStatus) {
-      case 'RUNNING': return WorkflowStatus.RUNNING;
-      case 'COMPLETED': return WorkflowStatus.COMPLETED;
-      case 'FAILED': return WorkflowStatus.FAILED;
-      case 'TIMED_OUT': return WorkflowStatus.TIMED_OUT;
-      case 'CANCELED': return WorkflowStatus.CANCELLED;
-      case 'TERMINATED': return WorkflowStatus.CANCELLED;
-      case 'CONTINUED_AS_NEW': return WorkflowStatus.RUNNING;
-      default: return WorkflowStatus.UNKNOWN;
+      case 'RUNNING':
+        return WorkflowStatus.RUNNING;
+      case 'COMPLETED':
+        return WorkflowStatus.COMPLETED;
+      case 'FAILED':
+        return WorkflowStatus.FAILED;
+      case 'TIMED_OUT':
+        return WorkflowStatus.TIMED_OUT;
+      case 'CANCELED':
+        return WorkflowStatus.CANCELLED;
+      case 'TERMINATED':
+        return WorkflowStatus.CANCELLED;
+      case 'CONTINUED_AS_NEW':
+        return WorkflowStatus.RUNNING;
+      default:
+        return WorkflowStatus.UNKNOWN;
     }
   }
 
@@ -274,7 +297,7 @@ export class TemporalAdapter extends AbstractOrchestratorAgent<any, any> impleme
     try {
       // Terminaison du workflow par son ID
       const handle = this.client.workflow.getHandle(instanceId);
-      await handle.terminate(reason || 'Terminé par l\'API');
+      await handle.terminate(reason || "Terminé par l'API");
     } catch (error) {
       if (this.errorHandler) {
         this.errorHandler.handleError('termination', error);
@@ -321,10 +344,12 @@ export class TemporalAdapter extends AbstractOrchestratorAgent<any, any> impleme
       if (this.errorHandler) {
         this.errorHandler.handleError('history', error);
       }
-      throw new Error(`Erreur lors de la récupération de l'historique du workflow: ${error.message}`);
+      throw new Error(
+        `Erreur lors de la récupération de l'historique du workflow: ${error.message}`
+      );
     }
   }
-  
+
   /**
    * Réinitialise un workflow échoué
    */
@@ -332,18 +357,18 @@ export class TemporalAdapter extends AbstractOrchestratorAgent<any, any> impleme
     try {
       const handle = this.client.workflow.getHandle(instanceId);
       const resetHandle = await handle.reset({
-        reason: reason || 'Réinitialisé par l\'API'
+        reason: reason || "Réinitialisé par l'API",
       });
-      
+
       // Récupération des informations sur le workflow réinitialisé
       const description = await resetHandle.describe();
-      
+
       return {
         id: resetHandle.workflowId,
         status: this.mapTemporalStatusToGeneric(description.status.name),
         startTime: new Date(description.startTime),
         definition: await this.getWorkflowDefinition(instanceId),
-        handle: resetHandle
+        handle: resetHandle,
       };
     } catch (error) {
       if (this.errorHandler) {
@@ -352,7 +377,7 @@ export class TemporalAdapter extends AbstractOrchestratorAgent<any, any> impleme
       throw new Error(`Erreur lors de la réinitialisation du workflow: ${error.message}`);
     }
   }
-  
+
   /**
    * Récupère la définition d'un workflow à partir de son ID
    */
@@ -360,7 +385,7 @@ export class TemporalAdapter extends AbstractOrchestratorAgent<any, any> impleme
     try {
       const handle = this.client.workflow.getHandle(instanceId);
       const description = await handle.describe();
-      
+
       // Construction de la définition à partir des informations disponibles
       // Cette implémentation est simplifiée et pourrait être améliorée
       return {
@@ -369,16 +394,18 @@ export class TemporalAdapter extends AbstractOrchestratorAgent<any, any> impleme
         description: '',
         version: '1.0.0',
         queue: description.taskQueue,
-        timeout: description.executionTimeout 
-          ? parseInt(description.executionTimeout.replace('s', '')) 
+        timeout: description.executionTimeout
+          ? parseInt(description.executionTimeout.replace('s', ''))
           : undefined,
-        activities: [] // Les activités ne sont pas directement accessibles via l'API
+        activities: [], // Les activités ne sont pas directement accessibles via l'API
       };
     } catch (error) {
       if (this.errorHandler) {
         this.errorHandler.handleError('definition', error);
       }
-      throw new Error(`Erreur lors de la récupération de la définition du workflow: ${error.message}`);
+      throw new Error(
+        `Erreur lors de la récupération de la définition du workflow: ${error.message}`
+      );
     }
   }
 }

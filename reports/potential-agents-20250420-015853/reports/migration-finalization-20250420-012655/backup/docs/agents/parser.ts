@@ -593,9 +593,9 @@ export class SQLParser implements BaseAgent, BusinessAgent, BaseAgent, BusinessA
     }
   }
 
-  id: string = '';
-  type: string = '';
-  version: string = '1.0.0';
+  id = '';
+  type = '';
+  version = '1.0.0';
 
   /**
    * Initialise l'agent avec des options spécifiques
@@ -641,11 +641,11 @@ export class SQLParser implements BaseAgent, BusinessAgent, BaseAgent, BusinessA
     };
   }
 
-  id: string = '';
-  type: string = '';
-  version: string = '1.0.0';
+  id = '';
+  type = '';
+  version = '1.0.0';
 
-  id: string = '';
-  type: string = '';
-  version: string = '1.0.0';
+  id = '';
+  type = '';
+  version = '1.0.0';
 }

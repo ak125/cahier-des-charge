@@ -60,28 +60,28 @@ module.exports = {
         format: ['PascalCase'],
       },
     ],
-    
+
     // Imports
     'import/no-unresolved': 'off', // TypeScript gère déjà cela
     'import/order': [
       'error',
       {
-        'groups': ['builtin', 'external', 'internal', 'parent', 'sibling', 'index'],
+        groups: ['builtin', 'external', 'internal', 'parent', 'sibling', 'index'],
         'newlines-between': 'always',
-        'alphabetize': { order: 'asc', caseInsensitive: true }
+        alphabetize: { order: 'asc', caseInsensitive: true },
       },
     ],
-    
+
     // React
     'react/prop-types': 'off', // TypeScript gère les props
-    'react/react-in-jsx-scope': 'off', // React >17 n'a plus besoin d'importer React 
+    'react/react-in-jsx-scope': 'off', // React >17 n'a plus besoin d'importer React
     'react/display-name': 'off',
     'react-hooks/rules-of-hooks': 'error',
     'react-hooks/exhaustive-deps': 'warn',
-    
+
     // Général
     'no-console': ['warn', { allow: ['warn', 'error', 'info'] }],
-    'eqeqeq': ['error', 'always', { null: 'ignore' }],
+    eqeqeq: ['error', 'always', { null: 'ignore' }],
     'no-duplicate-imports': 'error',
     'no-var': 'error',
     'prefer-const': 'error',

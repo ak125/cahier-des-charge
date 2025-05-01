@@ -3,8 +3,8 @@
  * Agent export file
  */
 
-import { data } from './data-verifier';
 import { BusinessAgent } from '../../core/interfaces';
+import { data } from './data-verifier';
 
 export { data };
 export default data;

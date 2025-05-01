@@ -1,6 +1,6 @@
 /**
  * Tableau de bord de visualisation pour le processus de migration
- * 
+ *
  * Ce script génère un tableau de bord web simple qui affiche l'état
  * actuel de la migration, les métriques clés et les prochaines étapes.
  */
@@ -20,11 +20,10 @@ const argv = yargs
     alias: 'v',
     description: 'Type de vue à afficher',
     type: 'string',
-    choices: ['migration', 'agents', 'audit', 'unified']
+    choices: ['migration', 'agents', 'audit', 'unified'],
   })
   .help()
-  .alias('help', 'h')
-  .argv;
+  .alias('help', 'h').argv;
 
 // Charger la configuration centralisée
 const config = loadConfig();
@@ -63,7 +62,7 @@ let migrationState = {
   modules: {},
   metrics: {},
   issues: [],
-  nextSteps: []
+  nextSteps: [],
 };
 
 /**
@@ -80,13 +79,13 @@ async function updateMigrationState() {
       modules: {},
       metrics: {},
       issues: [],
-      nextSteps: []
+      nextSteps: [],
     };
 
     // Calcul de la progression globale basée sur les étapes définies dans la configuration
     const migrationSteps = MIGRATION.STEPS;
     let completedSteps = 0;
-    let totalSteps = migrationSteps.length;
+    const totalSteps = migrationSteps.length;
 
     for (const step of migrationSteps) {
       const stepProgress = await calculateStepProgress(step);
@@ -97,9 +96,8 @@ async function updateMigrationState() {
       }
     }
 
-    migrationState.progress.global = totalSteps > 0
-      ? Math.round((completedSteps / totalSteps) * 100)
-      : 0;
+    migrationState.progress.global =
+      totalSteps > 0 ? Math.round((completedSteps / totalSteps) * 100) : 0;
 
     // Récupération des modules analysés
     await analyzeModules();
@@ -113,7 +111,7 @@ async function updateMigrationState() {
     // Génération des prochaines étapes recommandées
     await generateNextSteps();
 
-    spinner.succeed("État de la migration mis à jour avec succès");
+    spinner.succeed('État de la migration mis à jour avec succès');
     return migrationState;
   } catch (error) {
     spinner.fail(`Erreur lors de la mise à jour de l'état: ${error.message}`);
@@ -126,7 +124,10 @@ async function updateMigrationState() {
  */
 async function calculateStepProgress(step) {
   // Accéder aux rapports d'exécution pour les agents associés à cette étape
-  const stepReportDir = path.join(PATHS.EXECUTION_REPORTS, step.name.toLowerCase().replace(/\s+/g, '-'));
+  const stepReportDir = path.join(
+    PATHS.EXECUTION_REPORTS,
+    step.name.toLowerCase().replace(/\s+/g, '-')
+  );
 
   if (!fs.existsSync(stepReportDir)) {
     // Créer le dossier s'il n'existe pas
@@ -138,14 +139,14 @@ async function calculateStepProgress(step) {
     const files = await fs.readdir(PATHS.EXECUTION_REPORTS);
 
     // Filtrer les rapports d'exécution pertinents pour les agents de cette étape
-    const relevantReports = files.filter(file => {
+    const relevantReports = files.filter((file) => {
       // Un rapport d'exécution est pertinent s'il concerne un agent de cette étape
       const isExecutionReport = file.endsWith('.execution_report.md');
       if (!isExecutionReport) return false;
 
       const fileContent = fs.readFileSync(path.join(PATHS.EXECUTION_REPORTS, file), 'utf8');
       // Vérifier si le rapport concerne un des agents de l'étape
-      return step.agents.some(agent => fileContent.includes(`| ${agent} |`));
+      return step.agents.some((agent) => fileContent.includes(`| ${agent} |`));
     });
 
     if (relevantReports.length === 0) {
@@ -194,7 +195,7 @@ async function analyzeModules() {
     }
 
     const files = await fs.readdir(moduleReportsDir);
-    const moduleReports = files.filter(f => f.endsWith('.module.json'));
+    const moduleReports = files.filter((f) => f.endsWith('.module.json'));
 
     for (const file of moduleReports) {
       try {
@@ -209,7 +210,7 @@ async function analyzeModules() {
           progress: moduleData.progress || 0,
           complexity: moduleData.complexity || 'medium',
           dependencies: moduleData.dependencies || [],
-          issues: moduleData.issues || []
+          issues: moduleData.issues || [],
         };
       } catch (error) {
         console.error(`Erreur lors de l'analyse du module ${file}: ${error.message}`);
@@ -225,45 +226,48 @@ async function analyzeModules() {
           status: 'in-progress',
           progress: 45,
           complexity: 'medium',
-          dependencies: []
+          dependencies: [],
         },
         {
           name: 'Product Catalog',
           status: 'pending',
           progress: 0,
           complexity: 'high',
-          dependencies: []
+          dependencies: [],
         },
         {
           name: 'Cart',
           status: 'pending',
           progress: 0,
           complexity: 'medium',
-          dependencies: ['Product Catalog', 'Authentication']
+          dependencies: ['Product Catalog', 'Authentication'],
         },
         {
           name: 'Order Management',
           status: 'pending',
           progress: 0,
           complexity: 'high',
-          dependencies: ['Cart', 'Authentication']
+          dependencies: ['Cart', 'Authentication'],
         },
         {
           name: 'User Profile',
           status: 'in-progress',
           progress: 30,
           complexity: 'low',
-          dependencies: ['Authentication']
-        }
+          dependencies: ['Authentication'],
+        },
       ];
 
       // Ajouter les modules d'exemple à l'état
-      exampleModules.forEach(module => {
+      exampleModules.forEach((module) => {
         migrationState.modules[module.name] = module;
 
         // Sauvegarder dans un fichier pour une utilisation future
         fs.writeJsonSync(
-          path.join(moduleReportsDir, `${module.name.toLowerCase().replace(/\s+/g, '-')}.module.json`),
+          path.join(
+            moduleReportsDir,
+            `${module.name.toLowerCase().replace(/\s+/g, '-')}.module.json`
+          ),
           module,
           { spaces: 2 }
         );
@@ -285,7 +289,7 @@ async function collectMetrics() {
     filesMigrated: 0,
     testCoverage: 0,
     codeQuality: 0,
-    executionTime: 0
+    executionTime: 0,
   };
 
   try {
@@ -297,7 +301,7 @@ async function collectMetrics() {
       // Fusion des métriques
       migrationState.metrics = {
         ...migrationState.metrics,
-        ...metrics
+        ...metrics,
       };
     } else {
       // Génération de métriques à partir des rapports d'exécution
@@ -321,7 +325,7 @@ async function generateMetricsFromReports() {
     }
 
     const files = await fs.readdir(executionReportsDir);
-    const executionReports = files.filter(f => f.endsWith('.execution_report.md'));
+    const executionReports = files.filter((f) => f.endsWith('.execution_report.md'));
 
     let totalFiles = 0;
     let filesMigrated = 0;
@@ -335,7 +339,9 @@ async function generateMetricsFromReports() {
         // Extraction basique d'informations à partir du contenu Markdown
         const fileMatch = content.match(/Fichier: ([^\n]+)/);
         const timeMatch = content.match(/Durée totale: (\d+)ms/);
-        const agentsMatch = content.match(/Agents exécutés: (\d+) \((\d+) réussis, (\d+) échoués\)/);
+        const agentsMatch = content.match(
+          /Agents exécutés: (\d+) \((\d+) réussis, (\d+) échoués\)/
+        );
 
         if (fileMatch) {
           totalFiles++;
@@ -368,16 +374,14 @@ async function generateMetricsFromReports() {
         filesMigrated: 68,
         testCoverage: 72,
         codeQuality: 85,
-        executionTime: 1240650
+        executionTime: 1240650,
       };
 
       // Sauvegarder ces métriques pour une utilisation future
       fs.mkdirSync(PATHS.METRICS_REPORTS, { recursive: true });
-      fs.writeJsonSync(
-        path.join(PATHS.METRICS_REPORTS, 'metrics.json'),
-        migrationState.metrics,
-        { spaces: 2 }
-      );
+      fs.writeJsonSync(path.join(PATHS.METRICS_REPORTS, 'metrics.json'), migrationState.metrics, {
+        spaces: 2,
+      });
     }
   } catch (error) {
     console.error(`Erreur lors de la génération des métriques: ${error.message}`);
@@ -405,17 +409,18 @@ async function identifyIssues() {
             type: 'agent_error',
             file: 'cart.php',
             agent: 'DataAgent',
-            message: 'Impossible d\'analyser la requête SQL complexe avec sous-requêtes imbriquées.',
+            message: "Impossible d'analyser la requête SQL complexe avec sous-requêtes imbriquées.",
             severity: 'error',
-            timestamp: Date.now()
+            timestamp: Date.now(),
           },
           {
             type: 'agent_error',
             file: 'user.php',
             agent: 'StructureAgent',
-            message: 'Détection d\'une structure conditionnelle complexe avec plus de 10 niveaux d\'imbrication.',
+            message:
+              "Détection d'une structure conditionnelle complexe avec plus de 10 niveaux d'imbrication.",
             severity: 'warning',
-            timestamp: Date.now()
+            timestamp: Date.now(),
           },
           {
             type: 'dependency',
@@ -423,8 +428,8 @@ async function identifyIssues() {
             agent: 'DependencyAgent',
             message: 'Dépendance externe non trouvée: PHPExcel',
             severity: 'error',
-            timestamp: Date.now()
-          }
+            timestamp: Date.now(),
+          },
         ];
 
         // Sauvegarder ces problèmes pour une utilisation future
@@ -448,7 +453,7 @@ async function findIssuesInReports() {
     }
 
     const files = await fs.readdir(executionReportsDir);
-    const executionReports = files.filter(f => f.endsWith('.execution_report.md'));
+    const executionReports = files.filter((f) => f.endsWith('.execution_report.md'));
 
     for (const file of executionReports) {
       try {
@@ -458,7 +463,7 @@ async function findIssuesInReports() {
         // Recherche des lignes d'erreur
         const errorLines = content
           .split('\n')
-          .filter(line => line.includes('❌ Échoué') || line.includes('Erreur'));
+          .filter((line) => line.includes('❌ Échoué') || line.includes('Erreur'));
 
         for (const line of errorLines) {
           const fileMatch = content.match(/Fichier: ([^\n]+)/);
@@ -478,7 +483,7 @@ async function findIssuesInReports() {
                 agent: agentName,
                 message: errorMessage,
                 severity: 'error',
-                timestamp: Date.now()
+                timestamp: Date.now(),
               });
             }
           }
@@ -516,8 +521,9 @@ async function generateNextSteps() {
             step: step.name,
             description: step.description,
             status,
-            priority: step.priority === 'high' ? 'haute' : step.priority === 'medium' ? 'moyenne' : 'basse',
-            agents: step.agents
+            priority:
+              step.priority === 'high' ? 'haute' : step.priority === 'medium' ? 'moyenne' : 'basse',
+            agents: step.agents,
           });
         }
       }
@@ -529,7 +535,7 @@ async function generateNextSteps() {
           description: 'Vérification finale et déploiement',
           status: 'non démarré',
           priority: 'haute',
-          agents: ['quality', 'assembler']
+          agents: ['quality', 'assembler'],
         });
       }
 
@@ -570,7 +576,10 @@ app.get('/api/next-steps', (req, res) => {
 // Route principale pour le tableau de bord
 app.get('/', (req, res) => {
   // Vérifier si le fichier existe dans le dossier layered-dashboards
-  const layeredDashboardPath = path.join(PATHS.LAYERED_DASHBOARDS_DIR, `${argv.view || 'base'}-dashboard.tsx`);
+  const layeredDashboardPath = path.join(
+    PATHS.LAYERED_DASHBOARDS_DIR,
+    `${argv.view || 'base'}-dashboard.tsx`
+  );
 
   if (fs.existsSync(layeredDashboardPath)) {
     // Retourner un message informant que le tableau de bord Remix est disponible
@@ -709,11 +718,15 @@ app.get('/', (req, res) => {
 
 // Démarrage du serveur
 app.listen(PORT, () => {
-  console.log(chalk.green(`🚀 Tableau de bord ${argv.view || 'migration'} démarré sur http://localhost:${PORT}`));
-  console.log(chalk.blue('📊 Visualisez l\'état de la migration et suivez sa progression'));
+  console.log(
+    chalk.green(
+      `🚀 Tableau de bord ${argv.view || 'migration'} démarré sur http://localhost:${PORT}`
+    )
+  );
+  console.log(chalk.blue("📊 Visualisez l'état de la migration et suivez sa progression"));
 
   // Mettre à jour l'état initial
-  updateMigrationState().catch(error => {
+  updateMigrationState().catch((error) => {
     console.error(chalk.red(`Erreur lors de l'initialisation de l'état: ${error.message}`));
   });
 });
@@ -725,5 +738,5 @@ module.exports = {
   analyzeModules,
   collectMetrics,
   identifyIssues,
-  generateNextSteps
+  generateNextSteps,
 };

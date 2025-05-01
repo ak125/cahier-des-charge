@@ -5,8 +5,8 @@ import { GeneratorAgent } from '@workspaces/cahier-des-charge/src/core/interface
  * Date: 12 avril 2025
  */
 
-import { ServerConfig, RouteConfig, TLSConfig } from '../migration/CaddyfileGenerator';
 import { BaseAgent, BusinessAgent } from '../core/interfaces/BaseAgent';
+import { RouteConfig, ServerConfig, TLSConfig } from '../migration/CaddyfileGenerator';
 
 
 /**

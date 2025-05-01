@@ -3,8 +3,8 @@
  * Agent export file
  */
 
-import { monitoring } from ./monitoring-checkstructure-agent';
-import { BusinessAgent } from ../../core/interfacesstructure-agent';
+import { BusinessAgent } from '../../core/interfacesstructure-agent';
+import { monitoring } from './monitoring-checkstructure-agent';
 
 export { monitoring };
 export default monitoring;

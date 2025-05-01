@@ -4,8 +4,8 @@
  * et les opérations sur les connexions à MySQL.
  */
 
-import mysql from 'mysql2/promise';
 import { EventEmitter } from 'events';
+import mysql from 'mysql2/promise';
 
 // Type pour les options de connexion
 export interface MySQLConnectionOptions {
@@ -15,22 +15,22 @@ export interface MySQLConnectionOptions {
   user: string;
   password: string;
   ssl?: boolean | mysql.SslOptions;
-  connectionLimit?: number;        // Nombre maximum de connexions dans le pool
-  queueLimit?: number;             // Nombre maximum de requêtes en attente
-  waitForConnections?: boolean;    // Attendre une connexion disponible
-  idleTimeout?: number;            // Temps maximal d'inactivité d'une connexion avant d'être détruite (ms)
-  connectionTimeout?: number;      // Temps maximal d'attente pour une connexion (ms)
-  timezone?: string;               // Fuseau horaire pour les dates
-  charset?: string;                // Jeu de caractères pour la connexion
+  connectionLimit?: number; // Nombre maximum de connexions dans le pool
+  queueLimit?: number; // Nombre maximum de requêtes en attente
+  waitForConnections?: boolean; // Attendre une connexion disponible
+  idleTimeout?: number; // Temps maximal d'inactivité d'une connexion avant d'être détruite (ms)
+  connectionTimeout?: number; // Temps maximal d'attente pour une connexion (ms)
+  timezone?: string; // Fuseau horaire pour les dates
+  charset?: string; // Jeu de caractères pour la connexion
 }
 
 // Type pour les statistiques de pool
 export interface PoolStats {
-  total: number;       // Nombre total de connexions créées
-  free: number;        // Nombre de connexions libres
-  busy: number;        // Nombre de connexions occupées
-  queued: number;      // Nombre de requêtes en attente
-  maxConnections: number;  // Nombre maximum de connexions configurées
+  total: number; // Nombre total de connexions créées
+  free: number; // Nombre de connexions libres
+  busy: number; // Nombre de connexions occupées
+  queued: number; // Nombre de requêtes en attente
+  maxConnections: number; // Nombre maximum de connexions configurées
 }
 
 // Type pour les événements du service
@@ -45,7 +45,7 @@ export interface DatabaseConnectionEvents {
 
 /**
  * Service de gestion des connexions à MySQL
- * 
+ *
  * Caractéristiques:
  * - Gestion de pools de connexions
  * - Reconnexion automatique
@@ -57,10 +57,10 @@ export interface DatabaseConnectionEvents {
 export class DatabaseConnectionService {
   private pool: mysql.Pool | null = null;
   private connectionOptions: MySQLConnectionOptions;
-  private isConnected: boolean = false;
-  private reconnectAttempts: number = 0;
-  private maxReconnectAttempts: number = 5;
-  private reconnectInterval: number = 5000; // 5 secondes
+  private isConnected = false;
+  private reconnectAttempts = 0;
+  private maxReconnectAttempts = 5;
+  private reconnectInterval = 5000; // 5 secondes
   private eventEmitter: EventEmitter = new EventEmitter();
   private poolStatsInterval: NodeJS.Timeout | null = null;
 
@@ -81,7 +81,7 @@ export class DatabaseConnectionService {
    * @param forceNew Force la création d'une nouvelle connexion même si une connexion existe déjà
    * @returns Promise résolu quand la connexion est établie
    */
-  async connect(forceNew: boolean = false): Promise<void> {
+  async connect(forceNew = false): Promise<void> {
     if (this.isConnected && this.pool && !forceNew) {
       return;
     }
@@ -101,46 +101,50 @@ export class DatabaseConnectionService {
         ssl: this.connectionOptions.ssl,
         connectionLimit: this.connectionOptions.connectionLimit || 10,
         queueLimit: this.connectionOptions.queueLimit || 0,
-        waitForConnections: this.connectionOptions.waitForConnections !== undefined 
-          ? this.connectionOptions.waitForConnections 
-          : true,
+        waitForConnections:
+          this.connectionOptions.waitForConnections !== undefined
+            ? this.connectionOptions.waitForConnections
+            : true,
         connectTimeout: this.connectionOptions.connectionTimeout || 10000,
         timezone: this.connectionOptions.timezone || 'local',
-        charset: this.connectionOptions.charset || 'utf8mb4'
+        charset: this.connectionOptions.charset || 'utf8mb4',
       };
 
       // Créer le pool de connexions
       this.pool = mysql.createPool(poolOptions);
 
       // Tester la connexion avec une requête simple
-      const [rows] = await this.pool.query('SELECT 1 AS test');
-      
+      const [_rows] = await this.pool.query('SELECT 1 AS test');
+
       this.isConnected = true;
       this.reconnectAttempts = 0;
       this.emit('connected');
-      
+
       // Démarrer la collecte périodique des statistiques du pool
       this.startPoolStats();
-      
+
       console.log(`Connexion MySQL établie: ${this.getConnectionStringForDisplay()}`);
       return;
     } catch (error) {
       this.isConnected = false;
       this.emit('error', error);
       console.error(`Erreur de connexion à MySQL: ${error.message}`);
-      
+
       // Tentative de reconnexion automatique si configurée
       if (this.reconnectAttempts < this.maxReconnectAttempts) {
         this.reconnectAttempts++;
-        this.emit('warning', `Tentative de reconnexion ${this.reconnectAttempts}/${this.maxReconnectAttempts} dans ${this.reconnectInterval}ms`);
-        
+        this.emit(
+          'warning',
+          `Tentative de reconnexion ${this.reconnectAttempts}/${this.maxReconnectAttempts} dans ${this.reconnectInterval}ms`
+        );
+
         setTimeout(() => {
-          this.connect(true).catch(e => {
+          this.connect(true).catch((e) => {
             console.error(`Échec de la tentative de reconnexion: ${e.message}`);
           });
         }, this.reconnectInterval);
       }
-      
+
       throw new Error(`Échec de connexion à MySQL: ${error.message}`);
     }
   }
@@ -181,22 +185,22 @@ export class DatabaseConnectionService {
     }
 
     if (!this.pool) {
-      throw new Error('La connexion MySQL n\'est pas disponible');
+      throw new Error("La connexion MySQL n'est pas disponible");
     }
 
     const startTime = Date.now();
     try {
       const [rows] = await this.pool.query(query, params);
-      
+
       const duration = Date.now() - startTime;
       this.emit('query', query, params, duration);
-      
+
       return rows as T[];
     } catch (error) {
       const duration = Date.now() - startTime;
       this.emit('error', error);
       this.emit('query', query, params, duration);
-      
+
       throw new Error(`Erreur d'exécution de requête: ${error.message}`);
     }
   }
@@ -211,7 +215,7 @@ export class DatabaseConnectionService {
     }
 
     if (!this.pool) {
-      throw new Error('La connexion MySQL n\'est pas disponible');
+      throw new Error("La connexion MySQL n'est pas disponible");
     }
 
     try {
@@ -262,8 +266,8 @@ export class DatabaseConnectionService {
    */
   async listDatabases(): Promise<string[]> {
     try {
-      const rows = await this.executeQuery<{Database: string}>('SHOW DATABASES');
-      return rows.map(row => row.Database);
+      const rows = await this.executeQuery<{ Database: string }>('SHOW DATABASES');
+      return rows.map((row) => row.Database);
     } catch (error) {
       throw new Error(`Erreur de listage des bases de données: ${error.message}`);
     }
@@ -292,11 +296,11 @@ export class DatabaseConnectionService {
    * @param database Nom de la base de données à créer
    * @param setAsCurrent Définit la nouvelle base de données comme base de données courante si true
    */
-  async createDatabase(database: string, setAsCurrent: boolean = false): Promise<void> {
+  async createDatabase(database: string, setAsCurrent = false): Promise<void> {
     try {
       await this.executeQuery(`CREATE DATABASE IF NOT EXISTS \`${database}\``);
       console.log(`Base de données '${database}' créée ou déjà existante`);
-      
+
       if (setAsCurrent) {
         await this.useDatabase(database);
       }
@@ -314,10 +318,10 @@ export class DatabaseConnectionService {
       if (!this.pool || !this.isConnected) {
         await this.connect();
       }
-      
+
       await this.executeQuery('SELECT 1');
       return true;
-    } catch (error) {
+    } catch (_error) {
       return false;
     }
   }
@@ -330,18 +334,18 @@ export class DatabaseConnectionService {
     if (!this.pool) {
       return null;
     }
-    
+
     // MySQL2 ne fournit pas directement les statistiques du pool
     // Nous utilisons les propriétés internes pour les estimer
     // Ces propriétés peuvent changer dans les futures versions
     const pool = this.pool as any;
-    
+
     return {
       total: pool._allConnections?.length || 0,
       free: pool._freeConnections?.length || 0,
       busy: (pool._allConnections?.length || 0) - (pool._freeConnections?.length || 0),
       queued: pool._connectionQueue?.length || 0,
-      maxConnections: this.connectionOptions.connectionLimit || 10
+      maxConnections: this.connectionOptions.connectionLimit || 10,
     };
   }
 
@@ -359,7 +363,7 @@ export class DatabaseConnectionService {
    * @param listener Fonction à appeler quand l'événement se produit
    */
   on<K extends keyof DatabaseConnectionEvents>(
-    event: K, 
+    event: K,
     listener: DatabaseConnectionEvents[K]
   ): this {
     this.eventEmitter.on(event, listener as any);
@@ -372,7 +376,7 @@ export class DatabaseConnectionService {
    * @param listener Fonction à retirer
    */
   off<K extends keyof DatabaseConnectionEvents>(
-    event: K, 
+    event: K,
     listener: DatabaseConnectionEvents[K]
   ): this {
     this.eventEmitter.off(event, listener as any);
@@ -410,7 +414,7 @@ export class DatabaseConnectionService {
     if (this.poolStatsInterval) {
       clearInterval(this.poolStatsInterval);
     }
-    
+
     this.poolStatsInterval = setInterval(() => {
       const stats = this.getPoolStats();
       if (stats) {
@@ -439,39 +443,41 @@ export class DatabaseConnectionService {
       if (!connectionString.startsWith('mysql://')) {
         throw new Error('La chaîne de connexion doit commencer par mysql://');
       }
-      
+
       const url = new URL(connectionString);
-      
+
       // Extraire les paramètres
       const host = url.hostname;
       const port = url.port ? parseInt(url.port, 10) : 3306;
       const database = url.pathname.slice(1); // Supprimer le / initial
       const user = url.username;
       const password = url.password;
-      
+
       // Paramètres optionnels
       const ssl = url.searchParams.get('ssl') === 'true';
-      const connectionLimit = url.searchParams.get('connectionLimit') 
-        ? parseInt(url.searchParams.get('connectionLimit') as string, 10) 
+      const connectionLimit = url.searchParams.get('connectionLimit')
+        ? parseInt(url.searchParams.get('connectionLimit') as string, 10)
         : undefined;
-      const queueLimit = url.searchParams.get('queueLimit') 
-        ? parseInt(url.searchParams.get('queueLimit') as string, 10) 
+      const queueLimit = url.searchParams.get('queueLimit')
+        ? parseInt(url.searchParams.get('queueLimit') as string, 10)
         : undefined;
       const waitForConnections = url.searchParams.get('waitForConnections') === 'true';
-      const idleTimeout = url.searchParams.get('idleTimeout') 
-        ? parseInt(url.searchParams.get('idleTimeout') as string, 10) 
+      const idleTimeout = url.searchParams.get('idleTimeout')
+        ? parseInt(url.searchParams.get('idleTimeout') as string, 10)
         : undefined;
-      const connectionTimeout = url.searchParams.get('connectionTimeout') 
-        ? parseInt(url.searchParams.get('connectionTimeout') as string, 10) 
+      const connectionTimeout = url.searchParams.get('connectionTimeout')
+        ? parseInt(url.searchParams.get('connectionTimeout') as string, 10)
         : undefined;
       const timezone = url.searchParams.get('timezone') || undefined;
       const charset = url.searchParams.get('charset') || undefined;
-      
+
       // Vérifier les paramètres obligatoires
       if (!host || !database || !user) {
-        throw new Error('La chaîne de connexion doit contenir un hôte, une base de données et un utilisateur');
+        throw new Error(
+          'La chaîne de connexion doit contenir un hôte, une base de données et un utilisateur'
+        );
       }
-      
+
       return {
         host,
         port,
@@ -485,7 +491,7 @@ export class DatabaseConnectionService {
         idleTimeout,
         connectionTimeout,
         timezone,
-        charset
+        charset,
       };
     } catch (error) {
       throw new Error(`Erreur d'analyse de la chaîne de connexion: ${error.message}`);

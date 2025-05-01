@@ -1,14 +1,13 @@
 /**
  * Pont d'intégration
- * 
+ *
  * Fait partie de la Couche de coordination - Communication entre les agents et intégration
  * Responsabilité: Faciliter la communication entre les agents, assurer l'interopérabilité et gérer les intégrations externes
  */
 
-import { BaseAgent } from ../../../core/interfaces/BaseAgentstructure-agent';
+import { BaseAgent } from '../../../core/interfaces/BaseAgentstructure-agent';
 
 export interface BridgeAgent extends BaseAgent {
-
   /**
    * Établit une connexion entre deux systèmes
    */

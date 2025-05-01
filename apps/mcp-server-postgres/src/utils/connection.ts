@@ -23,7 +23,7 @@ export function parseConnectionString(connectionString: string): ConnectionInfo 
     if (!connectionString.startsWith('postgresql://')) {
       throw new Error('La chaîne de connexion doit commencer par postgresql://');
     }
-    
+
     // Extraire les composants
     const url = new URL(connectionString);
     const user = url.username;
@@ -31,16 +31,16 @@ export function parseConnectionString(connectionString: string): ConnectionInfo 
     const host = url.hostname;
     const port = url.port ? parseInt(url.port, 10) : 5432;
     const database = url.pathname.slice(1); // Enlever le / initial
-    
+
     // Extraire les options SSL et le schéma des paramètres de requête
     const ssl = url.searchParams.get('ssl') === 'true';
     const schema = url.searchParams.get('schema') || 'public';
-    
+
     // Vérifier que les informations nécessaires sont présentes
     if (!user || !host || !database) {
       throw new Error('Informations de connexion incomplètes');
     }
-    
+
     return {
       user,
       password,
@@ -48,10 +48,14 @@ export function parseConnectionString(connectionString: string): ConnectionInfo 
       port,
       database,
       ssl,
-      schema
+      schema,
     };
   } catch (error) {
-    throw new Error(`Erreur d'analyse de la chaîne de connexion: ${error instanceof Error ? error.message : String(error)}`);
+    throw new Error(
+      `Erreur d'analyse de la chaîne de connexion: ${
+        error instanceof Error ? error.message : String(error)
+      }`
+    );
   }
 }
 
@@ -60,7 +64,7 @@ export function parseConnectionString(connectionString: string): ConnectionInfo 
  */
 export function buildConnectionString(info: ConnectionInfo): string {
   const baseUrl = `postgresql://${info.user}:${info.password}@${info.host}:${info.port}/${info.database}`;
-  
+
   // Ajouter les paramètres optionnels
   const params = new URLSearchParams();
   if (info.ssl) {
@@ -69,7 +73,7 @@ export function buildConnectionString(info: ConnectionInfo): string {
   if (info.schema && info.schema !== 'public') {
     params.set('schema', info.schema);
   }
-  
+
   const paramsString = params.toString();
   return paramsString ? `${baseUrl}?${paramsString}` : baseUrl;
 }

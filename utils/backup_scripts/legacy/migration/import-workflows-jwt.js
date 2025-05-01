@@ -137,9 +137,9 @@ function cleanJsonFile(filePath) {
         content = content.replace(/[\x00-\x1F\x7F-\x9F]/g, '');
         
         // Vérifier et fermer les accolades/crochets manquants
-        let openBraces = (content.match(/{/g) || []).length;
+        const openBraces = (content.match(/{/g) || []).length;
         let closeBraces = (content.match(/}/g) || []).length;
-        let openBrackets = (content.match(/\[/g) || []).length;
+        const openBrackets = (content.match(/\[/g) || []).length;
         let closeBrackets = (content.match(/\]/g) || []).length;
         
         while (openBraces > closeBraces) {

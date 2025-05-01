@@ -18,7 +18,7 @@ interface AuditSection {
  */
 export class QualityAgent implements BaseAgent, BusinessAgent, BaseAgent, BusinessAgent {
   private filePath: string;
-  private fileContent: string = '';
+  private fileContent = '';
   private sections: AuditSection[] = [];
 
   constructor(filePath: string) {

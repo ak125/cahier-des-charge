@@ -22,7 +22,7 @@ export enum AgentStatus {
   IDLE = 'idle',
   RUNNING = 'running',
   COMPLETED = 'completed',
-  FAILED = 'failed'
+  FAILED = 'failed',
 }
 
 export interface LogEntry {

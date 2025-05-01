@@ -2,9 +2,9 @@
  * Point d'entrée pour le service de connexion à PostgreSQL
  */
 
-export { 
+export {
   DatabaseConnectionService,
   PostgresConnectionOptions,
   PoolStats,
-  DatabaseConnectionEvents
+  DatabaseConnectionEvents,
 } from './database-connection-service';

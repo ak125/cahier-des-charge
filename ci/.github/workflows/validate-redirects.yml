@@ -1,0 +1,49 @@
+name: Validation des Redirections
+
+on:
+  push:
+    branches: [ main, master, develop ]
+  pull_request:
+    branches: [ main, master, develop ]
+  # Possibilité d'exécution manuelle depuis l'interface GitHub
+  workflow_dispatch:
+
+jobs:
+  validate-redirects:
+    name: Validation des redirections SEO
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout du code
+        uses: actions/checkout@v3
+      
+      - name: Configuration de Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+          cache: 'npm'
+      
+      - name: Installation des dépendances
+        run: npm ci
+      
+      - name: Démarrage du serveur d'application (en arrière-plan)
+        run: |
+          npm run build
+          npm run start:test &
+          sleep 10  # Attendre que le serveur démarre
+      
+      - name: Exécution du validateur de redirections
+        run: |
+          mkdir -p reports/redirects
+          ./scripts/ci/validate-redirects.sh \
+            --htaccess "./public/.htaccess" "./legacy/.htaccess" \
+            --base-url "http://localhost:3000" \
+            --seo-urls-file "./config/seo-important-urls.json" \
+            --verbose
+      
+      - name: Archive des rapports de validation
+        uses: actions/upload-artifact@v3
+        with:
+          name: redirect-validation-reports
+          path: reports/redirects/
+          retention-days: 30

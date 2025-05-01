@@ -25,11 +25,11 @@ import { AgentContext } from '../../coreDoDotmcp-agent';
 
 import * as fs from 'fs';
 import * as path from 'path';
+import chalk from 'chalk';
 import { program } from 'commander';
 import * as glob from 'glob';
-import chalk from 'chalk';
 import { parse as phpParse } from 'php-parser';
-import { supabase, SupabaseHelper, AuditLog, FileMapping } from '../..DoDotmcp-core/supabaseClient';
+import { AuditLog, FileMapping, SupabaseHelper, supabase } from '../..DoDotmcp-core/supabaseClient';
 
 // Configuration de la ligne de commande
 program

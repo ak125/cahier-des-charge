@@ -1,25 +1,25 @@
-import { PipeTransform, Injectable, ArgumentMetadata, BadRequestException } from '@nestjs/common';
-import { ZodSchema, ZodError } from 'zod';
+import { ArgumentMetadata, BadRequestException, Injectable, PipeTransform } from '@nestjs/common';
+import { ZodError, ZodSchema } from 'zod';
 
 @Injectable()
 export class ZodValidationPipe implements PipeTransform {
   constructor(private schema: ZodSchema) {}
 
-  transform(value: unknown, metadata: ArgumentMetadata) {
+  transform(value: unknown, _metadata: ArgumentMetadata) {
     try {
       return this.schema.parse(value);
     } catch (error) {
       if (error instanceof ZodError) {
         // Formatage élégant des erreurs de validation Zod
-        const formattedErrors = error.errors.map(err => ({
+        const formattedErrors = error.errors.map((err) => ({
           path: err.path.join('.'),
           message: err.message,
-          code: err.code
+          code: err.code,
         }));
-        
+
         throw new BadRequestException({
           message: 'Erreur de validation',
-          errors: formattedErrors
+          errors: formattedErrors,
         });
       }
       throw error;
@@ -32,22 +32,22 @@ export class ZodValidationPipe implements PipeTransform {
 export class ZodPartialValidationPipe implements PipeTransform {
   constructor(private schema: ZodSchema) {}
 
-  transform(value: unknown, metadata: ArgumentMetadata) {
+  transform(value: unknown, _metadata: ArgumentMetadata) {
     try {
       // Création d'une version partielle du schéma (tous les champs optionnels)
       const partialSchema = this.schema.partial();
       return partialSchema.parse(value);
     } catch (error) {
       if (error instanceof ZodError) {
-        const formattedErrors = error.errors.map(err => ({
+        const formattedErrors = error.errors.map((err) => ({
           path: err.path.join('.'),
           message: err.message,
-          code: err.code
+          code: err.code,
         }));
-        
+
         throw new BadRequestException({
           message: 'Erreur de validation',
-          errors: formattedErrors
+          errors: formattedErrors,
         });
       }
       throw error;

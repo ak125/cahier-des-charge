@@ -5,16 +5,16 @@ import type { CanonicalConfig } from './canonical';
 interface UseCanonicalOptions {
   // URL personnalisée à utiliser (surcharge l'URL actuelle)
   customPath?: string;
-  
+
   // Configuration personnalisée (surcharge la config par défaut)
   config?: Partial<CanonicalConfig>;
-  
+
   // Extraire l'URL canonique depuis les données de route
   extractFromRouteData?: boolean;
-  
+
   // Clé dans les données de route où chercher l'URL canonique
   routeDataKey?: string;
-  
+
   // Autoriser les fragments d'URL (#)
   allowFragments?: boolean;
 }
@@ -32,7 +32,7 @@ const defaultConfig: CanonicalConfig = {
 
 /**
  * Hook pour générer facilement des URL canoniques dans les composants Remix
- * 
+ *
  * @example
  * // Dans un composant :
  * const canonical = useCanonical();
@@ -47,16 +47,16 @@ const defaultConfig: CanonicalConfig = {
 export function useCanonical(options: UseCanonicalOptions = {}): string {
   const location = useLocation();
   const matches = useMatches();
-  
+
   // Fusionner la configuration par défaut avec les options
   const config = useMemo(() => {
     return { ...defaultConfig, ...options.config };
   }, [options.config]);
-  
+
   // Chercher une URL canonique dans les données de route si demandé
   const canonicalFromRouteData = useMemo(() => {
     if (!options.extractFromRouteData) return null;
-    
+
     // Parcourir les routes matchées, de la plus spécifique à la plus générale
     for (const match of [...matches].reverse()) {
       if (match.data) {
@@ -66,22 +66,22 @@ export function useCanonical(options: UseCanonicalOptions = {}): string {
         }
       }
     }
-    
+
     return null;
   }, [matches, options.extractFromRouteData, options.routeDataKey]);
-  
+
   // Déterminer l'URL à utiliser (par ordre de priorité)
   const pathToUse = useMemo(() => {
     // 1. URL personnalisée fournie directement
     if (options.customPath) {
       return options.customPath;
     }
-    
+
     // 2. URL canonique trouvée dans les données de route
     if (canonicalFromRouteData) {
       return canonicalFromRouteData;
     }
-    
+
     // 3. URL actuelle
     return `${location.pathname}${location.search}${options.allowFragments ? location.hash : ''}`;
   }, [
@@ -90,16 +90,16 @@ export function useCanonical(options: UseCanonicalOptions = {}): string {
     location.pathname,
     location.search,
     location.hash,
-    options.allowFragments
+    options.allowFragments,
   ]);
-  
+
   // Générer l'URL canonique
   return useMemo(() => {
     // Vérifier si nous avons un mapping personnalisé pour cette URL
-    if (config.customMapping && config.customMapping[pathToUse]) {
+    if (config.customMapping?.[pathToUse]) {
       return generateCanonicalURL(config.customMapping[pathToUse], config);
     }
-    
+
     return generateCanonicalURL(pathToUse, config);
   }, [pathToUse, config]);
 }
@@ -107,10 +107,7 @@ export function useCanonical(options: UseCanonicalOptions = {}): string {
 /**
  * Génère une URL canonique à partir d'une URL relative ou absolue
  */
-function generateCanonicalURL(
-  path: string,
-  config: CanonicalConfig
-): string {
+function generateCanonicalURL(path: string, config: CanonicalConfig): string {
   // Ne pas modifier les URL externes
   if (path.startsWith('http') && !path.includes(new URL(config.baseUrl).hostname)) {
     return path;
@@ -119,9 +116,7 @@ function generateCanonicalURL(
   // Construire l'URL
   try {
     // Pour les chemins relatifs, ajouter le baseUrl
-    const url = path.startsWith('http')
-      ? new URL(path)
-      : new URL(path, config.baseUrl);
+    const url = path.startsWith('http') ? new URL(path) : new URL(path, config.baseUrl);
 
     // Appliquer les règles de normalisation
     if (config.forceHttps) {
@@ -136,13 +131,13 @@ function generateCanonicalURL(
     if (config.removeQueryParams && url.search) {
       const params = new URLSearchParams(url.search);
       const newParams = new URLSearchParams();
-      
+
       for (const [key, value] of params.entries()) {
         if (config.allowedQueryParams.includes(key)) {
           newParams.append(key, value);
         }
       }
-      
+
       url.search = newParams.toString() ? `?${newParams.toString()}` : '';
     }
 
@@ -166,7 +161,10 @@ function generateCanonicalURL(
 /**
  * Aide à créer une balise <link rel="canonical"> pour les fonctions meta ou links de Remix
  */
-export function createCanonicalMeta(url?: string, options: Omit<UseCanonicalOptions, 'customPath'> = {}) {
+export function createCanonicalMeta(
+  url?: string,
+  options: Omit<UseCanonicalOptions, 'customPath'> = {}
+) {
   const canonicalUrl = url || useCanonical({ ...options, customPath: url });
   return { rel: 'canonical', href: canonicalUrl };
 }
@@ -183,7 +181,7 @@ export function createCanonicalLink(url?: string) {
 
 /**
  * Utilitaire pour générer une URL canonique à partir d'une ancienne URL PHP
- * 
+ *
  * @example
  * // Ancien format: /fiche.php?id=123
  * // Nouveau format: /fiche/plaquettes-frein-bosch
@@ -191,25 +189,25 @@ export function createCanonicalLink(url?: string) {
 export function mapPhpUrlToCanonical(phpUrl: string): string {
   // On pourrait ici implémenter une logique personnalisée
   // ou utiliser une table de correspondance
-  
+
   // Exemple simplifié:
   const url = new URL(phpUrl, 'https://placeholder.com');
   const path = url.pathname;
-  
+
   // Extraire les paramètres
   const params = Object.fromEntries(url.searchParams);
-  
+
   // Mapper les URL PHP vers Remix
   if (path === '/fiche.php' && params.id) {
     // Idéalement, on chercherait le slug dans une base de données
     // Mais ici, on simule juste
     return `/fiche/${params.id}`;
   }
-  
+
   if (path === '/categorie.php' && params.id) {
     return `/categorie/${params.id}`;
   }
-  
+
   // Par défaut, juste remplacer .php par rien
   return path.replace('.php', '');
 }

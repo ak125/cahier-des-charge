@@ -1,10 +1,10 @@
 #!/usr/bin/env ts-node
-import * as fs from 'fs/promises';
-import * as path from 'path';
 import { execSync } from 'child_process';
+import * as path from 'path';
+import * as fs from 'fs/promises';
 import { BusinessAgent } from './agents/AgentBusiness';
-import { StructureAgent } from './agents/AgentStructure';
 import { QualityAgent } from './agents/AgentQuality';
+import { StructureAgent } from './agents/AgentStructure';
 import { AssemblerAgent } from './assembler-agent';
 
 interface AuditOptions {
@@ -24,7 +24,7 @@ async function runAudit(options: AuditOptions): Promise<void> {
     outputDir = path.dirname(filePath),
     agents = ['business', 'structure', 'quality', 'assembler'],
     saveToGit = false,
-    createPR = false
+    createPR = false,
   } = options;
 
   console.log(`🔍 Démarrage de l'audit pour ${filePath}`);
@@ -32,7 +32,7 @@ async function runAudit(options: AuditOptions): Promise<void> {
   // Vérifier si le fichier existe
   try {
     await fs.access(filePath);
-  } catch (error) {
+  } catch (_error) {
     throw new Error(`Le fichier ${filePath} n'existe pas.`);
   }
 
@@ -49,25 +49,33 @@ async function runAudit(options: AuditOptions): Promise<void> {
 
     try {
       switch (agent) {
-        case 'business':
+        case 'business': {
           const businessAgent = new BusinessAgent(filePath);
-          await businessAgent.process(path.join(outputDir, `${path.basename(filePath)}.business.md`));
+          await businessAgent.process(
+            path.join(outputDir, `${path.basename(filePath)}.business.md`)
+          );
           break;
+        }
 
-        case 'structure':
+        case 'structure': {
           const structureAgent = new StructureAgent(filePath);
-          await structureAgent.process(path.join(outputDir, `${path.basename(filePath)}.structure.md`));
+          await structureAgent.process(
+            path.join(outputDir, `${path.basename(filePath)}.structure.md`)
+          );
           break;
+        }
 
-        case 'quality':
+        case 'quality': {
           const qualityAgent = new QualityAgent(filePath);
           await qualityAgent.process(path.join(outputDir, `${path.basename(filePath)}.quality.md`));
           break;
+        }
 
-        case 'assembler':
+        case 'assembler': {
           const assemblerAgent = new AssemblerAgent(filePath);
           await assemblerAgent.process();
           break;
+        }
 
         default:
           console.warn(`⚠️ Agent inconnu: ${agent}`);
@@ -104,9 +112,15 @@ async function runAudit(options: AuditOptions): Promise<void> {
 
       // Créer une PR si demandé
       if (createPR) {
-        console.log('🔄 Création d\'une Pull Request...');
+        console.log("🔄 Création d'une Pull Request...");
 
-        execSync(`gh pr create --title "Audit: ${path.basename(filePath)}" --body "Audit automatique du fichier ${path.basename(filePath)}" --label "audit,migration"`);
+        execSync(
+          `gh pr create --title "Audit: ${path.basename(
+            filePath
+          )}" --body "Audit automatique du fichier ${path.basename(
+            filePath
+          )}" --label "audit,migration"`
+        );
 
         console.log('✅ Pull Request créée avec succès.');
       }
@@ -127,7 +141,9 @@ async function main() {
     console.error('Usage: ./run-audit.ts <fichier-php> [options]');
     console.error('Options:');
     console.error('  --output-dir <dir>    Répertoire de sortie');
-    console.error('  --agents <agents>     Agents à exécuter (business,structure,quality,assembler)');
+    console.error(
+      '  --agents <agents>     Agents à exécuter (business,structure,quality,assembler)'
+    );
     console.error('  --save-to-git         Enregistrer les résultats dans Git');
     console.error('  --create-pr           Créer une Pull Request');
     process.exit(1);

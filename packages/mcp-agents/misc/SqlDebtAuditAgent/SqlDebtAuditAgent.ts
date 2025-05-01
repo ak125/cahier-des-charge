@@ -3,8 +3,8 @@
  * Agent export file
  */
 
-import { sql } from './sql-debt-audit';
 import { BusinessAgent } from '../../core/interfaces';
+import { sql } from './sql-debt-audit';
 
 export { sql };
 export default sql;

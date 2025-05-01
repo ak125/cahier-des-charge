@@ -99,33 +99,18 @@
     "slack": {
       "enabled": true,
       "channel": "#migrations-status",
-      "events": [
-        "migration:completed",
-        "migration:failed",
-        "qa:ok",
-        "qa:failed",
-        "pr:created"
-      ]
+      "events": ["migration:completed", "migration:failed", "qa:ok", "qa:failed", "pr:created"]
     },
     "email": {
       "enabled": true,
-      "recipients": [
-        "team@example.com",
-        "dev.team@example.com"
-      ],
-      "events": [
-        "migration:failed",
-        "qa:failed"
-      ]
+      "recipients": ["team@example.com", "dev.team@example.com"],
+      "events": ["migration:failed", "qa:failed"]
     },
     "github": {
       "enabled": true,
       "repo": "monorepo",
       "owner": "your-organization",
-      "events": [
-        "migration:completed",
-        "qa:ok"
-      ]
+      "events": ["migration:completed", "qa:ok"]
     }
   },
   "integrations": {

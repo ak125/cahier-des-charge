@@ -5,7 +5,4 @@
 
 import { PrismaGeneratorAgent } from './PrismaGeneratorAgent';
 
-export {
-  PrismaGeneratorAgent,
-};
-
+export { PrismaGeneratorAgent };

@@ -1,16 +1,16 @@
 /**
  * Templates pour la migration manuelle des agents non-standards
- * 
+ *
  * Ce fichier contient des templates pour aider à transformer différentes structures
  * d'agents en classes conformes à la nouvelle architecture abstraite.
  */
 
 /**
- * Template pour transformer un agent basé sur un objet 
+ * Template pour transformer un agent basé sur un objet
  * (export const myAgent = {...}) en classe abstraite
  */
 export const objectToClassTemplate = `
-import { AbstractXXXAgent } from ../abstract-xxxstructure-agent';
+import { AbstractXXXAgent } from '../abstract-xxxstructure-agent'
 
 // Définition des types d'entrée/sortie
 interface InputType {
@@ -69,7 +69,7 @@ export class XXXAgent extends AbstractXXXAgent<InputType, OutputType> {
  * en classe abstraite avec une méthode standardisée (analyze, validate, etc.)
  */
 export const classToAbstractTemplate = `
-import { AbstractXXXAgent } from ../abstract-xxxstructure-agent';
+import { AbstractXXXAgent } from '../abstract-xxxstructure-agent'
 
 // Définition des types d'entrée/sortie
 interface InputType {
@@ -119,11 +119,11 @@ export class XXXAgent extends AbstractXXXAgent<InputType, OutputType> {
 `;
 
 /**
- * Template pour transformer un agent qui exporte une fonction 
+ * Template pour transformer un agent qui exporte une fonction
  * en classe abstraite
  */
 export const functionToClassTemplate = `
-import { AbstractXXXAgent } from ../abstract-xxxstructure-agent';
+import { AbstractXXXAgent } from '../abstract-xxxstructure-agent'
 
 // Définition des types d'entrée/sortie
 interface InputType {
@@ -223,12 +223,12 @@ export const migrationSteps = `
  * Exemple spécifique pour la migration de l'agent NestJSGenerator
  */
 export const nestjsGeneratorMigrationExample = `
-import { AbstractGeneratorAgent } from ../AbstractGeneratorstructure-agent';
-import { GenerationResult } from ../../core/interfaces/generator-agentstructure-agent';
-import * as fs from fsstructure-agent';
-import * as path from pathstructure-agent';
-import { PhpAnalysisResult } from ../../analyzers/PhpAnalyzer/PhpAnalyzer-v2structure-agent';
-import { generatePrismaSchema } from ../../core/PrismaGeneratorstructure-agent';
+import { AbstractGeneratorAgent } from '../AbstractGeneratorstructure-agent'
+import { GenerationResult } from '../../core/interfaces/generator-agentstructure-agent'
+import * as fs from 'fsstructure-agent'
+import * as path from 'pathstructure-agent'
+import { PhpAnalysisResult } from '../../analyzers/PhpAnalyzer/PhpAnalyzer-v2structure-agent'
+import { generatePrismaSchema } from '../../core/PrismaGeneratorstructure-agent'
 
 // Interface pour les données d'entrée spécifiques à NestJSGenerator
 interface NestJSGeneratorInput {
@@ -337,12 +337,12 @@ export default new NestJSGeneratorAgent();
  * Exemple spécifique pour la migration de l'agent QAAnalyzer
  */
 export const qaAnalyzerMigrationExample = `
-import { AbstractAnalyzerAgent } from ../AbstractAnalyzerstructure-agent';
-import { AnalysisResult, AnalyzerFinding, AnalysisStats } from ../../core/interfaces/analyzer-agentstructure-agent';
-import * as fs from fsstructure-agent';
-import * as path from pathstructure-agent';
-import { exec } from child_processstructure-agent';
-import { promisify } from utilstructure-agent';
+import { AbstractAnalyzerAgent } from '../AbstractAnalyzerstructure-agent'
+import { AnalysisResult, AnalyzerFinding, AnalysisStats  } from '../../core/interfaces/analyzer-agentstructure-agent'
+import * as fs from 'fsstructure-agent'
+import * as path from 'pathstructure-agent'
+import { exec } from './child_processstructure-agent'
+import { promisify } from './utilstructure-agent'
 
 const execAsync = promisify(exec);
 

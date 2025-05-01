@@ -5,7 +5,4 @@
 
 import { RelationAnalyzerAgent } from './RelationAnalyzerAgent';
 
-export {
-  RelationAnalyzerAgent,
-};
-
+export { RelationAnalyzerAgent };

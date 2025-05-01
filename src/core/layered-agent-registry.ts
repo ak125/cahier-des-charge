@@ -1,35 +1,44 @@
 /**
  * layered-agent-registry.ts
- * 
+ *
  * Registre d'agents avancé pour l'architecture MCP OS en 3 couches
- * 
+ *
  * Ce registre permet:
  * - La découverte automatique des agents par couche
  * - L'instanciation contrôlée des agents
  * - La gestion des dépendances entre agents
  * - Le suivi des métriques d'utilisation
- * 
+ *
  * Il est conçu pour remplacer progressivement l'ancien registre (agentRegistry.ts)
  */
 
-import * as fs from 'fs-extra';
+import { EventEmitter } from 'events';
 import * as path from 'path';
 import { Logger } from '@nestjs/common';
-import { EventEmitter } from 'events';
+import * as fs from 'fs-extra';
 
 // Types pour le manifest
-import { AgentManifestEntry, AgentManifest } from '../../agentRegistry';
+import { AgentManifest, AgentManifestEntry } from '../../agentRegistry';
 
 // Interfaces de la nouvelle architecture
 import { BaseAgent } from './interfaces/BaseAgent';
-import { OrchestratorAgent, SchedulerAgent, MonitorAgent } from './interfaces/orchestration';
-import { BridgeAgent, AdapterAgent, RegistryAgent } from './interfaces/coordination';
-import { AnalyzerAgent, GeneratorAgent, ValidatorAgent, ParserAgent } from './interfaces/business';
+import { AnalyzerAgent, GeneratorAgent, ParserAgent, ValidatorAgent } from './interfaces/business';
+import { AdapterAgent, BridgeAgent, RegistryAgent } from './interfaces/coordination';
+import { MonitorAgent, OrchestratorAgent, SchedulerAgent } from './interfaces/orchestration';
 
 // Type union pour tous les types d'agents
-export type AnyAgent = BaseAgent | OrchestratorAgent | SchedulerAgent | MonitorAgent |
-                      BridgeAgent | AdapterAgent | RegistryAgent |
-                      AnalyzerAgent | GeneratorAgent | ValidatorAgent | ParserAgent;
+export type AnyAgent =
+  | BaseAgent
+  | OrchestratorAgent
+  | SchedulerAgent
+  | MonitorAgent
+  | BridgeAgent
+  | AdapterAgent
+  | RegistryAgent
+  | AnalyzerAgent
+  | GeneratorAgent
+  | ValidatorAgent
+  | ParserAgent;
 
 // Couches disponibles
 export type AgentLayer = 'orchestration' | 'coordination' | 'business';
@@ -94,9 +103,7 @@ export class LayeredAgentRegistry {
   private manifestData: AgentManifest | null = null;
   private isInitialized = false;
 
-  private constructor(
-    private readonly config: LayeredAgentRegistryConfig = {}
-  ) {}
+  private constructor(private readonly config: LayeredAgentRegistryConfig = {}) {}
 
   /**
    * Obtient l'instance singleton du registre
@@ -114,7 +121,7 @@ export class LayeredAgentRegistry {
   public async initialize(): Promise<void> {
     if (this.isInitialized) return;
 
-    this.logger.log('Initialisation du registre d\'agents en couches...');
+    this.logger.log("Initialisation du registre d'agents en couches...");
 
     // Chargement du manifest si présent
     if (this.config.manifestPath) {
@@ -135,14 +142,14 @@ export class LayeredAgentRegistry {
    */
   public async loadManifest(manifestPath: string): Promise<void> {
     try {
-      if (!await fs.pathExists(manifestPath)) {
+      if (!(await fs.pathExists(manifestPath))) {
         this.logger.warn(`⚠️ Le fichier ${manifestPath} n'existe pas`);
         return;
       }
-      
+
       this.manifestData = await fs.readJson(manifestPath);
       this.logger.log(`✅ Manifest d'agents chargé depuis ${manifestPath}`);
-      
+
       // Enregistrer les agents du manifest
       for (const entry of this.manifestData.agents) {
         if (entry.status === 'active') {
@@ -154,15 +161,17 @@ export class LayeredAgentRegistry {
               const AgentClass = (await import(modulePath))[entry.name];
               return new AgentClass();
             } catch (error: any) {
-              this.logger.error(`❌ Erreur lors de l'instanciation de l'agent ${entry.id}: ${error.message}`);
+              this.logger.error(
+                `❌ Erreur lors de l'instanciation de l'agent ${entry.id}: ${error.message}`
+              );
               throw error;
             }
           };
-          
+
           // Déterminer le type et la couche de l'agent à partir du nom et des tags
           const agentType = this.determineAgentType(entry.name, entry.tags);
           const layer = getLayerFromType(agentType);
-          
+
           // Enregistrer l'agent
           this.registerAgent({
             id: entry.id,
@@ -177,13 +186,13 @@ export class LayeredAgentRegistry {
               description: entry.description,
               apiEndpoint: entry.apiEndpoint,
               runInGithubActions: entry.runInGithubActions,
-              config: entry.config
+              config: entry.config,
             },
             metrics: {
               usageCount: 0,
               totalExecutions: 0,
-              successfulExecutions: 0
-            }
+              successfulExecutions: 0,
+            },
           });
         }
       }
@@ -201,64 +210,64 @@ export class LayeredAgentRegistry {
     if (tags) {
       for (const tag of tags) {
         const normalizedTag = tag.toLowerCase();
-        
+
         // Types d'orchestration
-        if (['orchestrator', 'orchestration'].some(t => normalizedTag.includes(t))) {
+        if (['orchestrator', 'orchestration'].some((t) => normalizedTag.includes(t))) {
           return 'orchestrator';
         }
-        if (['scheduler', 'schedule'].some(t => normalizedTag.includes(t))) {
+        if (['scheduler', 'schedule'].some((t) => normalizedTag.includes(t))) {
           return 'scheduler';
         }
-        if (['monitor', 'monitoring'].some(t => normalizedTag.includes(t))) {
+        if (['monitor', 'monitoring'].some((t) => normalizedTag.includes(t))) {
           return 'monitor';
         }
-        
+
         // Types de coordination
-        if (['bridge', 'integration'].some(t => normalizedTag.includes(t))) {
+        if (['bridge', 'integration'].some((t) => normalizedTag.includes(t))) {
           return 'bridge';
         }
-        if (['adapter', 'transform'].some(t => normalizedTag.includes(t))) {
+        if (['adapter', 'transform'].some((t) => normalizedTag.includes(t))) {
           return 'adapter';
         }
-        if (['registry', 'service-discovery'].some(t => normalizedTag.includes(t))) {
+        if (['registry', 'service-discovery'].some((t) => normalizedTag.includes(t))) {
           return 'registry';
         }
-        
+
         // Types métier
-        if (['analyzer', 'analysis'].some(t => normalizedTag.includes(t))) {
+        if (['analyzer', 'analysis'].some((t) => normalizedTag.includes(t))) {
           return 'analyzer';
         }
-        if (['generator', 'generate'].some(t => normalizedTag.includes(t))) {
+        if (['generator', 'generate'].some((t) => normalizedTag.includes(t))) {
           return 'generator';
         }
-        if (['validator', 'validate'].some(t => normalizedTag.includes(t))) {
+        if (['validator', 'validate'].some((t) => normalizedTag.includes(t))) {
           return 'validator';
         }
-        if (['parser', 'parse'].some(t => normalizedTag.includes(t))) {
+        if (['parser', 'parse'].some((t) => normalizedTag.includes(t))) {
           return 'parser';
         }
       }
     }
-    
+
     // Déterminer à partir du nom
     const normalizedName = name.toLowerCase();
-    
+
     // Types d'orchestration
     if (normalizedName.includes('orchestrat')) return 'orchestrator';
     if (normalizedName.includes('schedul')) return 'scheduler';
     if (normalizedName.includes('monitor')) return 'monitor';
-    
+
     // Types de coordination
     if (normalizedName.includes('bridge')) return 'bridge';
     if (normalizedName.includes('adapt')) return 'adapter';
     if (normalizedName.includes('registry')) return 'registry';
-    
+
     // Types métier
     if (normalizedName.includes('analyz')) return 'analyzer';
     if (normalizedName.includes('generat')) return 'generator';
     if (normalizedName.includes('validat')) return 'validator';
     if (normalizedName.includes('parser')) return 'parser';
-    
+
     // Par défaut, on considère que c'est un analyzer
     return 'analyzer';
   }
@@ -269,35 +278,37 @@ export class LayeredAgentRegistry {
   private async discoverAgents(): Promise<void> {
     this.logger.log('Découverte automatique des agents en cours...');
     const basePaths = this.config.agentBasePaths || {};
-    
+
     // Parcourir les 3 couches
     for (const layer of ['orchestration', 'coordination', 'business'] as AgentLayer[]) {
       const basePath = basePaths[layer] || path.join(process.cwd(), 'src', layer);
-      
+
       try {
         // Vérifier si le répertoire existe
-        if (!await fs.pathExists(basePath)) continue;
-        
+        if (!(await fs.pathExists(basePath))) continue;
+
         // Explorer tous les sous-répertoires pour les agents
         const dirContent = await fs.readdir(basePath, { withFileTypes: true });
-        
+
         for (const dirent of dirContent) {
           if (dirent.isDirectory()) {
             const agentTypeDir = path.join(basePath, dirent.name);
-            
+
             // Vérifier si ce répertoire contient des implémentations d'agents
             const agentFiles = await this.findAgentImplementations(agentTypeDir);
-            
+
             for (const agentFilePath of agentFiles) {
               await this.registerAgentFromFile(agentFilePath, layer);
             }
           }
         }
       } catch (error: any) {
-        this.logger.warn(`⚠️ Erreur lors de la découverte d'agents dans ${basePath}: ${error.message}`);
+        this.logger.warn(
+          `⚠️ Erreur lors de la découverte d'agents dans ${basePath}: ${error.message}`
+        );
       }
     }
-    
+
     this.logger.log(`✅ Découverte terminée: ${this.agents.size} agents trouvés`);
   }
 
@@ -306,23 +317,27 @@ export class LayeredAgentRegistry {
    */
   private async findAgentImplementations(dir: string): Promise<string[]> {
     const result: string[] = [];
-    
+
     try {
       const files = await fs.readdir(dir, { withFileTypes: true });
-      
+
       for (const file of files) {
         const filePath = path.join(dir, file.name);
-        
+
         if (file.isDirectory()) {
           // Récursivement chercher dans les sous-répertoires
           const subDirResults = await this.findAgentImplementations(filePath);
           result.push(...subDirResults);
-        } else if (file.name.endsWith('.ts') && !file.name.includes('.spec.') && !file.name.includes('.test.')) {
+        } else if (
+          file.name.endsWith('.ts') &&
+          !file.name.includes('.spec.') &&
+          !file.name.includes('.test.')
+        ) {
           // Vérifier si le fichier contient une implémentation d'agent
           try {
             const content = await fs.readFile(filePath, 'utf-8');
             if (
-              content.includes('implements BaseAgent') || 
+              content.includes('implements BaseAgent') ||
               content.includes('extends BaseAgent') ||
               content.includes('implements OrchestratorAgent') ||
               content.includes('implements BridgeAgent') ||
@@ -331,15 +346,17 @@ export class LayeredAgentRegistry {
             ) {
               result.push(filePath);
             }
-          } catch (error) {
+          } catch (_error) {
             // Ignorer les erreurs de lecture
           }
         }
       }
     } catch (error: any) {
-      this.logger.warn(`⚠️ Erreur lors de la recherche d'implémentations d'agents dans ${dir}: ${error.message}`);
+      this.logger.warn(
+        `⚠️ Erreur lors de la recherche d'implémentations d'agents dans ${dir}: ${error.message}`
+      );
     }
-    
+
     return result;
   }
 
@@ -350,17 +367,17 @@ export class LayeredAgentRegistry {
     try {
       // Lire le contenu pour extraire les métadonnées
       const content = await fs.readFile(filePath, 'utf-8');
-      
+
       // Extraire le nom de la classe
       const classMatch = content.match(/export\s+class\s+(\w+)/);
       if (!classMatch) return;
-      
+
       const className = classMatch[1];
-      
+
       // Extraire la version
       const versionMatch = content.match(/version\s*(?:=|:)\s*['"]([\d.]+)['"]/);
       const version = versionMatch ? versionMatch[1] : '1.0.0';
-      
+
       // Extraire le type
       let type: AgentType;
       if (content.includes('implements OrchestratorAgent')) {
@@ -387,21 +404,23 @@ export class LayeredAgentRegistry {
         // Déterminer à partir du nom
         type = this.determineAgentType(className, []);
       }
-      
+
       // Créer une factory pour l'agent
       const factory = async () => {
         try {
           const AgentClass = (await import(filePath))[className];
           return new AgentClass();
         } catch (error: any) {
-          this.logger.error(`❌ Erreur lors de l'instanciation de l'agent ${className}: ${error.message}`);
+          this.logger.error(
+            `❌ Erreur lors de l'instanciation de l'agent ${className}: ${error.message}`
+          );
           throw error;
         }
       };
-      
+
       // Déterminer l'ID
       const id = className.charAt(0).toLowerCase() + className.slice(1).replace(/Agent$/, '');
-      
+
       // Enregistrer l'agent
       this.registerAgent({
         id,
@@ -414,17 +433,18 @@ export class LayeredAgentRegistry {
         dependencies: [],
         metadata: {
           filePath,
-          className
+          className,
         },
         metrics: {
           usageCount: 0,
           totalExecutions: 0,
-          successfulExecutions: 0
-        }
+          successfulExecutions: 0,
+        },
       });
-      
     } catch (error: any) {
-      this.logger.warn(`⚠️ Erreur lors de l'enregistrement de l'agent depuis ${filePath}: ${error.message}`);
+      this.logger.warn(
+        `⚠️ Erreur lors de l'enregistrement de l'agent depuis ${filePath}: ${error.message}`
+      );
     }
   }
 
@@ -433,14 +453,18 @@ export class LayeredAgentRegistry {
    */
   public registerAgent(entry: LayeredAgentEntry): void {
     if (this.agents.has(entry.id)) {
-      this.logger.warn(`⚠️ Un agent avec l'ID "${entry.id}" existe déjà dans le registre. Écrasement...`);
+      this.logger.warn(
+        `⚠️ Un agent avec l'ID "${entry.id}" existe déjà dans le registre. Écrasement...`
+      );
     }
-    
+
     this.agents.set(entry.id, entry);
     this.eventEmitter.emit('agent:registered', entry);
-    
+
     if (this.config.verboseLogging) {
-      this.logger.log(`📝 Agent enregistré: ${entry.name} (${entry.layer}/${entry.type}) v${entry.version}`);
+      this.logger.log(
+        `📝 Agent enregistré: ${entry.name} (${entry.layer}/${entry.type}) v${entry.version}`
+      );
     }
   }
 
@@ -451,35 +475,35 @@ export class LayeredAgentRegistry {
     if (!this.isInitialized) {
       await this.initialize();
     }
-    
+
     const entry = this.agents.get(id);
     if (!entry || !entry.active) {
       throw new Error(`Agent "${id}" non trouvé ou inactif`);
     }
-    
+
     try {
       // Si l'instance n'existe pas encore, la créer
       if (!entry.instance) {
         entry.instance = await entry.factory();
       }
-      
+
       // Mettre à jour les métriques
       if (this.config.enableMetrics && entry.metrics) {
         entry.metrics.usageCount++;
         entry.metrics.lastUsed = new Date();
       }
-      
+
       this.eventEmitter.emit('agent:used', {
         id: entry.id,
-        timestamp: new Date()
+        timestamp: new Date(),
       });
-      
+
       return entry.instance as T;
     } catch (error) {
       this.eventEmitter.emit('agent:error', {
         id: entry.id,
         error,
-        timestamp: new Date()
+        timestamp: new Date(),
       });
       throw error;
     }
@@ -488,13 +512,15 @@ export class LayeredAgentRegistry {
   /**
    * Récupère tous les agents d'une couche spécifique
    */
-  public async getAgentsByLayer<T extends BaseAgent = BaseAgent>(layer: AgentLayer): Promise<Map<string, T>> {
+  public async getAgentsByLayer<T extends BaseAgent = BaseAgent>(
+    layer: AgentLayer
+  ): Promise<Map<string, T>> {
     if (!this.isInitialized) {
       await this.initialize();
     }
-    
+
     const result = new Map<string, T>();
-    
+
     for (const [id, entry] of this.agents.entries()) {
       if (entry.layer === layer && entry.active) {
         try {
@@ -507,20 +533,22 @@ export class LayeredAgentRegistry {
         }
       }
     }
-    
+
     return result;
   }
 
   /**
    * Récupère tous les agents d'un type spécifique
    */
-  public async getAgentsByType<T extends BaseAgent = BaseAgent>(type: AgentType): Promise<Map<string, T>> {
+  public async getAgentsByType<T extends BaseAgent = BaseAgent>(
+    type: AgentType
+  ): Promise<Map<string, T>> {
     if (!this.isInitialized) {
       await this.initialize();
     }
-    
+
     const result = new Map<string, T>();
-    
+
     for (const [id, entry] of this.agents.entries()) {
       if (entry.type === type && entry.active) {
         try {
@@ -533,7 +561,7 @@ export class LayeredAgentRegistry {
         }
       }
     }
-    
+
     return result;
   }
 
@@ -545,7 +573,7 @@ export class LayeredAgentRegistry {
     if (!entry) {
       return false;
     }
-    
+
     entry.active = false;
     this.eventEmitter.emit('agent:deactivated', { id, timestamp: new Date() });
     return true;
@@ -559,7 +587,7 @@ export class LayeredAgentRegistry {
     if (!entry) {
       return false;
     }
-    
+
     entry.active = true;
     this.eventEmitter.emit('agent:activated', { id, timestamp: new Date() });
     return true;
@@ -570,29 +598,29 @@ export class LayeredAgentRegistry {
    */
   public recordExecution(id: string, success: boolean, executionTime?: number): void {
     if (!this.config.enableMetrics) return;
-    
+
     const entry = this.agents.get(id);
     if (!entry || !entry.metrics) return;
-    
+
     entry.metrics.totalExecutions++;
     if (success) {
       entry.metrics.successfulExecutions++;
     }
-    
+
     if (executionTime !== undefined) {
       if (!entry.metrics.avgExecutionTime) {
         entry.metrics.avgExecutionTime = executionTime;
       } else {
         // Moyenne mobile
-        entry.metrics.avgExecutionTime = 
-          (entry.metrics.avgExecutionTime * (entry.metrics.totalExecutions - 1) + executionTime) / 
+        entry.metrics.avgExecutionTime =
+          (entry.metrics.avgExecutionTime * (entry.metrics.totalExecutions - 1) + executionTime) /
           entry.metrics.totalExecutions;
       }
     }
-    
+
     // Calculer le taux d'échec
-    entry.metrics.failureRate = 
-      (entry.metrics.totalExecutions - entry.metrics.successfulExecutions) / 
+    entry.metrics.failureRate =
+      (entry.metrics.totalExecutions - entry.metrics.successfulExecutions) /
       entry.metrics.totalExecutions;
   }
 
@@ -617,44 +645,55 @@ export class LayeredAgentRegistry {
     if (!this.config.enableMetrics) {
       return { metricsDisabled: true };
     }
-    
+
     const metrics: Record<string, any> = {
       totalAgents: this.agents.size,
-      activeAgents: Array.from(this.agents.values()).filter(a => a.active).length,
+      activeAgents: Array.from(this.agents.values()).filter((a) => a.active).length,
       byLayer: {} as Record<string, any>,
       byType: {} as Record<string, any>,
-      agentMetrics: {} as Record<string, any>
+      agentMetrics: {} as Record<string, any>,
     };
-    
+
     // Compter par couche
     for (const layer of ['orchestration', 'coordination', 'business'] as AgentLayer[]) {
-      metrics.byLayer[layer] = Array.from(this.agents.values()).filter(a => a.layer === layer).length;
+      metrics.byLayer[layer] = Array.from(this.agents.values()).filter(
+        (a) => a.layer === layer
+      ).length;
     }
-    
+
     // Compter par type
     const types: AgentType[] = [
-      'orchestrator', 'scheduler', 'monitor',
-      'bridge', 'adapter', 'registry',
-      'analyzer', 'generator', 'validator', 'parser'
+      'orchestrator',
+      'scheduler',
+      'monitor',
+      'bridge',
+      'adapter',
+      'registry',
+      'analyzer',
+      'generator',
+      'validator',
+      'parser',
     ];
-    
+
     for (const type of types) {
-      metrics.byType[type] = Array.from(this.agents.values()).filter(a => a.type === type).length;
+      metrics.byType[type] = Array.from(this.agents.values()).filter((a) => a.type === type).length;
     }
-    
+
     // Métriques individuelles
     for (const [id, entry] of this.agents.entries()) {
       if (entry.metrics) {
         metrics.agentMetrics[id] = { ...entry.metrics };
       }
     }
-    
+
     return metrics;
   }
 }
 
 // Point d'entrée pour création facile du registre
-export const createLayeredAgentRegistry = (config?: LayeredAgentRegistryConfig): LayeredAgentRegistry => {
+export const createLayeredAgentRegistry = (
+  config?: LayeredAgentRegistryConfig
+): LayeredAgentRegistry => {
   return LayeredAgentRegistry.getInstance(config);
 };
 

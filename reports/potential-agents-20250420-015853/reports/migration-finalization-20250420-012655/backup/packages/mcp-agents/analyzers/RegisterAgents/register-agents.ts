@@ -3,27 +3,27 @@
  * Ce script importe tous les agents et les enregistre dans le registre centralisé
  */
 
-import { agentRegistry } from './core/AgentRegistry';
 import { getAllAgentIds } from './business';
 import * as agents from './business';
+import { agentRegistry } from './core/AgentRegistry';
 
 // Fonction d'initialisation pour enregistrer tous les agents
 export async function registerAllAgents(): Promise<void> {
-  console.log('Démarrage de l\'enregistrement des agents MCP...');
-  
+  console.log("Démarrage de l'enregistrement des agents MCP...");
+
   const agentIds = getAllAgentIds();
   console.log(`${agentIds.length} agents à enregistrer`);
-  
+
   // Parcourir chaque agent et l'enregistrer
   for (const id of agentIds) {
     try {
       // Trouver l'agent par son ID dans les exports
       // Note: Cette partie peut nécessiter une adaptation en fonction de la façon dont
       // les agents sont exportés depuis leurs modules respectifs
-      
+
       // Pour l'instant, un simple log
       console.log(`Enregistrement de l'agent: ${id}`);
-      
+
       // Exemple d'enregistrement (à adapter selon vos besoins):
       // const agentClass = agents[id];
       // if (agentClass && typeof agentClass === 'function') {
@@ -34,7 +34,7 @@ export async function registerAllAgents(): Promise<void> {
       console.error(`Erreur lors de l'enregistrement de l'agent ${id}:`, error);
     }
   }
-  
+
   console.log('Enregistrement des agents terminé.');
   console.log(`${agentRegistry.getAllAgents().length} agents enregistrés au total.`);
 }

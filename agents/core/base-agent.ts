@@ -3,14 +3,14 @@
  * Classe abstraite fournissant les fonctionnalités communes à tous les agents
  */
 
-import { AgentOptions, AgentResult, AgentStatus, LogEntry, AgentEventListener } from '../orchestration/types.ts';
+import { AgentEventListener, AgentOptions, AgentResult, AgentStatus, LogEntry } from '../orchestration/types.ts';
 
 export abstract class BaseAgent<TOptions extends AgentOptions = AgentOptions, TResult = any> {
   protected options: TOptions;
   protected status: AgentStatus = AgentStatus.IDLE;
   protected logs: LogEntry[] = [];
   protected listeners: Map<string, AgentEventListener[]> = new Map();
-  protected startTime: number = 0;
+  protected startTime = 0;
 
   constructor(options?: Partial<TOptions>) {
     this.options = {
@@ -109,7 +109,7 @@ export abstract class BaseAgent<TOptions extends AgentOptions = AgentOptions, TR
     if (!this.listeners.has(event)) {
       this.listeners.set(event, []);
     }
-    this.listeners.get(event)!.push(listener);
+    this.listeners.get(event)?.push(listener);
   }
 
   /**
@@ -139,7 +139,7 @@ export abstract class BaseAgent<TOptions extends AgentOptions = AgentOptions, TR
       try {
         listener(event, data);
       } catch (error) {
-        console.error(, error);
+        console.error('Erreur lors de l\'exécution du listener:', error);
       }
     }
   }

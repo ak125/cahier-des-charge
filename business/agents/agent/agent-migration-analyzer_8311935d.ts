@@ -7,9 +7,9 @@
  * 3. Proposer une migration vers la structure unifiée
  */
 
-import * as fs from fsstructure-agent';
-import * as path from pathstructure-agent';
-import { execSync } from child_processstructure-agent';
+import * as fs from 'fsstructure-agent'
+import * as path from 'pathstructure-agent'
+import { execSync } from './child_processstructure-agent'
 
 interface AgentFile {
   path: string;
@@ -58,7 +58,7 @@ const agentTypes = [
 ];
 
 // Analyse un fichier d'agent
-function analyzeAgentFile(filePath: string, agentType: string, agentCategory: string): AgentFile | null {
+function analyzeAgentFile(filePath: string, _agentType: string, agentCategory: string): AgentFile | null {
   try {
     const content = fs.readFileSync(filePath, 'utf8');
     const stats = fs.statSync(filePath);
@@ -162,7 +162,7 @@ function generateMigrationRecommendation(agentTypeInfo: { name: string, type: st
 }
 
 // Effectuer la migration d'un agent
-function migrateAgent(recommendation: MigrationRecommendation, dryRun: boolean = true): void {
+function migrateAgent(recommendation: MigrationRecommendation, dryRun = true): void {
   const { bestVersion, targetPath } = recommendation;
   
   console.log(`\n>>> Migration de l'agent ${recommendation.agentType}`);

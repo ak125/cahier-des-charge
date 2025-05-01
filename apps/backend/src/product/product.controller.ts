@@ -1,14 +1,14 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { ProductService } from './product.service';
+import { UseZodValidation, ZodValidationPipe, createZodDto } from '@nestjs/zod-validation';
 import { 
-  ProductCreateSchema, 
-  ProductUpdateSchema, 
+  Product, 
   ProductCreate, 
+  ProductCreateSchema, 
   ProductUpdate, 
-  Product 
+  ProductUpdateSchema 
 } from '@schemas/zod-schemas';
-import { ZodValidationPipe, createZodDto, UseZodValidation } from '@nestjs/zod-validation';
+import { ProductService } from './product.service';
 
 // Classes DTO pour Swagger (basées sur nos schémas Zod)
 export class ProductCreateDto extends createZodDto(ProductCreateSchema) {}

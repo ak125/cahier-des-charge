@@ -1,8 +1,8 @@
-// filepath: /workspaces/cahier-des-charge/agents/progressive-migration-agent.ts
-import { BaseAgent } from '../core/BaseAgent';
 import * as fs from 'fs';
 import { promises as fsPromises } from 'fs';
 import * as path from 'path';
+// filepath: /workspaces/cahier-des-charge/agents/progressive-migration-agent.ts
+import { BaseAgent } from '../core/BaseAgent';
 
 interface ProxyConfig {
   phpEndpoint: string;
@@ -16,32 +16,32 @@ interface ProxyConfig {
 export class ProgressiveMigrationAgent extends BaseAgent {
   private proxyConfigs: ProxyConfig[] = [];
   private proxyConfigPath: string;
-  
+
   constructor(filePath: string) {
     super(filePath);
     const workspaceRoot = process.cwd();
     this.proxyConfigPath = path.join(workspaceRoot, 'config', 'proxy-migration.json');
   }
-  
+
   /**
    * Analyse la structure du fichier PHP et génère une configuration
    * pour la migration progressive
    */
   public async analyze(): Promise<void> {
     await this.loadFile();
-    
+
     // Charger les configurations existantes si elles existent
     await this.loadProxyConfigs();
-    
+
     // Analyser les routes et points d'entrée
     const routePattern = this.detectRoutePattern();
-    
+
     // Ajouter ou mettre à jour la configuration
     this.updateProxyConfig(routePattern);
-    
+
     // Générer la section d'audit
     const migrationSection = this.generateProgressiveMigrationSection();
-    
+
     // Ajouter la section au rapport
     this.addSection(
       'progressive-migration',
@@ -49,39 +49,43 @@ export class ProgressiveMigrationAgent extends BaseAgent {
       migrationSection,
       'technical'
     );
-    
+
     // Sauvegarder les configurations mises à jour
     await this.saveProxyConfigs();
   }
-  
+
   /**
    * Détecte le pattern de route à partir du fichier PHP
    */
   private detectRoutePattern(): string {
     const fileContent = this.fileContent;
     const fileName = path.basename(this.filePath, '.php');
-    
+
     // Analyse du fichier pour détecter les patterns de routage
     // Détecter si c'est un point d'entrée direct, une API, etc.
     let routePattern = '';
-    
+
     // Vérifier s'il y a une route explicite
     const routeMatch = fileContent.match(/['"]route['"]\s*=>?\s*['"]([^'"]+)['"]/i);
     if (routeMatch && routeMatch[1]) {
       routePattern = routeMatch[1];
-    } 
+    }
     // Vérifier s'il y a une définition de API
-    else if (fileContent.includes('api') || fileContent.includes('REST') || fileContent.includes('json_encode')) {
+    else if (
+      fileContent.includes('api') ||
+      fileContent.includes('REST') ||
+      fileContent.includes('json_encode')
+    ) {
       routePattern = `/api/${fileName}`;
     }
     // Sinon, proposer une route basée sur le nom du fichier
     else {
       routePattern = `/${fileName}`;
     }
-    
+
     return routePattern;
   }
-  
+
   /**
    * Charge les configurations de proxy existantes
    */
@@ -96,19 +100,18 @@ export class ProgressiveMigrationAgent extends BaseAgent {
       this.proxyConfigs = [];
     }
   }
-  
+
   /**
    * Met à jour ou ajoute une configuration de proxy
    */
   private updateProxyConfig(routePattern: string): void {
     const fileName = path.basename(this.filePath, '.php');
-    
+
     // Vérifier si la configuration existe déjà
-    const existingConfigIndex = this.proxyConfigs.findIndex(config => 
-      config.routePattern === routePattern || 
-      config.phpEndpoint.includes(fileName)
+    const existingConfigIndex = this.proxyConfigs.findIndex(
+      (config) => config.routePattern === routePattern || config.phpEndpoint.includes(fileName)
     );
-    
+
     // Config par défaut
     const newConfig: ProxyConfig = {
       phpEndpoint: `/legacy/${fileName}.php`,
@@ -116,9 +119,9 @@ export class ProgressiveMigrationAgent extends BaseAgent {
       routePattern,
       migrationStatus: 'not-started',
       fallbackToPhp: true,
-      metrics: true
+      metrics: true,
     };
-    
+
     // Mise à jour ou ajout
     if (existingConfigIndex !== -1) {
       this.proxyConfigs[existingConfigIndex] = {
@@ -129,7 +132,7 @@ export class ProgressiveMigrationAgent extends BaseAgent {
       this.proxyConfigs.push(newConfig);
     }
   }
-  
+
   /**
    * Sauvegarde les configurations de proxy
    */
@@ -140,35 +143,36 @@ export class ProgressiveMigrationAgent extends BaseAgent {
       if (!fs.existsSync(configDir)) {
         await fsPromises.mkdir(configDir, { recursive: true });
       }
-      
+
       // Sauvegarder le fichier de configuration
       await fsPromises.writeFile(
-        this.proxyConfigPath, 
+        this.proxyConfigPath,
         JSON.stringify(this.proxyConfigs, null, 2),
         'utf8'
       );
-      
-      console.log(`✅ Configuration de migration progressive sauvegardée dans ${this.proxyConfigPath}`);
+
+      console.log(
+        `✅ Configuration de migration progressive sauvegardée dans ${this.proxyConfigPath}`
+      );
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : String(error);
       console.error(`❌ Erreur lors de la sauvegarde des configurations: ${errorMessage}`);
     }
   }
-  
+
   /**
    * Génère la section d'audit pour la migration progressive
    */
   private generateProgressiveMigrationSection(): string {
     const fileName = path.basename(this.filePath, '.php');
-    const config = this.proxyConfigs.find(config => 
-      config.phpEndpoint.includes(fileName) || 
-      config.routePattern.includes(fileName)
+    const config = this.proxyConfigs.find(
+      (config) => config.phpEndpoint.includes(fileName) || config.routePattern.includes(fileName)
     );
-    
+
     if (!config) {
-      return "Configuration de migration progressive non disponible.";
+      return 'Configuration de migration progressive non disponible.';
     }
-    
+
     return `## Migration Progressive
 
 ### Configuration du proxy de migration
@@ -210,19 +214,19 @@ Une fois la migration validée :
 \`\`\`
 `;
   }
-  
+
   /**
    * Génère la configuration du proxy pour nginx/apache
    */
   public async generateProxyConfig(): Promise<string> {
-    const config = this.proxyConfigs.find(config => 
+    const config = this.proxyConfigs.find((config) =>
       config.phpEndpoint.includes(path.basename(this.filePath, '.php'))
     );
-    
+
     if (!config) {
       throw new Error('Configuration non trouvée pour ce fichier');
     }
-    
+
     // Générer la configuration pour nginx
     const nginxConfig = `
 # Configuration Nginx pour la migration progressive de ${config.routePattern}
@@ -246,25 +250,25 @@ location @php_fallback_${config.routePattern.replace(/\//g, '_')} {
     add_header X-Served-By "php-fallback";
 }
 `;
-    
+
     // Sauvegarder la configuration nginx
     const nginxConfigPath = path.join(
-      process.cwd(), 
+      process.cwd(),
       'config',
       'nginx',
       `${path.basename(this.filePath, '.php')}.conf`
     );
-    
+
     // Créer le répertoire si nécessaire
     const nginxDir = path.dirname(nginxConfigPath);
     if (!fs.existsSync(nginxDir)) {
       await fsPromises.mkdir(nginxDir, { recursive: true });
     }
-    
+
     // Écrire le fichier
     await fsPromises.writeFile(nginxConfigPath, nginxConfig, 'utf8');
     console.log(`✅ Configuration nginx générée: ${nginxConfigPath}`);
-    
+
     return nginxConfigPath;
   }
 }
@@ -275,17 +279,18 @@ if (require.main === module) {
     console.error('Usage: node progressive-migration-agent.ts <file-path>');
     process.exit(1);
   }
-  
+
   const filePath = process.argv[2];
   const agent = new ProgressiveMigrationAgent(filePath);
-  
-  agent.analyze()
+
+  agent
+    .analyze()
     .then(() => agent.generateProxyConfig())
     .then((configPath) => {
       console.log(`✅ Agent de migration progressive exécuté avec succès pour ${filePath}`);
       console.log(`✅ Configuration générée: ${configPath}`);
     })
-    .catch(error => {
+    .catch((error) => {
       console.error(`❌ Erreur: ${error instanceof Error ? error.message : String(error)}`);
       process.exit(1);
     });

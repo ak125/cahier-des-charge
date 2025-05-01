@@ -23,7 +23,7 @@ export interface TableInfo {
 export interface ColumnInfo {
   name: string;
   type: string;
-  pgType?: string;  // Type PostgreSQL correspondant
+  pgType?: string; // Type PostgreSQL correspondant
   prismaType?: string; // Type Prisma correspondant
   nullable: boolean;
   default?: string;

@@ -3,8 +3,8 @@
  * Agent export file
  */
 
-import { helpers } from './helpers';
 import { BusinessAgent } from '../../core/interfaces';
+import { helpers } from './helpers';
 
 export { helpers };
 export default helpers;

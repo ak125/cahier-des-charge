@@ -1,6 +1,6 @@
 /**
  * Interface de la couche d'abstraction pour l'orchestration
- * 
+ *
  * Cette interface définit le contrat commun pour tous les systèmes d'orchestration,
  * indépendamment de leur implémentation sous-jacente.
  */
@@ -22,7 +22,11 @@ export interface OrchestrationAbstraction {
    * @param input Données d'entrée pour le workflow
    * @param options Options d'exécution
    */
-  executeWorkflow(workflowId: string, input: any, options?: ExecutionOptions): Promise<ExecutionResult>;
+  executeWorkflow(
+    workflowId: string,
+    input: any,
+    options?: ExecutionOptions
+  ): Promise<ExecutionResult>;
 
   /**
    * Soumet une tâche à exécuter

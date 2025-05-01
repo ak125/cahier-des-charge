@@ -1,8 +1,8 @@
+import { execSync } from 'child_process';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as cheerio from 'cheerio';
 import { glob } from 'glob';
-import { execSync } from 'child_process';
 import { DB } from '../utils/DbConnector';
 
 interface SeoMetadata {
@@ -48,13 +48,19 @@ export class SeoMetadataGenerator {
   private options: SeoAnalysisOptions;
   private seoFields: Record<string, any> = {};
   private descriptionFields: string[] = [
-    'description', 'desc', 'seo_description', 'meta_description',
-    'short_description', 'resume', 'extrait', 'resume_fiche'
+    'description',
+    'desc',
+    'seo_description',
+    'meta_description',
+    'short_description',
+    'resume',
+    'extrait',
+    'resume_fiche',
   ];
 
   constructor(options: SeoAnalysisOptions) {
     this.options = options;
-    
+
     if (options.verbose) {
       console.log(`🔍 Initialisation du générateur de métadonnées SEO`);
       console.log(`📂 Source PHP: ${options.phpSourceDir}`);
@@ -99,7 +105,7 @@ export class SeoMetadataGenerator {
 
     // Trouver tous les fichiers PHP
     const phpFiles = glob.sync(`${this.options.phpSourceDir}/**/*.php`);
-    
+
     if (this.options.verbose) {
       console.log(`📑 ${phpFiles.length} fichiers PHP trouvés.`);
     }
@@ -113,35 +119,35 @@ export class SeoMetadataGenerator {
       { pattern: /gamme\.php/, type: 'range' },
       { pattern: /page\.php/, type: 'page' },
       { pattern: /article\.php/, type: 'article' },
-      { pattern: /blog\.php/, type: 'blog' }
+      { pattern: /blog\.php/, type: 'blog' },
     ];
 
     for (const filePath of phpFiles) {
       try {
         const fileContent = fs.readFileSync(filePath, 'utf-8');
-        
+
         // Déterminer le type de page
         const fileName = path.basename(filePath);
         let pageType = 'unknown';
-        
+
         for (const { pattern, type } of routePatterns) {
           if (pattern.test(fileName)) {
             pageType = type;
             break;
           }
         }
-        
+
         if (pageType === 'unknown' && !this.isSeoRelevant(fileContent)) {
           continue; // Ignorer les fichiers non pertinents pour le SEO
         }
-        
+
         // Extraire les métadonnées
         const metadata = this.extractMetadataFromPhp(fileContent, filePath, pageType);
-        
+
         if (metadata && metadata.slug) {
           this.metadata[metadata.slug] = metadata;
           processedFiles++;
-          
+
           if (this.options.verbose && processedFiles % 100 === 0) {
             console.log(`⏳ ${processedFiles} fichiers traités...`);
           }
@@ -152,7 +158,9 @@ export class SeoMetadataGenerator {
     }
 
     if (this.options.verbose) {
-      console.log(`✅ Analyse des fichiers PHP terminée. ${processedFiles} fichiers traités avec métadonnées extraites.`);
+      console.log(
+        `✅ Analyse des fichiers PHP terminée. ${processedFiles} fichiers traités avec métadonnées extraites.`
+      );
     }
   }
 
@@ -161,41 +169,48 @@ export class SeoMetadataGenerator {
    */
   private isSeoRelevant(content: string): boolean {
     // Vérifier la présence d'éléments SEO importants
-    return content.includes('<title>') ||
-           content.includes('<meta name="description"') ||
-           content.includes('<meta property="og:') ||
-           content.includes('<link rel="canonical"') ||
-           content.includes('<h1');
+    return (
+      content.includes('<title>') ||
+      content.includes('<meta name="description"') ||
+      content.includes('<meta property="og:') ||
+      content.includes('<link rel="canonical"') ||
+      content.includes('<h1')
+    );
   }
 
   /**
    * Extrait les métadonnées SEO d'un fichier PHP
    */
-  private extractMetadataFromPhp(content: string, filePath: string, pageType: string): SeoMetadata | null {
+  private extractMetadataFromPhp(
+    content: string,
+    filePath: string,
+    pageType: string
+  ): SeoMetadata | null {
     try {
       const $ = cheerio.load(content);
-      
+
       // Extraire le slug depuis le chemin du fichier ou le contenu
-      let slug = this.extractSlugFromPhp(content, filePath);
+      const slug = this.extractSlugFromPhp(content, filePath);
       if (!slug) return null;
-      
+
       // Extraire les métadonnées de base
       const title = $('title').text().trim() || this.extractTitleFromPhp(content);
-      const description = $('meta[name="description"]').attr('content') || this.extractDescriptionFromPhp(content);
+      const description =
+        $('meta[name="description"]').attr('content') || this.extractDescriptionFromPhp(content);
       const h1 = $('h1').first().text().trim();
-      
+
       // Extraire les métadonnées Open Graph
       const ogTitle = $('meta[property="og:title"]').attr('content');
       const ogDescription = $('meta[property="og:description"]').attr('content');
       const ogImage = $('meta[property="og:image"]').attr('content');
-      
+
       // Extraire l'URL canonique
       const canonical = $('link[rel="canonical"]').attr('href');
-      
+
       // Extraire les mots-clés et les robots
       const keywords = $('meta[name="keywords"]').attr('content');
       const robots = $('meta[name="robots"]').attr('content');
-      
+
       // Créer l'objet de métadonnées
       const metadata: SeoMetadata = {
         slug,
@@ -209,13 +224,16 @@ export class SeoMetadataGenerator {
         keywords: this.cleanText(keywords || ''),
         robots: robots || 'index, follow',
         type: pageType,
-        sourcePath: filePath
+        sourcePath: filePath,
       };
-      
+
       // Nettoyer et améliorer les métadonnées
       return this.enhanceMetadata(metadata);
     } catch (error) {
-      console.error(`❌ Erreur lors de l'extraction des métadonnées du fichier ${filePath}:`, error);
+      console.error(
+        `❌ Erreur lors de l'extraction des métadonnées du fichier ${filePath}:`,
+        error
+      );
       return null;
     }
   }
@@ -226,30 +244,30 @@ export class SeoMetadataGenerator {
   private extractSlugFromPhp(content: string, filePath: string): string | null {
     // Extraction depuis les variables GET ou les paramètres de requête
     const slugParams = ['slug', 'id_fiche', 'id_produit', 'reference', 'ref', 'id', 'name'];
-    
+
     for (const param of slugParams) {
       const regex = new RegExp(`['\"]${param}['\"](\\s+)?=(\\s+)?['\"]([^'\"]+?)['\"]`, 'i');
       const match = content.match(regex);
-      
+
       if (match && match[3]) {
         return match[3].trim();
       }
     }
-    
+
     // Si aucun slug n'est trouvé, utiliser le nom du fichier sans extension
     const fileName = path.basename(filePath, '.php');
     if (fileName !== 'index' && fileName !== 'fiche' && fileName !== 'product') {
       return fileName;
     }
-    
+
     // Dernier recours: générer un slug à partir du chemin
     const pathSegments = filePath.split('/');
     const lastSegment = pathSegments[pathSegments.length - 2];
-    
+
     if (lastSegment && lastSegment !== 'src' && lastSegment !== 'app' && lastSegment !== 'public') {
       return lastSegment;
     }
-    
+
     return null;
   }
 
@@ -259,16 +277,16 @@ export class SeoMetadataGenerator {
   private extractTitleFromPhp(content: string): string {
     // Chercher les variables de titre communes
     const titleVars = ['titre', 'title', 'nom_produit', 'nom_fiche', 'nom_page', 'name'];
-    
+
     for (const varName of titleVars) {
       const regex = new RegExp(`\\$${varName}\\s*=\\s*['"]([^'"]+?)['"]`, 'i');
       const match = content.match(regex);
-      
+
       if (match && match[1]) {
         return match[1].trim();
       }
     }
-    
+
     return '';
   }
 
@@ -280,12 +298,12 @@ export class SeoMetadataGenerator {
     for (const varName of this.descriptionFields) {
       const regex = new RegExp(`\\$${varName}\\s*=\\s*['"]([^'"]+?)['"]`, 'i');
       const match = content.match(regex);
-      
+
       if (match && match[1]) {
         return match[1].trim();
       }
     }
-    
+
     return '';
   }
 
@@ -302,19 +320,21 @@ export class SeoMetadataGenerator {
     try {
       // Rechercher les tables SEO courantes
       const seoTables = await this.findSeoTables();
-      
+
       if (this.options.verbose) {
         console.log(`📊 Tables SEO trouvées: ${seoTables.join(', ') || 'aucune'}`);
       }
-      
+
       // Requêter les données SEO
       await this.querySeoDatabases(seoTables);
-      
+
       // Récupérer les descriptions des produits/fiches
       await this.queryEntityDescriptions();
-      
     } catch (error) {
-      console.error(`❌ Erreur lors de la récupération des données SEO depuis la base de données:`, error);
+      console.error(
+        `❌ Erreur lors de la récupération des données SEO depuis la base de données:`,
+        error
+      );
     }
   }
 
@@ -323,25 +343,25 @@ export class SeoMetadataGenerator {
    */
   private async findSeoTables(): Promise<string[]> {
     const seoTables: string[] = [];
-    
+
     const tablesQuery = `
       SELECT table_name 
       FROM information_schema.tables 
       WHERE table_schema = '${this.options.databaseConfig?.database}'
     `;
-    
+
     const tables = await this.dbConnection.query(tablesQuery);
-    
+
     const seoKeywords = ['seo', 'meta', 'referencement', 'sitemap', 'redirect'];
-    
+
     for (const row of tables) {
       const tableName = row.table_name || row.TABLE_NAME;
-      
-      if (seoKeywords.some(keyword => tableName.toLowerCase().includes(keyword))) {
+
+      if (seoKeywords.some((keyword) => tableName.toLowerCase().includes(keyword))) {
         seoTables.push(tableName);
       }
     }
-    
+
     return seoTables;
   }
 
@@ -354,57 +374,60 @@ export class SeoMetadataGenerator {
         // Récupérer structure de la table
         const columnsQuery = `SHOW COLUMNS FROM ${table}`;
         const columns = await this.dbConnection.query(columnsQuery);
-        
+
         // Rechercher les colonnes pertinentes
-        const idColumn = columns.find((col: any) => 
-          col.Field === 'id' || col.Field.endsWith('_id') || col.Field.includes('id_')
-        )?.Field || 'id';
-        
-        const slugColumn = columns.find((col: any) => 
+        const idColumn =
+          columns.find(
+            (col: any) =>
+              col.Field === 'id' || col.Field.endsWith('_id') || col.Field.includes('id_')
+          )?.Field || 'id';
+
+        const slugColumn = columns.find((col: any) =>
           ['slug', 'url', 'permalink', 'reference', 'ref'].includes(col.Field)
         )?.Field;
-        
-        const titleColumn = columns.find((col: any) => 
+
+        const titleColumn = columns.find((col: any) =>
           ['title', 'titre', 'meta_title', 'seo_title'].includes(col.Field)
         )?.Field;
-        
-        const descColumn = columns.find((col: any) => 
+
+        const descColumn = columns.find((col: any) =>
           this.descriptionFields.includes(col.Field)
         )?.Field;
-        
+
         const selectColumns = [
           idColumn,
           slugColumn ? `${slugColumn} AS slug` : 'NULL AS slug',
           titleColumn ? `${titleColumn} AS title` : 'NULL AS title',
-          descColumn ? `${descColumn} AS description` : 'NULL AS description'
-        ].filter(Boolean).join(', ');
-        
+          descColumn ? `${descColumn} AS description` : 'NULL AS description',
+        ]
+          .filter(Boolean)
+          .join(', ');
+
         // Récupérer les données
         const dataQuery = `SELECT ${selectColumns} FROM ${table} LIMIT 1000`;
         const seoData = await this.dbConnection.query(dataQuery);
-        
+
         if (this.options.verbose) {
           console.log(`📊 ${seoData.length} entrées SEO récupérées de ${table}`);
         }
-        
+
         // Traiter les données
         for (const row of seoData) {
           if (row.slug) {
             const slug = row.slug.trim();
-            
+
             if (!this.seoFields[slug]) {
               this.seoFields[slug] = {};
             }
-            
+
             if (row.title) this.seoFields[slug].title = row.title;
             if (row.description) this.seoFields[slug].description = row.description;
-            
+
             // Conserver la clé primaire et la table pour référence
             this.seoFields[slug].id = row[idColumn];
             this.seoFields[slug].table = table;
           }
         }
-        
       } catch (error) {
         console.error(`❌ Erreur lors de la requête de la table ${table}:`, error);
       }
@@ -427,10 +450,10 @@ export class SeoMetadataGenerator {
       { name: 'ranges', type: 'range' },
       { name: 'articles', type: 'article' },
       { name: 'blog', type: 'blog' },
-      { name: 'pages', type: 'page' }
+      { name: 'pages', type: 'page' },
     ];
-    
-    for (const {name, type} of entityTables) {
+
+    for (const { name, type } of entityTables) {
       try {
         // Vérifier si la table existe
         const checkTable = `
@@ -438,66 +461,65 @@ export class SeoMetadataGenerator {
           FROM information_schema.tables 
           WHERE table_schema = '${this.options.databaseConfig?.database}' AND table_name = '${name}'
         `;
-        
+
         const tableExists = await this.dbConnection.query(checkTable);
-        
+
         if (tableExists.length === 0) continue;
-        
+
         // Récupérer structure de la table
         const columnsQuery = `SHOW COLUMNS FROM ${name}`;
         const columns = await this.dbConnection.query(columnsQuery);
         const columnNames = columns.map((col: any) => col.Field);
-        
+
         // Rechercher les colonnes pertinentes
-        const idColumn = columnNames.find(col => 
-          col === 'id' || col.endsWith('_id') || col.includes('id_')
-        ) || 'id';
-        
-        const slugColumn = columnNames.find(col => 
-          ['slug', 'url', 'permalink', 'reference', 'ref'].includes(col)
-        ) || null;
-        
-        const nameColumn = columnNames.find(col => 
-          ['name', 'nom', 'titre', 'title'].includes(col)
-        ) || null;
-        
-        const descColumn = columnNames.find(col => 
-          this.descriptionFields.includes(col)
-        ) || null;
-        
-        const imageColumn = columnNames.find(col => 
-          ['image', 'photo', 'picture', 'thumbnail', 'image_url'].includes(col)
-        ) || null;
-        
+        const idColumn =
+          columnNames.find((col) => col === 'id' || col.endsWith('_id') || col.includes('id_')) ||
+          'id';
+
+        const slugColumn =
+          columnNames.find((col) =>
+            ['slug', 'url', 'permalink', 'reference', 'ref'].includes(col)
+          ) || null;
+
+        const nameColumn =
+          columnNames.find((col) => ['name', 'nom', 'titre', 'title'].includes(col)) || null;
+
+        const descColumn = columnNames.find((col) => this.descriptionFields.includes(col)) || null;
+
+        const imageColumn =
+          columnNames.find((col) =>
+            ['image', 'photo', 'picture', 'thumbnail', 'image_url'].includes(col)
+          ) || null;
+
         if (!slugColumn && !nameColumn) continue;
-        
+
         // Construire la requête
         const selectColumns = [
           idColumn,
           slugColumn ? `${slugColumn} AS slug` : `${idColumn} AS slug`,
           nameColumn ? `${nameColumn} AS title` : 'NULL AS title',
           descColumn ? `${descColumn} AS description` : 'NULL AS description',
-          imageColumn ? `${imageColumn} AS image` : 'NULL AS image'
+          imageColumn ? `${imageColumn} AS image` : 'NULL AS image',
         ].join(', ');
-        
+
         const query = `SELECT ${selectColumns} FROM ${name} LIMIT 2000`;
         const rows = await this.dbConnection.query(query);
-        
+
         if (this.options.verbose) {
           console.log(`📊 ${rows.length} entrées récupérées de ${name}`);
         }
-        
+
         // Traiter les données
         for (const row of rows) {
           let slug = row.slug;
-          
+
           // Nettoyer le slug
           if (slug) {
             slug = this.normalizeSlug(slug.toString());
           } else {
             continue;
           }
-          
+
           // Ajouter ou mettre à jour les métadonnées
           if (!this.metadata[slug]) {
             this.metadata[slug] = {
@@ -505,28 +527,27 @@ export class SeoMetadataGenerator {
               title: this.cleanText(row.title || ''),
               description: this.cleanText(row.description || ''),
               image: row.image || undefined,
-              type: type
+              type: type,
             };
           } else {
             // Compléter les métadonnées existantes
             if (row.title && !this.metadata[slug].title) {
               this.metadata[slug].title = this.cleanText(row.title);
             }
-            
+
             if (row.description && !this.metadata[slug].description) {
               this.metadata[slug].description = this.cleanText(row.description);
             }
-            
+
             if (row.image && !this.metadata[slug].image) {
               this.metadata[slug].image = row.image;
             }
-            
+
             if (!this.metadata[slug].type) {
               this.metadata[slug].type = type;
             }
           }
         }
-        
       } catch (error) {
         console.error(`❌ Erreur lors de la requête de la table ${name}:`, error);
       }
@@ -557,13 +578,13 @@ export class SeoMetadataGenerator {
     // Nettoyer le titre
     if (metadata.title) {
       metadata.title = this.cleanText(metadata.title);
-      
+
       // Ajouter le nom du site si nécessaire
       if (!metadata.title.includes('Auto Pièces') && !metadata.title.includes('APE')) {
         metadata.title = `${metadata.title} — Auto Pièces Équipements`;
       }
     }
-    
+
     // Nettoyer et limiter la description
     if (metadata.description) {
       metadata.description = this.cleanText(metadata.description);
@@ -574,17 +595,17 @@ export class SeoMetadataGenerator {
       // Utiliser H1 comme description si nécessaire
       metadata.description = `Découvrez ${metadata.h1} sur notre site. Meilleurs prix, livraison rapide et service de qualité.`;
     }
-    
+
     // Définir OG title s'il n'existe pas
     if (!metadata.ogTitle && metadata.title) {
       metadata.ogTitle = metadata.title.replace(' — Auto Pièces Équipements', '');
     }
-    
+
     // Définir OG description s'il n'existe pas
     if (!metadata.ogDescription && metadata.description) {
       metadata.ogDescription = metadata.description;
     }
-    
+
     // Canonicaliser le slug
     if (metadata.type) {
       switch (metadata.type) {
@@ -611,7 +632,7 @@ export class SeoMetadataGenerator {
           metadata.canonical = `/${metadata.slug}`;
       }
     }
-    
+
     return metadata;
   }
 
@@ -641,29 +662,31 @@ export class SeoMetadataGenerator {
         // Compléter les métadonnées existantes
         const current = this.metadata[slug];
         const fromDb = this.seoFields[slug];
-        
+
         if (fromDb.title && (!current.title || current.title === current.slug)) {
           current.title = this.cleanText(fromDb.title);
         }
-        
+
         if (fromDb.description && (!current.description || current.description.length < 50)) {
           current.description = this.cleanText(fromDb.description);
         }
       } else {
         // Créer de nouvelles métadonnées
         const fromDb = this.seoFields[slug];
-        
+
         this.metadata[slug] = {
           slug,
           title: this.cleanText(fromDb.title || slug),
           description: this.cleanText(fromDb.description || ''),
-          type: this.guessTypeFromSlug(slug)
+          type: this.guessTypeFromSlug(slug),
         };
       }
     }
-    
+
     if (this.options.verbose) {
-      console.log(`✅ Fusion des métadonnées terminée. ${Object.keys(this.metadata).length} entrées au total.`);
+      console.log(
+        `✅ Fusion des métadonnées terminée. ${Object.keys(this.metadata).length} entrées au total.`
+      );
     }
   }
 
@@ -692,19 +715,19 @@ export class SeoMetadataGenerator {
   public async generateMetadataFile(): Promise<void> {
     // Fusionner les métadonnées
     this.mergeMetadata();
-    
+
     // Améliorer toutes les métadonnées
     for (const slug in this.metadata) {
       this.metadata[slug] = this.enhanceMetadata(this.metadata[slug]);
     }
-    
+
     // Écrire le fichier de métadonnées
     const metadataContent = JSON.stringify(this.metadata, null, 2);
     fs.writeFileSync(this.options.outputPath, metadataContent);
-    
+
     // Créer le fichier d'index pour Remix
     this.generateRemixMetadataIndex();
-    
+
     if (this.options.verbose) {
       console.log(`✅ Fichier de métadonnées écrit: ${this.options.outputPath}`);
       console.log(`📊 ${Object.keys(this.metadata).length} entrées de métadonnées générées.`);
@@ -827,7 +850,7 @@ export default {
     // Écrire le fichier d'index
     const indexPath = path.join(path.dirname(this.options.outputPath), 'seo-metadata.index.ts');
     fs.writeFileSync(indexPath, indexContent);
-    
+
     // Créer le fichier d'importation pour Remix
     const remixImportPath = path.join(path.dirname(this.options.outputPath), 'seo-metadata.db.ts');
     const importContent = `// Généré automatiquement par SeoMetadataGenerator
@@ -845,16 +868,16 @@ export default seoMetadata;
    */
   public async run(): Promise<void> {
     console.log(`🚀 Lancement du générateur de métadonnées SEO...`);
-    
+
     // Analyser les fichiers PHP
     await this.analyzePhpFiles();
-    
+
     // Récupérer les données SEO depuis la base de données
     await this.fetchSeoFromDatabase();
-    
+
     // Générer le fichier de métadonnées
     await this.generateMetadataFile();
-    
+
     console.log(`✅ Génération des métadonnées SEO terminée !`);
     console.log(`📄 Fichier de métadonnées: ${this.options.outputPath}`);
     console.log(`📊 Nombre d'entrées: ${Object.keys(this.metadata).length}`);
@@ -870,14 +893,16 @@ if (require.main === module) {
   const checkDb = args.includes('--with-db');
   const checkFiles = !args.includes('--no-files');
   const verbose = !args.includes('--quiet');
-  
-  const dbConfig = checkDb ? {
-    host: process.env.DB_HOST || 'localhost',
-    user: process.env.DB_USER || 'root',
-    password: process.env.DB_PASSWORD || '',
-    database: process.env.DB_NAME || 'auto_pieces'
-  } : undefined;
-  
+
+  const dbConfig = checkDb
+    ? {
+        host: process.env.DB_HOST || 'localhost',
+        user: process.env.DB_USER || 'root',
+        password: process.env.DB_PASSWORD || '',
+        database: process.env.DB_NAME || 'auto_pieces',
+      }
+    : undefined;
+
   const generator = new SeoMetadataGenerator({
     phpSourceDir,
     outputPath,
@@ -885,10 +910,10 @@ if (require.main === module) {
     baseUrl,
     checkDb,
     checkFiles,
-    verbose
+    verbose,
   });
-  
-  generator.run().catch(error => {
+
+  generator.run().catch((error) => {
     console.error(`❌ Erreur lors de l'exécution du générateur de métadonnées SEO:`, error);
     process.exit(1);
   });

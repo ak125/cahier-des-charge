@@ -3,9 +3,6 @@
  * Generated automatically on 2025-04-20
  */
 
-import { OrchestratorAgent } from ./OrchestratorAgentstructure-agent';
+import { OrchestratorAgent } from './OrchestratorAgent';
 
-export {
-  OrchestratorAgent,
-};
-
+export { OrchestratorAgent };

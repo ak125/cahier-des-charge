@@ -1,6 +1,6 @@
 /**
  * Service de points de contrôle pour les migrations
- * 
+ *
  * Ce service permet de sauvegarder et de récupérer l'état des migrations
  * pour permettre une reprise après échec
  */
@@ -18,7 +18,7 @@ export interface CheckpointData {
 export class CheckpointService {
   private checkpointDir: string;
 
-  constructor(baseDir: string = './logs/checkpoints') {
+  constructor(baseDir = './logs/checkpoints') {
     this.checkpointDir = baseDir;
     this.ensureDirectoryExists();
   }
@@ -34,11 +34,7 @@ export class CheckpointService {
    */
   async saveCheckpoint(checkpoint: CheckpointData): Promise<void> {
     const filename = this.getCheckpointFilename(checkpoint.workflowId, checkpoint.migrationId);
-    await fs.promises.writeFile(
-      filename,
-      JSON.stringify(checkpoint, null, 2),
-      'utf-8'
-    );
+    await fs.promises.writeFile(filename, JSON.stringify(checkpoint, null, 2), 'utf-8');
     console.log(`Checkpoint sauvegardé: ${filename}`);
   }
 
@@ -47,7 +43,7 @@ export class CheckpointService {
    */
   async getCheckpoint(workflowId: string, migrationId: string): Promise<CheckpointData | null> {
     const filename = this.getCheckpointFilename(workflowId, migrationId);
-    
+
     try {
       if (fs.existsSync(filename)) {
         const data = await fs.promises.readFile(filename, 'utf-8');
@@ -56,7 +52,7 @@ export class CheckpointService {
     } catch (error) {
       console.error(`Erreur lors de la lecture du checkpoint: ${error.message}`);
     }
-    
+
     return null;
   }
 
@@ -66,7 +62,7 @@ export class CheckpointService {
   async listCheckpoints(migrationId?: string): Promise<string[]> {
     const files = await fs.promises.readdir(this.checkpointDir);
     if (migrationId) {
-      return files.filter(file => file.includes(migrationId));
+      return files.filter((file) => file.includes(migrationId));
     }
     return files;
   }

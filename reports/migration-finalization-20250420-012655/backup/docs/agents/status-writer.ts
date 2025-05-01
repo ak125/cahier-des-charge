@@ -1,10 +1,10 @@
-import * as fs from 'fs/promises';
 import * as path from 'path';
-import { createClient } from 'redis';
-import { Queue, Worker, Job } from 'bullmq';
-import { createClient as createSupabaseClient } from '@supabase/supabase-js';
 import { Logger } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
+import { createClient as createSupabaseClient } from '@supabase/supabase-js';
+import { Job, Queue, Worker } from 'bullmq';
+import * as fs from 'fs/promises';
+import { createClient } from 'redis';
 import { BaseAgent, OrchestrationAgent } from '../core/interfaces/BaseAgent';
 
 

@@ -5,7 +5,4 @@
 
 import { BusinessAgent } from './BusinessAgent';
 
-export {
-  BusinessAgent,
-};
-
+export { BusinessAgent };

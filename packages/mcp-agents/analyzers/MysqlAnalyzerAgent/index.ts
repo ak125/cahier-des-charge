@@ -5,7 +5,4 @@
 
 import { MysqlAnalyzerAgent } from './MysqlAnalyzerAgent';
 
-export {
-  MysqlAnalyzerAgent,
-};
-
+export { MysqlAnalyzerAgent };

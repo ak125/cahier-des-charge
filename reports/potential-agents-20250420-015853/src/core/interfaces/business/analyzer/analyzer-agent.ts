@@ -1,6 +1,6 @@
 /**
  * Agent d'analyse
- * 
+ *
  * Fait partie de la Couche business - Logique métier spécifique et traitement des données
  * Responsabilité: Implémenter la logique métier spécifique, analyser et transformer les données
  */
@@ -8,7 +8,6 @@
 import { BaseAgent } from '../../../core/interfaces/BaseAgent';
 
 export interface AnalyzerAgent extends BaseAgent {
-
   /**
    * Analyse des données
    */

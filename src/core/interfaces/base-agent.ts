@@ -1,6 +1,6 @@
 /**
  * base-agent.ts
- * 
+ *
  * Interface de base pour tous les agents dans l'architecture MCP OS en 3 couches
  */
 
@@ -12,37 +12,37 @@ export interface BaseAgent {
    * Identifiant unique de l'agent
    */
   id: string;
-  
+
   /**
    * Nom lisible de l'agent
    */
   name: string;
-  
+
   /**
    * Type d'agent (e.g., orchestrator, analyzer, generator, etc.)
    */
   type: string;
-  
+
   /**
    * Version de l'agent
    */
   version: string;
-  
+
   /**
    * Initialise l'agent avec des options spécifiques
    */
   initialize(options?: Record<string, any>): Promise<void>;
-  
+
   /**
    * Indique si l'agent est prêt à être utilisé
    */
   isReady(): boolean;
-  
+
   /**
    * Arrête et nettoie l'agent
    */
   shutdown(): Promise<void>;
-  
+
   /**
    * Récupère les métadonnées de l'agent
    */

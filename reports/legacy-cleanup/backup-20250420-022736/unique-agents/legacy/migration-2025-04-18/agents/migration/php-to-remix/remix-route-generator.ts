@@ -17,7 +17,7 @@ interface RouteTemplates {
 
 export class RemixRouteGenerator implements MCPAgent {
   name = 'remix-route-generator';
-  description = 'Génère des fichiers de routes Remix à partir d\'un mappage de routes PHP';
+  description = "Génère des fichiers de routes Remix à partir d'un mappage de routes PHP";
 
   private routeTemplates: RouteTemplates = {
     basic: `// {description}
@@ -195,23 +195,23 @@ export default function CatchAllPhpPage() {
       <pre>{JSON.stringify(data, null, 2)}</pre>
     </div>
   );
-}`
+}`,
   };
 
   async process(context: MCPContext): Promise<any> {
     const { routeMappingPath, outputDir, generateCatchAll = true } = context.inputs;
-    
+
     if (!routeMappingPath || !fs.existsSync(routeMappingPath)) {
       return {
         success: false,
-        error: `Le fichier de mappage des routes n'existe pas: ${routeMappingPath}`
+        error: `Le fichier de mappage des routes n'existe pas: ${routeMappingPath}`,
       };
     }
 
     if (!outputDir) {
       return {
         success: false,
-        error: `Le répertoire de sortie n'est pas spécifié`
+        error: `Le répertoire de sortie n'est pas spécifié`,
       };
     }
 
@@ -220,36 +220,36 @@ export default function CatchAllPhpPage() {
       if (!fs.existsSync(outputDir)) {
         fs.mkdirSync(outputDir, { recursive: true });
       }
-      
+
       // Lire le fichier de mappage des routes
       const routeMappings: RouteMapping[] = JSON.parse(fs.readFileSync(routeMappingPath, 'utf8'));
-      
+
       // Générer les fichiers de routes Remix
       const generatedRoutes = this.generateRemixRoutes(routeMappings, outputDir);
-      
+
       // Générer le catch-all pour les routes PHP non migrées
       if (generateCatchAll) {
         this.generateCatchAllRoute(outputDir);
       }
-      
+
       return {
         success: true,
         data: {
           generatedRoutes,
-          totalRoutes: generatedRoutes.length
-        }
+          totalRoutes: generatedRoutes.length,
+        },
       };
     } catch (error) {
       return {
         success: false,
-        error: `Erreur lors de la génération des routes Remix: ${error.message}`
+        error: `Erreur lors de la génération des routes Remix: ${error.message}`,
       };
     }
   }
 
   private generateRemixRoutes(routeMappings: RouteMapping[], outputDir: string): string[] {
     const generatedRoutes: string[] = [];
-    
+
     for (const mapping of routeMappings) {
       try {
         const remixRoute = this.createRemixRouteFile(mapping, outputDir);
@@ -258,14 +258,14 @@ export default function CatchAllPhpPage() {
         console.error(`Erreur lors de la génération de la route ${mapping.from}:`, error);
       }
     }
-    
+
     return generatedRoutes;
   }
 
   private createRemixRouteFile(mapping: RouteMapping, outputDir: string): string {
     // Déterminer le nom du fichier de route
     let routeFileName = '';
-    
+
     if (mapping.to.endsWith('.php')) {
       // Format spécial pour les fichiers PHP simulés
       routeFileName = mapping.to;
@@ -276,29 +276,33 @@ export default function CatchAllPhpPage() {
       // Convertir le chemin en nom de fichier de route Remix
       routeFileName = this.convertPathToRemixRoute(mapping.to);
     }
-    
+
     // Préparer les variables pour les templates
     const componentName = this.createComponentName(mapping.to);
     const title = componentName.replace(/([A-Z])/g, ' $1').trim();
     const apiEndpoint = mapping.to.replace('.php', '').replace('_', '');
-    
+
     // Préparer l'extraction des paramètres
     let paramsExtraction = '';
     let paramsReturn = '';
-    
+
     if (mapping.queryParams && mapping.queryParams.length > 0) {
-      paramsExtraction = mapping.queryParams.map(param => {
-        return `const ${param} = url.searchParams.get('${param}');`;
-      }).join('\n  ');
-      
-      paramsReturn = mapping.queryParams.map(param => {
-        return `${param}`;
-      }).join(',\n      ');
+      paramsExtraction = mapping.queryParams
+        .map((param) => {
+          return `const ${param} = url.searchParams.get('${param}');`;
+        })
+        .join('\n  ');
+
+      paramsReturn = mapping.queryParams
+        .map((param) => {
+          return `${param}`;
+        })
+        .join(',\n      ');
     }
-    
+
     // Sélectionner le template approprié
     let template = '';
-    
+
     switch (mapping.type) {
       case 'redirect':
         template = this.routeTemplates.redirect
@@ -314,7 +318,7 @@ export default function CatchAllPhpPage() {
       default:
         template = this.routeTemplates.basic;
     }
-    
+
     // Remplacer les variables dans le template
     template = template
       .replace(/{description}/g, mapping.description || `Route pour ${mapping.from}`)
@@ -323,26 +327,26 @@ export default function CatchAllPhpPage() {
       .replace(/{apiEndpoint}/g, apiEndpoint)
       .replace(/{paramsExtraction}/g, paramsExtraction)
       .replace(/{paramsReturn}/g, paramsReturn);
-    
+
     // Créer le chemin complet du fichier
     const filePath = path.join(outputDir, routeFileName + '.tsx');
-    
+
     // Créer les répertoires parents si nécessaire
     const dirPath = path.dirname(filePath);
     if (!fs.existsSync(dirPath)) {
       fs.mkdirSync(dirPath, { recursive: true });
     }
-    
+
     // Écrire le fichier
     fs.writeFileSync(filePath, template, 'utf8');
-    
+
     return filePath;
   }
 
   private generateCatchAllRoute(outputDir: string): void {
     // Créer le fichier $page_.php.tsx pour capturer toutes les routes PHP
     const filePath = path.join(outputDir, '$page_.php.tsx');
-    
+
     // Écrire le fichier
     fs.writeFileSync(filePath, this.routeTemplates.catchAll, 'utf8');
   }
@@ -359,7 +363,7 @@ export default function CatchAllPhpPage() {
     return path
       .replace(/\.php$/, '')
       .split(/[\/\._-]/)
-      .map(part => part.charAt(0).toUpperCase() + part.slice(1))
+      .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
       .join('');
   }
 }

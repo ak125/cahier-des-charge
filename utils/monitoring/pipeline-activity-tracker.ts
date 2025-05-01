@@ -1,8 +1,8 @@
 /**
  * pipeline-activity-tracker.ts
- * 
+ *
  * Script pour suivre l'activité des pipelines dans MCP OS
- * 
+ *
  * Ce script analyse les logs et les fichiers de configuration pour:
  * 1. Mettre à jour status.json avec les dernières exécutions
  * 2. Enregistrer les erreurs et les succès
@@ -10,10 +10,10 @@
  * 4. Calculer les métriques d'utilisation
  */
 
-import * as fs from fsstructure-agent';
-import * as path from pathstructure-agent';
-import { execSync } from child_processstructure-agent';
-import { glob } from globstructure-agent';
+import * as fs from 'fsstructure-agent';
+import * as path from 'pathstructure-agent';
+import { execSync } from './child_processstructure-agent';
+import { glob } from './globstructure-agent';
 
 // Types pour le suivi des pipelines
 interface PipelineStatus {
@@ -73,11 +73,16 @@ const WORKFLOW_IDS_FILE = path.join(BASE_DIR, 'workflow-ids.json');
 const LOG_PATTERNS = {
   n8n: /^\[(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z)\]\s+(\w+)\s+(.+?):\s+(.+)$/,
   bullmq: /^\[(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z)\]\s+(\w+)\s+\[(.+?)\]\s+(.+)$/,
-  temporal: /^(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z)\s+(\w+)\s+(.+?)\s+(.+)$/
+  temporal: /^(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z)\s+(\w+)\s+(.+?)\s+(.+)$/,
 };
 
 // Utilitaire pour créer un objet PipelineStatus vide
-function createEmptyPipelineStatus(id: string, name: string, type: PipelineStatus['type'], configPath: string): PipelineStatus {
+function createEmptyPipelineStatus(
+  id: string,
+  name: string,
+  type: PipelineStatus['type'],
+  configPath: string
+): PipelineStatus {
   return {
     id,
     name,
@@ -94,7 +99,7 @@ function createEmptyPipelineStatus(id: string, name: string, type: PipelineStatu
     dependsOn: [],
     configuration: configPath,
     status: 'inactive',
-    tags: []
+    tags: [],
   };
 }
 
@@ -121,8 +126,8 @@ function loadOrInitStatusFile(): StatusFile {
       errorPipelines: 0,
       totalRuns: 0,
       globalSuccessRate: 0,
-      lastActivity: null
-    }
+      lastActivity: null,
+    },
   };
 }
 
@@ -151,7 +156,7 @@ async function discoverN8NPipelines(statusFile: StatusFile): Promise<void> {
       const pipelineName = configContent.name || pipelineId;
 
       // Vérifier si le pipeline existe déjà dans le fichier de statut
-      let pipeline = statusFile.pipelines.find(p => p.id === pipelineId);
+      let pipeline = statusFile.pipelines.find((p) => p.id === pipelineId);
 
       if (!pipeline) {
         // Créer une nouvelle entrée pour ce pipeline
@@ -183,11 +188,11 @@ async function discoverN8NPipelines(statusFile: StatusFile): Promise<void> {
 
       // Mettre à jour le statut
       if (pipeline.lastRun) {
-        pipeline.status = pipeline.lastError && new Date(pipeline.lastError) > new Date(pipeline.lastSuccess || 0)
-          ? 'error'
-          : 'active';
+        pipeline.status =
+          pipeline.lastError && new Date(pipeline.lastError) > new Date(pipeline.lastSuccess || 0)
+            ? 'error'
+            : 'active';
       }
-
     } catch (error) {
       console.error(`Erreur lors de l'analyse du fichier ${configFile}: ${error}`);
     }
@@ -201,7 +206,10 @@ async function discoverBullMQPipelines(statusFile: StatusFile): Promise<void> {
   console.log('Découverte des pipelines BullMQ...');
 
   // Trouver tous les fichiers docker-compose avec BullMQ
-  const dockerComposeFiles = await glob('**/docker-compose*.{yml,yaml}', { cwd: BASE_DIR, absolute: true });
+  const dockerComposeFiles = await glob('**/docker-compose*.{yml,yaml}', {
+    cwd: BASE_DIR,
+    absolute: true,
+  });
   let bullMQCount = 0;
 
   for (const composeFile of dockerComposeFiles) {
@@ -209,7 +217,11 @@ async function discoverBullMQPipelines(statusFile: StatusFile): Promise<void> {
       const content = fs.readFileSync(composeFile, 'utf8');
 
       // Vérifier si le fichier contient des références à BullMQ
-      if (content.includes('bullmq') || content.includes('bull-board') || content.includes('bull-arena')) {
+      if (
+        content.includes('bullmq') ||
+        content.includes('bull-board') ||
+        content.includes('bull-arena')
+      ) {
         // Extraire les noms de queues à partir du fichier
         const queueMatches = content.match(/queue(?:s|Name|_name)?['":\s]+([^'"}\s,]+)/gi) || [];
 
@@ -220,11 +232,16 @@ async function discoverBullMQPipelines(statusFile: StatusFile): Promise<void> {
             const pipelineId = `bullmq-${queueName}`;
 
             // Vérifier si le pipeline existe déjà
-            let pipeline = statusFile.pipelines.find(p => p.id === pipelineId);
+            let pipeline = statusFile.pipelines.find((p) => p.id === pipelineId);
 
             if (!pipeline) {
               // Créer une nouvelle entrée pour ce pipeline
-              pipeline = createEmptyPipelineStatus(pipelineId, `BullMQ Queue: ${queueName}`, 'bullmq', composeFile);
+              pipeline = createEmptyPipelineStatus(
+                pipelineId,
+                `BullMQ Queue: ${queueName}`,
+                'bullmq',
+                composeFile
+              );
               statusFile.pipelines.push(pipeline);
               bullMQCount++;
             } else {
@@ -262,22 +279,28 @@ async function discoverTemporalPipelines(statusFile: StatusFile): Promise<void> 
       const content = fs.readFileSync(temporalFile, 'utf8');
 
       // Rechercher les définitions de workflow
-// DÉSACTIVÉ:       const workflowMatches = content.match(/workflow\s*\.\s*createWorkflow\s*\(\s*['"]([\w-]+)['"]/g) || [];
-      const activityMatches = content.match(/activity\s*\.\s*createActivity\s*\(\s*['"]([\w-]+)['"]/g) || [];
+      // DÉSACTIVÉ:       const workflowMatches = content.match(/workflow\s*\.\s*createWorkflow\s*\(\s*['"]([\w-]+)['"]/g) || [];
+      const activityMatches =
+        content.match(/activity\s*\.\s*createActivity\s*\(\s*['"]([\w-]+)['"]/g) || [];
 
       // Traiter les workflows
-      for (const workflowMatch of workflowMatches) {
-// DÉSACTIVÉ:         const match = workflowMatch.match(/workflow\s*\.\s*createWorkflow\s*\(\s*['"]([\w-]+)['"]/);
-        if (match && match[1]) {
+      for (const _workflowMatch of workflowMatches) {
+        // DÉSACTIVÉ:         const match = workflowMatch.match(/workflow\s*\.\s*createWorkflow\s*\(\s*['"]([\w-]+)['"]/);
+        if (match?.[1]) {
           const workflowName = match[1];
           const pipelineId = `temporal-workflow-${workflowName}`;
 
           // Vérifier si le pipeline existe déjà
-          let pipeline = statusFile.pipelines.find(p => p.id === pipelineId);
+          let pipeline = statusFile.pipelines.find((p) => p.id === pipelineId);
 
           if (!pipeline) {
             // Créer une nouvelle entrée pour ce pipeline
-            pipeline = createEmptyPipelineStatus(pipelineId, `Temporal Workflow: ${workflowName}`, 'temporal', temporalFile);
+            pipeline = createEmptyPipelineStatus(
+              pipelineId,
+              `Temporal Workflow: ${workflowName}`,
+              'temporal',
+              temporalFile
+            );
             statusFile.pipelines.push(pipeline);
             temporalCount++;
           } else {
@@ -296,16 +319,21 @@ async function discoverTemporalPipelines(statusFile: StatusFile): Promise<void> 
       // Traiter les activities
       for (const activityMatch of activityMatches) {
         const match = activityMatch.match(/activity\s*\.\s*createActivity\s*\(\s*['"]([\w-]+)['"]/);
-        if (match && match[1]) {
+        if (match?.[1]) {
           const activityName = match[1];
           const pipelineId = `temporal-activity-${activityName}`;
 
           // Vérifier si le pipeline existe déjà
-          let pipeline = statusFile.pipelines.find(p => p.id === pipelineId);
+          let pipeline = statusFile.pipelines.find((p) => p.id === pipelineId);
 
           if (!pipeline) {
             // Créer une nouvelle entrée pour ce pipeline
-            pipeline = createEmptyPipelineStatus(pipelineId, `Temporal Activity: ${activityName}`, 'temporal', temporalFile);
+            pipeline = createEmptyPipelineStatus(
+              pipelineId,
+              `Temporal Activity: ${activityName}`,
+              'temporal',
+              temporalFile
+            );
             statusFile.pipelines.push(pipeline);
             temporalCount++;
           } else {
@@ -385,21 +413,18 @@ async function analyzeLogs(statusFile: StatusFile): Promise<void> {
         const normalizedId = pipelineId.toLowerCase().replace(/\s+/g, '-');
         const fullPipelineId = `${typePrefix}${normalizedId}`;
 
-        let pipeline = statusFile.pipelines.find(p => p.id === fullPipelineId);
+        let pipeline = statusFile.pipelines.find((p) => p.id === fullPipelineId);
 
         // Si non trouvé, essayer une correspondance partielle
         if (!pipeline) {
-          pipeline = statusFile.pipelines.find(p => p.id.includes(normalizedId) || normalizedId.includes(p.id));
+          pipeline = statusFile.pipelines.find(
+            (p) => p.id.includes(normalizedId) || normalizedId.includes(p.id)
+          );
         }
 
         // Si toujours pas trouvé et que ce n'est pas un message système, créer un nouveau pipeline
         if (!pipeline && !normalizedId.includes('system') && !normalizedId.includes('general')) {
-          pipeline = createEmptyPipelineStatus(
-            fullPipelineId,
-            pipelineId,
-            logType,
-            logFile
-          );
+          pipeline = createEmptyPipelineStatus(fullPipelineId, pipelineId, logType, logFile);
           statusFile.pipelines.push(pipeline);
         }
 
@@ -412,11 +437,13 @@ async function analyzeLogs(statusFile: StatusFile): Promise<void> {
           pipeline.runCount++;
 
           // Détecter les succès et les erreurs
-          const isSuccess = message.includes('success') ||
+          const isSuccess =
+            message.includes('success') ||
             logLevel.toLowerCase() === 'info' ||
             message.includes('completed');
 
-          const isError = message.includes('error') ||
+          const isError =
+            message.includes('error') ||
             message.includes('fail') ||
             message.includes('exception') ||
             logLevel.toLowerCase() === 'error';
@@ -436,7 +463,8 @@ async function analyzeLogs(statusFile: StatusFile): Promise<void> {
           }
 
           // Mettre à jour le taux d'erreur
-          pipeline.errorRate = pipeline.runCount > 0 ? (pipeline.errorCount / pipeline.runCount) * 100 : 0;
+          pipeline.errorRate =
+            pipeline.runCount > 0 ? (pipeline.errorCount / pipeline.runCount) * 100 : 0;
 
           // Déterminer le statut actuel du pipeline
           if (pipeline.lastRun) {
@@ -446,9 +474,11 @@ async function analyzeLogs(statusFile: StatusFile): Promise<void> {
 
             if (lastDate > threeDaysAgo) {
               // Actif récemment
-              pipeline.status = pipeline.lastError && new Date(pipeline.lastError) > new Date(pipeline.lastSuccess || 0)
-                ? 'error'
-                : 'active';
+              pipeline.status =
+                pipeline.lastError &&
+                new Date(pipeline.lastError) > new Date(pipeline.lastSuccess || 0)
+                  ? 'error'
+                  : 'active';
             } else {
               // Inactif (pas d'activité récente)
               pipeline.status = 'inactive';
@@ -476,7 +506,7 @@ function detectPipelineRelationships(statusFile: StatusFile): void {
   // Reconstruire les relations usedBy à partir des dépendances
   for (const pipeline of statusFile.pipelines) {
     for (const depId of pipeline.dependsOn) {
-      const dependency = statusFile.pipelines.find(p => p.id === depId);
+      const dependency = statusFile.pipelines.find((p) => p.id === depId);
       if (dependency && !dependency.usedBy.includes(pipeline.id)) {
         dependency.usedBy.push(pipeline.id);
       }
@@ -491,9 +521,9 @@ function updateGlobalStats(statusFile: StatusFile): void {
   console.log('Mise à jour des statistiques globales...');
 
   const totalPipelines = statusFile.pipelines.length;
-  const activePipelines = statusFile.pipelines.filter(p => p.status === 'active').length;
-  const inactivePipelines = statusFile.pipelines.filter(p => p.status === 'inactive').length;
-  const errorPipelines = statusFile.pipelines.filter(p => p.status === 'error').length;
+  const activePipelines = statusFile.pipelines.filter((p) => p.status === 'active').length;
+  const inactivePipelines = statusFile.pipelines.filter((p) => p.status === 'inactive').length;
+  const errorPipelines = statusFile.pipelines.filter((p) => p.status === 'error').length;
 
   const totalRuns = statusFile.pipelines.reduce((sum, p) => sum + p.runCount, 0);
   const totalSuccesses = statusFile.pipelines.reduce((sum, p) => sum + p.successCount, 0);
@@ -501,7 +531,10 @@ function updateGlobalStats(statusFile: StatusFile): void {
   // Trouver la dernière activité globale
   let lastActivity: string | null = null;
   for (const pipeline of statusFile.pipelines) {
-    if (pipeline.lastRun && (!lastActivity || new Date(pipeline.lastRun) > new Date(lastActivity))) {
+    if (
+      pipeline.lastRun &&
+      (!lastActivity || new Date(pipeline.lastRun) > new Date(lastActivity))
+    ) {
       lastActivity = pipeline.lastRun;
     }
   }
@@ -513,7 +546,7 @@ function updateGlobalStats(statusFile: StatusFile): void {
     errorPipelines,
     totalRuns,
     globalSuccessRate: totalRuns > 0 ? (totalSuccesses / totalRuns) * 100 : 0,
-    lastActivity
+    lastActivity,
   };
 
   console.log('Statistiques globales mises à jour.');
@@ -522,7 +555,7 @@ function updateGlobalStats(statusFile: StatusFile): void {
 // Point d'entrée principal
 (async function main() {
   try {
-    console.log('=== Suivi d\'activité des pipelines MCP OS ===');
+    console.log("=== Suivi d'activité des pipelines MCP OS ===");
 
     // Charger ou initialiser le fichier de statut
     const statusFile = loadOrInitStatusFile();
@@ -551,7 +584,6 @@ function updateGlobalStats(statusFile: StatusFile): void {
     console.log(`   ${statusFile.pipelines.length} pipelines suivis.`);
     console.log(`   Dernière activité: ${statusFile.summary.lastActivity || 'Aucune'}`);
     console.log(`   Taux de succès global: ${statusFile.summary.globalSuccessRate.toFixed(1)}%`);
-
   } catch (error) {
     console.error(`Erreur lors du suivi d'activité des pipelines: ${error}`);
     process.exit(1);

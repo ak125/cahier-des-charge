@@ -3,8 +3,8 @@
  * Agent export file
  */
 
-import { HtaccessParser } from ./htaccess-parserstructure-agent';
-import { BusinessAgent } from ../../core/interfacesstructure-agent';
+import { BusinessAgent } from '../../core/interfacesstructure-agent';
+import { HtaccessParser } from './htaccess-parserstructure-agent';
 
 export { HtaccessParser };
 export default HtaccessParser;

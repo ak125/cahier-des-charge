@@ -11,11 +11,11 @@
  * 5. Effectue les migrations approuvées
  */
 
-import * as fs from 'fs-extra';
-import * as path from 'path';
-import * as glob from 'glob';
 import { exec } from 'child_process';
+import * as path from 'path';
 import { promisify } from 'util';
+import * as fs from 'fs-extra';
+import * as glob from 'glob';
 
 // Utilitaires
 const execAsync = promisify(exec);
@@ -141,7 +141,7 @@ async function analyzeAgent(filePath: string): Promise<AgentAnalysis> {
   }
 
   // UtiliserDoDoDoDotgit grep pour compter les utilisations
-  let usageCount = 0;
+  const usageCount = 0;
   try {
     const { stdout } = await execAsync(DoDoDoDotgit grep -l "${name}" --exclude="*.md" | wc -l`);
     usageCount = parseInt(stdout.trim(), 10);

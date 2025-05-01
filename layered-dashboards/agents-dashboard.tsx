@@ -1,12 +1,12 @@
+import { Box } from '@chakra-ui/react';
 /**
  * Dashboard spécifique pour la couche des agents
  * Affiche l'état des agents, leur performance et les métriques de santé
  */
-import React, { useState, useEffect } from 'react';
-import BaseDashboard, { DashboardConfig } from './base-dashboard';
-import { Box } from '@chakra-ui/react';
+import React, { useEffect, useState } from 'react';
 import { CircuitState } from '../utils/circuit-breaker/base-circuit-breaker';
 import { TraceEvent } from '../utils/traceability/traceability-service';
+import BaseDashboard, { DashboardConfig } from './base-dashboard';
 
 // Types pour les agents
 interface Agent {
@@ -39,68 +39,68 @@ interface AgentCircuitBreakerDetail {
 
 // Configuration du tableau de bord pour la couche des agents
 const defaultAgentsConfig: DashboardConfig = {
-  title: "Tableau de bord des Agents",
-  description: "Monitoring des agents, de leurs performances et de leur état de santé",
+  title: 'Tableau de bord des Agents',
+  description: 'Monitoring des agents, de leurs performances et de leur état de santé',
   layer: 'agents',
   refreshInterval: 20, // Rafraîchir toutes les 20 secondes
-  
+
   // Sources de données pour ce dashboard
   dataSources: [
     {
       id: 'AgentRegistry',
       name: 'Agent Registry',
       url: '/api/agents/registry',
-      refreshInterval: 30
+      refreshInterval: 30,
     },
     {
       id: 'agent-performance',
       name: 'Agent Performance',
       url: '/api/agents/performance',
-      refreshInterval: 15
+      refreshInterval: 15,
     },
     {
       id: 'agent-health',
       name: 'Agent Health',
       url: '/api/agents/health',
-      refreshInterval: 10
+      refreshInterval: 10,
     },
     {
       id: 'circuit-breaker',
       name: 'Circuit Breaker',
       url: '/api/agents/circuit-breaker/status',
-      refreshInterval: 10
+      refreshInterval: 10,
     },
     {
       id: 'agent-trace-events',
       name: 'Agent Trace Events',
       url: '/api/traceability/events?layer=agents',
-      refreshInterval: 15
+      refreshInterval: 15,
     },
     {
       id: 'cross-layer-metrics',
       name: 'Cross-Layer Metrics',
       url: '/api/traceability/cross-layer-metrics?sourceLayer=agents',
-      refreshInterval: 30
+      refreshInterval: 30,
     },
     {
       id: 'agent-details',
       name: 'Agent Details',
       url: '/api/agents/details',
-      refreshInterval: 45
+      refreshInterval: 45,
     },
     {
       id: 'governance-decisions',
       name: 'Governance Decisions',
       url: '/api/governance/decisions?layer=agents',
-      refreshInterval: 60
-    }
+      refreshInterval: 60,
+    },
   ],
-  
+
   // Sections du tableau de bord
   sections: [
     {
       id: 'overview',
-      title: 'Vue d\'ensemble',
+      title: "Vue d'ensemble",
       description: 'État global des agents de la plateforme',
       widgets: [
         {
@@ -114,23 +114,23 @@ const defaultAgentsConfig: DashboardConfig = {
               name: 'Agents actifs',
               value: 0,
               status: 'success',
-              dataSourceId: 'AgentRegistry'
+              dataSourceId: 'AgentRegistry',
             },
             {
               id: 'disabled-agents',
               name: 'Agents désactivés',
               value: 0,
               status: 'warning',
-              dataSourceId: 'AgentRegistry'
+              dataSourceId: 'AgentRegistry',
             },
             {
               id: 'failed-agents',
               name: 'Agents en échec',
               value: 0,
               status: 'error',
-              dataSourceId: 'agent-health'
-            }
-          ]
+              dataSourceId: 'agent-health',
+            },
+          ],
         },
         {
           id: 'agent-performance-summary',
@@ -140,24 +140,24 @@ const defaultAgentsConfig: DashboardConfig = {
           metrics: [
             {
               id: 'avg-execution-time',
-              name: 'Temps d\'exécution moyen',
+              name: "Temps d'exécution moyen",
               value: '0 ms',
-              dataSourceId: 'agent-performance'
+              dataSourceId: 'agent-performance',
             },
             {
               id: 'success-rate',
               name: 'Taux de réussite',
               value: '0%',
               status: 'success',
-              dataSourceId: 'agent-performance'
+              dataSourceId: 'agent-performance',
             },
             {
               id: 'throughput',
               name: 'Débit (req/min)',
               value: 0,
-              dataSourceId: 'agent-performance'
-            }
-          ]
+              dataSourceId: 'agent-performance',
+            },
+          ],
         },
         {
           id: 'agent-resource-usage',
@@ -169,21 +169,21 @@ const defaultAgentsConfig: DashboardConfig = {
               id: 'avg-memory-usage',
               name: 'Utilisation mémoire',
               value: '0 MB',
-              dataSourceId: 'agent-health'
+              dataSourceId: 'agent-health',
             },
             {
               id: 'avg-cpu-usage',
               name: 'Utilisation CPU',
               value: '0%',
-              dataSourceId: 'agent-health'
+              dataSourceId: 'agent-health',
             },
             {
               id: 'network-usage',
               name: 'Utilisation réseau',
               value: '0 KB/s',
-              dataSourceId: 'agent-health'
-            }
-          ]
+              dataSourceId: 'agent-health',
+            },
+          ],
         },
         {
           id: 'circuit-breaker-status',
@@ -196,23 +196,23 @@ const defaultAgentsConfig: DashboardConfig = {
               name: 'État du circuit',
               value: 'CLOSED',
               status: 'success',
-              dataSourceId: 'circuit-breaker'
+              dataSourceId: 'circuit-breaker',
             },
             {
               id: 'disabled-agents-count',
               name: 'Agents temporairement désactivés',
               value: 0,
-              dataSourceId: 'circuit-breaker'
+              dataSourceId: 'circuit-breaker',
             },
             {
               id: 'failure-rate',
-              name: 'Taux d\'échec',
+              name: "Taux d'échec",
               value: '0%',
-              dataSourceId: 'circuit-breaker'
-            }
-          ]
-        }
-      ]
+              dataSourceId: 'circuit-breaker',
+            },
+          ],
+        },
+      ],
     },
     {
       id: 'circuit-breaker-management',
@@ -229,63 +229,78 @@ const defaultAgentsConfig: DashboardConfig = {
             columns: [
               { id: 'id', label: 'ID', sortable: true },
               { id: 'agentName', label: 'Agent', sortable: true },
-              { id: 'state', label: 'État', sortable: true, 
+              {
+                id: 'state',
+                label: 'État',
+                sortable: true,
                 formatter: (value) => {
-                  switch(value) {
-                    case 'open': return { value: 'Ouvert', status: 'error' };
-                    case 'half-open': return { value: 'Semi-ouvert', status: 'warning' };
-                    case 'closed': return { value: 'Fermé', status: 'success' };
-                    default: return { value: value, status: 'info' };
+                  switch (value) {
+                    case 'open':
+                      return { value: 'Ouvert', status: 'error' };
+                    case 'half-open':
+                      return { value: 'Semi-ouvert', status: 'warning' };
+                    case 'closed':
+                      return { value: 'Fermé', status: 'success' };
+                    default:
+                      return { value: value, status: 'info' };
                   }
-                }
+                },
               },
               { id: 'failureCount', label: 'Échecs', sortable: true },
               { id: 'successCount', label: 'Succès', sortable: true },
               { id: 'lastFailureTime', label: 'Dernier échec', sortable: true },
               { id: 'failureReason', label: 'Raison', sortable: false },
               { id: 'substitutionAgentId', label: 'Agent de substitution', sortable: false },
-              { id: 'actions', label: 'Actions', sortable: false, 
-                formatter: (value, row) => ({
+              {
+                id: 'actions',
+                label: 'Actions',
+                sortable: false,
+                formatter: (_value, row) => ({
                   actions: [
-                    { 
-                      label: 'Réinitialiser', 
+                    {
+                      label: 'Réinitialiser',
                       action: `resetCircuitBreaker:${row.id}`,
-                      status: row.state === 'closed' ? 'disabled' : 'primary' 
+                      status: row.state === 'closed' ? 'disabled' : 'primary',
                     },
-                    { 
-                      label: 'Substituer', 
+                    {
+                      label: 'Substituer',
                       action: `substituteAgent:${row.agentId}`,
-                      status: row.substitutionAgentId ? 'disabled' : 'warning' 
+                      status: row.substitutionAgentId ? 'disabled' : 'warning',
                     },
-                    { 
-                      label: 'Détails', 
+                    {
+                      label: 'Détails',
                       action: `showCircuitBreakerDetails:${row.id}`,
-                      status: 'info' 
-                    }
-                  ]
-                })
-              }
+                      status: 'info',
+                    },
+                  ],
+                }),
+              },
             ],
             actions: {
               resetCircuitBreaker: async (id) => {
                 console.log(`Réinitialisation du circuit breaker ${id}...`);
                 await fetch(`/api/agents/circuit-breakers/${id}/reset`, {
-                  method: 'POST'
+                  method: 'POST',
                 });
                 return { success: true, message: `Circuit breaker ${id} réinitialisé` };
               },
               substituteAgent: async (agentId) => {
                 console.log(`Substitution de l'agent ${agentId}...`);
                 await fetch(`/api/agents/${agentId}/substitute`, {
-                  method: 'POST'
+                  method: 'POST',
                 });
                 return { success: true, message: `Agent ${agentId} substitué temporairement` };
               },
               showCircuitBreakerDetails: async (id) => {
-                return { success: true, action: 'showModal', modalId: 'circuit-breaker-detail', modalProps: { breakerId: id } };
-              }
-            }
-          }
+                return {
+                  success: true,
+                  action: 'showModal',
+                  modalId: 'circuit-breaker-detail',
+                  modalProps: { breakerId: id },
+                };
+              },
+            },
+          },
         },
         {
           id: 'circuit-breaker-history',
@@ -298,10 +313,10 @@ const defaultAgentsConfig: DashboardConfig = {
             titleField: 'event',
             descriptionField: 'description',
             statusField: 'status',
-            filters: ['agentId']
-          }
-        }
-      ]
+            filters: ['agentId'],
+          },
+        },
+      ],
     },
     {
       id: 'agent-details',
@@ -318,19 +333,30 @@ const defaultAgentsConfig: DashboardConfig = {
               { id: 'id', label: 'ID', sortable: true },
               { id: 'name', label: 'Nom', sortable: true },
               { id: 'type', label: 'Type', sortable: true },
-              { id: 'status', label: 'Statut', sortable: true, 
+              {
+                id: 'status',
+                label: 'Statut',
+                sortable: true,
                 formatter: (value) => {
-                  switch(value) {
-                    case 'active': return { value: 'Actif', status: 'success' };
-                    case 'disabled': return { value: 'Désactivé', status: 'warning' };
-                    case 'failed': return { value: 'En échec', status: 'error' };
-                    case 'idle': return { value: 'Inactif', status: 'info' };
-                    default: return { value: value, status: 'info' };
+                  switch (value) {
+                    case 'active':
+                      return { value: 'Actif', status: 'success' };
+                    case 'disabled':
+                      return { value: 'Désactivé', status: 'warning' };
+                    case 'failed':
+                      return { value: 'En échec', status: 'error' };
+                    case 'idle':
+                      return { value: 'Inactif', status: 'info' };
+                    default:
+                      return { value: value, status: 'info' };
                   }
-                }
+                },
               },
               { id: 'version', label: 'Version', sortable: true },
-              { id: 'successRate', label: 'Taux de succès', sortable: true,
+              {
+                id: 'successRate',
+                label: 'Taux de succès',
+                sortable: true,
                 formatter: (value) => {
                   const percentage = typeof value === 'number' ? `${value.toFixed(1)}%` : value;
                   let status = 'info';
@@ -340,78 +366,97 @@ const defaultAgentsConfig: DashboardConfig = {
                     else status = 'error';
                   }
                   return { value: percentage, status };
-                }
+                },
               },
-              { id: 'avgExecutionTime', label: 'Temps d\'exécution', sortable: true,
+              {
+                id: 'avgExecutionTime',
+                label: "Temps d'exécution",
+                sortable: true,
                 formatter: (value) => {
                   if (typeof value !== 'number') return { value, status: 'info' };
-                  return { 
-                    value: value < 1000 
-                      ? `${value}ms` 
-                      : `${(value/1000).toFixed(2)}s`, 
-                    status: value < 1000 ? 'success' : (value < 3000 ? 'warning' : 'error')
+                  return {
+                    value: value < 1000 ? `${value}ms` : `${(value / 1000).toFixed(2)}s`,
+                    status: value < 1000 ? 'success' : value < 3000 ? 'warning' : 'error',
                   };
-                }
+                },
               },
-              { id: 'isolationState', label: 'Isolation', sortable: true, 
+              {
+                id: 'isolationState',
+                label: 'Isolation',
+                sortable: true,
                 formatter: (value) => {
-                  switch(value) {
-                    case CircuitState.OPEN: return { value: 'Isolé', status: 'error' };
-                    case CircuitState.HALF_OPEN: return { value: 'Test', status: 'warning' };
-                    case CircuitState.CLOSED: return { value: 'Normal', status: 'success' };
-                    default: return { value: value || 'N/A', status: 'info' };
+                  switch (value) {
+                    case CircuitState.OPEN:
+                      return { value: 'Isolé', status: 'error' };
+                    case CircuitState.HALF_OPEN:
+                      return { value: 'Test', status: 'warning' };
+                    case CircuitState.CLOSED:
+                      return { value: 'Normal', status: 'success' };
+                    default:
+                      return { value: value || 'N/A', status: 'info' };
                   }
-                }
+                },
               },
-              { id: 'actions', label: 'Actions', sortable: false, 
-                formatter: (value, row) => ({
+              {
+                id: 'actions',
+                label: 'Actions',
+                sortable: false,
+                formatter: (_value, row) => ({
                   actions: [
-                    { 
-                      label: row.status === 'disabled' ? 'Activer' : 'Désactiver', 
-                      action: row.status === 'disabled' ? `enableAgent:${row.id}` : `disableAgent:${row.id}`,
-                      status: row.status === 'disabled' ? 'success' : 'warning'
+                    {
+                      label: row.status === 'disabled' ? 'Activer' : 'Désactiver',
+                      action:
+                        row.status === 'disabled'
+                          ? `enableAgent:${row.id}`
+                          : `disableAgent:${row.id}`,
+                      status: row.status === 'disabled' ? 'success' : 'warning',
                     },
-                    { 
-                      label: 'Relancer', 
+                    {
+                      label: 'Relancer',
                       action: `restartAgent:${row.id}`,
-                      status: 'primary' 
+                      status: 'primary',
                     },
-                    { 
-                      label: 'Historique', 
+                    {
+                      label: 'Historique',
                       action: `showAgentHistory:${row.id}`,
-                      status: 'info' 
-                    }
-                  ]
-                })
-              }
+                      status: 'info',
+                    },
+                  ],
+                }),
+              },
             ],
             actions: {
               enableAgent: async (id) => {
                 console.log(`Activation de l'agent ${id}...`);
                 await fetch(`/api/agents/${id}/enable`, {
-                  method: 'POST'
+                  method: 'POST',
                 });
                 return { success: true, message: `Agent ${id} activé` };
               },
               disableAgent: async (id) => {
                 console.log(`Désactivation de l'agent ${id}...`);
                 await fetch(`/api/agents/${id}/disable`, {
-                  method: 'POST'
+                  method: 'POST',
                 });
                 return { success: true, message: `Agent ${id} désactivé` };
               },
               restartAgent: async (id) => {
                 console.log(`Redémarrage de l'agent ${id}...`);
                 await fetch(`/api/agents/${id}/restart`, {
-                  method: 'POST'
+                  method: 'POST',
                 });
                 return { success: true, message: `Agent ${id} redémarré` };
               },
               showAgentHistory: async (id) => {
-                return { success: true, action: 'showModal', modalId: 'agent-history', modalProps: { agentId: id } };
-              }
-            }
-          }
+                return {
+                  success: true,
+                  action: 'showModal',
+                  modalId: 'agent-history',
+                  modalProps: { agentId: id },
+                };
+              },
+            },
+          },
         },
         {
           id: 'agent-performance-chart',
@@ -423,19 +468,19 @@ const defaultAgentsConfig: DashboardConfig = {
             title: 'Évolution de la performance',
             type: 'line',
             data: {},
-            dataSourceId: 'agent-performance'
-          }
-        }
-      ]
+            dataSourceId: 'agent-performance',
+          },
+        },
+      ],
     },
     {
       id: 'traceability-analytics',
       title: 'Traçabilité & Analytics',
-      description: 'Analyse des traces d\'exécution à travers les couches',
+      description: "Analyse des traces d'exécution à travers les couches",
       widgets: [
         {
           id: 'trace-flow-visualization',
-          title: 'Flux d\'interactions entre agents',
+          title: "Flux d'interactions entre agents",
           type: 'flowChart',
           size: 'xl',
           dataSourceId: 'agent-trace-events',
@@ -443,8 +488,8 @@ const defaultAgentsConfig: DashboardConfig = {
             nodeField: 'event',
             edgesField: 'connections',
             nodeMetricField: 'count',
-            nodeColorField: 'successRate'
-          }
+            nodeColorField: 'successRate',
+          },
         },
         {
           id: 'trace-events-table',
@@ -459,39 +504,50 @@ const defaultAgentsConfig: DashboardConfig = {
               { id: 'timestamp', label: 'Horodatage', sortable: true },
               { id: 'duration', label: 'Durée', sortable: true },
               { id: 'agentId', label: 'ID Agent', sortable: true },
-              { id: 'success', label: 'Succès', sortable: true,
-                formatter: (value) => ({ 
-                  value: value ? 'Oui' : 'Non', 
-                  status: value ? 'success' : 'error' 
-                })
+              {
+                id: 'success',
+                label: 'Succès',
+                sortable: true,
+                formatter: (value) => ({
+                  value: value ? 'Oui' : 'Non',
+                  status: value ? 'success' : 'error',
+                }),
               },
               { id: 'parentTraceId', label: 'ID parent', sortable: true },
-              { id: 'actions', label: 'Actions', sortable: false, 
-                formatter: (value, row) => ({
+              {
+                id: 'actions',
+                label: 'Actions',
+                sortable: false,
+                formatter: (_value, row) => ({
                   actions: [
-                    { 
-                      label: 'Détails', 
+                    {
+                      label: 'Détails',
                       action: `showTraceDetails:${row.traceId}`,
-                      status: 'info' 
+                      status: 'info',
                     },
-                    { 
-                      label: 'Suivre', 
+                    {
+                      label: 'Suivre',
                       action: `traceEvent:${row.traceId}`,
-                      status: 'primary' 
-                    }
-                  ]
-                })
-              }
+                      status: 'primary',
+                    },
+                  ],
+                }),
+              },
             ],
             actions: {
               showTraceDetails: async (id) => {
-                return { success: true, action: 'showModal', modalId: 'trace-details', modalProps: { traceId: id } };
+                return {
+                  success: true,
+                  action: 'showModal',
+                  modalId: 'trace-details',
+                  modalProps: { traceId: id },
+                };
               },
               traceEvent: async (id) => {
                 return { success: true, action: 'navigate', url: `/trace-explorer/${id}` };
-              }
-            }
-          }
+              },
+            },
+          },
         },
         {
           id: 'cross-layer-performance',
@@ -504,10 +560,10 @@ const defaultAgentsConfig: DashboardConfig = {
             title: 'Interactions entre couches',
             type: 'sankey',
             data: {},
-            refreshInterval: 60
-          }
-        }
-      ]
+            refreshInterval: 60,
+          },
+        },
+      ],
     },
     {
       id: 'agent-health',
@@ -523,8 +579,8 @@ const defaultAgentsConfig: DashboardConfig = {
             title: 'Ressources par agent',
             type: 'bar',
             data: {},
-            dataSourceId: 'agent-health'
-          }
+            dataSourceId: 'agent-health',
+          },
         },
         {
           id: 'error-distribution',
@@ -533,13 +589,13 @@ const defaultAgentsConfig: DashboardConfig = {
           size: 'md',
           chart: {
             id: 'error-pie',
-            title: 'Types d\'erreurs',
+            title: "Types d'erreurs",
             type: 'pie',
             data: {},
-            dataSourceId: 'agent-health'
-          }
-        }
-      ]
+            dataSourceId: 'agent-health',
+          },
+        },
+      ],
     },
     {
       id: 'governance-dashboard',
@@ -557,49 +613,60 @@ const defaultAgentsConfig: DashboardConfig = {
               { id: 'name', label: 'Nom', sortable: true },
               { id: 'description', label: 'Description', sortable: false },
               { id: 'priority', label: 'Priorité', sortable: true },
-              { id: 'enabled', label: 'Active', sortable: true,
-                formatter: (value) => ({ 
-                  value: value ? 'Oui' : 'Non', 
-                  status: value ? 'success' : 'error' 
-                })
+              {
+                id: 'enabled',
+                label: 'Active',
+                sortable: true,
+                formatter: (value) => ({
+                  value: value ? 'Oui' : 'Non',
+                  status: value ? 'success' : 'error',
+                }),
               },
               { id: 'agentScope', label: 'Portée', sortable: true },
               { id: 'triggeredCount', label: 'Déclenchements', sortable: true },
-              { id: 'actions', label: 'Actions', sortable: false, 
-                formatter: (value, row) => ({
+              {
+                id: 'actions',
+                label: 'Actions',
+                sortable: false,
+                formatter: (_value, row) => ({
                   actions: [
-                    { 
-                      label: row.enabled ? 'Désactiver' : 'Activer', 
+                    {
+                      label: row.enabled ? 'Désactiver' : 'Activer',
                       action: row.enabled ? `disableRule:${row.id}` : `enableRule:${row.id}`,
-                      status: row.enabled ? 'warning' : 'success'
+                      status: row.enabled ? 'warning' : 'success',
                     },
-                    { 
-                      label: 'Éditer', 
+                    {
+                      label: 'Éditer',
                       action: `editRule:${row.id}`,
-                      status: 'info' 
-                    }
-                  ]
-                })
-              }
+                      status: 'info',
+                    },
+                  ],
+                }),
+              },
             ],
             actions: {
               disableRule: async (id) => {
                 await fetch(`/api/governance/rules/${id}/disable`, {
-                  method: 'POST'
+                  method: 'POST',
                 });
                 return { success: true, message: `Règle ${id} désactivée` };
               },
               enableRule: async (id) => {
                 await fetch(`/api/governance/rules/${id}/enable`, {
-                  method: 'POST'
+                  method: 'POST',
                 });
                 return { success: true, message: `Règle ${id} activée` };
               },
               editRule: async (id) => {
-                return { success: true, action: 'showModal', modalId: 'edit-rule', modalProps: { ruleId: id } };
-              }
-            }
-          }
+                return {
+                  success: true,
+                  action: 'showModal',
+                  modalId: 'edit-rule',
+                  modalProps: { ruleId: id },
+                };
+              },
+            },
+          },
         },
         {
           id: 'recent-agent-decisions',
@@ -611,8 +678,8 @@ const defaultAgentsConfig: DashboardConfig = {
             dateField: 'timestamp',
             titleField: 'ruleName',
             descriptionField: 'decision',
-            statusField: 'result'
-          }
+            statusField: 'result',
+          },
         },
         {
           id: 'agent-dependencies',
@@ -625,10 +692,10 @@ const defaultAgentsConfig: DashboardConfig = {
             edgesField: 'dependencies',
             nodeStatusField: 'status',
             directed: true,
-            hierarchical: true
-          }
-        }
-      ]
+            hierarchical: true,
+          },
+        },
+      ],
     },
     {
       id: 'agent-manifest',
@@ -639,26 +706,26 @@ const defaultAgentsConfig: DashboardConfig = {
           title: 'Versions des manifestes',
           type: 'list',
           size: 'lg',
-          metrics: []
-        }
-      ]
-    }
+          metrics: [],
+        },
+      ],
+    },
   ],
-  
+
   // Filtres disponibles
   filters: [
     {
       id: 'agentType',
-      name: 'Type d\'agent',
+      name: "Type d'agent",
       options: [
         { value: 'all', label: 'Tous' },
         { value: 'analyzer', label: 'Analyseurs' },
         { value: 'verifier', label: 'Vérificateurs' },
         { value: 'generator', label: 'Générateurs' },
         { value: 'qa', label: 'QA' },
-        { value: 'seo', label: 'SEO' }
+        { value: 'seo', label: 'SEO' },
       ],
-      defaultValue: 'all'
+      defaultValue: 'all',
     },
     {
       id: 'status',
@@ -667,9 +734,9 @@ const defaultAgentsConfig: DashboardConfig = {
         { value: 'all', label: 'Tous' },
         { value: 'active', label: 'Actif' },
         { value: 'disabled', label: 'Désactivé' },
-        { value: 'failed', label: 'En échec' }
+        { value: 'failed', label: 'En échec' },
       ],
-      defaultValue: 'all'
+      defaultValue: 'all',
     },
     {
       id: 'circuitBreakerState',
@@ -678,9 +745,9 @@ const defaultAgentsConfig: DashboardConfig = {
         { value: 'all', label: 'Tous les états' },
         { value: 'open', label: 'Ouverts' },
         { value: 'half-open', label: 'Semi-ouverts' },
-        { value: 'closed', label: 'Fermés' }
+        { value: 'closed', label: 'Fermés' },
       ],
-      defaultValue: 'all'
+      defaultValue: 'all',
     },
     {
       id: 'traceStatus',
@@ -688,12 +755,12 @@ const defaultAgentsConfig: DashboardConfig = {
       options: [
         { value: 'all', label: 'Toutes' },
         { value: 'success', label: 'Réussies' },
-        { value: 'error', label: 'En erreur' }
+        { value: 'error', label: 'En erreur' },
       ],
-      defaultValue: 'all'
-    }
+      defaultValue: 'all',
+    },
   ],
-  
+
   // Actions disponibles
   actions: [
     {
@@ -703,13 +770,13 @@ const defaultAgentsConfig: DashboardConfig = {
         try {
           const response = await fetch('/api/agents/refresh-manifests', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' }
+            headers: { 'Content-Type': 'application/json' },
           });
-          
+
           if (!response.ok) {
             throw new Error(`HTTP error ${response.status}`);
           }
-          
+
           console.log('Manifests refreshed successfully');
           return Promise.resolve();
         } catch (error) {
@@ -717,7 +784,7 @@ const defaultAgentsConfig: DashboardConfig = {
           return Promise.reject(error);
         }
       },
-      colorScheme: 'blue'
+      colorScheme: 'blue',
     },
     {
       id: 'reset-agent-failures',
@@ -726,13 +793,13 @@ const defaultAgentsConfig: DashboardConfig = {
         try {
           const response = await fetch('/api/agents/reset-failures', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' }
+            headers: { 'Content-Type': 'application/json' },
           });
-          
+
           if (!response.ok) {
             throw new Error(`HTTP error ${response.status}`);
           }
-          
+
           console.log('Agent failures reset successfully');
           return Promise.resolve();
         } catch (error) {
@@ -740,7 +807,7 @@ const defaultAgentsConfig: DashboardConfig = {
           return Promise.reject(error);
         }
       },
-      colorScheme: 'orange'
+      colorScheme: 'orange',
     },
     {
       id: 'validate-dependencies',
@@ -749,13 +816,13 @@ const defaultAgentsConfig: DashboardConfig = {
         try {
           const response = await fetch('/api/agents/validate-dependencies', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' }
+            headers: { 'Content-Type': 'application/json' },
           });
-          
+
           if (!response.ok) {
             throw new Error(`HTTP error ${response.status}`);
           }
-          
+
           console.log('Dependencies validated successfully');
           return Promise.resolve();
         } catch (error) {
@@ -763,7 +830,7 @@ const defaultAgentsConfig: DashboardConfig = {
           return Promise.reject(error);
         }
       },
-      colorScheme: 'green'
+      colorScheme: 'green',
     },
     {
       id: 'reset-circuit-breakers',
@@ -772,7 +839,7 @@ const defaultAgentsConfig: DashboardConfig = {
         try {
           await fetch('/api/agents/circuit-breakers/reset-all', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' }
+            headers: { 'Content-Type': 'application/json' },
           });
           return { success: true, message: 'Tous les circuit breakers réinitialisés' };
         } catch (error) {
@@ -780,7 +847,7 @@ const defaultAgentsConfig: DashboardConfig = {
           return { success: false, message: 'Échec de la réinitialisation des circuit breakers' };
         }
       },
-      colorScheme: 'red'
+      colorScheme: 'red',
     },
     {
       id: 'export-agent-metrics',
@@ -788,7 +855,7 @@ const defaultAgentsConfig: DashboardConfig = {
       handler: async () => {
         try {
           const response = await fetch('/api/agents/metrics/export', {
-            method: 'GET'
+            method: 'GET',
           });
           const blob = await response.blob();
           const url = window.URL.createObjectURL(blob);
@@ -802,10 +869,10 @@ const defaultAgentsConfig: DashboardConfig = {
           return { success: true, message: 'Métriques exportées avec succès' };
         } catch (error) {
           console.error('Failed to export metrics:', error);
-          return { success: false, message: 'Échec de l\'export des métriques' };
+          return { success: false, message: "Échec de l'export des métriques" };
         }
       },
-      colorScheme: 'teal'
+      colorScheme: 'teal',
     },
     {
       id: 'health-check-all-agents',
@@ -814,7 +881,7 @@ const defaultAgentsConfig: DashboardConfig = {
         try {
           await fetch('/api/agents/health-check-all', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' }
+            headers: { 'Content-Type': 'application/json' },
           });
           return { success: true, message: 'Vérification de santé lancée pour tous les agents' };
         } catch (error) {
@@ -822,9 +889,9 @@ const defaultAgentsConfig: DashboardConfig = {
           return { success: false, message: 'Échec du lancement de la vérification' };
         }
       },
-      colorScheme: 'purple'
-    }
-  ]
+      colorScheme: 'purple',
+    },
+  ],
 };
 
 // Interface pour les props du composant
@@ -840,32 +907,20 @@ interface AgentsDashboardProps {
 const AgentsDashboard: React.FC<AgentsDashboardProps> = ({
   config = {},
   onLayerChange,
-  className
+  className,
 }) => {
   // État local pour la configuration fusionnée
   const [dashboardConfig, setDashboardConfig] = useState<DashboardConfig>({
     ...defaultAgentsConfig,
     ...config,
     // Fusionner les sources de données
-    dataSources: [
-      ...defaultAgentsConfig.dataSources,
-      ...(config.dataSources || [])
-    ],
+    dataSources: [...defaultAgentsConfig.dataSources, ...(config.dataSources || [])],
     // Fusionner les sections
-    sections: [
-      ...defaultAgentsConfig.sections,
-      ...(config.sections || [])
-    ],
+    sections: [...defaultAgentsConfig.sections, ...(config.sections || [])],
     // Fusionner les filtres
-    filters: [
-      ...(defaultAgentsConfig.filters || []),
-      ...(config.filters || [])
-    ],
+    filters: [...(defaultAgentsConfig.filters || []), ...(config.filters || [])],
     // Fusionner les actions
-    actions: [
-      ...(defaultAgentsConfig.actions || []),
-      ...(config.actions || [])
-    ]
+    actions: [...(defaultAgentsConfig.actions || []), ...(config.actions || [])],
   });
 
   // États locaux pour les données temps réel
@@ -878,7 +933,7 @@ const AgentsDashboard: React.FC<AgentsDashboardProps> = ({
     open: 1,
     halfOpen: 2,
     closed: 14,
-    total: 17
+    total: 17,
   });
 
   const [recentTraces, setRecentTraces] = useState<TraceEvent[]>([]);
@@ -902,14 +957,14 @@ const AgentsDashboard: React.FC<AgentsDashboardProps> = ({
           setRecentTraces(traces);
         }
       } catch (error) {
-        console.error("Erreur lors du chargement des données du tableau de bord:", error);
+        console.error('Erreur lors du chargement des données du tableau de bord:', error);
       }
     };
 
     // Charger les données immédiatement et configurer l'intervalle
     loadDashboardData();
     const intervalId = setInterval(loadDashboardData, 30000);
-    
+
     // Nettoyage
     return () => clearInterval(intervalId);
   }, []);
@@ -917,15 +972,15 @@ const AgentsDashboard: React.FC<AgentsDashboardProps> = ({
   // Effet pour simuler le chargement de données réelles
   useEffect(() => {
     const simulateDataUpdate = () => {
-      setDashboardConfig(prevConfig => {
+      setDashboardConfig((prevConfig) => {
         // Simuler des mises à jour pour quelques métriques
-        const updatedSections = prevConfig.sections.map(section => ({
+        const updatedSections = prevConfig.sections.map((section) => ({
           ...section,
-          widgets: section.widgets.map(widget => {
+          widgets: section.widgets.map((widget) => {
             if (widget.id === 'agent-status-summary' && widget.metrics) {
               return {
                 ...widget,
-                metrics: widget.metrics.map(metric => {
+                metrics: widget.metrics.map((metric) => {
                   if (metric.id === 'active-agents') {
                     return { ...metric, value: Math.floor(Math.random() * 15) + 10 };
                   }
@@ -936,54 +991,54 @@ const AgentsDashboard: React.FC<AgentsDashboardProps> = ({
                     return { ...metric, value: Math.floor(Math.random() * 2) };
                   }
                   return metric;
-                })
+                }),
               };
             }
             if (widget.id === 'agent-performance-summary' && widget.metrics) {
               return {
                 ...widget,
-                metrics: widget.metrics.map(metric => {
+                metrics: widget.metrics.map((metric) => {
                   if (metric.id === 'avg-execution-time') {
                     return { ...metric, value: `${Math.floor(Math.random() * 1000) + 200} ms` };
                   }
                   if (metric.id === 'success-rate') {
                     const rate = Math.floor(Math.random() * 15) + 85;
-                    return { 
-                      ...metric, 
+                    return {
+                      ...metric,
                       value: `${rate}%`,
-                      status: rate > 95 ? 'success' : rate > 80 ? 'warning' : 'error'
+                      status: rate > 95 ? 'success' : rate > 80 ? 'warning' : 'error',
                     };
                   }
                   if (metric.id === 'throughput') {
                     return { ...metric, value: Math.floor(Math.random() * 50) + 20 };
                   }
                   return metric;
-                })
+                }),
               };
             }
             return widget;
-          })
+          }),
         }));
-        
+
         return { ...prevConfig, sections: updatedSections };
       });
     };
-    
+
     // Simuler des mises à jour de données périodiques
     const interval = setInterval(simulateDataUpdate, 5000);
-    
+
     return () => clearInterval(interval);
   }, []);
 
   return (
     <Box className={className}>
-      <BaseDashboard 
+      <BaseDashboard
         config={dashboardConfig}
         onLayerChange={onLayerChange}
         debug={false}
         data={{
           circuitBreakerStats,
-          recentTraces
+          recentTraces,
         }}
         onTabChange={setActiveTab}
         activeTab={activeTab}

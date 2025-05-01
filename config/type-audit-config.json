@@ -18,24 +18,8 @@
     "url": 200
   },
   "recommendations": {
-    "booleanFields": [
-      "is_*", 
-      "has_*", 
-      "can_*", 
-      "active", 
-      "enabled", 
-      "visible"
-    ],
-    "dateTimeFields": [
-      "*_at",
-      "*_date",
-      "*_time"
-    ],
-    "enumFields": [
-      "status",
-      "type",
-      "gender",
-      "role"
-    ]
+    "booleanFields": ["is_*", "has_*", "can_*", "active", "enabled", "visible"],
+    "dateTimeFields": ["*_at", "*_date", "*_time"],
+    "enumFields": ["status", "type", "gender", "role"]
   }
 }

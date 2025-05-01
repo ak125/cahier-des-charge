@@ -14,10 +14,7 @@
       },
       "name": "Schedule Trigger",
       "type": "n8n-nodes-base.scheduleTrigger",
-      "position": [
-        250,
-        300
-      ]
+      "position": [250, 300]
     },
     {
       "parameters": {
@@ -27,10 +24,7 @@
       },
       "name": "Execute QA Analysis",
       "type": "n8n-nodes-base.executeCommand",
-      "position": [
-        470,
-        300
-      ]
+      "position": [470, 300]
     },
     {
       "parameters": {
@@ -38,10 +32,7 @@
       },
       "name": "Read QA Results",
       "type": "n8n-nodes-base.readBinaryFile",
-      "position": [
-        690,
-        300
-      ]
+      "position": [690, 300]
     },
     {
       "parameters": {
@@ -50,10 +41,7 @@
       },
       "name": "Parse JSON",
       "type": "n8n-nodes-base.set",
-      "position": [
-        910,
-        300
-      ]
+      "position": [910, 300]
     },
     {
       "parameters": {
@@ -68,10 +56,7 @@
       },
       "name": "Has Failed Files?",
       "type": "n8n-nodes-base.if",
-      "position": [
-        1130,
-        300
-      ]
+      "position": [1130, 300]
     },
     {
       "parameters": {
@@ -95,10 +80,7 @@
       },
       "name": "Prepare Alert",
       "type": "n8n-nodes-base.set",
-      "position": [
-        1350,
-        220
-      ]
+      "position": [1350, 220]
     },
     {
       "parameters": {
@@ -117,10 +99,7 @@
       },
       "name": "Send Slack Alert",
       "type": "n8n-nodes-base.httpRequest",
-      "position": [
-        1580,
-        220
-      ]
+      "position": [1580, 220]
     },
     {
       "parameters": {
@@ -129,10 +108,7 @@
       },
       "name": "Each Failed File",
       "type": "n8n-nodes-base.splitInBatches",
-      "position": [
-        1350,
-        400
-      ]
+      "position": [1350, 400]
     },
     {
       "parameters": {
@@ -160,10 +136,7 @@
       },
       "name": "Prepare Ticket Data",
       "type": "n8n-nodes-base.set",
-      "position": [
-        1580,
-        400
-      ]
+      "position": [1580, 400]
     },
     {
       "parameters": {
@@ -181,19 +154,12 @@
           "assignee": {
             "name": "={{ $json.assignee }}"
           },
-          "labels": [
-            "qa-analyzer",
-            "auto-generated",
-            "qa-issue"
-          ]
+          "labels": ["qa-analyzer", "auto-generated", "qa-issue"]
         }
       },
       "name": "Create JIRA Ticket",
       "type": "n8n-nodes-base.jira",
-      "position": [
-        1800,
-        400
-      ]
+      "position": [1800, 400]
     },
     {
       "parameters": {
@@ -206,10 +172,7 @@
       },
       "name": "Update Dashboard Data",
       "type": "n8n-nodes-base.fileOperations",
-      "position": [
-        910,
-        500
-      ]
+      "position": [910, 500]
     },
     {
       "parameters": {
@@ -223,10 +186,7 @@
       },
       "name": "Has Fields To Autofix?",
       "type": "n8n-nodes-base.if",
-      "position": [
-        1130,
-        700
-      ]
+      "position": [1130, 700]
     },
     {
       "parameters": {
@@ -236,19 +196,13 @@
       },
       "name": "Run Autofix",
       "type": "n8n-nodes-base.executeCommand",
-      "position": [
-        1350,
-        700
-      ]
+      "position": [1350, 700]
     },
     {
       "parameters": {},
       "name": "Function",
       "type": "n8n-nodes-base.function",
-      "position": [
-        690,
-        500
-      ],
+      "position": [690, 500],
       "webhookId": "d5028e6d-5e5a-41a2-8db3-4cabe1b31695"
     },
     {
@@ -319,11 +273,7 @@
           "priority": {
             "name": "High"
           },
-          "labels": [
-            "qa-analyzer",
-            "error",
-            "automation-failure"
-          ]
+          "labels": ["qa-analyzer", "error", "automation-failure"]
         }
       },
       "id": "create-error-ticket",
@@ -506,9 +456,5 @@
   "meta": {
     "instanceId": "76b26d90e1facde5fb682fd1428788ecf8c8f42f35f559e8baac9a6de80caec4"
   },
-  "tags": [
-    "QA",
-    "Automation",
-    "Monitoring"
-  ]
+  "tags": ["QA", "Automation", "Monitoring"]
 }

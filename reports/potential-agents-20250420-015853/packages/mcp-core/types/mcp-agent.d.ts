@@ -5,7 +5,12 @@
  */
 
 declare module '../../coreDoDotmcp-agent' {
-  import { BaseAgent, AgentMetadata, AgentStatus, AgentResult } from '@workspaces/cahier-des-charge/src/core/interfaces/BaseAgent';
+  import {
+    BaseAgent,
+    AgentMetadata,
+    AgentStatus,
+    AgentResult,
+  } from '@workspaces/cahier-des-charge/src/core/interfaces/BaseAgent';
   import { EventEmitter } from 'events';
 
   export interface AgentContext {
@@ -17,22 +22,22 @@ declare module '../../coreDoDotmcp-agent' {
     readonly metadata: AgentMetadata;
     status: AgentStatus;
     readonly events: EventEmitter;
-    
+
     constructor(metadata: AgentMetadata);
-    
+
     initialize(): Promise<void>;
     protected abstract initializeInternal(): Promise<void>;
-    
+
     execute(context: AgentContext): Promise<AgentResult>;
     protected abstract executeInternal(context: AgentContext): Promise<any>;
-    
+
     validate(context: AgentContext): Promise<boolean>;
     protected abstract validateInternal(context: AgentContext): Promise<boolean>;
-    
+
     stop(): Promise<void>;
     protected abstract stopInternal(): Promise<void>;
-    
-    getStatus(): Promise<{ status: AgentStatus, details?: any }>;
+
+    getStatus(): Promise<{ status: AgentStatus; details?: any }>;
   }
 
   export default BaseMcpAgent;

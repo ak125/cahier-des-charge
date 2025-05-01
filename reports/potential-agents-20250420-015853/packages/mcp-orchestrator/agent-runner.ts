@@ -12,12 +12,12 @@
  * - Support pour les modes synchrone et asynchrone
  */
 
-import { Logger } from '@nestjs/common';
-import { Queue, QueueScheduler } from 'bullmq';
-import { createClient } from 'redis';
-import fs from 'fs-extra';
 import path from 'path';
+import { Logger } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
+import { Queue, QueueScheduler } from 'bullmq';
+import fs from 'fs-extra';
+import { createClient } from 'redis';
 
 // Types
 export type AgentType = 'PhpAnalyzer' | 'RemixGenerator' | 'QaAnalyzer' | 'DiffVerifier' | 'DevLinter';

@@ -9,19 +9,25 @@ import { z } from 'zod';
  * Schéma pour les détails des champs d'un fichier
  */
 export const FileFieldsDetailsSchema = z.object({
-  php: z.object({
-    formFields: z.array(z.string()).optional(),
-    displayFields: z.array(z.string()).optional(),
-    hiddenFields: z.array(z.string()).optional(),
-  }).optional(),
-  tsx: z.object({
-    formFields: z.array(z.string()).optional(),
-    displayFields: z.array(z.string()).optional(),
-    hiddenFields: z.array(z.string()).optional(),
-  }).optional(),
-  prisma: z.object({
-    modelFields: z.array(z.string()).optional(),
-  }).optional(),
+  php: z
+    .object({
+      formFields: z.array(z.string()).optional(),
+      displayFields: z.array(z.string()).optional(),
+      hiddenFields: z.array(z.string()).optional(),
+    })
+    .optional(),
+  tsx: z
+    .object({
+      formFields: z.array(z.string()).optional(),
+      displayFields: z.array(z.string()).optional(),
+      hiddenFields: z.array(z.string()).optional(),
+    })
+    .optional(),
+  prisma: z
+    .object({
+      modelFields: z.array(z.string()).optional(),
+    })
+    .optional(),
 });
 
 /**
@@ -71,11 +77,13 @@ export type QaConfig = z.infer<typeof QaConfigSchema>;
  */
 export const QaRunOptionsSchema = z.object({
   target: z.string(),
-  options: z.object({
-    recursive: z.boolean().optional(),
-    modelName: z.string().optional(),
-    generateTests: z.boolean().optional(),
-  }).optional(),
+  options: z
+    .object({
+      recursive: z.boolean().optional(),
+      modelName: z.string().optional(),
+      generateTests: z.boolean().optional(),
+    })
+    .optional(),
 });
 
 export type QaRunOptions = z.infer<typeof QaRunOptionsSchema>;

@@ -11,12 +11,8 @@ import { MigrationAgentOptions, MigrationResult } from './types';
  */
 export abstract class BaseMigrationAgent<
   TOptions extends MigrationAgentOptions = MigrationAgentOptions,
-  TResult = any
+  TResult = any,
 > extends BaseAgent<TOptions, TResult> {
-  constructor(options?: Partial<TOptions>) {
-    super(options);
-  }
-
   /**
    * Fonctions utilitaires spécifiques à la catégorie migration
    */

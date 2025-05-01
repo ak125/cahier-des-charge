@@ -1,22 +1,22 @@
-import { AbstractOrchestratorAgent } from '../AbstractOrchestrator';
-import { Client as TemporalClient } from "@temporalio/client";
-import { Queue, Worker, QueueEvents } from "bullmq";
-import { Logger } from "@nestjs/common";
-import axios from "axios";
-import Redis from "ioredis";
-import * as path from "path";
 import * as fs from "fs";
-import * as express from "express";
+import * as path from "path";
 import { createBullBoard } from "@bull-board/api";
 import { BullMQAdapter } from "@bull-board/api/bullMQAdapter";
 import { ExpressAdapter } from "@bull-board/express";
-import { MetricsService } from "./metrics-service";
+import { Logger } from "@nestjs/common";
+import { Client as TemporalClient } from "@temporalio/client";
+import axios from "axios";
+import { Queue, QueueEvents, Worker } from "bullmq";
+import * as express from "express";
+import Redis from "ioredis";
+import { AbstractOrchestratorAgent } from '../AbstractOrchestrator';
 import { WorkflowVersioner } from "../src/temporal/workflow-versioner";
+import { MetricsService } from "./metrics-service";
 import { 
-  NotificationService, 
   NotificationChannel, 
-  NotificationType,
-  NotificationConfig 
+  NotificationConfig, 
+  NotificationService, 
+  NotificationType
 } from "./notification-service";
 
 /**
@@ -818,7 +818,7 @@ export class OrchestratorBridge extends AbstractOrchestratorAgent<any, any> {
   /**
    * Écoute les signaux deDotn8N et les transmet à Temporal/BullMQ
    */
-  async listenToN8NSignals(webHandler: any, port: number = 3456) {
+  async listenToN8NSignals(webHandler: any, port = 3456) {
     // Configurer un mini serveur pour recevoir des signaux deDotn8N
     webHandler.post('Dotn8N-signal/:signalType', async (req: any, res: any) => {
       const { signalType } = req.params;
@@ -869,7 +869,7 @@ export class OrchestratorBridge extends AbstractOrchestratorAgent<any, any> {
    * @param port Port d'écoute du serveur web
    * @returns L'instance du serveur web
    */
-  async createDashboardServer(port: number = 3500): Promise<any> {
+  async createDashboardServer(port = 3500): Promise<any> {
     const app = express();
     
     // Configuration du tableau de bord BullMQ
@@ -1185,7 +1185,7 @@ export class OrchestratorBridge extends AbstractOrchestratorAgent<any, any> {
   /**
    * Expose les métriques au format Prometheus
    */
-  exposeMetricsEndpoint(app: any, path: string = '/metrics'): void {
+  exposeMetricsEndpoint(app: any, path = '/metrics'): void {
     if (!this.metricsService) {
       this.logger.warn('Service de métriques non activé, impossible d\'exposer les métriques');
       return;

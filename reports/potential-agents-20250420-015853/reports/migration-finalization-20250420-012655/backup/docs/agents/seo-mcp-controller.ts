@@ -5,14 +5,14 @@
  * Coordonne les différents agents et assure la traçabilité de bout en bout
  */
 
-import { SEOCheckerAgent } from './SeoChecker-agent';
-import { MetaGenerator } from './MetaGenerator';
-import { CanonicalValidator } from './CanonicalValidator';
-import { SEORedirectMapper } from './SeoRedirectMapper';
-import { createTraceabilityService, TraceabilityService } from '../utils/traceability/traceability-service';
-import * as fs from 'fs-extra';
 import * as path from 'path';
+import * as fs from 'fs-extra';
 import { BaseAgent, BusinessAgent } from '../core/interfaces/BaseAgent';
+import { TraceabilityService, createTraceabilityService } from '../utils/traceability/traceability-service';
+import { CanonicalValidator } from './CanonicalValidator';
+import { MetaGenerator } from './MetaGenerator';
+import { SEOCheckerAgent } from './SeoChecker-agent';
+import { SEORedirectMapper } from './SeoRedirectMapper';
 
 
 interface SEOMCPControllerConfig {

@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
-import { JobsController } from './jobs.controller';
 import { BullQueueModule } from '../bullmq/bullmq.module';
+import { JobsController } from './jobs.controller';
 
 @Module({
   imports: [BullQueueModule],

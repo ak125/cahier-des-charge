@@ -16,14 +16,14 @@ import { AgentContext } from '../../coreDoDotmcp-agent';
  * Ce code s'intègre avec l'orchestrateur de migration intelligent.
  */
 
-import fs from 'fs-extra';
 import path from 'path';
-import { parse as parsePhp } from 'php-parser';
-import { parse as parseTs } from '@typescript-eslint/typescript-estree';
 import { Logger } from '@nestjs/common';
-import glob from 'glob';
 import { PrismaClient } from '@prisma/client';
+import { parse as parseTs } from '@typescript-eslint/typescript-estree';
 import * as cheerio from 'cheerio';
+import fs from 'fs-extra';
+import glob from 'glob';
+import { parse as parsePhp } from 'php-parser';
 
 // Types pour l'analyse QA
 interface QaResult {

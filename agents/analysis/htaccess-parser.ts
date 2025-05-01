@@ -3,7 +3,7 @@
  * Agent export file
  */
 
-import { HtaccessParser } from ./htaccess-parserstructure-agent';
+import { HtaccessParser } from './htaccess-parser-structure-agent';
 
 export { HtaccessParser };
 export default HtaccessParser;

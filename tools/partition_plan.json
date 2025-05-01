@@ -19,7 +19,11 @@
         ],
         "maintenance": "CREATE PROCEDURE create_logs_partition_for_next_month() AS $$ BEGIN EXECUTE ... END; $$ LANGUAGE plpgsql;"
       },
-      "expected_benefits": ["Amélioration de 75% des temps de requête par date", "Suppression efficace des anciennes données", "Maintenance simplifiée"]
+      "expected_benefits": [
+        "Amélioration de 75% des temps de requête par date",
+        "Suppression efficace des anciennes données",
+        "Maintenance simplifiée"
+      ]
     },
     {
       "table_name": "commandes",
@@ -37,7 +41,11 @@
         ],
         "maintenance": "CREATE PROCEDURE create_commandes_partition_for_next_quarter() AS $$ BEGIN ... END; $$ LANGUAGE plpgsql;"
       },
-      "expected_benefits": ["Amélioration de 60% des temps de requête", "Archivage facilité", "Meilleure gestion des statistiques"]
+      "expected_benefits": [
+        "Amélioration de 60% des temps de requête",
+        "Archivage facilité",
+        "Meilleure gestion des statistiques"
+      ]
     },
     {
       "table_name": "lignes_commande",
@@ -51,7 +59,11 @@
         "create_statement": "-- À adapter selon la volumétrie et la stratégie exacte de partitionnement par liste ou par commande",
         "alternative": "Envisager l'utilisation d'une table partitionnée par HASH sur commande_id si les partitions LIST deviennent trop nombreuses"
       },
-      "expected_benefits": ["Parallélisation des requêtes", "Possibilité d'archiver des commandes entières", "Isolation des données actives"]
+      "expected_benefits": [
+        "Parallélisation des requêtes",
+        "Possibilité d'archiver des commandes entières",
+        "Isolation des données actives"
+      ]
     },
     {
       "table_name": "produits_historique",
@@ -68,7 +80,11 @@
           "..."
         ]
       },
-      "expected_benefits": ["Requêtes historiques plus rapides", "Archivage facilité", "Meilleure gestion des statistiques"]
+      "expected_benefits": [
+        "Requêtes historiques plus rapides",
+        "Archivage facilité",
+        "Meilleure gestion des statistiques"
+      ]
     },
     {
       "table_name": "evenements",
@@ -85,7 +101,11 @@
           "..."
         ]
       },
-      "expected_benefits": ["Parallélisation des requêtes", "Réduction des contentions", "Distribution équilibrée de l'I/O"]
+      "expected_benefits": [
+        "Parallélisation des requêtes",
+        "Réduction des contentions",
+        "Distribution équilibrée de l'I/O"
+      ]
     },
     {
       "table_name": "utilisateurs",

@@ -5,7 +5,4 @@
 
 import { Generate_prisma_modelAgent } from './Generate_prisma_modelAgent';
 
-export {
-  Generate_prisma_modelAgent,
-};
-
+export { Generate_prisma_modelAgent };

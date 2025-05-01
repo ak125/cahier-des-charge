@@ -3,9 +3,6 @@
  * Generated automatically on 2025-04-20
  */
 
-import { RelationAnalyzerAgent } from ./RelationAnalyzerAgentstructure-agent';
+import { RelationAnalyzerAgent } from './RelationAnalyzerAgent';
 
-export {
-  RelationAnalyzerAgent,
-};
-
+export { RelationAnalyzerAgent };

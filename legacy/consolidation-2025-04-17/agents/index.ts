@@ -55,7 +55,7 @@ export { validateAgentInterface } from '../agent-interface-validator';
 // Fonction utilitaire pour initialiser tous les agents
 export function initializeAgents(config: Record<string, AgentConfig>) {
   const agents = [];
-  
+
   // Initialiser chaque agent basé sur la configuration
   for (const [agentId, agentConfig] of Object.entries(config)) {
     if (agentConfig.enabled) {
@@ -65,6 +65,6 @@ export function initializeAgents(config: Record<string, AgentConfig>) {
       // Les agents sont ajoutés au tableau pour être retournés
     }
   }
-  
+
   return agents;
 }

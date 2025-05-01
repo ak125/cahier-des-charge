@@ -1,10 +1,10 @@
-import { Controller, Post, Body, Get, Param, Logger } from '@nestjs/common';
-import { 
-  ValidationRequest, 
-  ValidationLevel,
-  ValidationHistoryItem 
-} from './interfaces';
+import { Body, Controller, Get, Logger, Param, Post } from '@nestjs/common';
 import { CascadeValidationService } from './cascade-validation.service';
+import { 
+  ValidationHistoryItem, 
+  ValidationLevel,
+  ValidationRequest 
+} from './interfaces';
 
 @Controller('validation')
 export class CascadeValidationController {
@@ -55,7 +55,7 @@ export class CascadeValidationController {
   ) {
     const level = parseInt(levelParam, 10) as ValidationLevel;
     
-    if (isNaN(level) || level < 1 || level > 5) {
+    if (Number.isNaN(level) || level < 1 || level > 5) {
       return { error: 'Niveau de validation invalide. Utilisez 1-5.' };
     }
     

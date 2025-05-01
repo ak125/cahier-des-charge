@@ -1,4 +1,0 @@
-agents/migration/PhpToRemix/seo-meta.generator.ts
-agents/migration/PhpToRemix/seo-meta.generator.ts
-agents/migration/php-to-remix/seo-meta.generator.ts
-agents/migration/php-to-remix/seo-meta.generator.ts

@@ -1,9 +1,9 @@
-import { Agent } from '@agent-protocol/sdk';
-import { HtaccessParser } from '../utils/HtaccessParser';
-import { SEOChecker } from '../../packagesDoDotmcp-agents/SeoChecker/SeoChecker';
 import * as fs from 'fs';
 import * as path from 'path';
+import { Agent } from '@agent-protocol/sdk';
+import { SEOChecker } from '../../packagesDoDotmcp-agents/SeoChecker/SeoChecker';
 import { BaseAgent, BusinessAgent } from '../core/interfaces/BaseAgent';
+import { HtaccessParser } from '../utils/HtaccessParser';
 
 
 import { AnalyzerAgent } from '@workspaces/cahier-des-charge/src/core/interfaces/business';

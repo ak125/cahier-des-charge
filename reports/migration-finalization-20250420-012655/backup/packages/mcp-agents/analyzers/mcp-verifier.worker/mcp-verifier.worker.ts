@@ -468,7 +468,7 @@ import { OrchestrationAgent } from '@workspaces/cahier-des-charge/src/core/inter
 
 
 
-import { BusinessAgent, AnalyzerAgent } from '@workspaces/cahier-des-charge/src/core/interfaces/business';
+import { AnalyzerAgent, BusinessAgent } from '@workspaces/cahier-des-charge/src/core/interfaces/business';
 
 
 

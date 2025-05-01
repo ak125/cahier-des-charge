@@ -4,9 +4,9 @@
  * et un schéma Prisma pour faciliter la migration
  */
 
-import * as fs from 'fs/promises';
 import * as path from 'path';
-import { TableInfo, ColumnInfo } from './types';
+import * as fs from 'fs/promises';
+import { ColumnInfo, TableInfo } from './types';
 
 /**
  * Interface pour la cartographie du schéma MySQL
@@ -77,19 +77,23 @@ export class SchemaMigrationDiffService {
   ): Promise<void> {
     try {
       console.log('Chargement des schémas...');
-      
+
       // Charger le schéma MySQL
       const mySqlSchemaContent = await fs.readFile(mySqlSchemaPath, 'utf8');
       const mySqlSchema: SchemaMap = JSON.parse(mySqlSchemaContent);
-      
+
       // Charger le schéma Prisma
       const prismaSchemaContent = await fs.readFile(prismaSchemaPath, 'utf8');
-      
+
       // Analyser le schéma Prisma
       const prismaModels = this.parsePrismaSchema(prismaSchemaContent);
-      
-      console.log(`Comparaison de ${mySqlSchema.tables.length} tables MySQL avec ${Object.keys(prismaModels).length} modèles Prisma...`);
-      
+
+      console.log(
+        `Comparaison de ${mySqlSchema.tables.length} tables MySQL avec ${
+          Object.keys(prismaModels).length
+        } modèles Prisma...`
+      );
+
       // Initialiser la structure de différences
       const schemaDiff: SchemaDiff = {
         version_source: `MySQL_${mySqlSchema.version}`,
@@ -97,25 +101,25 @@ export class SchemaMigrationDiffService {
         tables: [],
         timestamp: new Date().toISOString(),
       };
-      
+
       // Comparer chaque table MySQL avec son modèle Prisma correspondant
       for (const table of mySqlSchema.tables) {
         // Convertir le nom de la table en PascalCase pour correspondre à la convention Prisma
         const modelName = this.toPascalCase(table.name);
         const prismaModel = prismaModels[modelName];
-        
+
         const tableDiff: TableDiff = {
           name: table.name,
           changes: [],
         };
-        
+
         if (prismaModel) {
           // Comparer les colonnes
           for (const column of table.columns) {
             const mysqlType = column.type;
             const fieldName = column.name;
             const prismaField = prismaModel.fields[fieldName];
-            
+
             if (prismaField) {
               // Si le type a été transformé
               if (this.getMySqlTypeName(mysqlType) !== prismaField.type) {
@@ -126,7 +130,7 @@ export class SchemaMigrationDiffService {
                   reason: 'Conversion SQL → Prisma',
                 });
               }
-              
+
               // Vérifier les changements de nullabilité
               if (column.nullable !== prismaField.optional) {
                 tableDiff.changes.push({
@@ -142,31 +146,30 @@ export class SchemaMigrationDiffService {
               tableDiff.missing_in_target.push(fieldName);
             }
           }
-          
+
           // Vérifier s'il y a des champs dans Prisma qui n'existent pas dans MySQL
-          const mySqlColumnNames = table.columns.map(col => col.name);
-          const missingInSource = Object.keys(prismaModel.fields).filter(fieldName => 
-            !mySqlColumnNames.includes(fieldName) && 
-            !fieldName.startsWith('_')  // Ignorer les champs relationnels ajoutés par Prisma
+          const mySqlColumnNames = table.columns.map((col) => col.name);
+          const missingInSource = Object.keys(prismaModel.fields).filter(
+            (fieldName) => !mySqlColumnNames.includes(fieldName) && !fieldName.startsWith('_') // Ignorer les champs relationnels ajoutés par Prisma
           );
-          
+
           if (missingInSource.length > 0) {
             tableDiff.missing_in_source = missingInSource;
           }
-          
+
           // Comparer les relations
           if (table.relations) {
             tableDiff.relation_changes = [];
-            
+
             for (const relation of table.relations) {
               const targetModelName = this.toPascalCase(relation.target);
-              const relationFieldName = relation.target.toLowerCase();
-              
+              const _relationFieldName = relation.target.toLowerCase();
+
               // Vérifier si la relation existe dans le modèle Prisma
-              const hasRelationInPrisma = Object.values(prismaModel.fields).some(field => 
-                field.relation && field.relation.references === targetModelName
+              const hasRelationInPrisma = Object.values(prismaModel.fields).some(
+                (field) => field.relation && field.relation.references === targetModelName
               );
-              
+
               if (!hasRelationInPrisma) {
                 tableDiff.relation_changes.push({
                   name: relation.name,
@@ -176,10 +179,10 @@ export class SchemaMigrationDiffService {
                 });
               }
             }
-            
+
             // Supprimer le tableau des relations s'il est vide
             if (tableDiff.relation_changes.length === 0) {
-              delete tableDiff.relation_changes;
+              tableDiff.relation_changes = undefined;
             }
           }
         } else {
@@ -191,22 +194,24 @@ export class SchemaMigrationDiffService {
             reason: 'Table manquante dans Prisma',
           });
         }
-        
+
         // Ajouter la différence de table si elle contient des changements
-        if (tableDiff.changes.length > 0 || 
-            tableDiff.missing_in_target || 
-            tableDiff.missing_in_source || 
-            tableDiff.relation_changes) {
+        if (
+          tableDiff.changes.length > 0 ||
+          tableDiff.missing_in_target ||
+          tableDiff.missing_in_source ||
+          tableDiff.relation_changes
+        ) {
           schemaDiff.tables.push(tableDiff);
         }
       }
-      
+
       // Vérifier s'il y a des modèles Prisma qui n'existent pas dans MySQL
-      const mySqlTableNames = mySqlSchema.tables.map(table => this.toPascalCase(table.name));
-      const missingTables = Object.keys(prismaModels).filter(modelName => 
-        !mySqlTableNames.includes(modelName)
+      const mySqlTableNames = mySqlSchema.tables.map((table) => this.toPascalCase(table.name));
+      const missingTables = Object.keys(prismaModels).filter(
+        (modelName) => !mySqlTableNames.includes(modelName)
       );
-      
+
       for (const missingTable of missingTables) {
         schemaDiff.tables.push({
           name: this.toSnakeCase(missingTable),
@@ -216,14 +221,14 @@ export class SchemaMigrationDiffService {
               from: 'Absente',
               to: 'Nouvelle table',
               reason: 'Table ajoutée dans Prisma',
-            }
+            },
           ],
         });
       }
-      
+
       // Sauvegarder le rapport de différences
       await fs.writeFile(outputPath, JSON.stringify(schemaDiff, null, 2), 'utf8');
-      
+
       console.log(`Comparaison terminée. ${schemaDiff.tables.length} tables ont des différences.`);
     } catch (error) {
       console.error('Erreur lors de la comparaison des schémas:', error);
@@ -238,51 +243,54 @@ export class SchemaMigrationDiffService {
    */
   private parsePrismaSchema(prismaSchema: string): Record<string, { fields: Record<string, any> }> {
     const models: Record<string, { fields: Record<string, any> }> = {};
-    
+
     // Utiliser une expression régulière pour extraire les blocs de modèle
     const modelRegex = /model\s+(\w+)\s+{([^}]*)}/gs;
     let modelMatch;
-    
+
     while ((modelMatch = modelRegex.exec(prismaSchema)) !== null) {
       const modelName = modelMatch[1];
       const modelBody = modelMatch[2];
-      
+
       const fields: Record<string, any> = {};
-      
+
       // Extraire les champs
       const fieldRegex = /\s*(\w+)\s+(\w+)(\??)\s*(?:@([^)]*)\))?/g;
       let fieldMatch;
-      
+
       while ((fieldMatch = fieldRegex.exec(modelBody)) !== null) {
         const fieldName = fieldMatch[1];
         const fieldType = fieldMatch[2];
         const isOptional = fieldMatch[3] === '?';
         const attributes = fieldMatch[4] || '';
-        
+
         const field: any = {
           type: fieldType,
           optional: isOptional,
         };
-        
+
         // Extraire les relations
         if (attributes.includes('@relation')) {
-          const relationMatch = /@relation\s*\(\s*fields:\s*\[([^\]]+)\]\s*,\s*references:\s*\[([^\]]+)\]\s*(?:,\s*([^)]*))?\)/i.exec(attributes);
-          
+          const relationMatch =
+            /@relation\s*\(\s*fields:\s*\[([^\]]+)\]\s*,\s*references:\s*\[([^\]]+)\]\s*(?:,\s*([^)]*))?\)/i.exec(
+              attributes
+            );
+
           if (relationMatch) {
             field.relation = {
-              fields: relationMatch[1].split(',').map(f => f.trim()),
-              references: relationMatch[2].split(',').map(f => f.trim()),
+              fields: relationMatch[1].split(',').map((f) => f.trim()),
+              references: relationMatch[2].split(',').map((f) => f.trim()),
               options: relationMatch[3] ? relationMatch[3].trim() : undefined,
             };
           }
         }
-        
+
         fields[fieldName] = field;
       }
-      
+
       models[modelName] = { fields };
     }
-    
+
     return models;
   }
 
@@ -294,7 +302,7 @@ export class SchemaMigrationDiffService {
   private toPascalCase(str: string): string {
     return str
       .split('_')
-      .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
       .join('');
   }
 
@@ -304,9 +312,7 @@ export class SchemaMigrationDiffService {
    * @returns Chaîne convertie en snake_case
    */
   private toSnakeCase(str: string): string {
-    return str
-      .replace(/([a-z])([A-Z])/g, '$1_$2')
-      .toLowerCase();
+    return str.replace(/([a-z])([A-Z])/g, '$1_$2').toLowerCase();
   }
 
   /**

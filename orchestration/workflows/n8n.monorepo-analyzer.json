@@ -15,10 +15,7 @@
       "name": "Schedule Trigger",
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1,
-      "position": [
-        250,
-        300
-      ]
+      "position": [250, 300]
     },
     {
       "parameters": {
@@ -27,10 +24,7 @@
       "name": "Repo Updated Trigger",
       "type": "n8n-nodes-base.workflowTrigger",
       "typeVersion": 1,
-      "position": [
-        250,
-        460
-      ]
+      "position": [250, 460]
     },
     {
       "parameters": {
@@ -39,10 +33,7 @@
       "name": "Préparer paramètres",
       "type": "n8n-nodes-base.code",
       "typeVersion": 1,
-      "position": [
-        460,
-        380
-      ]
+      "position": [460, 380]
     },
     {
       "parameters": {
@@ -52,10 +43,7 @@
       "name": "Exécuter l'analyseur",
       "type": "n8n-nodes-base.executeCommand",
       "typeVersion": 1,
-      "position": [
-        680,
-        380
-      ]
+      "position": [680, 380]
     },
     {
       "parameters": {
@@ -64,10 +52,7 @@
       "name": "Préparer données Supabase",
       "type": "n8n-nodes-base.code",
       "typeVersion": 1,
-      "position": [
-        900,
-        380
-      ]
+      "position": [900, 380]
     },
     {
       "parameters": {
@@ -83,10 +68,7 @@
       "name": "Supabase",
       "type": "n8n-nodes-base.supabase",
       "typeVersion": 1,
-      "position": [
-        1120,
-        380
-      ],
+      "position": [1120, 380],
       "credentials": {
         "supabaseApi": {
           "id": "CREDENTIAL_ID",
@@ -102,10 +84,7 @@
       "name": "Notification succès",
       "type": "n8n-nodes-base.slack",
       "typeVersion": 1,
-      "position": [
-        1340,
-        380
-      ],
+      "position": [1340, 380],
       "credentials": {
         "slackApi": {
           "id": "SLACK_CREDENTIAL_ID",
@@ -121,10 +100,7 @@
       "name": "Formater les fichiers JSON",
       "type": "n8n-nodes-base.executeCommand",
       "typeVersion": 1,
-      "position": [
-        900,
-        540
-      ]
+      "position": [900, 540]
     },
     {
       "parameters": {
@@ -134,10 +110,7 @@
       "name": "Commit résultats",
       "type": "n8n-nodes-base.executeCommand",
       "typeVersion": 1,
-      "position": [
-        1120,
-        540
-      ]
+      "position": [1120, 540]
     }
   ],
   "connections": {
@@ -235,9 +208,5 @@
   "meta": {
     "instanceId": "INSTANCE_ID"
   },
-  "tags": [
-    "automation",
-    "monorepo",
-    "analysis"
-  ]
+  "tags": ["automation", "monorepo", "analysis"]
 }

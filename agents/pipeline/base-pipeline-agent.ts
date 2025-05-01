@@ -4,19 +4,15 @@
  */
 
 import { BaseAgent } from '../core/base-agent';
-import { PipelineAgentOptions, PipelineResult } from './types';
+import { PipelineAgentOptions } from './types';
 
 /**
  * Classe de base pour tous les agents pipeline
  */
 export abstract class BasePipelineAgent<
   TOptions extends PipelineAgentOptions = PipelineAgentOptions,
-  TResult = any
+  TResult = any,
 > extends BaseAgent<TOptions, TResult> {
-  constructor(options?: Partial<TOptions>) {
-    super(options);
-  }
-
   /**
    * Fonctions utilitaires spécifiques à la catégorie pipeline
    */

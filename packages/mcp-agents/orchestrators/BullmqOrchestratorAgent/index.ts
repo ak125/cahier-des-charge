@@ -5,7 +5,4 @@
 
 import { BullmqOrchestratorAgent } from './BullmqOrchestratorAgent';
 
-export {
-  BullmqOrchestratorAgent,
-};
-
+export { BullmqOrchestratorAgent };

@@ -334,10 +334,10 @@ export class SchemaAnalyzer implements BaseAgent, BusinessAgent, BaseAgent, Busi
     }
   }
 
-  id: string = '';
-  name: string = '';
-  type: string = '';
-  version: string = '1.0.0';
+  id = '';
+  name = '';
+  type = '';
+  version = '1.0.0';
 
   /**
    * Initialise l'agent avec des options spécifiques
@@ -383,13 +383,13 @@ export class SchemaAnalyzer implements BaseAgent, BusinessAgent, BaseAgent, Busi
     };
   }
 
-  id: string = '';
-  name: string = '';
-  type: string = '';
-  version: string = '1.0.0';
+  id = '';
+  name = '';
+  type = '';
+  version = '1.0.0';
 
-  id: string = '';
-  name: string = '';
-  type: string = '';
-  version: string = '1.0.0';
+  id = '';
+  name = '';
+  type = '';
+  version = '1.0.0';
 }

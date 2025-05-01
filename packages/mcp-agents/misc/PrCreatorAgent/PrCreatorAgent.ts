@@ -3,8 +3,8 @@
  * Agent export file
  */
 
-import { PRCreator } from './pr-creator';
 import { BusinessAgent } from '../../core/interfaces';
+import { PRCreator } from './pr-creator';
 
 export { PRCreator };
 export default PRCreator;

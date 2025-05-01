@@ -8,7 +8,4 @@ export * from './SeoChecker';
 export * from './CanonicalValidator';
 
 // Nom des agents pour l'enregistrement
-export const validatorsIds = [
-  'SeoChecker',
-  'CanonicalValidator'
-];
+export const validatorsIds = ['SeoChecker', 'CanonicalValidator'];

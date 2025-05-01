@@ -4,8 +4,8 @@
  * et les opérations sur les connexions à PostgreSQL.
  */
 
-import { Pool, PoolClient, QueryResult } from 'pg';
 import { EventEmitter } from 'events';
+import { Pool, PoolClient, QueryResult } from 'pg';
 
 // Type pour les options de connexion
 export interface PostgresConnectionOptions {
@@ -16,19 +16,19 @@ export interface PostgresConnectionOptions {
   password: string;
   schema?: string;
   ssl?: boolean;
-  max?: number;                      // Nombre maximum de clients dans le pool
-  idleTimeoutMillis?: number;        // Temps maximal d'inactivité d'un client avant d'être détruit
-  connectionTimeoutMillis?: number;  // Temps maximal d'attente pour une connexion
-  application_name?: string;         // Nom de l'application pour les logs PostgreSQL
+  max?: number; // Nombre maximum de clients dans le pool
+  idleTimeoutMillis?: number; // Temps maximal d'inactivité d'un client avant d'être détruit
+  connectionTimeoutMillis?: number; // Temps maximal d'attente pour une connexion
+  application_name?: string; // Nom de l'application pour les logs PostgreSQL
 }
 
 // Type pour les statistiques de pool
 export interface PoolStats {
-  total: number;       // Nombre total de clients créés
-  idle: number;        // Nombre de clients en attente
-  active: number;      // Nombre de clients actifs
-  waiting: number;     // Nombre de demandes en attente d'un client
-  maxClients: number;  // Nombre maximum de clients configurés
+  total: number; // Nombre total de clients créés
+  idle: number; // Nombre de clients en attente
+  active: number; // Nombre de clients actifs
+  waiting: number; // Nombre de demandes en attente d'un client
+  maxClients: number; // Nombre maximum de clients configurés
 }
 
 // Type pour les événements du service
@@ -43,7 +43,7 @@ export interface DatabaseConnectionEvents {
 
 /**
  * Service de gestion des connexions à PostgreSQL
- * 
+ *
  * Caractéristiques:
  * - Gestion de pools de connexions
  * - Reconnexion automatique
@@ -57,10 +57,10 @@ export class DatabaseConnectionService {
   private pool: Pool | null = null;
   private connectionOptions: PostgresConnectionOptions;
   private currentSchema: string;
-  private isConnected: boolean = false;
-  private reconnectAttempts: number = 0;
-  private maxReconnectAttempts: number = 5;
-  private reconnectInterval: number = 5000; // 5 secondes
+  private isConnected = false;
+  private reconnectAttempts = 0;
+  private maxReconnectAttempts = 5;
+  private reconnectInterval = 5000; // 5 secondes
   private eventEmitter: EventEmitter = new EventEmitter();
   private poolStatsInterval: NodeJS.Timeout | null = null;
 
@@ -83,7 +83,7 @@ export class DatabaseConnectionService {
    * @param forceNew Force la création d'une nouvelle connexion même si une connexion existe déjà
    * @returns Promise résolu quand la connexion est établie
    */
-  async connect(forceNew: boolean = false): Promise<void> {
+  async connect(forceNew = false): Promise<void> {
     if (this.isConnected && this.pool && !forceNew) {
       return;
     }
@@ -103,7 +103,7 @@ export class DatabaseConnectionService {
         max: this.connectionOptions.max || 10,
         idleTimeoutMillis: this.connectionOptions.idleTimeoutMillis || 30000,
         connectionTimeoutMillis: this.connectionOptions.connectionTimeoutMillis || 5000,
-        application_name: this.connectionOptions.application_name || 'postgres-connection-service'
+        application_name: this.connectionOptions.application_name || 'postgres-connection-service',
       });
 
       // Mettre en place les écouteurs d'événements du pool
@@ -113,19 +113,19 @@ export class DatabaseConnectionService {
       const client = await this.pool.connect();
       try {
         await client.query('SELECT 1');
-        
+
         // Si on a un schéma spécifique, essayons de le définir
         if (this.currentSchema !== 'public') {
           await client.query(`SET search_path TO ${this.currentSchema}, public`);
         }
-        
+
         this.isConnected = true;
         this.reconnectAttempts = 0;
         this.emit('connected');
-        
+
         // Démarrer la collecte périodique des statistiques du pool
         this.startPoolStats();
-        
+
         console.log(`Connexion PostgreSQL établie: ${this.getConnectionStringForDisplay()}`);
         return;
       } finally {
@@ -135,19 +135,22 @@ export class DatabaseConnectionService {
       this.isConnected = false;
       this.emit('error', error);
       console.error(`Erreur de connexion à PostgreSQL: ${error.message}`);
-      
+
       // Tentative de reconnexion automatique si configurée
       if (this.reconnectAttempts < this.maxReconnectAttempts) {
         this.reconnectAttempts++;
-        this.emit('warning', `Tentative de reconnexion ${this.reconnectAttempts}/${this.maxReconnectAttempts} dans ${this.reconnectInterval}ms`);
-        
+        this.emit(
+          'warning',
+          `Tentative de reconnexion ${this.reconnectAttempts}/${this.maxReconnectAttempts} dans ${this.reconnectInterval}ms`
+        );
+
         setTimeout(() => {
-          this.connect(true).catch(e => {
+          this.connect(true).catch((e) => {
             console.error(`Échec de la tentative de reconnexion: ${e.message}`);
           });
         }, this.reconnectInterval);
       }
-      
+
       throw new Error(`Échec de connexion à PostgreSQL: ${error.message}`);
     }
   }
@@ -188,22 +191,22 @@ export class DatabaseConnectionService {
     }
 
     if (!this.pool) {
-      throw new Error('La connexion PostgreSQL n\'est pas disponible');
+      throw new Error("La connexion PostgreSQL n'est pas disponible");
     }
 
     const startTime = Date.now();
     try {
       const result = await this.pool.query<T>(query, params);
-      
+
       const duration = Date.now() - startTime;
       this.emit('query', query, params, duration);
-      
+
       return result;
     } catch (error) {
       const duration = Date.now() - startTime;
       this.emit('error', error);
       this.emit('query', query, params, duration);
-      
+
       throw new Error(`Erreur d'exécution de requête: ${error.message}`);
     }
   }
@@ -218,7 +221,7 @@ export class DatabaseConnectionService {
     }
 
     if (!this.pool) {
-      throw new Error('La connexion PostgreSQL n\'est pas disponible');
+      throw new Error("La connexion PostgreSQL n'est pas disponible");
     }
 
     try {
@@ -295,11 +298,11 @@ export class DatabaseConnectionService {
    * @param schema Nom du schéma à créer
    * @param setAsCurrent Définit le nouveau schéma comme schéma courant si true
    */
-  async createSchema(schema: string, setAsCurrent: boolean = false): Promise<void> {
+  async createSchema(schema: string, setAsCurrent = false): Promise<void> {
     try {
       await this.executeQuery(`CREATE SCHEMA IF NOT EXISTS ${schema}`);
       console.log(`Schéma '${schema}' créé ou déjà existant`);
-      
+
       if (setAsCurrent) {
         await this.setSchema(schema);
       }
@@ -321,8 +324,8 @@ export class DatabaseConnectionService {
          AND schema_name != 'information_schema'
          ORDER BY schema_name`
       );
-      
-      return result.rows.map(row => row.schema_name);
+
+      return result.rows.map((row) => row.schema_name);
     } catch (error) {
       throw new Error(`Erreur de listage des schémas: ${error.message}`);
     }
@@ -337,10 +340,10 @@ export class DatabaseConnectionService {
       if (!this.pool || !this.isConnected) {
         await this.connect();
       }
-      
+
       await this.executeQuery('SELECT 1');
       return true;
-    } catch (error) {
+    } catch (_error) {
       return false;
     }
   }
@@ -353,13 +356,13 @@ export class DatabaseConnectionService {
     if (!this.pool) {
       return null;
     }
-    
+
     return {
       total: this.pool.totalCount,
       idle: this.pool.idleCount,
       active: this.pool.totalCount - this.pool.idleCount,
       waiting: this.pool.waitingCount,
-      maxClients: this.pool.options.max || 10
+      maxClients: this.pool.options.max || 10,
     };
   }
 
@@ -385,7 +388,7 @@ export class DatabaseConnectionService {
    * @param listener Fonction à appeler quand l'événement se produit
    */
   on<K extends keyof DatabaseConnectionEvents>(
-    event: K, 
+    event: K,
     listener: DatabaseConnectionEvents[K]
   ): this {
     this.eventEmitter.on(event, listener as any);
@@ -398,7 +401,7 @@ export class DatabaseConnectionService {
    * @param listener Fonction à retirer
    */
   off<K extends keyof DatabaseConnectionEvents>(
-    event: K, 
+    event: K,
     listener: DatabaseConnectionEvents[K]
   ): this {
     this.eventEmitter.off(event, listener as any);
@@ -438,19 +441,24 @@ export class DatabaseConnectionService {
     this.pool.on('error', (err) => {
       console.error('Erreur non gérée dans le pool de connexions PostgreSQL:', err.message);
       this.emit('error', err);
-      
+
       if (this.isConnected) {
         this.isConnected = false;
         this.emit('disconnected');
-        
+
         // Tenter de se reconnecter
         if (this.reconnectAttempts < this.maxReconnectAttempts) {
           this.reconnectAttempts++;
-          this.emit('warning', `Erreur de pool détectée. Tentative de reconnexion ${this.reconnectAttempts}/${this.maxReconnectAttempts}`);
-          
+          this.emit(
+            'warning',
+            `Erreur de pool détectée. Tentative de reconnexion ${this.reconnectAttempts}/${this.maxReconnectAttempts}`
+          );
+
           setTimeout(() => {
-            this.connect(true).catch(e => {
-              console.error(`Échec de la tentative de reconnexion après erreur de pool: ${e.message}`);
+            this.connect(true).catch((e) => {
+              console.error(
+                `Échec de la tentative de reconnexion après erreur de pool: ${e.message}`
+              );
             });
           }, this.reconnectInterval);
         }
@@ -465,7 +473,7 @@ export class DatabaseConnectionService {
     if (this.poolStatsInterval) {
       clearInterval(this.poolStatsInterval);
     }
-    
+
     this.poolStatsInterval = setInterval(() => {
       const stats = this.getPoolStats();
       if (stats) {
@@ -491,36 +499,43 @@ export class DatabaseConnectionService {
   private parseConnectionString(connectionString: string): PostgresConnectionOptions {
     try {
       // Vérifier que la chaîne commence par postgresql:// ou postgres://
-      if (!connectionString.startsWith('postgresql://') && !connectionString.startsWith('postgres://')) {
+      if (
+        !connectionString.startsWith('postgresql://') &&
+        !connectionString.startsWith('postgres://')
+      ) {
         throw new Error('La chaîne de connexion doit commencer par postgresql:// ou postgres://');
       }
-      
+
       const url = new URL(connectionString);
-      
+
       // Extraire les paramètres
       const host = url.hostname;
       const port = url.port ? parseInt(url.port, 10) : 5432;
       const database = url.pathname.slice(1); // Supprimer le / initial
       const user = url.username;
       const password = url.password;
-      
+
       // Paramètres optionnels
       const schema = url.searchParams.get('schema') || 'public';
       const ssl = url.searchParams.get('ssl') === 'true';
-      const max = url.searchParams.get('max') ? parseInt(url.searchParams.get('max') as string, 10) : undefined;
-      const idleTimeoutMillis = url.searchParams.get('idleTimeoutMillis') 
-        ? parseInt(url.searchParams.get('idleTimeoutMillis') as string, 10) 
+      const max = url.searchParams.get('max')
+        ? parseInt(url.searchParams.get('max') as string, 10)
+        : undefined;
+      const idleTimeoutMillis = url.searchParams.get('idleTimeoutMillis')
+        ? parseInt(url.searchParams.get('idleTimeoutMillis') as string, 10)
         : undefined;
       const connectionTimeoutMillis = url.searchParams.get('connectionTimeoutMillis')
         ? parseInt(url.searchParams.get('connectionTimeoutMillis') as string, 10)
         : undefined;
       const application_name = url.searchParams.get('application_name') || undefined;
-      
+
       // Vérifier les paramètres obligatoires
       if (!host || !database || !user) {
-        throw new Error('La chaîne de connexion doit contenir un hôte, une base de données et un utilisateur');
+        throw new Error(
+          'La chaîne de connexion doit contenir un hôte, une base de données et un utilisateur'
+        );
       }
-      
+
       return {
         host,
         port,
@@ -532,7 +547,7 @@ export class DatabaseConnectionService {
         max,
         idleTimeoutMillis,
         connectionTimeoutMillis,
-        application_name
+        application_name,
       };
     } catch (error) {
       throw new Error(`Erreur d'analyse de la chaîne de connexion: ${error.message}`);

@@ -6,28 +6,28 @@
  * Ce serveur implémente le protocole Model Context Protocol pour interagir avec des bases PostgreSQL
  */
 
-import express from 'express';
-import cors from 'cors';
-import bodyParser from 'body-parser';
-import { createLogger, format, transports } from 'winston';
-import dotenv from 'dotenv';
-import yargs from 'yargs';
-import { hideBin } from 'yargs/helpers';
 import fs from 'fs';
 import path from 'path';
+import bodyParser from 'body-parser';
+import cors from 'cors';
+import dotenv from 'dotenv';
+import express from 'express';
+import { createLogger, format, transports } from 'winston';
+import yargs from 'yargs';
+import { hideBin } from 'yargs/helpers';
 
 // Services et utilitaires
 import { DatabaseConnectionService } from './services/database-connection-service';
-import { 
-  SchemaMap, 
-  TableInfo, 
-  ColumnInfo, 
+import {
+  ColumnInfo,
   ForeignKeyInfo,
   IndexInfo,
-  SchemaDiff,
-  PrismaModel,
+  MCPResult,
   MCPServerConfig,
-  MCPResult
+  PrismaModel,
+  SchemaDiff,
+  SchemaMap,
+  TableInfo
 } from './types';
 
 // Charger la configuration depuis .env si disponible
@@ -45,7 +45,7 @@ const logger = createLogger({
   ),
   transports: [
     new transports.Console(),
-    new transports.File({ filename: DoDotmcp-postgres.log' })
+    new transports.File({ filename: 'mcp-postgres.log' })
   ]
 });
 
@@ -68,7 +68,7 @@ class PostgresMCPServer {
    */
   constructor(connectionString: string, config: Partial<MCPServerConfig> = {}) {
     this.connectionString = connectionString;
-    
+
     // Configuration par défaut
     this.config = {
       port: config.port || parseInt(process.env.MCP_PORT || '3050', 10),
@@ -77,39 +77,39 @@ class PostgresMCPServer {
       verbose: config.verbose !== undefined ? config.verbose : true,
       allowedOrigins: config.allowedOrigins || ['*']
     };
-    
+
     this.port = this.config.port;
     this.host = this.config.host;
     this.schema = 'public'; // Par défaut
-    
+
     // Extraire le schéma de la chaîne de connexion si présent
     if (connectionString.includes('?schema=')) {
       const schemaMatch = connectionString.match(/\?schema=([^&]+)/);
-      if (schemaMatch && schemaMatch[1]) {
+      if (schemaMatch?.[1]) {
         this.schema = schemaMatch[1];
       }
     }
-    
+
     // Initialiser le service de connexion à la base de données
     this.dbService = new DatabaseConnectionService(connectionString);
-    
+
     // Configuration des écouteurs d'événements pour le service de connexion
     this.setupDatabaseListeners();
-    
+
     // Initialiser l'application Express
     this.app = express();
     this.app.use(cors({
-      origin: this.config.allowedOrigins?.includes('*') 
-        ? '*' 
+      origin: this.config.allowedOrigins?.includes('*')
+        ? '*'
         : this.config.allowedOrigins,
       methods: ['GET', 'POST'],
       allowedHeaders: ['Content-Type', 'Authorization']
     }));
     this.app.use(bodyParser.json());
-    
+
     // Initialiser les routes API
     this.setupRoutes();
-    
+
     logger.info(`Serveur MCP PostgreSQL initialisé avec le schéma: ${this.schema}`);
   }
 
@@ -120,24 +120,24 @@ class PostgresMCPServer {
     this.dbService.on('connected', () => {
       logger.info('🔌 Connexion à PostgreSQL établie');
     });
-    
+
     this.dbService.on('disconnected', () => {
       logger.info('🔌 Déconnexion de PostgreSQL');
     });
-    
+
     this.dbService.on('error', (error) => {
       logger.error(`❌ Erreur PostgreSQL: ${error.message}`);
     });
-    
+
     this.dbService.on('warning', (message) => {
       logger.warn(`⚠️ Avertissement PostgreSQL: ${message}`);
     });
-    
+
     if (this.config.verbose) {
-      this.dbService.on('query', (query, params, duration) => {
+      this.dbService.on('query', (query, _params, duration) => {
         logger.debug(`⏱️ Requête (${duration}ms): ${query.substring(0, 80)}${query.length > 80 ? '...' : ''}`);
       });
-      
+
       this.dbService.on('poolStats', (stats) => {
         logger.debug(`📊 Stats pool: ${stats.active}/${stats.total} actifs, ${stats.idle} inactifs, ${stats.waiting} en attente`);
       });
@@ -149,28 +149,28 @@ class PostgresMCPServer {
    */
   private setupRoutes(): void {
     // Route de base avec informations sur le serveur
-    this.app.get('/', (req, res) => {
+    this.app.get('/', (_req, res) => {
       res.json({
         name: '@modelcontextprotocol/server-postgres',
         version: '1.0.0',
         status: 'running',
         schema: this.schema,
-        endpoint: 'DoDotmcp'
+        endpoint: 'mcp'
       });
     });
 
     // Point d'entrée principal MCP
-    this.app.post('DoDotmcp', async (req, res) => {
+    this.app.post('/mcp', async (req, res) => {
       try {
         const { tool, params } = req.body;
-        
+
         if (!tool) {
           return res.status(400).json({
             success: false,
             error: 'Un outil (tool) doit être spécifié'
           });
         }
-        
+
         // Exécuter l'outil demandé
         const result = await this.executeTool(tool, params || {});
         res.json(result);
@@ -184,13 +184,13 @@ class PostgresMCPServer {
     });
 
     // Documentation des outils disponibles
-    this.app.get('/tools', (req, res) => {
+    this.app.get('/tools', (_req, res) => {
       res.json({
         tools: [
           { name: 'list_tables', description: 'Récupère la liste des tables disponibles', params: {} },
           { name: 'describe_table', description: 'Renvoie les colonnes, types et contraintes d\'une table', params: { tableName: 'string' } },
-          { name: 'get_foreign_keys', description: 'Liste toutes les relations entre les tables', params: { tableName: 'string (optional)' } },
-          { name: 'run_query', description: 'Lance une requête SQL en lecture seule', params: { query: 'string', params: 'array (optional)' } },
+          { name: 'get_foreign_keys', description: 'Liste toutes les relations entre les tables', params: { tableName: 'string'(optional) } },
+          { name: 'run_query', description: 'Lance une requête SQL en lecture seule', params: { query: 'string', params: 'array'(optional) } },
           { name: 'suggest_prisma_model', description: 'Génère un bloc Prisma model à partir d\'une table', params: { tableName: 'string' } },
           { name: 'schema_migration_diff', description: 'Compare la base PostgreSQL actuelle à un ancien dump MySQL', params: { mysqlSchemaMap: 'object' } },
           { name: 'suggest_indexes', description: 'Propose des index sur les colonnes pertinentes', params: { tableName: 'string' } },
@@ -209,79 +209,79 @@ class PostgresMCPServer {
    */
   private async executeTool(tool: string, params: any): Promise<MCPResult<any>> {
     const startTime = Date.now();
-    
+
     try {
       let result;
-      
+
       // S'assurer que la connexion à la base de données est établie
       if (!this.dbService.isConnectedToDatabase()) {
         await this.dbService.connect();
-        
+
         // Si un schéma spécifique est défini, le configurer
         if (this.schema !== 'public') {
           await this.dbService.setSchema(this.schema);
         }
       }
-      
+
       // Exécution de l'outil demandé
       switch (tool) {
         case 'list_tables':
           result = await this.listTables();
           break;
-        
+
         case 'describe_table':
           if (!params.tableName) {
             throw new Error('Le paramètre tableName est requis');
           }
           result = await this.describeTable(params.tableName);
           break;
-        
+
         case 'get_foreign_keys':
           result = await this.getForeignKeys(params.tableName);
           break;
-        
+
         case 'run_query':
           if (!params.query) {
             throw new Error('Le paramètre query est requis');
           }
           result = await this.runQuery(params.query, params.params || []);
           break;
-        
+
         case 'suggest_prisma_model':
           if (!params.tableName) {
             throw new Error('Le paramètre tableName est requis');
           }
           result = await this.suggestPrismaModel(params.tableName);
           break;
-        
+
         case 'schema_migration_diff':
           if (!params.mysqlSchemaMap) {
             throw new Error('Le paramètre mysqlSchemaMap est requis');
           }
           result = await this.schemaMigrationDiff(params.mysqlSchemaMap);
           break;
-        
+
         case 'suggest_indexes':
           if (!params.tableName) {
             throw new Error('Le paramètre tableName est requis');
           }
           result = await this.suggestIndexes(params.tableName);
           break;
-        
+
         case 'export_schema_map':
           result = await this.exportSchemaMap();
           break;
-        
+
         case 'generate_prisma_file':
           result = await this.generatePrismaFile();
           break;
-        
+
         default:
           throw new Error(`Outil inconnu: ${tool}`);
       }
-      
+
       const duration = Date.now() - startTime;
-      
+
       return {
         success: true,
         data: result,
@@ -294,7 +294,7 @@ class PostgresMCPServer {
       };
     } catch (error) {
       const duration = Date.now() - startTime;
-      
+
       return {
         success: false,
         error: error.message,
@@ -316,19 +316,19 @@ class PostgresMCPServer {
     try {
       // Tester la connexion à la base de données
       await this.dbService.connect();
-      
+
       // Configurer le schéma si nécessaire
       if (this.schema !== 'public') {
         await this.dbService.setSchema(this.schema);
       }
-      
+
       // Démarrer le serveur HTTP
       return new Promise((resolve) => {
         this.app.listen(this.port, this.host, () => {
           logger.info(`🚀 Serveur MCP PostgreSQL démarré sur http://${this.host}:${this.port}`);
           logger.info(`📊 Connecté à: ${this.maskConnectionString()}`);
           logger.info(`📝 Schéma: ${this.schema}`);
-          logger.info(`📡 Endpoint MCP: http://${this.host}:${this.port}DoDotmcp`);
+          logger.info(`📡 Endpoint MCP: http://${this.host}:${this.port}/mcp`);
           resolve();
         });
       });
@@ -376,10 +376,10 @@ class PostgresMCPServer {
           AND table_type = 'BASE TABLE'
         ORDER BY table_name
       `;
-      
+
       const result = await this.dbService.executeQuery(query, [this.schema]);
       const tables = result.rows.map(row => row.table_name);
-      
+
       logger.debug(`📋 ${tables.length} tables trouvées dans le schéma ${this.schema}`);
       return tables;
     } catch (error) {
@@ -410,9 +410,9 @@ class PostgresMCPServer {
           AND table_name = $2
         ORDER BY ordinal_position
       `;
-      
+
       const columnsResult = await this.dbService.executeQuery(columnsQuery, [this.schema, tableName]);
-      
+
       // Récupérer les clés primaires
       const pkQuery = `
         SELECT 
@@ -425,10 +425,10 @@ class PostgresMCPServer {
           AND tc.table_name = $2
           AND tc.constraint_type = 'PRIMARY KEY'
       `;
-      
+
       const pkResult = await this.dbService.executeQuery(pkQuery, [this.schema, tableName]);
       const primaryKeys = pkResult.rows.map(row => row.column_name);
-      
+
       // Récupérer les index
       const indexQuery = `
         SELECT
@@ -449,9 +449,9 @@ class PostgresMCPServer {
         GROUP BY
           i.relname, ix.indisunique, am.amname
       `;
-      
+
       const indexResult = await this.dbService.executeQuery(indexQuery, [tableName, this.schema]);
-      
+
       // Construire la structure de la table
       const tableInfo: TableInfo = {
         name: tableName,
@@ -460,7 +460,7 @@ class PostgresMCPServer {
         primaryKey: primaryKeys,
         indexes: []
       };
-      
+
       // Ajouter les colonnes
       columnsResult.rows.forEach(row => {
         const column: ColumnInfo = {
@@ -471,22 +471,22 @@ class PostgresMCPServer {
           isPrimary: primaryKeys.includes(row.column_name),
           isUnique: false // Sera mis à jour avec les informations d'index
         };
-        
+
         // Ajouter les informations spécifiques au type
         if (row.character_maximum_length) {
           column.maxLength = row.character_maximum_length;
         }
-        
+
         if (row.numeric_precision) {
           column.precision = row.numeric_precision;
           if (row.numeric_scale) {
             column.scale = row.numeric_scale;
           }
         }
-        
+
         tableInfo.columns[row.column_name] = column;
       });
-      
+
       // Ajouter les index
       indexResult.rows.forEach(row => {
         const index: IndexInfo = {
@@ -495,9 +495,9 @@ class PostgresMCPServer {
           isUnique: row.is_unique,
           type: row.index_type
         };
-        
+
         tableInfo.indexes.push(index);
-        
+
         // Mettre à jour la propriété isUnique des colonnes indexées
         if (row.is_unique) {
           row.column_names.forEach(colName => {
@@ -507,7 +507,7 @@ class PostgresMCPServer {
           });
         }
       });
-      
+
       logger.debug(`📝 Table ${tableName} décrite: ${Object.keys(tableInfo.columns).length} colonnes`);
       return tableInfo;
     } catch (error) {
@@ -541,19 +541,19 @@ class PostgresMCPServer {
         WHERE tc.constraint_type = 'FOREIGN KEY'
           AND tc.table_schema = $1
       `;
-      
+
       const params = [this.schema];
-      
+
       // Si une table spécifique est demandée, filtrer les résultats
       if (tableName) {
-        query += ` AND tc.table_name = $2`;
+        query += " AND tc.table_name = $2";
         params.push(tableName);
       }
-      
-      query += ` ORDER BY tc.table_name, kcu.column_name`;
-      
+
+      query += " ORDER BY tc.table_name, kcu.column_name";
+
       const result = await this.dbService.executeQuery(query, params);
-      
+
       // Créer les objets ForeignKeyInfo
       const foreignKeys: ForeignKeyInfo[] = result.rows.map(row => ({
         name: `fk_${row.source_table}_${row.source_column}`,
@@ -564,7 +564,7 @@ class PostgresMCPServer {
         onDelete: row.delete_rule,
         onUpdate: row.update_rule
       }));
-      
+
       logger.debug(`🔗 ${foreignKeys.length} clés étrangères trouvées`);
       return foreignKeys;
     } catch (error) {
@@ -582,12 +582,12 @@ class PostgresMCPServer {
   async runQuery(query: string, params: any[] = []): Promise<any[]> {
     // Vérifier que la requête est en lecture seule
     const normalizedQuery = query.trim().toLowerCase();
-    if (!normalizedQuery.startsWith('select') && 
-        !normalizedQuery.startsWith('explain') && 
-        !normalizedQuery.startsWith('show')) {
+    if (!normalizedQuery.startsWith('select') &&
+      !normalizedQuery.startsWith('explain') &&
+      !normalizedQuery.startsWith('show')) {
       throw new Error('Seules les requêtes SELECT, EXPLAIN ou SHOW sont autorisées');
     }
-    
+
     try {
       const result = await this.dbService.executeQuery(query, params);
       logger.debug(`🔍 Requête exécutée: ${result.rowCount} lignes retournées`);
@@ -607,18 +607,18 @@ class PostgresMCPServer {
     try {
       // Récupérer les informations sur la table
       const tableInfo = await this.describeTable(tableName);
-      
+
       // Récupérer les clés étrangères
       const allForeignKeys = await this.getForeignKeys();
-      
+
       // Filtrer les clés étrangères pour cette table
-      const relatedForeignKeys = allForeignKeys.filter(fk => 
+      const relatedForeignKeys = allForeignKeys.filter(fk =>
         fk.sourceTable === tableName || fk.targetTable === tableName
       );
-      
+
       // Générer le modèle Prisma
       const prismaModel = this.generatePrismaModel(tableInfo, relatedForeignKeys);
-      
+
       logger.debug(`✨ Modèle Prisma généré pour la table ${tableName}`);
       return prismaModel;
     } catch (error) {
@@ -636,10 +636,10 @@ class PostgresMCPServer {
     try {
       // Exporter le schéma PostgreSQL actuel
       const postgresSchemaMap = await this.exportSchemaMap();
-      
+
       // Comparer les deux schémas
       const diff = this.compareSchemas(mysqlSchemaMap, postgresSchemaMap);
-      
+
       logger.info(`🔄 Comparaison des schémas terminée: ${diff.changes.length} changements trouvés`);
       return diff;
     } catch (error) {
@@ -657,14 +657,14 @@ class PostgresMCPServer {
     try {
       // Récupérer les informations sur la table
       const tableInfo = await this.describeTable(tableName);
-      
+
       // Récupérer les clés étrangères
       const allForeignKeys = await this.getForeignKeys();
       const tableForeignKeys = allForeignKeys.filter(fk => fk.sourceTable === tableName);
-      
+
       // Suggérer des index
       const suggestedIndexes = this.suggestTableIndexes(tableInfo, tableForeignKeys);
-      
+
       logger.debug(`💡 ${suggestedIndexes.length} index suggérés pour la table ${tableName}`);
       return suggestedIndexes;
     } catch (error) {
@@ -681,16 +681,16 @@ class PostgresMCPServer {
     try {
       // Récupérer la liste des tables
       const tables = await this.listTables();
-      
+
       // Récupérer les informations sur chaque table
       const tablesInfo: Record<string, TableInfo> = {};
       for (const tableName of tables) {
         tablesInfo[tableName] = await this.describeTable(tableName);
       }
-      
+
       // Récupérer les clés étrangères
       const foreignKeys = await this.getForeignKeys();
-      
+
       // Créer la carte du schéma
       const schemaMap: SchemaMap = {
         name: `PostgreSQL Schema (${this.schema})`,
@@ -698,7 +698,7 @@ class PostgresMCPServer {
         tables: tablesInfo,
         foreignKeys: foreignKeys
       };
-      
+
       logger.info(`📊 Carte du schéma générée avec ${tables.length} tables`);
       return schemaMap;
     } catch (error) {
@@ -715,42 +715,34 @@ class PostgresMCPServer {
     try {
       // Exporter le schéma PostgreSQL actuel
       const schemaMap = await this.exportSchemaMap();
-      
+
       // Récupérer les clés étrangères
       const foreignKeys = await this.getForeignKeys();
-      
+
       // Générer le fichier schema.prisma
-      let prismaSchema = `// Ce fichier a été généré automatiquement par @modelcontextprotocol/server-postgres
-// Date de génération: ${new Date().toISOString()}
+      let prismaSchema = `// Ce fichier a été généré automatiquement par @modelcontextprotocol/server-postgres\n`;
+      prismaSchema += `// Date de génération: ${new Date().toISOString()}\n\n`;
 
-generator client {
-  provider = "prisma-client-js"
-}
-
-datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
-}
-
-`;
+      prismaSchema += `generator client {\n  provider = "prisma-client-js"\n}\n\n`;
+      prismaSchema += `datasource db {\n  provider = "postgresql"\n  url      = env("DATABASE_URL")\n}\n\n`;
 
       // Générer un modèle Prisma pour chaque table
       for (const tableName of Object.keys(schemaMap.tables)) {
         const tableInfo = schemaMap.tables[tableName];
-        
+
         // Filtrer les clés étrangères pour cette table
-        const relatedForeignKeys = foreignKeys.filter(fk => 
+        const relatedForeignKeys = foreignKeys.filter(fk =>
           fk.sourceTable === tableName || fk.targetTable === tableName
         );
-        
+
         // Générer le modèle Prisma
         const model = this.generatePrismaModel(tableInfo, relatedForeignKeys);
-        
+
         // Ajouter le modèle au fichier
-        prismaSchema += model.schema + '\n\n';
+        prismaSchema += `${model.schema}\n\n`;
       }
-      
-      logger.info(`📄 Fichier schema.prisma généré`);
+
+      logger.info("📄 Fichier schema.prisma généré");
       return prismaSchema;
     } catch (error) {
       logger.error(`❌ Échec de génération du fichier schema.prisma: ${error.message}`);
@@ -772,68 +764,68 @@ datasource db {
       .split('_')
       .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
       .join('');
-    
+
     // Créer les champs Prisma
     const fields: any[] = [];
     const schema: string[] = [`model ${modelName} {`];
-    
+
     // Fonction pour convertir un type PostgreSQL en type Prisma
     const toPrismaType = (pgType: string): string => {
       const typeMap: Record<string, string> = {
-        'integer': 'Int',
-        'bigint': 'BigInt',
-        'smallint': 'Int',
-        'decimal': 'Decimal',
-        'numeric': 'Decimal',
-        'real': 'Float',
+        integer: 'Int',
+        bigint: 'BigInt',
+        smallint: 'Int',
+        decimal: 'Decimal',
+        numeric: 'Decimal',
+        real: 'Float',
         'double precision': 'Float',
         'character varying': 'String',
-        'character': 'String',
-        'text': 'String',
-        'boolean': 'Boolean',
-        'date': 'DateTime',
-        'time': 'DateTime',
-        'timestamp': 'DateTime',
+        character: 'String',
+        text: 'String',
+        boolean: 'Boolean',
+        date: 'DateTime',
+        time: 'DateTime',
+        timestamp: 'DateTime',
         'timestamp with time zone': 'DateTime',
         'timestamp without time zone': 'DateTime',
-        'uuid': 'String',
-        'json': 'Json',
-        'jsonb': 'Json',
-        'bytea': 'Bytes',
-        'citext': 'String',
+        uuid: 'String',
+        json: 'Json',
+        jsonb: 'Json',
+        bytea: 'Bytes',
+        citext: 'String'
       };
-      
+
       return typeMap[pgType.toLowerCase()] || 'String';
     };
-    
+
     // Ajouter les colonnes au modèle
     for (const [columnName, columnInfo] of Object.entries(tableInfo.columns)) {
       const prismaType = toPrismaType(columnInfo.type);
       let line = `  ${columnName} ${prismaType}`;
-      
+
       // Ajouter les attributs
       const attributes: string[] = [];
-      
+
       if (columnInfo.isPrimary) {
         attributes.push('@id');
       }
-      
+
       if (columnInfo.isUnique && !columnInfo.isPrimary) {
         attributes.push('@unique');
       }
-      
+
       if (columnInfo.defaultValue) {
         // Traiter les valeurs par défaut communes
         if (columnInfo.defaultValue.includes('nextval(')) {
           attributes.push('@default(autoincrement())');
         } else if (columnInfo.defaultValue.includes('now()')) {
           attributes.push('@default(now())');
-        } else if (columnInfo.defaultValue.includes('gen_random_uuid()') || 
-                  columnInfo.defaultValue.includes('uuid_generate_v4()')) {
+        } else if (columnInfo.defaultValue.includes('gen_random_uuid()') ||
+          columnInfo.defaultValue.includes('uuid_generate_v4()')) {
           attributes.push('@default(uuid())');
         } else if (columnInfo.defaultValue === 'true' || columnInfo.defaultValue === 'false') {
           attributes.push(`@default(${columnInfo.defaultValue})`);
-        } else if (!isNaN(Number(columnInfo.defaultValue))) {
+        } else if (!Number.isNaN(Number(columnInfo.defaultValue))) {
           attributes.push(`@default(${columnInfo.defaultValue})`);
         } else {
           // Enlever les guillemets pour les chaînes
@@ -841,19 +833,19 @@ datasource db {
           attributes.push(`@default("${defaultValue}")`);
         }
       }
-      
+
       // Ajouter les attributs au champ
       if (attributes.length > 0) {
-        line += ' ' + attributes.join(' ');
+        line += ` ${attributes.join(' ')}`;
       }
-      
+
       // Ajouter le point d'interrogation pour les champs nullable
       if (columnInfo.nullable) {
         line += '?';
       }
-      
+
       schema.push(line);
-      
+
       // Ajouter le champ à la liste des champs
       fields.push({
         name: columnName,
@@ -864,41 +856,41 @@ datasource db {
         default: columnInfo.defaultValue
       });
     }
-    
+
     // Ajouter les relations
     const sourceRelations = foreignKeys.filter(fk => fk.sourceTable === tableInfo.name);
     const targetRelations = foreignKeys.filter(fk => fk.targetTable === tableInfo.name);
-    
+
     // Ajouter les relations où cette table est la source (référence une autre table)
     for (const relation of sourceRelations) {
       const targetModelName = relation.targetTable
         .split('_')
         .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
         .join('');
-      
+
       const relationName = relation.targetTable;
-      
+
       // Relation dans le modèle Prisma
       schema.push(`  ${relationName} ${targetModelName} @relation(fields: [${relation.sourceColumns.join(', ')}], references: [${relation.targetColumns.join(', ')}])`);
     }
-    
+
     // Ajouter les relations inverses (où d'autres tables référencent cette table)
     for (const relation of targetRelations) {
       const sourceModelName = relation.sourceTable
         .split('_')
         .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
         .join('');
-      
+
       // Par défaut, le nom de la relation est pluriel
-      let relationName = `${relation.sourceTable}s`;
-      
+      const relationName = `${relation.sourceTable}s`;
+
       schema.push(`  ${relationName} ${sourceModelName}[]`);
     }
-    
+
     // Ajouter le mapping vers le nom de la table réelle
     schema.push(`  @@map("${tableInfo.name}")`);
-    schema.push(`}`);
-    
+    schema.push("}");
+
     return {
       name: modelName,
       tableName: tableInfo.name,
@@ -915,7 +907,7 @@ datasource db {
    */
   private compareSchemas(sourceSchema: SchemaMap, targetSchema: SchemaMap): SchemaDiff {
     const changes: any[] = [];
-    
+
     // Statistiques
     const statistics = {
       total: 0,
@@ -939,11 +931,11 @@ datasource db {
         removed: 0
       }
     };
-    
+
     // Tables existantes dans la source mais pas dans la cible
     const sourceTables = Object.keys(sourceSchema.tables);
     const targetTables = Object.keys(targetSchema.tables);
-    
+
     for (const tableName of sourceTables) {
       if (!targetTables.includes(tableName)) {
         changes.push({
@@ -956,7 +948,7 @@ datasource db {
         statistics.total++;
       }
     }
-    
+
     // Tables existantes dans la cible mais pas dans la source
     for (const tableName of targetTables) {
       if (!sourceTables.includes(tableName)) {
@@ -970,19 +962,19 @@ datasource db {
         statistics.total++;
       }
     }
-    
+
     // Pour les tables existantes dans les deux schémas, comparer les colonnes et contraintes
     for (const tableName of sourceTables) {
       if (targetTables.includes(tableName)) {
         const sourceTable = sourceSchema.tables[tableName];
         const targetTable = targetSchema.tables[tableName];
-        
+
         let tableModified = false;
-        
+
         // Colonnes existantes dans la source mais pas dans la cible
         const sourceColumns = Object.keys(sourceTable.columns);
         const targetColumns = Object.keys(targetTable.columns);
-        
+
         for (const columnName of sourceColumns) {
           if (!targetColumns.includes(columnName)) {
             changes.push({
@@ -997,7 +989,7 @@ datasource db {
             tableModified = true;
           }
         }
-        
+
         // Colonnes existantes dans la cible mais pas dans la source
         for (const columnName of targetColumns) {
           if (!sourceColumns.includes(columnName)) {
@@ -1013,13 +1005,13 @@ datasource db {
             tableModified = true;
           }
         }
-        
+
         // Pour les colonnes existantes dans les deux schémas, comparer les types et contraintes
         for (const columnName of sourceColumns) {
           if (targetColumns.includes(columnName)) {
             const sourceColumn = sourceTable.columns[columnName];
             const targetColumn = targetTable.columns[columnName];
-            
+
             // Vérifier les différences de type
             if (sourceColumn.type !== targetColumn.type) {
               changes.push({
@@ -1035,7 +1027,7 @@ datasource db {
               statistics.total++;
               tableModified = true;
             }
-            
+
             // Vérifier les différences de nullabilité
             if (sourceColumn.nullable !== targetColumn.nullable) {
               changes.push({
@@ -1051,7 +1043,7 @@ datasource db {
               statistics.total++;
               tableModified = true;
             }
-            
+
             // Vérifier les différences de clé primaire
             if (sourceColumn.isPrimary !== targetColumn.isPrimary) {
               changes.push({
@@ -1067,7 +1059,7 @@ datasource db {
               statistics.total++;
               tableModified = true;
             }
-            
+
             // Vérifier les différences d'unicité
             if (sourceColumn.isUnique !== targetColumn.isUnique) {
               changes.push({
@@ -1085,31 +1077,31 @@ datasource db {
             }
           }
         }
-        
+
         if (tableModified) {
           statistics.tables.modified++;
         }
       }
     }
-    
+
     // Comparer les clés étrangères
     const sourceFKs = sourceSchema.foreignKeys || [];
     const targetFKs = targetSchema.foreignKeys || [];
-    
+
     // Fonction pour créer une clé de comparaison pour les FK
-    const createFKKey = (fk: ForeignKeyInfo) => 
+    const createFKKey = (fk: ForeignKeyInfo) =>
       `${fk.sourceTable}.${fk.sourceColumns.join(',')}=>${fk.targetTable}.${fk.targetColumns.join(',')}`;
-    
+
     const sourceFKMap = new Map<string, ForeignKeyInfo>();
     for (const fk of sourceFKs) {
       sourceFKMap.set(createFKKey(fk), fk);
     }
-    
+
     const targetFKMap = new Map<string, ForeignKeyInfo>();
     for (const fk of targetFKs) {
       targetFKMap.set(createFKKey(fk), fk);
     }
-    
+
     // FK existantes dans la source mais pas dans la cible
     for (const [key, fk] of sourceFKMap.entries()) {
       if (!targetFKMap.has(key)) {
@@ -1124,7 +1116,7 @@ datasource db {
         statistics.total++;
       }
     }
-    
+
     // FK existantes dans la cible mais pas dans la source
     for (const [key, fk] of targetFKMap.entries()) {
       if (!sourceFKMap.has(key)) {
@@ -1139,7 +1131,7 @@ datasource db {
         statistics.total++;
       }
     }
-    
+
     return {
       timestamp: new Date().toISOString(),
       sourceName: sourceSchema.name,
@@ -1158,14 +1150,14 @@ datasource db {
   private suggestTableIndexes(tableInfo: TableInfo, foreignKeys: ForeignKeyInfo[]): IndexInfo[] {
     const suggestedIndexes: IndexInfo[] = [];
     const existingIndexColumns = new Set<string>();
-    
+
     // Collecter les colonnes déjà indexées
     for (const index of tableInfo.indexes) {
       for (const column of index.columns) {
         existingIndexColumns.add(column);
       }
     }
-    
+
     // Suggérer des index pour les clés étrangères non indexées
     for (const fk of foreignKeys) {
       for (const column of fk.sourceColumns) {
@@ -1180,15 +1172,15 @@ datasource db {
         }
       }
     }
-    
+
     // Suggérer des index pour les colonnes fréquemment utilisées dans les clauses WHERE
     const commonWhereColumns = ['status', 'type', 'category', 'active', 'enabled', 'visible', 'deleted', 'created_at', 'updated_at'];
-    
+
     for (const column in tableInfo.columns) {
-      if (commonWhereColumns.some(c => column.toLowerCase().includes(c)) && 
-          !existingIndexColumns.has(column) &&
-          // Éviter d'indexer les colonnes de texte long
-          !(tableInfo.columns[column].type.toLowerCase() === 'text')) {
+      if (commonWhereColumns.some(c => column.toLowerCase().includes(c)) &&
+        !existingIndexColumns.has(column) &&
+        // Éviter d'indexer les colonnes de texte long
+        !(tableInfo.columns[column].type.toLowerCase() === 'text')) {
         suggestedIndexes.push({
           name: `idx_${tableInfo.name}_${column}`,
           columns: [column],
@@ -1197,7 +1189,7 @@ datasource db {
         });
       }
     }
-    
+
     return suggestedIndexes;
   }
 }
@@ -1254,47 +1246,47 @@ async function main() {
     .parse();
 
   // Mode exécution unique si un des paramètres de génération est spécifié
-  if (argv['output'] || argv['generate-prisma'] || argv['export-schema']) {
+  if (argv.output || argv['generate-prisma'] || argv['export-schema']) {
     try {
       const server = new PostgresMCPServer(argv.connectionString as string, {
         port: argv.port,
         host: argv.host,
         verbose: argv.verbose
       });
-      
+
       // Se connecter à la base de données
       await server.dbService.connect();
-      
+
       // Générer et enregistrer le schema.prisma si demandé
       if (argv['generate-prisma']) {
         const prismaSchema = await server.generatePrismaFile();
-        const outputPath = typeof argv['generate-prisma'] === 'string' 
-          ? argv['generate-prisma'] 
+        const outputPath = typeof argv['generate-prisma'] === 'string'
+          ? argv['generate-prisma']
           : 'schema.prisma';
-          
+
         fs.writeFileSync(outputPath, prismaSchema);
         console.log(`✅ Fichier Prisma généré et enregistré dans: ${outputPath}`);
       }
-      
+
       // Exporter le schéma si demandé
-      if (argv['export-schema'] || argv['output']) {
+      if (argv['export-schema'] || argv.output) {
         const schemaMap = await server.exportSchemaMap();
-        const outputPath = argv['export-schema'] || argv['output'] || 'schema_map.json';
-        
+        const outputPath = argv['export-schema'] || argv.output || 'schema_map.json';
+
         fs.writeFileSync(outputPath, JSON.stringify(schemaMap, null, 2));
         console.log(`✅ Carte du schéma exportée et enregistrée dans: ${outputPath}`);
       }
-      
+
       // Fermer la connexion
       await server.dbService.disconnect();
-      
+
       return;
     } catch (error) {
       console.error(`❌ Erreur: ${error.message}`);
       process.exit(1);
     }
   }
-  
+
   // Mode serveur normal
   try {
     const server = new PostgresMCPServer(argv.connectionString as string, {
@@ -1302,20 +1294,20 @@ async function main() {
       host: argv.host,
       verbose: argv.verbose
     });
-    
+
     // Démarrer le serveur
     await server.start();
-    
+
     // Gérer la fermeture propre en cas de signal d'arrêt
     const shutdown = async () => {
       console.log('\n🛑 Arrêt du serveur MCP PostgreSQL...');
       await server.stop();
       process.exit(0);
     };
-    
+
     process.on('SIGINT', shutdown);
     process.on('SIGTERM', shutdown);
-    
+
   } catch (error) {
     console.error(`❌ Erreur: ${error.message}`);
     process.exit(1);

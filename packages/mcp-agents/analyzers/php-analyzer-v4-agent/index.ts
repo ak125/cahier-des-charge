@@ -3,9 +3,6 @@
  * Generated automatically on 2025-04-20
  */
 
-import { PhpAnalyzerV4Agent } from ./PhpAnalyzerV4Agentstructure-agent';
+import { PhpAnalyzerV4Agent } from './PhpAnalyzerV4Agentstructure-agent';
 
-export {
-  PhpAnalyzerV4Agent,
-};
-
+export { PhpAnalyzerV4Agent };

@@ -5,18 +5,18 @@
  * que tous les éléments essentiels ont été correctement migrés et respectent les standards de qualité.
  */
 
-import fs from 'fs-extra';
-import path from 'path';
-import { createClient } from '@supabase/supabase-js';
-import { Logger } from '@nestjs/common';
-import { diffLines } from 'diff';
-import { parse as parsePhp } from 'php-parser';
-import { BaseAgent, AgentResult, AuditSection } from './core/BaseAgent';
-import { Octokit } from '@octokit/rest';
 import { exec } from 'child_process';
+import path from 'path';
 import { promisify } from 'util';
+import { Logger } from '@nestjs/common';
+import { Octokit } from '@octokit/rest';
+import { createClient } from '@supabase/supabase-js';
+import { diffLines } from 'diff';
+import fs from 'fs-extra';
+import { parse as parsePhp } from 'php-parser';
 import * as DashboardIntegration from '../apps/dashboard/integration/qa-dashboard';
 import { BusinessAgent } from '../core/interfaces/BaseAgent';
+import { AgentResult, AuditSection, BaseAgent } from './core/BaseAgent';
 
 
 const execAsync = promisify(exec);
@@ -84,15 +84,15 @@ export class QAAnalyzer extends BaseAgent implements BusinessAgent {
   private qaResult: QAAnalysisResult | null = null;
   
   // Propriétés héritées de BaseAgent mais déclarées ici pour la clarté
-  protected fileContent: string = '';
+  protected fileContent = '';
   protected errors: Error[] = [];
   protected artifacts: string[] = [];
   
   // Propriétés de l'agent correctement déclarées
-  private id: string = '';
-  private type: string = '';
-  private version: string = '1.0.0';
-  private name: string = 'QAAnalyzer';
+  private id = '';
+  private type = '';
+  private version = '1.0.0';
+  private name = 'QAAnalyzer';
 
   constructor(sourcePhpPath: string, generatedFiles: Record<string, string>, options: QAAnalyzerOptions = {}) {
     super(sourcePhpPath); // Appel du constructeur de BaseAgent
@@ -130,7 +130,7 @@ export class QAAnalyzer extends BaseAgent implements BusinessAgent {
   /**
    * Initialise l'agent avec des options spécifiques
    */
-  async initialize(options?: Record<string, any>): Promise<void> {
+  async initialize(_options?: Record<string, any>): Promise<void> {
     // À implémenter selon les besoins spécifiques de l'agent
     console.log(`[${this.name}] Initialisation...`);
   }
@@ -608,7 +608,7 @@ export class QAAnalyzer extends BaseAgent implements BusinessAgent {
     // 2. Vérifier les meta dans le fichier meta.ts
     if (this.generatedFiles.meta) {
       // Vérifier que chaque meta tag du PHP est présent dans le meta.ts
-      for (const [name, content] of Object.entries(phpMetaTags)) {
+      for (const [name, _content] of Object.entries(phpMetaTags)) {
         if (!this.generatedFiles.meta.includes(name)) {
           issues.push({
             type: 'seo',
@@ -905,11 +905,10 @@ export class QAAnalyzer extends BaseAgent implements BusinessAgent {
   private determineStatus(score: number): 'OK' | 'Partial' | 'Failed' {
     if (score >= 85) {
       return 'OK';
-    } else if (score >= this.options.threshold!) {
+    }if (score >= this.options.threshold!) {
       return 'Partial';
-    } else {
-      return 'Failed';
     }
+      return 'Failed';
   }
 
   /**
@@ -1036,11 +1035,11 @@ export class QAAnalyzer extends BaseAgent implements BusinessAgent {
       report += `Score : ${this.qaResult.score}/100\n\n`;
       
       // Analyse des champs
-      report += `## Analyse des champs\n\n`;
+      report += "## Analyse des champs\n\n";
       
       // Champs présents
       if (this.qaResult.presentFields.length > 0) {
-        report += `### Champs correctement migrés\n\n`;
+        report += "### Champs correctement migrés\n\n";
         this.qaResult.presentFields.forEach(field => {
           const validationStatus = field.hasValidation ? '+ validé' : '';
           const typeInfo = field.type ? `(${field.type})` : '';
@@ -1051,7 +1050,7 @@ export class QAAnalyzer extends BaseAgent implements BusinessAgent {
       
       // Champs manquants
       if (this.qaResult.missingFields.length > 0) {
-        report += `### Champs manquants\n\n`;
+        report += "### Champs manquants\n\n";
         this.qaResult.missingFields.forEach(field => {
           report += `- ❌ \`${field.name}\` ➝ absent\n`;
         });
@@ -1060,7 +1059,7 @@ export class QAAnalyzer extends BaseAgent implements BusinessAgent {
       
       // Problèmes SEO
       if (this.qaResult.seoIssues.length > 0) {
-        report += `## Problèmes SEO\n\n`;
+        report += "## Problèmes SEO\n\n";
         this.qaResult.seoIssues.forEach(issue => {
           const severityEmoji = issue.severity === 'error' ? '❌' : (issue.severity === 'warning' ? '⚠' : 'ℹ️');
           report += `- ${severityEmoji} ${issue.message}\n`;
@@ -1070,7 +1069,7 @@ export class QAAnalyzer extends BaseAgent implements BusinessAgent {
       
       // Problèmes de typage
       if (this.qaResult.typeIssues.length > 0) {
-        report += `## Problèmes de typage\n\n`;
+        report += "## Problèmes de typage\n\n";
         this.qaResult.typeIssues.forEach(issue => {
           const severityEmoji = issue.severity === 'error' ? '❌' : (issue.severity === 'warning' ? '⚠' : 'ℹ️');
           report += `- ${severityEmoji} ${issue.message}\n`;
@@ -1080,7 +1079,7 @@ export class QAAnalyzer extends BaseAgent implements BusinessAgent {
       
       // Problèmes de validation
       if (this.qaResult.validationIssues.length > 0) {
-        report += `## Problèmes de validation\n\n`;
+        report += "## Problèmes de validation\n\n";
         this.qaResult.validationIssues.forEach(issue => {
           const severityEmoji = issue.severity === 'error' ? '❌' : (issue.severity === 'warning' ? '⚠' : 'ℹ️');
           report += `- ${severityEmoji} ${issue.message}\n`;
@@ -1090,7 +1089,7 @@ export class QAAnalyzer extends BaseAgent implements BusinessAgent {
       
       // Problèmes de comportement
       if (this.qaResult.behaviorIssues.length > 0) {
-        report += `## Problèmes de comportement\n\n`;
+        report += "## Problèmes de comportement\n\n";
         this.qaResult.behaviorIssues.forEach(issue => {
           const severityEmoji = issue.severity === 'error' ? '❌' : (issue.severity === 'warning' ? '⚠' : 'ℹ️');
           report += `- ${severityEmoji} ${issue.message}\n`;
@@ -1100,7 +1099,7 @@ export class QAAnalyzer extends BaseAgent implements BusinessAgent {
       
       // Recommandations
       if (this.qaResult.recommendations.length > 0) {
-        report += `## Recommandations\n\n`;
+        report += "## Recommandations\n\n";
         this.qaResult.recommendations.forEach(recommendation => {
           report += `- ${recommendation}\n`;
         });
@@ -1108,7 +1107,7 @@ export class QAAnalyzer extends BaseAgent implements BusinessAgent {
       }
       
       // Informations sur l'analyse et tags
-      report += `---\n\n`;
+      report += "---\n\n";
       report += `*Analyse générée automatiquement par QA Analyzer le ${new Date().toLocaleString()}*\n\n`;
       
       if (this.qaResult.tags.length > 0) {
@@ -1219,7 +1218,7 @@ export class QAAnalyzer extends BaseAgent implements BusinessAgent {
       comment += `**Score**: ${this.qaResult.score}/100\n\n`;
       
       // Résumé des problèmes
-      comment += `### Résumé\n`;
+      comment += "### Résumé\n";
       comment += `- Champs: ${this.qaResult.presentFields.length} présents, ${this.qaResult.missingFields.length} manquants\n`;
       comment += `- Problèmes SEO: ${this.qaResult.seoIssues.length}\n`;
       comment += `- Problèmes de typage: ${this.qaResult.typeIssues.length}\n`;
@@ -1228,7 +1227,7 @@ export class QAAnalyzer extends BaseAgent implements BusinessAgent {
       
       // Top 5 recommandations
       if (this.qaResult.recommendations.length > 0) {
-        comment += `### Principales recommandations\n`;
+        comment += "### Principales recommandations\n";
         this.qaResult.recommendations.slice(0, 5).forEach(rec => {
           comment += `- ${rec}\n`;
         });
@@ -1296,7 +1295,7 @@ export class QAAnalyzer extends BaseAgent implements BusinessAgent {
     id: string,
     title: string,
     summary: string,
-    type: string = 'info',
+    type = 'info',
     severity: 'info' | 'warning' | 'critical' = 'info',
     metadata: Record<string, any> = {}
   ): void {

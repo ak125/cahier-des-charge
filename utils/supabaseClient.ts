@@ -1,6 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
-import type { Database } from './types';
 import dotenv from 'dotenv';
+import type { Database } from './types';
 
 // Charger les variables d'environnement
 dotenv.config();
@@ -11,26 +11,22 @@ const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
 if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) {
   throw new Error(
-    'Les variables d\'environnement SUPABASE_URL et SUPABASE_SERVICE_ROLE_KEY doivent être définies'
+    "Les variables d'environnement SUPABASE_URL et SUPABASE_SERVICE_ROLE_KEY doivent être définies"
   );
 }
 
 // Créer et exporter le client Supabase typé
-export const supabase = createClient<Database>(
-  SUPABASE_URL,
-  SUPABASE_SERVICE_ROLE_KEY,
-  {
-    auth: {
-      persistSession: false,
-      autoRefreshToken: false,
+export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
+  auth: {
+    persistSession: false,
+    autoRefreshToken: false,
+  },
+  global: {
+    headers: {
+      'x-mcp-agent': 'mcp-core',
     },
-    global: {
-      headers: {
-        'x-mcp-agent': 'mcp-core',
-      },
-    },
-  }
-);
+  },
+});
 
 /**
  * Fonction utilitaire pour vérifier la connectivité à Supabase
@@ -63,7 +59,7 @@ export async function logMcpEvent(
   eventType: string,
   payload: Record<string, any>,
   source: string,
-  priority: number = 3
+  priority = 3
 ): Promise<number> {
   try {
     const { data, error } = await supabase
@@ -84,7 +80,7 @@ export async function logMcpEvent(
 
     return data.id;
   } catch (error) {
-    console.error('Erreur lors de l\'enregistrement de l\'événement MCP:', error);
+    console.error("Erreur lors de l'enregistrement de l'événement MCP:", error);
     throw error;
   }
 }
@@ -103,20 +99,20 @@ export async function updateMcpEventStatus(
   try {
     const updateData: Record<string, any> = {
       status,
-      processed_at: status === 'completed' || status === 'failed' ? new Date().toISOString() : undefined,
+      processed_at:
+        status === 'completed' || status === 'failed' ? new Date().toISOString() : undefined,
       error_message: errorMessage,
     };
 
-    const { error } = await supabase
-      .from('mcp_events')
-      .update(updateData)
-      .eq('id', eventId);
+    const { error } = await supabase.from('mcp_events').update(updateData).eq('id', eventId);
 
     if (error) {
-      throw new Error(`Erreur lors de la mise à jour du statut de l'événement MCP: ${error.message}`);
+      throw new Error(
+        `Erreur lors de la mise à jour du statut de l'événement MCP: ${error.message}`
+      );
     }
   } catch (error) {
-    console.error('Erreur lors de la mise à jour du statut de l\'événement MCP:', error);
+    console.error("Erreur lors de la mise à jour du statut de l'événement MCP:", error);
     throw error;
   }
 }
@@ -128,14 +124,15 @@ import { createClient } from '@supabase/supabase-js';
 
 // Récupérer les variables d'environnement ou utiliser des valeurs par défaut pour développement
 const supabaseUrl = process.env.SUPABASE_URL || 'http://localhost:5433';
-const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.example-key';
+const supabaseKey =
+  process.env.SUPABASE_SERVICE_ROLE_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.example-key';
 
 // Créer et exporter le client Supabase
 export const supabase = createClient(supabaseUrl, supabaseKey);
 
 // Exporter un client fictif pour permettre le démarrage sans connexion réelle
 export const mockSupabase = {
-  from: (table: string) => ({
+  from: (_table: string) => ({
     select: () => ({ data: [], error: null }),
     insert: (data: any) => ({ data, error: null }),
     update: (data: any) => ({ data, error: null }),
@@ -149,4 +146,6 @@ export const mockSupabase = {
 };
 
 // Exporter par défaut un client qui utilise le mock si les variables d'environnement ne sont pas définies
-export default process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY ? supabase : mockSupabase;
+export default process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY
+  ? supabase
+  : mockSupabase;

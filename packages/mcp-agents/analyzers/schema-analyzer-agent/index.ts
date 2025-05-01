@@ -3,9 +3,6 @@
  * Generated automatically on 2025-04-20
  */
 
-import { SchemaAnalyzerAgent } from ./SchemaAnalyzerAgentstructure-agent';
+import { SchemaAnalyzerAgent } from './SchemaAnalyzerAgent';
 
-export {
-  SchemaAnalyzerAgent,
-};
-
+export { SchemaAnalyzerAgent };

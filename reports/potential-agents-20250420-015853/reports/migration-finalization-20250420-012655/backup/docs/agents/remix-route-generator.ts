@@ -180,7 +180,7 @@ export default function DynamicPhpPage() {
   
   return (
     <div>
-      <h1>Page dynamique: {data.phpFile}</h1>
+      <h1>Page {data.phpFile}</h1>
       <p>Cette page a été migrée depuis PHP.</p>
       <pre>{JSON.stringify(data, null, 2)}</pre>
     </div>

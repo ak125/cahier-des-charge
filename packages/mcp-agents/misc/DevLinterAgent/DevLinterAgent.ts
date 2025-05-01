@@ -3,8 +3,8 @@
  * Agent export file
  */
 
-import { dev } from './dev-linter';
 import { BusinessAgent } from '../../core/interfaces';
+import { dev } from './dev-linter';
 
 export { dev };
 export default dev;

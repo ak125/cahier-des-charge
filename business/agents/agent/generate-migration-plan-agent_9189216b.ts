@@ -3,8 +3,8 @@
  * Agent export file
  */
 
-import { generate } from ./generate-migration-planstructure-agent';
-import { GeneratorAgent } from ../../core/interfacesstructure-agent';
+import { GeneratorAgent } from '../../core/interfacesstructure-agent';
+import { generate } from './generate-migration-planstructure-agent';
 
 export { generate };
 export default generate;

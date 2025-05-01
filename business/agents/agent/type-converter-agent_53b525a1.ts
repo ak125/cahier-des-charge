@@ -3,8 +3,8 @@
  * Agent export file
  */
 
-import { TypeConverter } from ./type-converterstructure-agent';
-import { BusinessAgent } from ../../core/interfacesstructure-agent';
+import { BusinessAgent } from '../../core/interfacesstructure-agent';
+import { TypeConverter } from './type-converterstructure-agent';
 
 export { TypeConverter };
 export default TypeConverter;

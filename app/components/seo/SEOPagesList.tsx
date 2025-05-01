@@ -1,4 +1,4 @@
-import { Link } from "@remix-run/react";
+import { Link } from '@remix-run/react';
 
 interface SEOPagesListProps {
   data: Array<{
@@ -8,10 +8,10 @@ interface SEOPagesListProps {
     canonical: string;
     score: number;
     lastChecked: string;
-    status: "success" | "warning" | "error" | "pending";
+    status: 'success' | 'warning' | 'error' | 'pending';
     issues: Array<{
       type: string;
-      severity: "error" | "warning" | "info";
+      severity: 'error' | 'warning' | 'info';
       message: string;
     }>;
   }>;
@@ -33,7 +33,10 @@ export function SEOPagesList({ data, filters }: SEOPagesListProps) {
         <table className="min-w-full divide-y divide-gray-300">
           <thead className="bg-gray-50">
             <tr>
-              <th scope="col" className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">
+              <th
+                scope="col"
+                className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6"
+              >
                 URL
               </th>
               <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
@@ -64,7 +67,10 @@ export function SEOPagesList({ data, filters }: SEOPagesListProps) {
               data.map((page) => (
                 <tr key={page.url} className="hover:bg-gray-50">
                   <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
-                    <Link to={`/admin/seo/page?url=${encodeURIComponent(page.url)}`} className="text-blue-500 hover:text-blue-700">
+                    <Link
+                      to={`/admin/seo/page?url=${encodeURIComponent(page.url)}`}
+                      className="text-blue-500 hover:text-blue-700"
+                    >
                       {page.url}
                     </Link>
                     <p className="text-xs text-gray-500 truncate max-w-xs" title={page.title}>
@@ -73,11 +79,15 @@ export function SEOPagesList({ data, filters }: SEOPagesListProps) {
                   </td>
                   <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                     <div className="flex items-center">
-                      <span className={`inline-flex rounded-full px-2 text-xs font-semibold leading-5 ${getScoreColorClass(page.score)}`}>
+                      <span
+                        className={`inline-flex rounded-full px-2 text-xs font-semibold leading-5 ${getScoreColorClass(
+                          page.score
+                        )}`}
+                      >
                         {page.score}%
                       </span>
                       <div className="ml-2 h-2 w-16 bg-gray-200 rounded-full overflow-hidden">
-                        <div 
+                        <div
                           className={`h-full ${getScoreBgColorClass(page.score)}`}
                           style={{ width: `${Math.min(100, page.score)}%` }}
                         />
@@ -85,7 +95,11 @@ export function SEOPagesList({ data, filters }: SEOPagesListProps) {
                     </div>
                   </td>
                   <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                    <span className={`inline-flex rounded-full px-2 text-xs font-semibold leading-5 ${getStatusColorClass(page.status)}`}>
+                    <span
+                      className={`inline-flex rounded-full px-2 text-xs font-semibold leading-5 ${getStatusColorClass(
+                        page.status
+                      )}`}
+                    >
                       {getStatusLabel(page.status)}
                     </span>
                   </td>
@@ -96,7 +110,11 @@ export function SEOPagesList({ data, filters }: SEOPagesListProps) {
                       <div>
                         <span className="font-medium">{page.issues.length}</span>
                         <span className="ml-1 text-xs">
-                          ({page.issues.filter(i => i.severity === "error").length} critique{page.issues.filter(i => i.severity === "error").length !== 1 ? 's' : ''})
+                          ({page.issues.filter((i) => i.severity === 'error').length} critique
+                          {page.issues.filter((i) => i.severity === 'error').length !== 1
+                            ? 's'
+                            : ''}
+                          )
                         </span>
                       </div>
                     )}
@@ -106,8 +124,8 @@ export function SEOPagesList({ data, filters }: SEOPagesListProps) {
                       day: 'numeric',
                       month: 'short',
                       year: 'numeric',
-                      hour: '2-dDoDoDoDotgit',
-                      minute: '2-dDoDoDoDotgit'
+                      hour: '2-dDoDogit',
+                      minute: '2-dDoDogit',
                     })}
                   </td>
                   <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
@@ -134,8 +152,9 @@ export function SEOPagesList({ data, filters }: SEOPagesListProps) {
       </div>
       <div className="mt-4 flex items-center justify-between">
         <p className="text-sm text-gray-700">
-          Affichage de <span className="font-medium">{data.length}</span> page{data.length !== 1 ? 's' : ''} sur{' '}
-          <span className="font-medium">{totalPages}</span> au total
+          Affichage de <span className="font-medium">{data.length}</span> page
+          {data.length !== 1 ? 's' : ''} sur <span className="font-medium">{totalPages}</span> au
+          total
         </p>
         {/* Ici, vous pourriez ajouter une pagination si nécessaire */}
       </div>
@@ -144,44 +163,44 @@ export function SEOPagesList({ data, filters }: SEOPagesListProps) {
 }
 
 function getScoreColorClass(score: number): string {
-  if (score >= 90) return "bg-green-100 text-green-800";
-  if (score >= 70) return "bg-yellow-100 text-yellow-800";
-  return "bg-red-100 text-red-800";
+  if (score >= 90) return 'bg-green-100 text-green-800';
+  if (score >= 70) return 'bg-yellow-100 text-yellow-800';
+  return 'bg-red-100 text-red-800';
 }
 
 function getScoreBgColorClass(score: number): string {
-  if (score >= 90) return "bg-green-500";
-  if (score >= 70) return "bg-yellow-500";
-  return "bg-red-500";
+  if (score >= 90) return 'bg-green-500';
+  if (score >= 70) return 'bg-yellow-500';
+  return 'bg-red-500';
 }
 
 function getStatusColorClass(status: string): string {
   switch (status) {
-    case "success":
-      return "bg-green-100 text-green-800";
-    case "warning":
-      return "bg-yellow-100 text-yellow-800";
-    case "error":
-      return "bg-red-100 text-red-800";
-    case "pending":
-      return "bg-gray-100 text-gray-800";
+    case 'success':
+      return 'bg-green-100 text-green-800';
+    case 'warning':
+      return 'bg-yellow-100 text-yellow-800';
+    case 'error':
+      return 'bg-red-100 text-red-800';
+    case 'pending':
+      return 'bg-gray-100 text-gray-800';
     default:
-      return "bg-gray-100 text-gray-800";
+      return 'bg-gray-100 text-gray-800';
   }
 }
 
 function getStatusLabel(status: string): string {
   switch (status) {
-    case "success":
-      return "Optimisé";
-    case "warning":
-      return "Avertissements";
-    case "error":
-      return "Problèmes";
-    case "pending":
-      return "En attente";
+    case 'success':
+      return 'Optimisé';
+    case 'warning':
+      return 'Avertissements';
+    case 'error':
+      return 'Problèmes';
+    case 'pending':
+      return 'En attente';
     default:
-      return "Inconnu";
+      return 'Inconnu';
   }
 }
 
@@ -191,18 +210,18 @@ async function runPageAudit(url: string) {
     const response = await fetch('/api/seo/audit/page', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ url })
+      body: JSON.stringify({ url }),
     });
-    
+
     if (response.ok) {
       alert(`Audit démarré pour ${url}. Les résultats seront disponibles dans quelques instants.`);
     } else {
       alert(`Erreur lors du lancement de l'audit pour ${url}.`);
     }
   } catch (error) {
-    console.error('Erreur lors de la demande d\'audit:', error);
-    alert('Une erreur est survenue lors de la demande d\'audit.');
+    console.error("Erreur lors de la demande d'audit:", error);
+    alert("Une erreur est survenue lors de la demande d'audit.");
   }
 }

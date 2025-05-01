@@ -3,9 +3,6 @@
  * Generated automatically on 2025-04-20
  */
 
-import { PostgresqlValidatorAgent } from ./PostgresqlValidatorAgentstructure-agent';
+import { PostgresqlValidatorAgent } from './PostgresqlValidatorAgent';
 
-export {
-  PostgresqlValidatorAgent,
-};
-
+export { PostgresqlValidatorAgent };

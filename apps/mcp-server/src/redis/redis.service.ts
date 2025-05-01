@@ -1,4 +1,4 @@
-import { Injectable, Logger, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
+import { Injectable, Logger, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
 import Redis from 'ioredis';
 
 @Injectable()
@@ -15,7 +15,7 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
 
   async onModuleInit() {
     this.logger.log('🔌 Connexion à Redis établie');
-    
+
     this.client.on('error', (err) => {
       this.logger.error(`❌ Erreur Redis: ${err.message}`);
     });
@@ -45,14 +45,14 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
    */
   async subscribe(channel: string, callback: (message: string) => void): Promise<void> {
     const subscriber = this.client.duplicate();
-    
+
     subscriber.on('message', (chan, message) => {
       if (chan === channel) {
         this.logger.debug(`📩 Message reçu sur le canal ${channel}`);
         callback(message);
       }
     });
-    
+
     await subscriber.subscribe(channel);
     this.logger.log(`👂 Abonnement au canal ${channel} réussi`);
   }
@@ -63,13 +63,13 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
   async set(key: string, value: string, ttl?: number): Promise<string> {
     try {
       let result: string;
-      
+
       if (ttl) {
         result = await this.client.set(key, value, 'EX', ttl);
       } else {
         result = await this.client.set(key, value);
       }
-      
+
       this.logger.debug(`💾 Valeur définie pour la clé ${key}`);
       return result;
     } catch (error) {
@@ -123,7 +123,7 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
   /**
    * Récupère tous les éléments d'une liste
    */
-  async lrange(key: string, start: number = 0, stop: number = -1): Promise<string[]> {
+  async lrange(key: string, start = 0, stop = -1): Promise<string[]> {
     try {
       const result = await this.client.lrange(key, start, stop);
       this.logger.debug(`🔍 Liste ${key} récupérée (${result.length} éléments)`);

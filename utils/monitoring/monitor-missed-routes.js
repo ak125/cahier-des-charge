@@ -5,22 +5,22 @@
  * si des seuils sont dépassés
  */
 
-const fs = require(fsstructure-agent');
-const path = require(pathstructure-agent');
-const nodemailer = require(nodemailerstructure-agent');
+const fs = require('fsstructure-agent');
+const path = require('pathstructure-agent');
+const nodemailer = require('nodemailerstructure-agent');
 
 // Configuration
 const CONFIG = {
   // Seuils d'alerte (nombre d'accès dans la période)
   thresholds: {
-    high: 50,    // Alerte haute priorité
-    medium: 20,  // Alerte moyenne priorité
-    low: 10      // Alerte basse priorité
+    high: 50, // Alerte haute priorité
+    medium: 20, // Alerte moyenne priorité
+    low: 10, // Alerte basse priorité
   },
-  
+
   // Période d'analyse en heures
   period: 24,
-  
+
   // Configuration email
   email: {
     enabled: true,
@@ -31,23 +31,23 @@ const CONFIG = {
     smtpPort: 587,
     smtpUser: 'user',
     smtpPass: 'password',
-    secure: false
+    secure: false,
   },
-  
+
   // Configuration Slack (optionnel)
   slack: {
     enabled: false,
     webhookUrl: 'https://hooks.slack.com/services/XXXXX/YYYYY/ZZZZZ',
-    channel: '#migration-alerts'
+    channel: '#migration-alerts',
   },
-  
+
   // Chemin des fichiers
   paths: {
     logFile: path.resolve(process.cwd(), 'logs/missed_legacy_routes.log'),
     reportDir: path.resolve(process.cwd(), 'reports/alerts'),
     configFile: path.resolve(process.cwd(), 'reports/seo_routes.json'),
-    whitelistFile: path.resolve(process.cwd(), 'config/routes-alert-whitelist.json')
-  }
+    whitelistFile: path.resolve(process.cwd(), 'config/routes-alert-whitelist.json'),
+  },
 };
 
 // Vérifier si nécessaire de créer les répertoires
@@ -66,22 +66,22 @@ try {
     // Créer un fichier whitelist par défaut
     fs.writeFileSync(
       CONFIG.paths.whitelistFile,
-      JSON.stringify({
-        "ignored_routes": [
-          "/favicon.ico",
-          "/robots.txt",
-          "/sitemap.xml"
-        ],
-        "ignored_patterns": [
-          "^/assets/",
-          "^/static/",
-          "\\.jpg$",
-          "\\.png$",
-          "\\.gif$",
-          "\\.css$",
-          "\\.js$"
-        ]
-      }, null, 2),
+      JSON.stringify(
+        {
+          ignored_routes: ['/favicon.ico', '/robots.txt', '/sitemap.xml'],
+          ignored_patterns: [
+            '^/assets/',
+            '^/static/',
+            '\\.jpg$',
+            '\\.png$',
+            '\\.gif$',
+            '\\.css$',
+            '\\.js$',
+          ],
+        },
+        null,
+        2
+      ),
       'utf8'
     );
     console.log(`Fichier de liste blanche par défaut créé: ${CONFIG.paths.whitelistFile}`);
@@ -108,28 +108,28 @@ try {
  */
 async function analyzeRoutes() {
   console.log(`=== Analyse des routes manquées (${new Date().toISOString()}) ===`);
-  
+
   // Vérifier si le fichier de log existe
   if (!fs.existsSync(CONFIG.paths.logFile)) {
     console.log('Aucun fichier de log trouvé, rien à analyser');
     return;
   }
-  
+
   // Lire le fichier de log
   const logContent = fs.readFileSync(CONFIG.paths.logFile, 'utf8');
-  const logLines = logContent.split('\n').filter(line => line.trim());
+  const logLines = logContent.split('\n').filter((line) => line.trim());
   console.log(`Fichier de log chargé: ${logLines.length} entrées`);
-  
+
   // Déterminer la date limite pour la période d'analyse
   const periodLimit = new Date();
   periodLimit.setHours(periodLimit.getHours() - CONFIG.period);
-  
+
   // Analyser les logs
   const routeCounts = new Map();
   const routeDetails = new Map();
   let recentCount = 0;
-  
-  logLines.forEach(line => {
+
+  logLines.forEach((line) => {
     const parts = line.split(' | ');
     if (parts.length >= 3) {
       const timestamp = parts[0];
@@ -137,18 +137,18 @@ async function analyzeRoutes() {
       const url = parts[2];
       const userAgent = parts[3] || 'Unknown';
       const referer = parts[4] || 'Direct';
-      
+
       // Vérifier si l'entrée est dans la période d'analyse
       const logDate = new Date(timestamp);
       if (logDate >= periodLimit) {
         recentCount++;
-        
+
         // Vérifier si l'URL est dans la liste blanche
         const isWhitelisted = checkWhitelist(url);
         if (!isWhitelisted) {
           // Incrémenter le compteur pour cette URL
           routeCounts.set(url, (routeCounts.get(url) || 0) + 1);
-          
+
           // Stocker les détails pour cette URL
           if (!routeDetails.has(url)) {
             routeDetails.set(url, {
@@ -156,10 +156,10 @@ async function analyzeRoutes() {
               methods: new Set(),
               userAgents: new Set(),
               referers: new Set(),
-              isSeoRoute: seoRoutes.includes(url)
+              isSeoRoute: seoRoutes.includes(url),
             });
           }
-          
+
           const details = routeDetails.get(url);
           details.lastAccess = timestamp; // Mettre à jour le dernier accès
           details.methods.add(method);
@@ -169,10 +169,10 @@ async function analyzeRoutes() {
       }
     }
   });
-  
+
   console.log(`Entrées récentes (dernières ${CONFIG.period}h): ${recentCount}`);
   console.log(`Routes uniques détectées: ${routeCounts.size}`);
-  
+
   // Trier les routes par nombre d'accès
   const sortedRoutes = [...routeCounts.entries()]
     .sort((a, b) => b[1] - a[1])
@@ -184,25 +184,25 @@ async function analyzeRoutes() {
       lastAccess: routeDetails.get(url).lastAccess,
       methods: [...routeDetails.get(url).methods],
       userAgents: [...routeDetails.get(url).userAgents].slice(0, 3),
-      referers: [...routeDetails.get(url).referers].slice(0, 3)
+      referers: [...routeDetails.get(url).referers].slice(0, 3),
     }));
-  
+
   // Filtrer les routes qui dépassent les seuils
-  const alertRoutes = sortedRoutes.filter(route => 
-    route.priority === 'high' || route.priority === 'medium' || route.priority === 'low'
+  const alertRoutes = sortedRoutes.filter(
+    (route) => route.priority === 'high' || route.priority === 'medium' || route.priority === 'low'
   );
-  
+
   console.log(`Routes dépassant les seuils: ${alertRoutes.length}`);
-  
+
   // Si aucune alerte, terminer
   if (alertRoutes.length === 0) {
     console.log('Aucune alerte à envoyer');
     return;
   }
-  
+
   // Générer le rapport
   const report = generateReport(alertRoutes, recentCount);
-  
+
   // Enregistrer le rapport
   const reportPath = path.join(
     CONFIG.paths.reportDir,
@@ -210,16 +210,16 @@ async function analyzeRoutes() {
   );
   fs.writeFileSync(reportPath, report, 'utf8');
   console.log(`Rapport enregistré: ${reportPath}`);
-  
+
   // Envoyer les alertes
   if (CONFIG.email.enabled) {
     await sendEmailAlert(alertRoutes, reportPath);
   }
-  
+
   if (CONFIG.slack.enabled) {
     await sendSlackAlert(alertRoutes);
   }
-  
+
   console.log('Analyse terminée');
 }
 
@@ -230,20 +230,20 @@ function checkWhitelist(url) {
   try {
     // Charger la configuration whitelist complète
     const whitelistConfig = JSON.parse(fs.readFileSync(CONFIG.paths.whitelistFile, 'utf8'));
-    
+
     // Vérifier les routes exactes ignorées
-    if (whitelistConfig.ignored_routes && whitelistConfig.ignored_routes.includes(url)) {
+    if (whitelistConfig.ignored_routes?.includes(url)) {
       return true;
     }
-    
+
     // Vérifier les patterns ignorés
     if (whitelistConfig.ignored_patterns) {
-      return whitelistConfig.ignored_patterns.some(pattern => {
+      return whitelistConfig.ignored_patterns.some((pattern) => {
         const regex = new RegExp(pattern);
         return regex.test(url);
       });
     }
-    
+
     return false;
   } catch (err) {
     console.error('Erreur lors de la vérification de la liste blanche:', err);
@@ -257,7 +257,7 @@ function checkWhitelist(url) {
 function getPriority(count, isSeoRoute) {
   // Multiplier les seuils par 2 pour les routes non-SEO
   const multiplier = isSeoRoute ? 1 : 2;
-  
+
   if (count >= CONFIG.thresholds.high / multiplier) return 'high';
   if (count >= CONFIG.thresholds.medium / multiplier) return 'medium';
   if (count >= CONFIG.thresholds.low / multiplier) return 'low';
@@ -268,10 +268,10 @@ function getPriority(count, isSeoRoute) {
  * Générer un rapport HTML
  */
 function generateReport(routes, totalCount) {
-  const highPriorityCount = routes.filter(r => r.priority === 'high').length;
-  const mediumPriorityCount = routes.filter(r => r.priority === 'medium').length;
-  const lowPriorityCount = routes.filter(r => r.priority === 'low').length;
-  
+  const highPriorityCount = routes.filter((r) => r.priority === 'high').length;
+  const mediumPriorityCount = routes.filter((r) => r.priority === 'medium').length;
+  const lowPriorityCount = routes.filter((r) => r.priority === 'low').length;
+
   return `<!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -337,7 +337,9 @@ function generateReport(routes, totalCount) {
       </tr>
     </thead>
     <tbody>
-      ${routes.map(route => `
+      ${routes
+        .map(
+          (route) => `
         <tr>
           <td>
             <code>${route.url}</code>
@@ -349,14 +351,18 @@ function generateReport(routes, totalCount) {
           <td>
             <div class="details">
               <strong>Méthodes :</strong> ${route.methods.join(', ')}<br>
-              <strong>Référents :</strong> ${route.referers.map(r => r === 'Direct' ? r : `<code>${r}</code>`).join(', ')}
+              <strong>Référents :</strong> ${route.referers
+                .map((r) => (r === 'Direct' ? r : `<code>${r}</code>`))
+                .join(', ')}
             </div>
             <div class="recommendation">
               ${getRecommendation(route)}
             </div>
           </td>
         </tr>
-      `).join('')}
+      `
+        )
+        .join('')}
     </tbody>
   </table>
   
@@ -385,7 +391,7 @@ function getRecommendation(route) {
     // Route PHP
     const baseUrl = route.url.split('?')[0];
     const targetUrl = baseUrl.replace('.php', '');
-    
+
     return `
       <strong>Suggestion :</strong> Ajouter une redirection 301 vers <code>${targetUrl}</code><br>
       <code>
@@ -395,19 +401,19 @@ function getRecommendation(route) {
         }
       </code>
     `;
-  } else if (route.isSeoRoute) {
+  }
+  if (route.isSeoRoute) {
     // Route SEO
     return `
       <strong>Action prioritaire :</strong> Cette route est critique pour le SEO. 
       Examiner les logs pour déterminer d'où viennent ces accès et configurer une redirection appropriée.
     `;
-  } else {
-    // Autre route
-    return `
+  }
+  // Autre route
+  return `
       <strong>Analyse suggérée :</strong> Examiner les référents pour déterminer la source de ces accès
       et décider si une redirection ou une suppression (410 Gone) est appropriée.
     `;
-  }
 }
 
 /**
@@ -415,8 +421,8 @@ function getRecommendation(route) {
  */
 async function sendEmailAlert(routes, reportPath) {
   try {
-    console.log('Envoi de l\'alerte par email...');
-    
+    console.log("Envoi de l'alerte par email...");
+
     // Créer un transporteur d'email
     const transporter = nodemailer.createTransport({
       host: CONFIG.email.smtpHost,
@@ -424,35 +430,36 @@ async function sendEmailAlert(routes, reportPath) {
       secure: CONFIG.email.secure,
       auth: {
         user: CONFIG.email.smtpUser,
-        pass: CONFIG.email.smtpPass
-      }
+        pass: CONFIG.email.smtpPass,
+      },
     });
-    
+
     // Construire le corps de l'email
-    const highPriorityRoutes = routes.filter(r => r.priority === 'high');
-    
+    const highPriorityRoutes = routes.filter((r) => r.priority === 'high');
+
     // Préparer le corps du message
-    let textBody = `Alerte - Routes PHP manquées\n\n`;
+    let textBody = 'Alerte - Routes PHP manquées\n\n';
     textBody += `Date : ${new Date().toLocaleString()}\n`;
     textBody += `Période analysée : Dernières ${CONFIG.period} heures\n\n`;
     textBody += `${routes.length} routes dépassent les seuils d'alerte :\n`;
-    textBody += `- Haute priorité : ${routes.filter(r => r.priority === 'high').length}\n`;
-    textBody += `- Moyenne priorité : ${routes.filter(r => r.priority === 'medium').length}\n`;
-    textBody += `- Basse priorité : ${routes.filter(r => r.priority === 'low').length}\n\n`;
-    
+    textBody += `- Haute priorité : ${routes.filter((r) => r.priority === 'high').length}\n`;
+    textBody += `- Moyenne priorité : ${routes.filter((r) => r.priority === 'medium').length}\n`;
+    textBody += `- Basse priorité : ${routes.filter((r) => r.priority === 'low').length}\n\n`;
+
     if (highPriorityRoutes.length > 0) {
-      textBody += `Routes à haute priorité :\n`;
-      highPriorityRoutes.forEach(route => {
+      textBody += 'Routes à haute priorité :\n';
+      highPriorityRoutes.forEach((route) => {
         textBody += `- ${route.url} (${route.count} accès)\n`;
       });
-      textBody += `\n`;
+      textBody += '\n';
     }
-    
-    textBody += `Consultez le rapport complet pour plus de détails et de recommandations.\n`;
+
+    textBody += 'Consultez le rapport complet pour plus de détails et de recommandations.\n';
     textBody += `Le rapport est disponible dans : ${reportPath}\n\n`;
-    textBody += `---\n`;
-    textBody += `Ce message a été généré automatiquement par le service de surveillance des routes manquées.`;
-    
+    textBody += '---\n';
+    textBody +=
+      'Ce message a été généré automatiquement par le service de surveillance des routes manquées.';
+
     // Envoyer l'email
     const info = await transporter.sendMail({
       from: CONFIG.email.from,
@@ -463,14 +470,14 @@ async function sendEmailAlert(routes, reportPath) {
       attachments: [
         {
           filename: path.basename(reportPath),
-          path: reportPath
-        }
-      ]
+          path: reportPath,
+        },
+      ],
     });
-    
+
     console.log('Alerte email envoyée:', info.messageId);
   } catch (err) {
-    console.error('Erreur lors de l\'envoi de l\'email:', err);
+    console.error("Erreur lors de l'envoi de l'email:", err);
   }
 }
 
@@ -482,12 +489,12 @@ async function sendSlackAlert(routes) {
     if (!CONFIG.slack.enabled || !CONFIG.slack.webhookUrl) {
       return;
     }
-    
-    console.log('Envoi de l\'alerte sur Slack...');
-    
-    const highPriorityRoutes = routes.filter(r => r.priority === 'high');
-    const mediumPriorityRoutes = routes.filter(r => r.priority === 'medium');
-    
+
+    console.log("Envoi de l'alerte sur Slack...");
+
+    const highPriorityRoutes = routes.filter((r) => r.priority === 'high');
+    const mediumPriorityRoutes = routes.filter((r) => r.priority === 'medium');
+
     // Construire le message Slack
     const message = {
       channel: CONFIG.slack.channel,
@@ -500,67 +507,70 @@ async function sendSlackAlert(routes) {
           text: {
             type: 'plain_text',
             text: '🚨 Alerte - Routes PHP manquées',
-            emoji: true
-          }
+            emoji: true,
+          },
         },
         {
           type: 'section',
           text: {
             type: 'mrkdwn',
-            text: `*${routes.length} routes* dépassent les seuils d'alerte dans les dernières ${CONFIG.period} heures :\n` +
-                  `• Haute priorité : *${routes.filter(r => r.priority === 'high').length}*\n` +
-                  `• Moyenne priorité : *${routes.filter(r => r.priority === 'medium').length}*\n` +
-                  `• Basse priorité : *${routes.filter(r => r.priority === 'low').length}*`
-          }
-        }
-      ]
+            text:
+              `*${routes.length} routes* dépassent les seuils d'alerte dans les dernières ${CONFIG.period} heures :\n` +
+              `• Haute priorité : *${routes.filter((r) => r.priority === 'high').length}*\n` +
+              `• Moyenne priorité : *${routes.filter((r) => r.priority === 'medium').length}*\n` +
+              `• Basse priorité : *${routes.filter((r) => r.priority === 'low').length}*`,
+          },
+        },
+      ],
     };
-    
+
     // Ajouter les routes à haute priorité
     if (highPriorityRoutes.length > 0) {
       message.blocks.push({
         type: 'section',
         text: {
           type: 'mrkdwn',
-          text: '*Routes à haute priorité :*'
-        }
+          text: '*Routes à haute priorité :*',
+        },
       });
-      
+
       const routeText = highPriorityRoutes
         .slice(0, 5) // Limiter à 5 pour éviter les messages trop longs
-        .map(route => `• \`${route.url}\` - ${route.count} accès${route.isSeoRoute ? ' (SEO)' : ''}`)
+        .map(
+          (route) => `• \`${route.url}\` - ${route.count} accès${route.isSeoRoute ? ' (SEO)' : ''}`
+        )
         .join('\n');
-      
+
       message.blocks.push({
         type: 'section',
         text: {
           type: 'mrkdwn',
-          text: routeText
-        }
+          text: routeText,
+        },
       });
-      
+
       if (highPriorityRoutes.length > 5) {
         message.blocks.push({
           type: 'section',
           text: {
             type: 'mrkdwn',
-            text: `_...et ${highPriorityRoutes.length - 5} autres routes à haute priorité_`
-          }
+            text: `_...et ${highPriorityRoutes.length - 5} autres routes à haute priorité_`,
+          },
         });
       }
     }
-    
+
     // Ajouter les routes à moyenne priorité (résumé)
     if (mediumPriorityRoutes.length > 0) {
       message.blocks.push({
         type: 'section',
         text: {
           type: 'mrkdwn',
-          text: `*Routes à moyenne priorité :* ${mediumPriorityRoutes.length} routes`
-        }
+          text: `*Routes à moyenne priorité :* ${mediumPriorityRoutes.length} routes`,
+        },
       });
     }
-    
+
     // Ajouter un lien vers le tableau de bord
     message.blocks.push({
       type: 'actions',
@@ -570,34 +580,34 @@ async function sendSlackAlert(routes) {
           text: {
             type: 'plain_text',
             text: 'Voir le tableau de bord',
-            emoji: true
+            emoji: true,
           },
-          url: 'http://localhost:3000/dashboard/htaccess'
-        }
-      ]
+          url: 'http://localhost:3000/dashboard/htaccess',
+        },
+      ],
     });
-    
+
     // Envoyer l'alerte à Slack
     const response = await fetch(CONFIG.slack.webhookUrl, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
-      body: JSON.stringify(message)
+      body: JSON.stringify(message),
     });
-    
+
     if (response.ok) {
       console.log('Alerte Slack envoyée avec succès');
     } else {
-      console.error('Erreur lors de l\'envoi de l\'alerte Slack:', await response.text());
+      console.error("Erreur lors de l'envoi de l'alerte Slack:", await response.text());
     }
   } catch (err) {
-    console.error('Erreur lors de l\'envoi de l\'alerte Slack:', err);
+    console.error("Erreur lors de l'envoi de l'alerte Slack:", err);
   }
 }
 
 // Exécuter l'analyse
-analyzeRoutes().catch(err => {
-  console.error('Erreur lors de l\'analyse:', err);
+analyzeRoutes().catch((err) => {
+  console.error("Erreur lors de l'analyse:", err);
   process.exit(1);
 });

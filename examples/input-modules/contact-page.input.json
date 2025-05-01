@@ -1,51 +1,47 @@
 {
-    "id": "contact-page-migration",
-    "name": "Migration de la page Contact",
-    "inputType": "php",
-    "entry": "apps/backend/src/pages/contact.php",
-    "entryPoints": [
-        {
-            "path": "apps/backend/src/pages/contact.php",
-            "role": "main"
-        },
-        {
-            "path": "apps/backend/src/includes/form_utils.php",
-            "role": "helper"
-        },
-        {
-            "path": "apps/backend/src/templates/contact.tpl",
-            "role": "template"
-        }
-    ],
-    "dependencies": [
-        "apps/backend/src/includes/db.php",
-        "apps/backend/src/includes/config.php",
-        "apps/backend/src/includes/mail_functions.php"
-    ],
-    "expectedOutputs": [
-        "apps/frontend/app/routes/contact.tsx",
-        "apps/frontend/app/routes/contact.loader.ts",
-        "apps/frontend/app/routes/contact.action.ts",
-        "apps/backend/api/contact-form.service.ts"
-    ],
-    "parserOptions": {
-        "extractFormFields": true,
-        "analyzeValidation": true,
-        "detectEmailTemplates": true
+  "id": "contact-page-migration",
+  "name": "Migration de la page Contact",
+  "inputType": "php",
+  "entry": "apps/backend/src/pages/contact.php",
+  "entryPoints": [
+    {
+      "path": "apps/backend/src/pages/contact.php",
+      "role": "main"
     },
-    "generatorOptions": {
-        "createFormWithZod": true,
-        "includeRecaptcha": true,
-        "generateFormServerValidation": true
+    {
+      "path": "apps/backend/src/includes/form_utils.php",
+      "role": "helper"
     },
-    "metadata": {
-        "author": "Équipe Migration",
-        "createdAt": "2025-04-15T10:30:00Z",
-        "priority": 2,
-        "tags": [
-            "formulaire",
-            "contact",
-            "email"
-        ]
+    {
+      "path": "apps/backend/src/templates/contact.tpl",
+      "role": "template"
     }
+  ],
+  "dependencies": [
+    "apps/backend/src/includes/db.php",
+    "apps/backend/src/includes/config.php",
+    "apps/backend/src/includes/mail_functions.php"
+  ],
+  "expectedOutputs": [
+    "apps/frontend/app/routes/contact.tsx",
+    "apps/frontend/app/routes/contact.loader.ts",
+    "apps/frontend/app/routes/contact.action.ts",
+    "apps/backend/api/contact-form.service.ts"
+  ],
+  "parserOptions": {
+    "extractFormFields": true,
+    "analyzeValidation": true,
+    "detectEmailTemplates": true
+  },
+  "generatorOptions": {
+    "createFormWithZod": true,
+    "includeRecaptcha": true,
+    "generateFormServerValidation": true
+  },
+  "metadata": {
+    "author": "Équipe Migration",
+    "createdAt": "2025-04-15T10:30:00Z",
+    "priority": 2,
+    "tags": ["formulaire", "contact", "email"]
+  }
 }

@@ -2,14 +2,17 @@
 
 /**
  * Script simplifié pour tester l'agent QA-Analyzer
- * 
+ *
  * Ce script contourne les problèmes de type avec AbstractAnalyzerAgent
  * en testant uniquement les fonctionnalités spécifiques de QAAnalyzer.
  */
 
-import * as fs from 'fs-extra';
 import * as path from 'path';
-import { QAAnalyzer, runQAAnalyzer } from './packagesDoDotmcp-agents/analyzers/qa-analyzer/qa-analyzer';
+import * as fs from 'fs-extra';
+import {
+  QAAnalyzer,
+  runQAAnalyzer,
+} from './packagesDoDotmcp-agents/analyzers/qa-analyzer/qa-analyzer';
 
 /**
  * Fonction pour tester directement les fonctionnalités de QAAnalyzer
@@ -20,14 +23,16 @@ async function testQAAnalyzerSimple() {
   // Créer des fichiers temporaires pour le test
   const testDir = path.join('/tmp', 'qa-analyzer-test');
   await fs.ensureDir(testDir);
-  
+
   const sourcePhpPath = path.join(testDir, 'example.php');
   const remixComponentPath = path.join(testDir, 'example.tsx');
   const remixLoaderPath = path.join(testDir, 'example.loader.ts');
   const remixMetaPath = path.join(testDir, 'example.meta.ts');
-  
+
   // Créer un fichier PHP avec quelques champs
-  await fs.writeFile(sourcePhpPath, `
+  await fs.writeFile(
+    sourcePhpPath,
+    `
 <?php
 // Fichier PHP d'exemple
 $nom = $_GET['nom'];
@@ -57,10 +62,13 @@ $requete = "SELECT id, nom, email FROM utilisateurs WHERE age > $age";
   <p>Votre email est <?php echo $email; ?></p>
 </body>
 </html>
-  `);
-  
+  `
+  );
+
   // Créer un composant Remix
-  await fs.writeFile(remixComponentPath, `
+  await fs.writeFile(
+    remixComponentPath,
+    `
 import { useLoaderData } from '@remix-run/react';
 import type { LoaderData } from './example.loader';
 
@@ -74,10 +82,13 @@ export default function ExampleComponent() {
     </div>
   );
 }
-  `);
-  
+  `
+  );
+
   // Créer un loader Remix
-  await fs.writeFile(remixLoaderPath, `
+  await fs.writeFile(
+    remixLoaderPath,
+    `
 import { LoaderFunction } from '@remix-run/node';
 import { z } from 'zod';
 
@@ -97,10 +108,13 @@ export const loader: LoaderFunction = async ({ request }) => {
     age: 25
   };
 };
-  `);
-  
+  `
+  );
+
   // Créer un fichier meta (incomplet)
-  await fs.writeFile(remixMetaPath, `
+  await fs.writeFile(
+    remixMetaPath,
+    `
 import type { MetaFunction } from '@remix-run/node';
 
 export const meta: MetaFunction = () => {
@@ -110,10 +124,11 @@ export const meta: MetaFunction = () => {
     // Canonical manquant
   };
 };
-  `);
-  
+  `
+  );
+
   console.log('Fichiers de test créés.');
-  
+
   try {
     // Utiliser la fonction runQAAnalyzer qui ne dépend pas directement de AbstractAnalyzerAgent
     const result = await runQAAnalyzer(
@@ -121,46 +136,48 @@ export const meta: MetaFunction = () => {
       {
         component: remixComponentPath,
         loader: remixLoaderPath,
-        meta: remixMetaPath
+        meta: remixMetaPath,
       },
       {
         outputDir: testDir,
         verbose: true,
         generateReport: true,
-        reportName: 'qa-test-report'
+        reportName: 'qa-test-report',
       }
     );
-    
-    console.log('\n=== Résultats de l\'analyse ===');
+
+    console.log("\n=== Résultats de l'analyse ===");
     console.log(`Statut: ${result.status}`);
     console.log(`Score: ${result.score}/100`);
     console.log(`Fichier source: ${path.basename(result.sourceFile)}`);
-    
+
     console.log('\n=== Champs ===');
     console.log(`Présents: ${result.presentFields.length}`);
-    console.log(result.presentFields.map(f => f.name).join(', '));
+    console.log(result.presentFields.map((f) => f.name).join(', '));
     console.log(`Manquants: ${result.missingFields.length}`);
-    console.log(result.missingFields.map(f => f.name).join(', '));
-    
+    console.log(result.missingFields.map((f) => f.name).join(', '));
+
     console.log('\n=== Problèmes ===');
     console.log(`SEO: ${result.seoIssues.length}`);
-    result.seoIssues.forEach(issue => console.log(`- [${issue.severity}] ${issue.message}`));
-    
+    result.seoIssues.forEach((issue) => console.log(`- [${issue.severity}] ${issue.message}`));
+
     console.log(`Types: ${result.typeIssues.length}`);
-    result.typeIssues.forEach(issue => console.log(`- [${issue.severity}] ${issue.message}`));
-    
+    result.typeIssues.forEach((issue) => console.log(`- [${issue.severity}] ${issue.message}`));
+
     console.log(`Validation: ${result.validationIssues.length}`);
-    result.validationIssues.forEach(issue => console.log(`- [${issue.severity}] ${issue.message}`));
-    
+    result.validationIssues.forEach((issue) =>
+      console.log(`- [${issue.severity}] ${issue.message}`)
+    );
+
     console.log(`Comportement: ${result.behaviorIssues.length}`);
-    result.behaviorIssues.forEach(issue => console.log(`- [${issue.severity}] ${issue.message}`));
-    
+    result.behaviorIssues.forEach((issue) => console.log(`- [${issue.severity}] ${issue.message}`));
+
     console.log('\n=== Recommandations ===');
-    result.recommendations.forEach(rec => console.log(`- ${rec}`));
-    
+    result.recommendations.forEach((rec) => console.log(`- ${rec}`));
+
     console.log('\n=== Tags ===');
     console.log(result.tags.join(', '));
-    
+
     // Vérifier si un rapport a été généré
     const reportPath = path.join(testDir, 'qa-test-report.md');
     if (await fs.pathExists(reportPath)) {
@@ -170,7 +187,7 @@ export const meta: MetaFunction = () => {
       console.log(reportContent.substring(0, 300) + '...');
     }
   } catch (error: any) {
-    console.error('Erreur lors de l\'analyse:', error.message);
+    console.error("Erreur lors de l'analyse:", error.message);
     if (error.stack) {
       console.error(error.stack);
     }
@@ -184,4 +201,4 @@ export const meta: MetaFunction = () => {
 // Exécuter le test
 testQAAnalyzerSimple()
   .then(() => console.log('\nTest terminé avec succès.'))
-  .catch(error => console.error('Échec du test:', error));
+  .catch((error) => console.error('Échec du test:', error));

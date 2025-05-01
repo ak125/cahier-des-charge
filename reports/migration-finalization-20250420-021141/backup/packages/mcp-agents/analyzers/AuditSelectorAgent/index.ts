@@ -5,7 +5,4 @@
 
 import { AuditSelectorAgent } from './AuditSelectorAgent';
 
-export {
-  AuditSelectorAgent,
-};
-
+export { AuditSelectorAgent };

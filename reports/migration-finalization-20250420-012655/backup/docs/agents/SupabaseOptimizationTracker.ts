@@ -5,7 +5,7 @@
  * Date: 12 avril 2025
  */
 
-import { createClient, SupabaseClient } from '@supabase/supabase-js';
+import { SupabaseClient, createClient } from '@supabase/supabase-js';
 import { BaseAgent, BusinessAgent } from '../core/interfaces/BaseAgent';
 
 
@@ -314,7 +314,7 @@ export class SupabaseOptimizationTracker implements BaseAgent, BusinessAgent {
   /**
    * Récupère les dernières analyses d'optimisation
    */
-  async getOptimizationHistory(limit: number = 10): Promise<any[]> {
+  async getOptimizationHistory(limit = 10): Promise<any[]> {
     const { data, error } = await this.supabase
       .from('sql_optimization_history')
       .select('*')

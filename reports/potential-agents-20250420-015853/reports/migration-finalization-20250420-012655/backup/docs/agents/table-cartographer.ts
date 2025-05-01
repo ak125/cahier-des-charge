@@ -1,9 +1,9 @@
 /**
  * table-cartographer.ts
  * Agent 2 — Cartographe Sémantique des Tables
- * 
+ *
  * Classifie automatiquement toutes les tables SQL extraites selon leur rôle fonctionnel
- * pour comprendre la structure métier, identifier les entités critiques, 
+ * pour comprendre la structure métier, identifier les entités critiques,
  * distinguer les tables techniques et préparer les modules correspondants en NestJS/Remix.
  */
 
@@ -137,22 +137,22 @@ class TableCartographer implements BaseAgent, BusinessAgent, AnalyzerAgent {
     try {
       const schemaContent = await readFile(this.schemaPath, 'utf8');
       const schema = JSON.parse(schemaContent);
-      
+
       // Adaptez cette partie selon la structure réelle de votre schema_raw.json
       if (Array.isArray(schema.tables)) {
         this.tables = schema.tables;
       } else if (schema.tables) {
         // Si c'est un objet avec des noms de table comme clés
-        this.tables = Object.keys(schema.tables).map(tableName => {
+        this.tables = Object.keys(schema.tables).map((tableName) => {
           return {
             name: tableName,
-            ...schema.tables[tableName]
+            ...schema.tables[tableName],
           };
         });
       } else {
         throw new Error('Format du schema_raw.json non reconnu');
       }
-      
+
       this.logger.info(`Chargé ${this.tables.length} tables depuis le schéma`);
     } catch (error) {
       this.logger.error(`Erreur lors du chargement du schéma: ${error}`);
@@ -165,20 +165,20 @@ class TableCartographer implements BaseAgent, BusinessAgent, AnalyzerAgent {
    */
   async analyze(): Promise<void> {
     await this.loadSchema();
-    
+
     // Filtre les tables à ignorer
     const skippedTables = this.config.agents.semanticMapper.skipTables || [];
-    this.tables = this.tables.filter(table => !skippedTables.includes(table.name));
-    
+    this.tables = this.tables.filter((table) => !skippedTables.includes(table.name));
+
     // Classifie chaque table
     for (const table of this.tables) {
       const classification = this.classifyTable(table);
       this.classifications.push(classification);
     }
-    
+
     // Identifie les relations entre les tables
     this.identifyRelations();
-    
+
     // Génère les fichiers de sortie
     await this.generateOutputFiles();
   }
@@ -193,9 +193,9 @@ class TableCartographer implements BaseAgent, BusinessAgent, AnalyzerAgent {
       role: 'entité_métier', // Par défaut
       module: null,
       confidence: 0.5,
-      reasons: []
+      reasons: [],
     };
-    
+
     // 1. Vérifier si c'est une table technique
     if (this.isTechnicalTable(table)) {
       classification.role = 'technique';
@@ -214,13 +214,13 @@ class TableCartographer implements BaseAgent, BusinessAgent, AnalyzerAgent {
       classification.confidence = 0.7;
       classification.reasons?.push('Table sans relations identifiées');
     }
-    
+
     // Déterminer le module potentiel
     classification.module = this.determineModule(table, classification.role);
-    
+
     // Ajuster la confiance en fonction des règles contextuelles
     classification.confidence = this.adjustConfidence(table, classification);
-    
+
     return classification;
   }
 
@@ -229,24 +229,23 @@ class TableCartographer implements BaseAgent, BusinessAgent, AnalyzerAgent {
    */
   private isTechnicalTable(table: Table): boolean {
     const { technicalTablePatterns } = this.config.agents.semanticMapper;
-    
+
     for (const pattern of technicalTablePatterns) {
       const regex = new RegExp(pattern.pattern, 'i');
       if (regex.test(table.name)) {
         return true;
       }
     }
-    
+
     // Vérifier les caractéristiques communes des tables techniques
     const technicalColumns = ['created_at', 'updated_at', 'logged_at', 'session_id', 'config_key'];
-    const hasManyTechnicalColumns = table.columns.filter(col => 
-      technicalColumns.includes(col.name.toLowerCase())
-    ).length >= 2;
-    
+    const hasManyTechnicalColumns =
+      table.columns.filter((col) => technicalColumns.includes(col.name.toLowerCase())).length >= 2;
+
     if (hasManyTechnicalColumns) {
       return true;
     }
-    
+
     return false;
   }
 
@@ -255,7 +254,7 @@ class TableCartographer implements BaseAgent, BusinessAgent, AnalyzerAgent {
    */
   private isJunctionTable(table: Table): boolean {
     const { junctionTablePatterns } = this.config.agents.semanticMapper;
-    
+
     // Vérifier les patterns de nommage des tables de liaison
     for (const pattern of junctionTablePatterns) {
       const regex = new RegExp(pattern.pattern, 'i');
@@ -263,18 +262,18 @@ class TableCartographer implements BaseAgent, BusinessAgent, AnalyzerAgent {
         return true;
       }
     }
-    
+
     // Vérifier la structure classique d'une table de liaison (2 FK, peu de colonnes supplémentaires)
-    const fkCount = (table.foreignKeys?.length || 0);
-    const nonFkColumns = table.columns.filter(col => 
-      !table.foreignKeys?.some(fk => fk.column === col.name)
+    const fkCount = table.foreignKeys?.length || 0;
+    const nonFkColumns = table.columns.filter(
+      (col) => !table.foreignKeys?.some((fk) => fk.column === col.name)
     );
-    
+
     // Une table de liaison a généralement 2 FKs et peu d'autres colonnes
     if (fkCount >= 2 && nonFkColumns.length <= 3) {
       return true;
     }
-    
+
     return false;
   }
 
@@ -283,7 +282,7 @@ class TableCartographer implements BaseAgent, BusinessAgent, AnalyzerAgent {
    */
   private isOrphanTable(table: Table): boolean {
     const { orphanTablePatterns } = this.config.agents.semanticMapper;
-    
+
     // Vérifier les patterns de nommage des tables orphelines
     for (const pattern of orphanTablePatterns) {
       const regex = new RegExp(pattern.pattern, 'i');
@@ -291,17 +290,17 @@ class TableCartographer implements BaseAgent, BusinessAgent, AnalyzerAgent {
         return true;
       }
     }
-    
+
     // Vérifier si la table n'a pas de relations entrantes ou sortantes
     const hasNoForeignKeys = !table.foreignKeys || table.foreignKeys.length === 0;
-    const isNotReferencedByOthers = !this.tables.some(t => 
-      t.foreignKeys?.some(fk => fk.references.table === table.name)
+    const isNotReferencedByOthers = !this.tables.some((t) =>
+      t.foreignKeys?.some((fk) => fk.references.table === table.name)
     );
-    
+
     if (hasNoForeignKeys && isNotReferencedByOthers) {
       return true;
     }
-    
+
     return false;
   }
 
@@ -313,12 +312,12 @@ class TableCartographer implements BaseAgent, BusinessAgent, AnalyzerAgent {
     if (this.domainMap[table.name]) {
       return this.domainMap[table.name];
     }
-    
+
     // 2. Pour les tables techniques, pas de module par défaut
     if (role === 'technique') {
       return null;
     }
-    
+
     // 3. Pour les tables de liaison, essayer de déduire du nom
     if (role === 'liaison') {
       const nameSegments = table.name.split(/[_-]/).filter(Boolean);
@@ -330,10 +329,10 @@ class TableCartographer implements BaseAgent, BusinessAgent, AnalyzerAgent {
         }
       }
     }
-    
+
     // 4. Vérifier les patterns d'entités métier
     const { entityPatterns } = this.config.agents.semanticMapper;
-    
+
     for (const entityCategory of entityPatterns) {
       for (const pattern of entityCategory.patterns) {
         if (table.name.toLowerCase().includes(pattern.toLowerCase())) {
@@ -341,13 +340,13 @@ class TableCartographer implements BaseAgent, BusinessAgent, AnalyzerAgent {
         }
       }
     }
-    
+
     // 5. Vérifier les colonnes pour les indices contextuels
     const moduleFromColumns = this.inferModuleFromColumns(table);
     if (moduleFromColumns) {
       return moduleFromColumns;
     }
-    
+
     // Par défaut, utiliser le premier segment du nom en minuscules
     const firstSegment = table.name.split(/[_-]/)[0].toLowerCase();
     return firstSegment !== table.name.toLowerCase() ? firstSegment : null;
@@ -358,16 +357,18 @@ class TableCartographer implements BaseAgent, BusinessAgent, AnalyzerAgent {
    */
   private findModuleByNamePattern(segment: string): string | null {
     const { entityPatterns } = this.config.agents.semanticMapper;
-    
+
     for (const entityCategory of entityPatterns) {
       for (const pattern of entityCategory.patterns) {
-        if (segment.toLowerCase().includes(pattern.toLowerCase()) || 
-            pattern.toLowerCase().includes(segment.toLowerCase())) {
+        if (
+          segment.toLowerCase().includes(pattern.toLowerCase()) ||
+          pattern.toLowerCase().includes(segment.toLowerCase())
+        ) {
           return entityCategory.category.toLowerCase();
         }
       }
     }
-    
+
     return null;
   }
 
@@ -376,19 +377,19 @@ class TableCartographer implements BaseAgent, BusinessAgent, AnalyzerAgent {
    */
   private inferModuleFromColumns(table: Table): string | null {
     const { contextRules } = this.config.agents.semanticMapper;
-    
+
     for (const rule of contextRules) {
-      const columnNames = table.columns.map(col => col.name.toLowerCase());
-      const matchCount = rule.columnPresence.filter(col => 
-        columnNames.some(colName => colName.includes(col.toLowerCase()))
+      const columnNames = table.columns.map((col) => col.name.toLowerCase());
+      const matchCount = rule.columnPresence.filter((col) =>
+        columnNames.some((colName) => colName.includes(col.toLowerCase()))
       ).length;
-      
+
       // Si au moins 60% des colonnes correspondent à la règle
       if (matchCount / rule.columnPresence.length >= 0.6) {
         return rule.suggests.toLowerCase();
       }
     }
-    
+
     return null;
   }
 
@@ -397,36 +398,36 @@ class TableCartographer implements BaseAgent, BusinessAgent, AnalyzerAgent {
    */
   private adjustConfidence(table: Table, classification: TableClassification): number {
     let confidence = classification.confidence;
-    
+
     // Ajuster en fonction du mapping personnalisé
     if (this.domainMap[table.name]) {
       confidence += 0.2; // Plus de confiance si mapping personnalisé
       confidence = Math.min(confidence, 0.99); // Plafonner à 0.99
     }
-    
+
     // Ajuster en fonction de la qualité des données
     if (classification.role === 'entité_métier') {
       // Une entité métier a généralement plusieurs colonnes
       if (table.columns.length > 5) confidence += 0.1;
-      
+
       // Présence d'une colonne ID claire
-      const hasIdColumn = table.columns.some(col => col.isPrimary);
+      const hasIdColumn = table.columns.some((col) => col.isPrimary);
       if (hasIdColumn) confidence += 0.05;
-      
+
       // Présence de timestamps (indique une table bien maintenue)
-      const hasTimestamps = table.columns.some(col => 
+      const hasTimestamps = table.columns.some((col) =>
         ['created_at', 'updated_at', 'date_creation', 'date_modification'].includes(col.name)
       );
       if (hasTimestamps) confidence += 0.05;
     }
-    
+
     // Pour les tables de liaison
     if (classification.role === 'liaison') {
       // Plus grande confiance si le nom contient des éléments reconnaissables des deux tables liées
       const nameSuggestionScore = this.evaluateJunctionNameQuality(table);
       confidence += nameSuggestionScore;
     }
-    
+
     // Plafonner entre 0.5 et 0.99
     return Math.max(0.5, Math.min(0.99, confidence));
   }
@@ -436,27 +437,33 @@ class TableCartographer implements BaseAgent, BusinessAgent, AnalyzerAgent {
    */
   private evaluateJunctionNameQuality(table: Table): number {
     if (!table.foreignKeys || table.foreignKeys.length < 2) return 0;
-    
+
     // Récupérer les noms des tables référencées
-    const referencedTables = table.foreignKeys.map(fk => fk.references.table);
-    
+    const referencedTables = table.foreignKeys.map((fk) => fk.references.table);
+
     // Voir si des parties de ces noms sont présentes dans le nom de la table de liaison
     let nameQualityScore = 0;
     for (const refTable of referencedTables) {
       // Diviser le nom de la table référencée en segments
-      const refSegments = refTable.split(/[_-]/).filter(Boolean).map(s => s.toLowerCase());
-      const junctionSegments = table.name.split(/[_-]/).filter(Boolean).map(s => s.toLowerCase());
-      
+      const refSegments = refTable
+        .split(/[_-]/)
+        .filter(Boolean)
+        .map((s) => s.toLowerCase());
+      const junctionSegments = table.name
+        .split(/[_-]/)
+        .filter(Boolean)
+        .map((s) => s.toLowerCase());
+
       // Vérifier si des segments de la table référencée apparaissent dans le nom de la table de liaison
-      const hasMatchingSegment = refSegments.some(refSeg => 
-        junctionSegments.some(juncSeg => juncSeg.includes(refSeg) || refSeg.includes(juncSeg))
+      const hasMatchingSegment = refSegments.some((refSeg) =>
+        junctionSegments.some((juncSeg) => juncSeg.includes(refSeg) || refSeg.includes(juncSeg))
       );
-      
+
       if (hasMatchingSegment) {
         nameQualityScore += 0.075;
       }
     }
-    
+
     return nameQualityScore;
   }
 
@@ -466,32 +473,31 @@ class TableCartographer implements BaseAgent, BusinessAgent, AnalyzerAgent {
   private identifyRelations(): void {
     // Map pour suivre les relations déjà ajoutées (éviter les doublons)
     const addedRelations = new Set<string>();
-    
+
     // Parcourir toutes les tables
     for (const table of this.tables) {
       // Si la table a des clés étrangères
       if (table.foreignKeys && table.foreignKeys.length > 0) {
-        
         // Si c'est une table de liaison
-        const isJunction = this.classifications.find(c => 
-          c.table === table.name && c.role === 'liaison'
+        const isJunction = this.classifications.find(
+          (c) => c.table === table.name && c.role === 'liaison'
         );
-        
+
         if (isJunction && table.foreignKeys.length >= 2) {
           // Créer une relation pour chaque paire de tables liées
           for (let i = 0; i < table.foreignKeys.length - 1; i++) {
             for (let j = i + 1; j < table.foreignKeys.length; j++) {
               const sourceTable = table.foreignKeys[i].references.table;
               const targetTable = table.foreignKeys[j].references.table;
-              
+
               // Créer un identifiant unique pour cette relation
               const relationId = [sourceTable, targetTable].sort().join('__');
-              
+
               if (!addedRelations.has(relationId)) {
                 this.relations.push({
                   source: sourceTable,
                   target: targetTable,
-                  junction: table.name
+                  junction: table.name,
                 });
                 addedRelations.add(relationId);
               }
@@ -502,14 +508,14 @@ class TableCartographer implements BaseAgent, BusinessAgent, AnalyzerAgent {
           for (const fk of table.foreignKeys) {
             const sourceTable = table.name;
             const targetTable = fk.references.table;
-            
+
             // Créer un identifiant unique pour cette relation
             const relationId = [sourceTable, targetTable].sort().join('__');
-            
+
             if (!addedRelations.has(relationId)) {
               this.relations.push({
                 source: sourceTable,
-                target: targetTable
+                target: targetTable,
               });
               addedRelations.add(relationId);
             }
@@ -517,7 +523,7 @@ class TableCartographer implements BaseAgent, BusinessAgent, AnalyzerAgent {
         }
       }
     }
-    
+
     this.logger.info(`Identifié ${this.relations.length} relations entre les tables`);
   }
 
@@ -527,25 +533,25 @@ class TableCartographer implements BaseAgent, BusinessAgent, AnalyzerAgent {
   private async generateOutputFiles(): Promise<void> {
     const { baseOutputPath } = this.config;
     const outputDir = baseOutputPath || './reports';
-    
+
     // S'assurer que le répertoire de sortie existe
     try {
       await mkdir(outputDir, { recursive: true });
     } catch (error) {
       // Ignorer l'erreur si le répertoire existe déjà
     }
-    
+
     // Générer table_classification.json
     const classificationPath = path.join(outputDir, 'table_classification.json');
     await writeFile(classificationPath, JSON.stringify(this.classifications, null, 2), 'utf8');
     this.logger.info(`Classification des tables écrite dans ${classificationPath}`);
-    
+
     // Générer entity_graph.md
     const graphPath = path.join(outputDir, 'entity_graph.md');
     const graphContent = this.generateEntityGraphMarkdown();
     await writeFile(graphPath, graphContent, 'utf8');
     this.logger.info(`Graphe des entités écrit dans ${graphPath}`);
-    
+
     // Générer optionnellement table_tags.json
     const tagsPath = path.join(outputDir, 'table_tags.json');
     const tags = this.generateTableTags();
@@ -558,11 +564,11 @@ class TableCartographer implements BaseAgent, BusinessAgent, AnalyzerAgent {
    */
   private generateEntityGraphMarkdown(): string {
     let markdown = `# 🧠 Cartographie Sémantique des Tables\n\n`;
-    
+
     // Ajouter les entités métier
     markdown += `## 🧩 Entités métier détectées\n\n`;
-    const businessEntities = this.classifications.filter(c => c.role === 'entité_métier');
-    
+    const businessEntities = this.classifications.filter((c) => c.role === 'entité_métier');
+
     // Grouper par module
     const moduleGroups: Record<string, TableClassification[]> = {};
     for (const entity of businessEntities) {
@@ -572,7 +578,7 @@ class TableCartographer implements BaseAgent, BusinessAgent, AnalyzerAgent {
       }
       moduleGroups[module].push(entity);
     }
-    
+
     // Afficher par module
     for (const [module, entities] of Object.entries(moduleGroups)) {
       markdown += `### Module ${module}\n\n`;
@@ -581,12 +587,12 @@ class TableCartographer implements BaseAgent, BusinessAgent, AnalyzerAgent {
       }
       markdown += `\n`;
     }
-    
+
     // Ajouter les liaisons
     markdown += `## 🔗 Liaisons détectées\n\n`;
-    
+
     // Liaisons avec tables de jonction
-    const junctionRelations = this.relations.filter(r => r.junction);
+    const junctionRelations = this.relations.filter((r) => r.junction);
     if (junctionRelations.length > 0) {
       markdown += `### Via tables de liaison\n\n`;
       for (const relation of junctionRelations) {
@@ -594,9 +600,9 @@ class TableCartographer implements BaseAgent, BusinessAgent, AnalyzerAgent {
       }
       markdown += `\n`;
     }
-    
+
     // Liaisons directes
-    const directRelations = this.relations.filter(r => !r.junction);
+    const directRelations = this.relations.filter((r) => !r.junction);
     if (directRelations.length > 0) {
       markdown += `### Liaisons directes\n\n`;
       for (const relation of directRelations) {
@@ -604,32 +610,34 @@ class TableCartographer implements BaseAgent, BusinessAgent, AnalyzerAgent {
       }
       markdown += `\n`;
     }
-    
+
     // Ajouter les tables techniques
     markdown += `## 🛠️ Tables techniques\n\n`;
-    const technicalTables = this.classifications.filter(c => c.role === 'technique');
+    const technicalTables = this.classifications.filter((c) => c.role === 'technique');
     for (const table of technicalTables) {
       markdown += `- **${table.table}**\n`;
     }
     markdown += `\n`;
-    
+
     // Ajouter les tables orphelines suspectes
     markdown += `## ⚠️ Tables orphelines suspectes\n\n`;
-    const orphanTables = this.classifications.filter(c => c.role === 'orpheline_suspecte');
+    const orphanTables = this.classifications.filter((c) => c.role === 'orpheline_suspecte');
     for (const table of orphanTables) {
       markdown += `- **${table.table}**\n`;
     }
     markdown += `\n`;
-    
+
     // Statistiques
     markdown += `## 📊 Statistiques\n\n`;
     markdown += `- Total des tables: **${this.tables.length}**\n`;
     markdown += `- Entités métier: **${businessEntities.length}**\n`;
-    markdown += `- Tables de liaison: **${this.classifications.filter(c => c.role === 'liaison').length}**\n`;
+    markdown += `- Tables de liaison: **${
+      this.classifications.filter((c) => c.role === 'liaison').length
+    }**\n`;
     markdown += `- Tables techniques: **${technicalTables.length}**\n`;
     markdown += `- Tables orphelines: **${orphanTables.length}**\n`;
     markdown += `- Relations identifiées: **${this.relations.length}**\n`;
-    
+
     return markdown;
   }
 
@@ -638,21 +646,19 @@ class TableCartographer implements BaseAgent, BusinessAgent, AnalyzerAgent {
    */
   private generateTableTags(): Record<string, string[]> {
     const tableTags: Record<string, string[]> = {};
-    
+
     for (const classification of this.classifications) {
-      const tags: string[] = [
-        `role:${classification.role}`,
-      ];
-      
+      const tags: string[] = [`role:${classification.role}`];
+
       if (classification.module) {
         tags.push(`module:${classification.module}`);
       }
-      
+
       const confidenceTag = this.getConfidenceTag(classification.confidence);
       if (confidenceTag) {
         tags.push(confidenceTag);
       }
-      
+
       // Ajouter tags spécifiques selon le type de table
       if (classification.role === 'entité_métier') {
         tags.push('entity');
@@ -664,10 +670,10 @@ class TableCartographer implements BaseAgent, BusinessAgent, AnalyzerAgent {
         tags.push('orphan');
         tags.push('needs-review');
       }
-      
+
       tableTags[classification.table] = tags;
     }
-    
+
     return tableTags;
   }
 
@@ -688,16 +694,19 @@ class TableCartographer implements BaseAgent, BusinessAgent, AnalyzerAgent {
 async function main() {
   try {
     const args = process.argv.slice(2);
-    const configPath = args.find(arg => arg.startsWith('--config='))?.split('=')[1] || './config/sql_analyzer.config.json';
-    const schemaPath = args.find(arg => arg.startsWith('--schema='))?.split('=')[1] || './reports/schema_raw.json';
-    
+    const configPath =
+      args.find((arg) => arg.startsWith('--config='))?.split('=')[1] ||
+      './config/sql_analyzer.config.json';
+    const schemaPath =
+      args.find((arg) => arg.startsWith('--schema='))?.split('=')[1] || './reports/schema_raw.json';
+
     console.log(`🧠 Démarrage du Cartographe Sémantique des Tables...`);
     console.log(`📁 Configuration: ${configPath}`);
     console.log(`📁 Schéma: ${schemaPath}`);
-    
+
     const cartographer = new TableCartographer(configPath, schemaPath);
     await cartographer.analyze();
-    
+
     console.log(`✅ Analyse terminée avec succès`);
   } catch (error) {
     console.error(`❌ Erreur lors de l'analyse: ${error}`);
@@ -712,717 +721,8 @@ if (require.main === module) {
 
 export { TableCartographer };
 
-
-
-
-
-
-
-
-
-
-
 import { BaseAgent } from '@workspaces/cahier-des-charge/src/core/interfaces/BaseAgent';
-import { BusinessAgent, AnalyzerAgent } from '@workspaces/cahier-des-charge/src/core/interfaces/business';
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+import {
+  AnalyzerAgent,
+  BusinessAgent,
+} from '@workspaces/cahier-des-charge/src/core/interfaces/business';

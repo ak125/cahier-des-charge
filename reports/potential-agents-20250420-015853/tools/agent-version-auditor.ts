@@ -13,10 +13,10 @@
  * - agent_versions.json: Inventaire des versions d'agents
  */
 
-import * as fs from 'fs-extra';
-import * as path from 'path';
-import * as glob from 'glob';
 import { execSync } from 'child_process';
+import * as path from 'path';
+import * as fs from 'fs-extra';
+import * as glob from 'glob';
 
 // Constantes
 const WORKSPACE_ROOT = process.cwd();
@@ -116,7 +116,7 @@ async function analyzeAgentFile(filePath: string): Promise<AgentFile> {
   }
   
   // Détermine la version
-  let version = explicitVersionMatch 
+  const version = explicitVersionMatch 
     ? explicitVersionMatch[1] 
     : versionLineMatch
       ? versionLineMatch[1]

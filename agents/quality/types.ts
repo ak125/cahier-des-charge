@@ -8,13 +8,9 @@ import { AgentOptions, AgentResult } from '../core/types';
 /**
  * Options spécifiques aux agents quality
  */
-export interface QualityAgentOptions extends AgentOptions {
-  // Options spécifiques à cette catégorie
-}
+export type QualityAgentOptions = AgentOptions;
 
 /**
  * Résultat spécifique aux agents quality
  */
-export interface QualityResult extends AgentResult {
-  // Données spécifiques à cette catégorie
-}
+export type QualityResult = AgentResult;

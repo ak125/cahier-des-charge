@@ -7,7 +7,7 @@
 import { main } from '.DoDotmcp-server';
 
 // Exécuter la fonction principale
-main().catch(error => {
+main().catch((error) => {
   console.error(`❌ Erreur non gérée: ${error}`);
   process.exit(1);
 });

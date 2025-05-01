@@ -12,7 +12,7 @@ module.exports = {
       },
       env_production: {
         NODE_ENV: 'production',
-      }
+      },
     },
     {
       name: 'php-analyzer',
@@ -55,6 +55,6 @@ module.exports = {
       autorestart: true,
       watch: ['./dashboard'],
       max_memory_restart: '500M',
-    }
+    },
   ],
 };

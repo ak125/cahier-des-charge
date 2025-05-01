@@ -10,7 +10,9 @@
     "resolveJsonModule": true,
     "outDir": "dist",
     "declaration": true,
-    "baseUrl": "."
+    "baseUrl": ".",
+    "composite": true,
+    "declarationMap": true
   },
   "include": [
     "**/*.ts"

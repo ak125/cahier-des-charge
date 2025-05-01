@@ -3,8 +3,8 @@
  * Agent export file
  */
 
-import { MySQLAnalyzer } from ./mySqlAnalyzerstructure-agent';
-import { AnalyzerAgent } from ../../core/interfacesstructure-agent';
+import { AnalyzerAgent } from '../../core/interfacesstructure-agent';
+import { MySQLAnalyzer } from './mySqlAnalyzerstructure-agent';
 
 export { MySQLAnalyzer };
 export default MySQLAnalyzer;

@@ -174,7 +174,7 @@ async function auditPhpDirectory(dirPath: string, options: any): Promise<void> {
 /**
  * Trouve tous les fichiers PHP dans un dossier
  */
-async function findPhpFiles(dirPath: string, recursive: boolean = true): Promise<string[]> {
+async function findPhpFiles(dirPath: string, recursive = true): Promise<string[]> {
   const result: string[] = [];
   
   // Lecture du contenu du dossier

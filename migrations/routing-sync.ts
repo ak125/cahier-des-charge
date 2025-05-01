@@ -8,10 +8,10 @@
  * Auteur: Migration Team
  */
 
-import * as fs from fsstructure-agent';
-import * as path from pathstructure-agent';
-import * as glob from globstructure-agent';
-import { execSync } from child_processstructure-agent';
+import * as fs from 'fsstructure-agent'
+import * as glob from 'globstructure-agent'
+import * as path from 'pathstructure-agent'
+import { execSync } from './child_processstructure-agent'
 
 // Configuration
 const CONFIG = {
@@ -33,7 +33,7 @@ const CONFIG = {
   ignorePatterns: [
     'node_modules',
     'vendor',
-    'DoDoDoDotgit',
+    'DoDogit',
     'cache',
     'tmp',
     'admin/lib'
@@ -200,7 +200,7 @@ async function extractRoutesFromPhpFiles(phpFiles: string[], existingRoutes: Rou
   for (const phpFile of phpFiles) {
     const relativePath = getRelativePath(phpFile);
     const originalPath = phpPathToUrl(relativePath);
-    let newPath = getNewPath(originalPath);
+    const newPath = getNewPath(originalPath);
     
     // Vérifier si cette route existe déjà
     const existingRoute = existingRouteMap.get(phpFile);
@@ -250,7 +250,7 @@ function phpPathToUrl(relativePath: string): string {
 
   // S'assurer que l'URL commence par un slash
   if (!url.startsWith('/')) {
-    url = '/' + url;
+    url = `/${url}`;
   }
 
   return url;
@@ -421,7 +421,7 @@ function updateRoutesStatus(routes: Route[], remixRoutes: string[], nestjsContro
 // Déterminer le chemin attendu pour un fichier Remix
 function getExpectedRemixPath(newPath: string): string {
   // Nettoyer le chemin
-  let path = newPath.replace(/^\//, ''); // Enlever le / initial
+  const path = newPath.replace(/^\//, ''); // Enlever le / initial
   
   // Gérer les cas spéciaux
   if (path === '') {
@@ -436,7 +436,7 @@ function getExpectedRemixPath(newPath: string): string {
 // Déterminer le chemin attendu pour un contrôleur NestJS
 function getExpectedNestjsPath(newPath: string): string {
   // Nettoyer le chemin
-  let path = newPath.replace(/^\//, ''); // Enlever le / initial
+  const path = newPath.replace(/^\//, ''); // Enlever le / initial
   
   // Extraire la ressource principale
   const segments = path.split('/');
@@ -461,18 +461,18 @@ function generateRedirectionMap(routes: Route[]): Record<string, string> {
 // Mettre à jour l'audit index
 function updateAuditIndex(routes: Route[]): AuditIndex {
   const routesByStatus: Record<string, number> = {
-    'pending': 0,
+    pending: 0,
     'in-progress': 0,
-    'completed': 0,
-    'verified': 0
+    completed: 0,
+    verified: 0
   };
   
   const routesByType: Record<string, number> = {
-    'page': 0,
-    'api': 0,
-    'redirect': 0,
-    'rewrite': 0,
-    'static': 0
+    page: 0,
+    api: 0,
+    redirect: 0,
+    rewrite: 0,
+    static: 0
   };
   
   for (const route of routes) {

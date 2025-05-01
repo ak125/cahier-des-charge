@@ -1,60 +1,60 @@
+import {
+  Badge,
+  Box,
+  Button,
+  ButtonGroup,
+  Divider,
+  Flex,
+  HStack,
+  Heading,
+  Icon,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  Tab,
+  TabList,
+  TabPanel,
+  TabPanels,
+  Tabs,
+  Tag,
+  TagLabel,
+  TagLeftIcon,
+  Text,
+  Tooltip,
+  useColorModeValue,
+  useDisclosure,
+} from '@chakra-ui/react';
 /**
  * Tableau de bord unifié pour l'architecture à 3 couches
  * Intègre les 3 tableaux de bord spécifiques et permet de naviguer entre eux
  */
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
-  Box,
-  Flex,
-  Tabs,
-  TabList,
-  TabPanels,
-  Tab,
-  TabPanel,
-  Heading,
-  Text,
-  Badge,
-  Button,
-  HStack,
-  VStack,
-  Divider,
-  useColorModeValue,
-  useDisclosure,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
-  ModalCloseButton,
-  Icon,
-  Link,
-  ButtonGroup,
-  Tooltip,
-  Tag,
-  TagLabel,
-  TagLeftIcon
-} from '@chakra-ui/react';
-import { 
-  FiLayers, 
-  FiServer, 
-  FiUsers, 
-  FiBriefcase, 
-  FiAlertCircle, 
-  FiInfo, 
-  FiSearch, 
-  FiLink, 
+  FiActivity,
+  FiBriefcase,
+  FiLayers,
+  FiLink,
   FiRefreshCw,
+  FiSearch,
+  FiServer,
+  FiUsers,
   FiZap,
-  FiActivity
 } from 'react-icons/fi';
 
-// Importer les tableaux de bord spécifiques à chaque couche
-import OrchestrationDashboard from './orchestration-dashboard';
+import {
+  DecisionSeverity,
+  DecisionType,
+  governanceMesh,
+} from '../utils/governance/governance-mesh';
+import { TraceabilityService } from '../utils/traceability/traceability-service';
 import AgentsDashboard from './agents-dashboard';
 import BusinessDashboard from './business-dashboard';
-import { TraceabilityService } from '../utils/traceability/traceability-service';
-import { governanceMesh, DecisionType, DecisionSeverity } from '../utils/governance/governance-mesh';
+// Importer les tableaux de bord spécifiques à chaque couche
+import OrchestrationDashboard from './orchestration-dashboard';
 
 // Interface pour les props du composant
 interface UnifiedLayeredDashboardProps {
@@ -65,21 +65,23 @@ interface UnifiedLayeredDashboardProps {
 // Tableau de bord unifié pour l'architecture à 3 couches
 const UnifiedLayeredDashboard: React.FC<UnifiedLayeredDashboardProps> = ({
   className,
-  initialLayer = 'all'
+  initialLayer = 'all',
 }) => {
   // États
-  const [activeLayer, setActiveLayer] = useState<'orchestration' | 'agents' | 'business' | 'all'>(initialLayer);
+  const [activeLayer, setActiveLayer] = useState<'orchestration' | 'agents' | 'business' | 'all'>(
+    initialLayer
+  );
   const [traceId, setTraceId] = useState<string>('');
   const [layerStatuses, setLayerStatuses] = useState({
     orchestration: { status: 'healthy', issues: 0 },
     agents: { status: 'healthy', issues: 0 },
-    business: { status: 'healthy', issues: 0 }
+    business: { status: 'healthy', issues: 0 },
   });
   const [lastRefresh, setLastRefresh] = useState<Date>(new Date());
   const [connectionStats, setConnectionStats] = useState({
     orchestrationToAgents: { status: 'active', latency: '45ms' },
     agentsToBusiness: { status: 'active', latency: '67ms' },
-    businessToOrchestration: { status: 'active', latency: '72ms' }
+    businessToOrchestration: { status: 'active', latency: '72ms' },
   });
 
   // Hooks pour les modales
@@ -89,7 +91,7 @@ const UnifiedLayeredDashboard: React.FC<UnifiedLayeredDashboardProps> = ({
   // Couleurs
   const bgColor = useColorModeValue('white', 'gray.800');
   const borderColor = useColorModeValue('gray.200', 'gray.700');
-  const textColor = useColorModeValue('gray.800', 'white');
+  const _textColor = useColorModeValue('gray.800', 'white');
   const headerBgColor = useColorModeValue('gray.50', 'gray.900');
 
   // Initialisation des services
@@ -100,131 +102,131 @@ const UnifiedLayeredDashboard: React.FC<UnifiedLayeredDashboardProps> = ({
         layer: 'all',
         enabled: true,
         idFormat: 'dashboard-{timestamp}-{random}',
-        storageStrategy: 'hybrid'
+        storageStrategy: 'hybrid',
       });
-      
+
       // Générer un ID de traçabilité pour cette session de tableau de bord
       const newTraceId = await traceabilityService.generateTraceId();
       setTraceId(newTraceId);
-      
+
       // Journaliser l'initialisation du tableau de bord
       await traceabilityService.logTrace({
         traceId: newTraceId,
         event: 'dashboard:initialized',
         context: { initialLayer },
         timestamp: new Date(),
-        success: true
+        success: true,
       });
-      
+
       // Initialiser le mesh de gouvernance
       await governanceMesh.initialize();
     };
-    
+
     initializeServices();
-    
+
     // Simuler des mises à jour périodiques de l'état des couches
     const intervalId = setInterval(refreshLayerStatuses, 10000);
-    
+
     return () => clearInterval(intervalId);
   }, [initialLayer]);
 
   // Handler pour changer de couche active
   const handleLayerChange = async (layer: 'orchestration' | 'agents' | 'business' | 'all') => {
     setActiveLayer(layer);
-    
+
     // Journaliser le changement de couche
     const traceabilityService = new TraceabilityService({
       layer: 'all',
-      enabled: true
+      enabled: true,
     });
-    
+
     await traceabilityService.logTrace({
       traceId,
       event: 'dashboard:layer:changed',
       context: { previousLayer: activeLayer, newLayer: layer },
       timestamp: new Date(),
-      success: true
+      success: true,
     });
-    
+
     // Prendre une décision de gouvernance lors du changement de couche
     const decision = await governanceMesh.makeDecision({
       type: DecisionType.DOMAIN_ROUTING,
       context: {
         previousLayer: activeLayer,
         targetLayer: layer,
-        traceId
+        traceId,
       },
       severity: DecisionSeverity.LOW,
       layer: 'orchestration', // La décision est prise au niveau de l'orchestration
-      requestedBy: 'unified-dashboard'
+      requestedBy: 'unified-dashboard',
     });
-    
+
     console.log('Layer change governance decision:', decision);
   };
-  
+
   // Simuler une mise à jour des statuts des couches
   const refreshLayerStatuses = () => {
     // Dans un environnement réel, ces données proviendraient des API
     setLayerStatuses({
       orchestration: {
         status: Math.random() > 0.9 ? 'degraded' : 'healthy',
-        issues: Math.floor(Math.random() * 3)
+        issues: Math.floor(Math.random() * 3),
       },
       agents: {
         status: Math.random() > 0.85 ? 'degraded' : 'healthy',
-        issues: Math.floor(Math.random() * 4)
+        issues: Math.floor(Math.random() * 4),
       },
       business: {
         status: Math.random() > 0.95 ? 'degraded' : 'healthy',
-        issues: Math.floor(Math.random() * 2)
-      }
+        issues: Math.floor(Math.random() * 2),
+      },
     });
-    
+
     // Mettre à jour les statistiques de connexion entre couches
     setConnectionStats({
       orchestrationToAgents: {
         status: Math.random() > 0.92 ? 'degraded' : 'active',
-        latency: `${Math.floor(Math.random() * 100) + 10}ms`
+        latency: `${Math.floor(Math.random() * 100) + 10}ms`,
       },
       agentsToBusiness: {
         status: Math.random() > 0.95 ? 'degraded' : 'active',
-        latency: `${Math.floor(Math.random() * 150) + 20}ms`
+        latency: `${Math.floor(Math.random() * 150) + 20}ms`,
       },
       businessToOrchestration: {
         status: Math.random() > 0.97 ? 'degraded' : 'active',
-        latency: `${Math.floor(Math.random() * 120) + 30}ms`
-      }
+        latency: `${Math.floor(Math.random() * 120) + 30}ms`,
+      },
     });
-    
+
     setLastRefresh(new Date());
   };
-  
+
   // Handler pour rafraîchir manuellement les données
   const handleRefresh = () => {
     refreshLayerStatuses();
   };
-  
+
   // Formater le temps écoulé depuis le dernier rafraîchissement
   const formatTimeAgo = (date: Date) => {
     const seconds = Math.floor((new Date().getTime() - date.getTime()) / 1000);
-    
+
     if (seconds < 60) return `il y a ${seconds} seconde${seconds !== 1 ? 's' : ''}`;
-    
+
     const minutes = Math.floor(seconds / 60);
     if (minutes < 60) return `il y a ${minutes} minute${minutes !== 1 ? 's' : ''}`;
-    
+
     const hours = Math.floor(minutes / 60);
     if (hours < 24) return `il y a ${hours} heure${hours !== 1 ? 's' : ''}`;
-    
+
     const days = Math.floor(hours / 24);
     return `il y a ${days} jour${days !== 1 ? 's' : ''}`;
   };
-  
+
   // Afficher le statut d'une couche
   const renderLayerStatus = (layer: 'orchestration' | 'agents' | 'business') => {
     const status = layerStatuses[layer];
     const color = status.status === 'healthy' ? 'green' : 'orange';
-    
+
     return (
       <Flex alignItems="center">
         <Badge colorScheme={color} mr={2}>
@@ -252,7 +254,7 @@ const UnifiedLayeredDashboard: React.FC<UnifiedLayeredDashboardProps> = ({
               <TagLabel>Version 1.0</TagLabel>
             </Tag>
           </Heading>
-          
+
           <ButtonGroup size="sm" variant="outline">
             <Tooltip label="Afficher les traces d'exécution">
               <Button leftIcon={<FiSearch />} onClick={traceModal.onOpen}>
@@ -271,13 +273,14 @@ const UnifiedLayeredDashboard: React.FC<UnifiedLayeredDashboardProps> = ({
             </Tooltip>
           </ButtonGroup>
         </Flex>
-        
+
         <Text color="gray.500" mb={4}>
-          Supervision unifiée des 3 couches de l'architecture avec circuit breaker multicouche et traçabilité centralisée.
+          Supervision unifiée des 3 couches de l'architecture avec circuit breaker multicouche et
+          traçabilité centralisée.
         </Text>
-        
+
         <Divider mb={4} />
-        
+
         <HStack spacing={8} justifyContent="space-between">
           <Flex align="center">
             <Icon as={FiServer} fontSize="xl" color="teal.500" mr={2} />
@@ -286,7 +289,7 @@ const UnifiedLayeredDashboard: React.FC<UnifiedLayeredDashboardProps> = ({
               {renderLayerStatus('orchestration')}
             </Box>
           </Flex>
-          
+
           <Flex align="center">
             <Icon as={FiUsers} fontSize="xl" color="purple.500" mr={2} />
             <Box>
@@ -294,7 +297,7 @@ const UnifiedLayeredDashboard: React.FC<UnifiedLayeredDashboardProps> = ({
               {renderLayerStatus('agents')}
             </Box>
           </Flex>
-          
+
           <Flex align="center">
             <Icon as={FiBriefcase} fontSize="xl" color="orange.500" mr={2} />
             <Box>
@@ -302,7 +305,7 @@ const UnifiedLayeredDashboard: React.FC<UnifiedLayeredDashboardProps> = ({
               {renderLayerStatus('business')}
             </Box>
           </Flex>
-          
+
           <Box>
             <Text fontSize="xs" color="gray.500">
               Dernière mise à jour: {formatTimeAgo(lastRefresh)}
@@ -319,9 +322,19 @@ const UnifiedLayeredDashboard: React.FC<UnifiedLayeredDashboardProps> = ({
   // Rendu des interconnexions entre couches
   const renderLayerConnections = () => {
     return (
-      <Box bg={bgColor} p={4} borderRadius="md" mb={4} boxShadow="sm" borderWidth="1px" borderColor={borderColor}>
-        <Heading size="sm" mb={3}>Interconnexions entre couches</Heading>
-        
+      <Box
+        bg={bgColor}
+        p={4}
+        borderRadius="md"
+        mb={4}
+        boxShadow="sm"
+        borderWidth="1px"
+        borderColor={borderColor}
+      >
+        <Heading size="sm" mb={3}>
+          Interconnexions entre couches
+        </Heading>
+
         <HStack spacing={4} justifyContent="space-between" mb={2}>
           <Box flex="1">
             <Flex align="center">
@@ -329,33 +342,45 @@ const UnifiedLayeredDashboard: React.FC<UnifiedLayeredDashboardProps> = ({
               <Text fontWeight="medium">Orchestration → Agents</Text>
             </Flex>
             <Flex justify="space-between" mt={1}>
-              <Badge colorScheme={connectionStats.orchestrationToAgents.status === 'active' ? 'green' : 'orange'}>
+              <Badge
+                colorScheme={
+                  connectionStats.orchestrationToAgents.status === 'active' ? 'green' : 'orange'
+                }
+              >
                 {connectionStats.orchestrationToAgents.status.toUpperCase()}
               </Badge>
               <Text fontSize="sm">Latence: {connectionStats.orchestrationToAgents.latency}</Text>
             </Flex>
           </Box>
-          
+
           <Box flex="1">
             <Flex align="center">
               <Icon as={FiZap} mr={2} color="blue.500" />
               <Text fontWeight="medium">Agents → Métier</Text>
             </Flex>
             <Flex justify="space-between" mt={1}>
-              <Badge colorScheme={connectionStats.agentsToBusiness.status === 'active' ? 'green' : 'orange'}>
+              <Badge
+                colorScheme={
+                  connectionStats.agentsToBusiness.status === 'active' ? 'green' : 'orange'
+                }
+              >
                 {connectionStats.agentsToBusiness.status.toUpperCase()}
               </Badge>
               <Text fontSize="sm">Latence: {connectionStats.agentsToBusiness.latency}</Text>
             </Flex>
           </Box>
-          
+
           <Box flex="1">
             <Flex align="center">
               <Icon as={FiZap} mr={2} color="blue.500" />
               <Text fontWeight="medium">Métier → Orchestration</Text>
             </Flex>
             <Flex justify="space-between" mt={1}>
-              <Badge colorScheme={connectionStats.businessToOrchestration.status === 'active' ? 'green' : 'orange'}>
+              <Badge
+                colorScheme={
+                  connectionStats.businessToOrchestration.status === 'active' ? 'green' : 'orange'
+                }
+              >
                 {connectionStats.businessToOrchestration.status.toUpperCase()}
               </Badge>
               <Text fontSize="sm">Latence: {connectionStats.businessToOrchestration.latency}</Text>
@@ -370,12 +395,16 @@ const UnifiedLayeredDashboard: React.FC<UnifiedLayeredDashboardProps> = ({
   const renderContent = () => {
     if (activeLayer === 'all') {
       return (
-        <Tabs 
-          variant="enclosed" 
-          colorScheme="blue" 
-          isFitted 
+        <Tabs
+          variant="enclosed"
+          colorScheme="blue"
+          isFitted
           onChange={(index) => {
-            const layers: Array<'orchestration' | 'agents' | 'business'> = ['orchestration', 'agents', 'business'];
+            const layers: Array<'orchestration' | 'agents' | 'business'> = [
+              'orchestration',
+              'agents',
+              'business',
+            ];
             if (index >= 0 && index < layers.length) {
               handleLayerChange(layers[index]);
             }
@@ -401,7 +430,7 @@ const UnifiedLayeredDashboard: React.FC<UnifiedLayeredDashboardProps> = ({
               </Flex>
             </Tab>
           </TabList>
-          
+
           <TabPanels>
             <TabPanel p={0}>
               <OrchestrationDashboard onLayerChange={handleLayerChange} />
@@ -416,7 +445,7 @@ const UnifiedLayeredDashboard: React.FC<UnifiedLayeredDashboardProps> = ({
         </Tabs>
       );
     }
-    
+
     // Afficher un tableau de bord spécifique
     switch (activeLayer) {
       case 'orchestration':
@@ -429,7 +458,7 @@ const UnifiedLayeredDashboard: React.FC<UnifiedLayeredDashboardProps> = ({
         return null;
     }
   };
-  
+
   // Rendu de la modale de traces
   const renderTraceModal = () => {
     return (
@@ -445,26 +474,30 @@ const UnifiedLayeredDashboard: React.FC<UnifiedLayeredDashboardProps> = ({
             <Text mb={4}>
               ID de traçabilité actuel: <Code>{traceId}</Code>
             </Text>
-            
+
             <Box bg="gray.50" p={4} borderRadius="md" maxHeight="400px" overflowY="auto">
               <pre style={{ fontSize: '12px' }}>
                 {/* Remplacer par des données réelles de traces */}
-                {JSON.stringify([
-                  {
-                    traceId,
-                    event: 'dashboard:initialized',
-                    timestamp: new Date().toISOString(),
-                    layer: 'all',
-                    context: { initialLayer }
-                  },
-                  {
-                    traceId,
-                    event: 'dashboard:layer:changed',
-                    timestamp: new Date().toISOString(),
-                    layer: 'orchestration',
-                    context: { previousLayer: 'all', newLayer: 'orchestration' }
-                  }
-                ], null, 2)}
+                {JSON.stringify(
+                  [
+                    {
+                      traceId,
+                      event: 'dashboard:initialized',
+                      timestamp: new Date().toISOString(),
+                      layer: 'all',
+                      context: { initialLayer },
+                    },
+                    {
+                      traceId,
+                      event: 'dashboard:layer:changed',
+                      timestamp: new Date().toISOString(),
+                      layer: 'orchestration',
+                      context: { previousLayer: 'all', newLayer: 'orchestration' },
+                    },
+                  ],
+                  null,
+                  2
+                )}
               </pre>
             </Box>
           </ModalBody>
@@ -478,7 +511,7 @@ const UnifiedLayeredDashboard: React.FC<UnifiedLayeredDashboardProps> = ({
       </Modal>
     );
   };
-  
+
   // Rendu de la modale de gouvernance
   const renderGovernanceModal = () => {
     return (
@@ -494,56 +527,68 @@ const UnifiedLayeredDashboard: React.FC<UnifiedLayeredDashboardProps> = ({
             <Text mb={4}>
               Configuration du mesh de gouvernance reliant les 3 couches de l'architecture.
             </Text>
-            
+
             <Box mb={4}>
-              <Heading size="sm" mb={2}>Règles de décision actives</Heading>
+              <Heading size="sm" mb={2}>
+                Règles de décision actives
+              </Heading>
               <Box bg="gray.50" p={4} borderRadius="md" maxHeight="200px" overflowY="auto">
                 <pre style={{ fontSize: '12px' }}>
                   {/* Remplacer par des données réelles de gouvernance */}
-                  {JSON.stringify([
-                    {
-                      id: 'rule-1',
-                      name: 'Isolation des workflows défaillants',
-                      type: 'circuit-breaker-action',
-                      priority: 10,
-                      scope: { layers: ['orchestration'] }
-                    },
-                    {
-                      id: 'rule-2',
-                      name: 'Limitation de débit des agents',
-                      type: 'resource-allocation',
-                      priority: 8,
-                      scope: { layers: ['agents'] }
-                    },
-                    {
-                      id: 'rule-3',
-                      name: 'Validation des migrations de domaine',
-                      type: 'quality-gate',
-                      priority: 9,
-                      scope: { layers: ['business', 'orchestration'] }
-                    }
-                  ], null, 2)}
+                  {JSON.stringify(
+                    [
+                      {
+                        id: 'rule-1',
+                        name: 'Isolation des workflows défaillants',
+                        type: 'circuit-breaker-action',
+                        priority: 10,
+                        scope: { layers: ['orchestration'] },
+                      },
+                      {
+                        id: 'rule-2',
+                        name: 'Limitation de débit des agents',
+                        type: 'resource-allocation',
+                        priority: 8,
+                        scope: { layers: ['agents'] },
+                      },
+                      {
+                        id: 'rule-3',
+                        name: 'Validation des migrations de domaine',
+                        type: 'quality-gate',
+                        priority: 9,
+                        scope: { layers: ['business', 'orchestration'] },
+                      },
+                    ],
+                    null,
+                    2
+                  )}
                 </pre>
               </Box>
             </Box>
-            
+
             <Box>
-              <Heading size="sm" mb={2}>Conflits de gouvernance</Heading>
+              <Heading size="sm" mb={2}>
+                Conflits de gouvernance
+              </Heading>
               <Box bg="gray.50" p={4} borderRadius="md" maxHeight="200px" overflowY="auto">
                 <pre style={{ fontSize: '12px' }}>
                   {/* Remplacer par des données réelles de conflits */}
-                  {JSON.stringify([
-                    {
-                      id: 'conflict-1',
-                      conflictType: 'contradictory',
-                      decisions: [ 
-                        { decision: 'proceed', layer: 'agents' },
-                        { decision: 'abort', layer: 'orchestration' }
-                      ],
-                      status: 'detected',
-                      severity: 'high'
-                    }
-                  ], null, 2)}
+                  {JSON.stringify(
+                    [
+                      {
+                        id: 'conflict-1',
+                        conflictType: 'contradictory',
+                        decisions: [
+                          { decision: 'proceed', layer: 'agents' },
+                          { decision: 'abort', layer: 'orchestration' },
+                        ],
+                        status: 'detected',
+                        severity: 'high',
+                      },
+                    ],
+                    null,
+                    2
+                  )}
                 </pre>
               </Box>
             </Box>

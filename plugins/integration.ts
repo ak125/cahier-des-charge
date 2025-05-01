@@ -1,14 +1,14 @@
 /**
  * integration.ts
- * 
+ *
  * Intègre le système de plugins dans le pipeline MCP existant
  * Ce fichier sert de pont entre le gestionnaire de plugins et l'orchestrateur MCP
  */
 
+import * as path from 'path';
+import * as fs from 'fs/promises';
 import pluginManager from './manager';
 import { MigrationContext } from './types';
-import * as fs from 'fs/promises';
-import * as path from 'path';
 
 /**
  * Initialise le système de plugins au démarrage du pipeline MCP
@@ -18,11 +18,11 @@ export async function initializePluginSystem(api: any, logger: any): Promise<voi
   const manager = pluginManager as any;
   manager.api = api;
   manager.logger = logger;
-  
+
   // Découvrir tous les plugins disponibles
   const discoveredPlugins = await pluginManager.discoverPlugins();
   logger.info(`Système de plugins initialisé. ${discoveredPlugins.length} plugins découverts.`);
-  
+
   // Initialiser tous les plugins découverts
   try {
     await pluginManager.initializePlugins();
@@ -110,12 +110,15 @@ export async function registerPlugin(pluginPath: string): Promise<boolean> {
   try {
     // Vérifier si le plugin existe
     const manifestPath = path.join(pluginPath, 'manifest.json');
-    const manifestExists = await fs.access(manifestPath).then(() => true).catch(() => false);
-    
+    const manifestExists = await fs
+      .access(manifestPath)
+      .then(() => true)
+      .catch(() => false);
+
     if (!manifestExists) {
       throw new Error(`Manifest non trouvé: ${manifestPath}`);
     }
-    
+
     // Forcer la découverte du plugin
     await pluginManager.discoverPlugins();
     return true;

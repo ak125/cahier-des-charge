@@ -5,7 +5,4 @@
 
 import { CanonicalValidatorAgent } from './CanonicalValidatorAgent';
 
-export {
-  CanonicalValidatorAgent,
-};
-
+export { CanonicalValidatorAgent };

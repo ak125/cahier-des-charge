@@ -72,7 +72,7 @@ export interface JobStatistics {
 /**
  * Récupère les jobs Temporal récents
  */
-export async function getRecentTemporalJobs(limit = 10): Promise<TemporalJob[]> {
+export async function getRecentTemporalJobs(_limit = 10): Promise<TemporalJob[]> {
   // Dans une implémentation réelle, cette fonction ferait un appel à l'API ou à la base de données
   // Pour l'exemple, nous retournons des données statiques
   return Promise.resolve([
@@ -111,7 +111,7 @@ export async function getRecentTemporalJobs(limit = 10): Promise<TemporalJob[]> 
       ],
      DoDoDoDoDoDotgithubPR: {
         prNumber: 324,
-        title: 'Migration: Convert UserController from PHP to TypeScript',
+        title: 'Migration: Convert UserController from 'PHP to TypeScript',
         url: 'https:/DoDoDoDoDoDotgithub.com/your-org/your-repo/pull/324',
         status: 'merged',
         createdAt: new Date(Date.now() - 1100000).toISOString(),
@@ -341,7 +341,7 @@ export async function openLangfuseTrace(traceId: string, projectId: string): Pro
 /**
  * Récupère les exécutions programmées à venir pour un workflow récurrent
  */
-export async function getUpcomingScheduledExecutions(workflowId: string, count: number = 3): Promise<{ scheduledTime: string }[]> {
+export async function getUpcomingScheduledExecutions(workflowId: string, _count = 3): Promise<{ scheduledTime: string }[]> {
   // Dans une implémentation réelle, cette fonction appellerait l'API Temporal pour obtenir les exécutions programmées
   console.log(`Récupération des exécutions programmées pour ${workflowId}`);
   

@@ -31,7 +31,11 @@ export interface ISeoAnalysisStrategy {
    * @param content Contenu HTML de la page
    * @param options Options supplémentaires spécifiques à la stratégie
    */
-  analyze(url: string, content: string, options?: any): Promise<{
+  analyze(
+    url: string,
+    content: string,
+    options?: any
+  ): Promise<{
     score: number;
     issues: Array<{
       type: string;
@@ -47,7 +51,10 @@ export interface ISeoAnalysisStrategy {
    * @param issues Liste des problèmes identifiés
    * @param content Contenu HTML à corriger
    */
-  suggestFixes(issues: Array<any>, content: string): Promise<{
+  suggestFixes(
+    issues: Array<any>,
+    content: string
+  ): Promise<{
     fixedContent?: string;
     recommendations: Array<{
       issue: any;

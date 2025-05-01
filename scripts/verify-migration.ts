@@ -1,6 +1,6 @@
 /**
  * verify-migration.ts
- * 
+ *
  * Script pour vérifier et valider la migration vers l'architecture MCP OS en 3 couches
  * Ce script:
  * 1. Vérifie la structure des répertoires
@@ -9,26 +9,29 @@
  * 4. Génère un rapport de validation post-migration
  */
 
-import * as fs from 'fs-extra';
-import * as path from 'path';
 import { exec } from 'child_process';
+import * as path from 'path';
 import { promisify } from 'util';
+import * as fs from 'fs-extra';
 import LayeredAgentAuditor from '../packages/mcp-agents/tools/LayeredAgentAuditor/LayeredAgentAuditor';
 
-const execAsync = promisify(exec);
+const _execAsync = promisify(exec);
 const logger = {
   info: (msg: string) => console.log(`\x1b[36mINFO\x1b[0m: ${msg}`),
   warn: (msg: string) => console.log(`\x1b[33mWARN\x1b[0m: ${msg}`),
   error: (msg: string) => console.log(`\x1b[31mERROR\x1b[0m: ${msg}`),
-  success: (msg: string) => console.log(`\x1b[32mSUCCESS\x1b[0m: ${msg}`)
+  success: (msg: string) => console.log(`\x1b[32mSUCCESS\x1b[0m: ${msg}`),
 };
 
 // Constantes
 const WORKSPACE_ROOT = process.cwd();
-const AGENTS_DIR = path.join(WORKSPACE_ROOT, 'agents');
+const _AGENTS_DIR = path.join(WORKSPACE_ROOT, 'agents');
 const MCP_AGENTS_DIR = path.join(WORKSPACE_ROOT, 'packages', 'mcp-agents');
 const REPORT_DIR = path.join(WORKSPACE_ROOT, 'reports', 'migration');
-const VERIFICATION_REPORT = path.join(REPORT_DIR, `migration-verification-${new Date().toISOString().split('T')[0]}.md`);
+const VERIFICATION_REPORT = path.join(
+  REPORT_DIR,
+  `migration-verification-${new Date().toISOString().split('T')[0]}.md`
+);
 
 interface VerificationResult {
   directoryStructure: {
@@ -76,7 +79,7 @@ async function verifyDirectoryStructure(): Promise<{
     path.join(MCP_AGENTS_DIR, 'business', 'misc'),
 
     // Core interfaces
-    path.join(WORKSPACE_ROOT, 'src', 'core', 'interfaces')
+    path.join(WORKSPACE_ROOT, 'src', 'core', 'interfaces'),
   ];
 
   const missingDirs: string[] = [];
@@ -87,14 +90,14 @@ async function verifyDirectoryStructure(): Promise<{
       if (!exists) {
         missingDirs.push(dir);
       }
-    } catch (error) {
+    } catch (_error) {
       missingDirs.push(dir);
     }
   }
 
   return {
     valid: missingDirs.length === 0,
-    missingDirs
+    missingDirs,
   };
 }
 
@@ -125,14 +128,16 @@ async function verifyMigrationStatus(): Promise<{
     return {
       total: report.totalAgents,
       migrated: report.totalAgents - notMigrated.length,
-      notMigrated
+      notMigrated,
     };
-  } catch (error) {
-    logger.error("Impossible de lire le rapport de migration. La migration a-t-elle été exécutée ?");
+  } catch (_error) {
+    logger.error(
+      'Impossible de lire le rapport de migration. La migration a-t-elle été exécutée ?'
+    );
     return {
       total: 0,
       migrated: 0,
-      notMigrated: []
+      notMigrated: [],
     };
   }
 }
@@ -151,7 +156,7 @@ async function verifyInterfaceImplementation(): Promise<{
   return {
     total: result.totalAgents,
     implementsCorrectly: result.totalAgents - result.missingInterfaces.length,
-    missingImplementation: result.missingInterfaces
+    missingImplementation: result.missingInterfaces,
   };
 }
 
@@ -167,62 +172,103 @@ Date: ${new Date().toISOString().split('T')[0]}
 
 État: ${result.directoryStructure.valid ? '✅ Valide' : '❌ Incomplète'}
 
-${result.directoryStructure.missingDirs.length > 0 ?
-      `Répertoires manquants:
-${result.directoryStructure.missingDirs.map(dir => `- \`${path.relative(WORKSPACE_ROOT, dir)}\``).join('\n')}` :
-      'Tous les répertoires nécessaires sont présents.'}
+${
+  result.directoryStructure.missingDirs.length > 0
+    ? `Répertoires manquants:
+${result.directoryStructure.missingDirs
+  .map((dir) => `- \`${path.relative(WORKSPACE_ROOT, dir)}\``)
+  .join('\n')}`
+    : 'Tous les répertoires nécessaires sont présents.'
+}
 
 ## Statut de la migration
 
 - **Total des agents**: ${result.migrationStatus.total}
-- **Migrés avec succès**: ${result.migrationStatus.migrated} (${Math.round(result.migrationStatus.migrated / result.migrationStatus.total * 100)}%)
-- **Non migrés**: ${result.migrationStatus.notMigrated.length} (${Math.round(result.migrationStatus.notMigrated.length / result.migrationStatus.total * 100)}%)
+- **Migrés avec succès**: ${result.migrationStatus.migrated} (${Math.round(
+    (result.migrationStatus.migrated / result.migrationStatus.total) * 100
+  )}%)
+- **Non migrés**: ${result.migrationStatus.notMigrated.length} (${Math.round(
+    (result.migrationStatus.notMigrated.length / result.migrationStatus.total) * 100
+  )}%)
 
-${result.migrationStatus.notMigrated.length > 0 ?
-      `Agents à migrer:
-${result.migrationStatus.notMigrated.map(id => `- ${id}`).join('\n')}` :
-      'Tous les agents ont été migrés avec succès.'}
+${
+  result.migrationStatus.notMigrated.length > 0
+    ? `Agents à migrer:
+${result.migrationStatus.notMigrated.map((id) => `- ${id}`).join('\n')}`
+    : 'Tous les agents ont été migrés avec succès.'
+}
 
 ## Implémentation des interfaces
 
 - **Total des agents**: ${result.interfaceImplementation.total}
-- **Conformes**: ${result.interfaceImplementation.implementsCorrectly} (${Math.round(result.interfaceImplementation.implementsCorrectly / result.interfaceImplementation.total * 100)}%)
-- **Non conformes**: ${result.interfaceImplementation.missingImplementation.length} (${Math.round(result.interfaceImplementation.missingImplementation.length / result.interfaceImplementation.total * 100)}%)
+- **Conformes**: ${result.interfaceImplementation.implementsCorrectly} (${Math.round(
+    (result.interfaceImplementation.implementsCorrectly / result.interfaceImplementation.total) *
+      100
+  )}%)
+- **Non conformes**: ${result.interfaceImplementation.missingImplementation.length} (${Math.round(
+    (result.interfaceImplementation.missingImplementation.length /
+      result.interfaceImplementation.total) *
+      100
+  )}%)
 
-${result.interfaceImplementation.missingImplementation.length > 0 ?
-      `Agents non conformes:
-${result.interfaceImplementation.missingImplementation.map(item =>
-        `- \`${path.relative(WORKSPACE_ROOT, item.path)}\` manque: ${item.missingInterfaces.join(', ')}`
-      ).join('\n')}` :
-      'Tous les agents implémentent correctement les interfaces requises.'}
+${
+  result.interfaceImplementation.missingImplementation.length > 0
+    ? `Agents non conformes:
+${result.interfaceImplementation.missingImplementation
+  .map(
+    (item) =>
+      `- \`${path.relative(WORKSPACE_ROOT, item.path)}\` manque: ${item.missingInterfaces.join(
+        ', '
+      )}`
+  )
+  .join('\n')}`
+    : 'Tous les agents implémentent correctement les interfaces requises.'
+}
 
 ## Récapitulatif par couche
 
 | Couche | Nombre d'agents | % du total |
 |--------|----------------|------------|
-| Orchestration | ${result.agentAudit.byLayer.orchestration || 0} | ${Math.round(((result.agentAudit.byLayer.orchestration || 0) / result.agentAudit.totalAgents) * 100)}% |
-| Coordination | ${result.agentAudit.byLayer.coordination || 0} | ${Math.round(((result.agentAudit.byLayer.coordination || 0) / result.agentAudit.totalAgents) * 100)}% |
-| Business | ${result.agentAudit.byLayer.business || 0} | ${Math.round(((result.agentAudit.byLayer.business || 0) / result.agentAudit.totalAgents) * 100)}% |
-| Non classé | ${result.agentAudit.byLayer.unknown || 0} | ${Math.round(((result.agentAudit.byLayer.unknown || 0) / result.agentAudit.totalAgents) * 100)}% |
+| Orchestration | ${result.agentAudit.byLayer.orchestration || 0} | ${Math.round(
+    ((result.agentAudit.byLayer.orchestration || 0) / result.agentAudit.totalAgents) * 100
+  )}% |
+| Coordination | ${result.agentAudit.byLayer.coordination || 0} | ${Math.round(
+    ((result.agentAudit.byLayer.coordination || 0) / result.agentAudit.totalAgents) * 100
+  )}% |
+| Business | ${result.agentAudit.byLayer.business || 0} | ${Math.round(
+    ((result.agentAudit.byLayer.business || 0) / result.agentAudit.totalAgents) * 100
+  )}% |
+| Non classé | ${result.agentAudit.byLayer.unknown || 0} | ${Math.round(
+    ((result.agentAudit.byLayer.unknown || 0) / result.agentAudit.totalAgents) * 100
+  )}% |
 
 ## Recommandations
 
-${result.directoryStructure.valid && result.migrationStatus.notMigrated.length === 0 && result.interfaceImplementation.missingImplementation.length === 0 ?
-      '✅ La migration est complète et conforme à l\'architecture en 3 couches.' :
-      `Pour finaliser la migration:
+${
+  result.directoryStructure.valid &&
+  result.migrationStatus.notMigrated.length === 0 &&
+  result.interfaceImplementation.missingImplementation.length === 0
+    ? "✅ La migration est complète et conforme à l'architecture en 3 couches."
+    : `Pour finaliser la migration:
 
-1. ${result.directoryStructure.missingDirs.length > 0 ?
-        `Créer les répertoires manquants (${result.directoryStructure.missingDirs.length})` :
-        '✅ Structure de répertoires complète'}
-2. ${result.migrationStatus.notMigrated.length > 0 ?
-        `Migrer les agents restants (${result.migrationStatus.notMigrated.length})` :
-        '✅ Tous les agents sont migrés'}
-3. ${result.interfaceImplementation.missingImplementation.length > 0 ?
-        `Implémenter les interfaces manquantes pour les agents non conformes (${result.interfaceImplementation.missingImplementation.length})` :
-        '✅ Tous les agents implémentent les interfaces correctement'}
+1. ${
+        result.directoryStructure.missingDirs.length > 0
+          ? `Créer les répertoires manquants (${result.directoryStructure.missingDirs.length})`
+          : '✅ Structure de répertoires complète'
+      }
+2. ${
+        result.migrationStatus.notMigrated.length > 0
+          ? `Migrer les agents restants (${result.migrationStatus.notMigrated.length})`
+          : '✅ Tous les agents sont migrés'
+      }
+3. ${
+        result.interfaceImplementation.missingImplementation.length > 0
+          ? `Implémenter les interfaces manquantes pour les agents non conformes (${result.interfaceImplementation.missingImplementation.length})`
+          : '✅ Tous les agents implémentent les interfaces correctement'
+      }
 
 Exécutez ce script à nouveau après avoir effectué ces actions pour vérifier que la migration est complète.`
-    }
+}
 `;
 
   // Écrire le rapport dans un fichier
@@ -236,33 +282,39 @@ Exécutez ce script à nouveau après avoir effectué ces actions pour vérifier
  * Fonction principale d'exécution
  */
 async function main() {
-  logger.info("Vérification de la migration MCP OS en 3 couches...");
+  logger.info('Vérification de la migration MCP OS en 3 couches...');
 
   // Vérifier la structure des répertoires
-  logger.info("Vérification de la structure des répertoires...");
+  logger.info('Vérification de la structure des répertoires...');
   const directoryStructure = await verifyDirectoryStructure();
   if (directoryStructure.valid) {
-    logger.success("✅ Structure de répertoires valide");
+    logger.success('✅ Structure de répertoires valide');
   } else {
-    logger.warn(`⚠️ Structure de répertoires incomplète (${directoryStructure.missingDirs.length} répertoires manquants)`);
+    logger.warn(
+      `⚠️ Structure de répertoires incomplète (${directoryStructure.missingDirs.length} répertoires manquants)`
+    );
   }
 
   // Vérifier le statut de la migration
-  logger.info("Vérification du statut de la migration...");
+  logger.info('Vérification du statut de la migration...');
   const migrationStatus = await verifyMigrationStatus();
   if (migrationStatus.total > 0) {
     const percentage = Math.round((migrationStatus.migrated / migrationStatus.total) * 100);
     if (percentage === 100) {
-      logger.success(`✅ Migration complète: ${migrationStatus.migrated}/${migrationStatus.total} agents migrés (100%)`);
+      logger.success(
+        `✅ Migration complète: ${migrationStatus.migrated}/${migrationStatus.total} agents migrés (100%)`
+      );
     } else {
-      logger.warn(`⚠️ Migration partielle: ${migrationStatus.migrated}/${migrationStatus.total} agents migrés (${percentage}%)`);
+      logger.warn(
+        `⚠️ Migration partielle: ${migrationStatus.migrated}/${migrationStatus.total} agents migrés (${percentage}%)`
+      );
     }
   } else {
-    logger.error("❌ Aucune information de migration trouvée");
+    logger.error('❌ Aucune information de migration trouvée');
   }
 
   // Exécuter l'audit des agents
-  logger.info("Audit des agents...");
+  logger.info('Audit des agents...');
   const auditor = new LayeredAgentAuditor(WORKSPACE_ROOT);
   const agentAudit = await auditor.audit();
   logger.info(`Total des agents dans la nouvelle structure: ${agentAudit.totalAgents}`);
@@ -271,39 +323,57 @@ async function main() {
   logger.info("Vérification de l'implémentation des interfaces...");
   const interfaceImplementation = await verifyInterfaceImplementation();
   if (interfaceImplementation.missingImplementation.length === 0) {
-    logger.success(`✅ Tous les agents implémentent correctement les interfaces`);
+    logger.success('✅ Tous les agents implémentent correctement les interfaces');
   } else {
-    logger.warn(`⚠️ ${interfaceImplementation.missingImplementation.length} agents n'implémentent pas toutes les interfaces requises`);
+    logger.warn(
+      `⚠️ ${interfaceImplementation.missingImplementation.length} agents n'implémentent pas toutes les interfaces requises`
+    );
   }
 
   // Générer le rapport de vérification
-  logger.info("Génération du rapport de vérification...");
+  logger.info('Génération du rapport de vérification...');
   const result: VerificationResult = {
     directoryStructure,
     migrationStatus,
     agentAudit,
-    interfaceImplementation
+    interfaceImplementation,
   };
 
   await generateVerificationReport(result);
 
-  logger.success(`Rapport de vérification généré: ${path.relative(WORKSPACE_ROOT, VERIFICATION_REPORT)}`);
+  logger.success(
+    `Rapport de vérification généré: ${path.relative(WORKSPACE_ROOT, VERIFICATION_REPORT)}`
+  );
 
   // Afficher un résumé final
-  if (directoryStructure.valid && migrationStatus.notMigrated.length === 0 && interfaceImplementation.missingImplementation.length === 0) {
-    logger.success("✅ Migration réussie! L'architecture en 3 couches est correctement implémentée.");
+  if (
+    directoryStructure.valid &&
+    migrationStatus.notMigrated.length === 0 &&
+    interfaceImplementation.missingImplementation.length === 0
+  ) {
+    logger.success(
+      "✅ Migration réussie! L'architecture en 3 couches est correctement implémentée."
+    );
   } else {
-    logger.warn("⚠️ Migration incomplète. Consultez le rapport pour les prochaines étapes.");
+    logger.warn('⚠️ Migration incomplète. Consultez le rapport pour les prochaines étapes.');
 
     // Afficher les statistiques de migration
-    const pctStructure = directoryStructure.missingDirs.length > 0 ?
-      Math.round((1 - directoryStructure.missingDirs.length / 14) * 100) : 100;
+    const pctStructure =
+      directoryStructure.missingDirs.length > 0
+        ? Math.round((1 - directoryStructure.missingDirs.length / 14) * 100)
+        : 100;
 
-    const pctMigrated = migrationStatus.total > 0 ?
-      Math.round((migrationStatus.migrated / migrationStatus.total) * 100) : 0;
+    const pctMigrated =
+      migrationStatus.total > 0
+        ? Math.round((migrationStatus.migrated / migrationStatus.total) * 100)
+        : 0;
 
-    const pctInterfaces = interfaceImplementation.total > 0 ?
-      Math.round((interfaceImplementation.implementsCorrectly / interfaceImplementation.total) * 100) : 0;
+    const pctInterfaces =
+      interfaceImplementation.total > 0
+        ? Math.round(
+            (interfaceImplementation.implementsCorrectly / interfaceImplementation.total) * 100
+          )
+        : 0;
 
     const totalPct = Math.round((pctStructure + pctMigrated + pctInterfaces) / 3);
 
@@ -315,7 +385,7 @@ async function main() {
 }
 
 // Exécuter la fonction principale
-main().catch(error => {
+main().catch((error) => {
   logger.error(`Erreur lors de la vérification: ${error.message}`);
   process.exit(1);
 });

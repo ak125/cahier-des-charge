@@ -501,9 +501,7 @@
       ]
     },
     "Merge Paths": {
-      "main": [
-        []
-      ]
+      "main": [[]]
     }
   },
   "active": true,

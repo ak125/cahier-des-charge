@@ -5,7 +5,4 @@
 
 import { BaseAgent } from './BaseAgent';
 
-export {
-  BaseAgent,
-};
-
+export { BaseAgent };

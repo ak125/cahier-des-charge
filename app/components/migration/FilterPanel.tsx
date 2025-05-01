@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 
 interface FilterPanelProps {
   categories: string[];
   statuses: string[];
   modules: string[];
-  debtRanges: Array<{min: number, max: number, label: string}>;
+  debtRanges: Array<{ min: number; max: number; label: string }>;
   onFilterChange: (filters: FilterState) => void;
 }
 
@@ -12,7 +12,7 @@ interface FilterState {
   categories: string[];
   statuses: string[];
   modules: string[];
-  debtRange: {min: number, max: number} | null;
+  debtRange: { min: number; max: number } | null;
   searchTerm: string;
 }
 
@@ -21,48 +21,48 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
   statuses,
   modules,
   debtRanges,
-  onFilterChange
+  onFilterChange,
 }) => {
   const [filters, setFilters] = useState<FilterState>({
     categories: [],
     statuses: [],
     modules: [],
     debtRange: null,
-    searchTerm: ""
+    searchTerm: '',
   });
 
   const handleCategoryChange = (category: string) => {
     const newCategories = filters.categories.includes(category)
-      ? filters.categories.filter(c => c !== category)
+      ? filters.categories.filter((c) => c !== category)
       : [...filters.categories, category];
-    
+
     updateFilters({ ...filters, categories: newCategories });
   };
 
   const handleStatusChange = (status: string) => {
     const newStatuses = filters.statuses.includes(status)
-      ? filters.statuses.filter(s => s !== status)
+      ? filters.statuses.filter((s) => s !== status)
       : [...filters.statuses, status];
-    
+
     updateFilters({ ...filters, statuses: newStatuses });
   };
 
   const handleModuleChange = (module: string) => {
     const newModules = filters.modules.includes(module)
-      ? filters.modules.filter(m => m !== module)
+      ? filters.modules.filter((m) => m !== module)
       : [...filters.modules, module];
-    
+
     updateFilters({ ...filters, modules: newModules });
   };
 
   const handleDebtRangeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const rangeValue = event.target.value;
-    if (rangeValue === "") {
+    if (rangeValue === '') {
       updateFilters({ ...filters, debtRange: null });
       return;
     }
-    
-    const [min, max] = rangeValue.split("-").map(Number);
+
+    const [min, max] = rangeValue.split('-').map(Number);
     updateFilters({ ...filters, debtRange: { min, max } });
   };
 
@@ -81,7 +81,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
       statuses: [],
       modules: [],
       debtRange: null,
-      searchTerm: ""
+      searchTerm: '',
     };
     setFilters(resetFilters);
     onFilterChange(resetFilters);
@@ -90,23 +90,34 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
   // Traduction des catégories
   const getCategoryLabel = (category: string) => {
     switch (category) {
-      case "business": return "Métier";
-      case "pivot": return "Pivot (N:N)";
-      case "technical": return "Technique";
-      default: return category;
+      case 'business':
+        return 'Métier';
+      case 'pivot':
+        return 'Pivot (N:N)';
+      case 'technical':
+        return 'Technique';
+      default:
+        return category;
     }
   };
 
   // Traduction des statuts
   const getStatusLabel = (status: string) => {
     switch (status) {
-      case "pending": return "En attente";
-      case "blocked": return "Bloquée";
-      case "in_progress": return "En cours";
-      case "migrated": return "Migrée";
-      case "validated": return "Validée";
-      case "ignored": return "Ignorée";
-      default: return status;
+      case 'pending':
+        return 'En attente';
+      case 'blocked':
+        return 'Bloquée';
+      case 'in_progress':
+        return 'En cours';
+      case 'migrated':
+        return 'Migrée';
+      case 'validated':
+        return 'Validée';
+      case 'ignored':
+        return 'Ignorée';
+      default:
+        return status;
     }
   };
 
@@ -114,10 +125,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
     <div className="filter-panel">
       <div className="filter-header">
         <h2>Filtres</h2>
-        <button 
-          className="clear-filters-btn"
-          onClick={clearFilters}
-        >
+        <button className="clear-filters-btn" onClick={clearFilters}>
           Réinitialiser
         </button>
       </div>
@@ -134,7 +142,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
       <div className="filter-section">
         <h3>Catégories</h3>
         <div className="filter-options">
-          {categories.map(category => (
+          {categories.map((category) => (
             <label key={category} className="filter-checkbox">
               <input
                 type="checkbox"
@@ -150,7 +158,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
       <div className="filter-section">
         <h3>Statut</h3>
         <div className="filter-options">
-          {statuses.map(status => (
+          {statuses.map((status) => (
             <label key={status} className="filter-checkbox">
               <input
                 type="checkbox"
@@ -166,7 +174,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
       <div className="filter-section">
         <h3>Modules</h3>
         <div className="filter-options">
-          {modules.map(module => (
+          {modules.map((module) => (
             <label key={module} className="filter-checkbox">
               <input
                 type="checkbox"
@@ -183,11 +191,11 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
         <h3>Niveau de Dette Technique</h3>
         <select
           className="debt-range-select"
-          value={filters.debtRange ? `${filters.debtRange.min}-${filters.debtRange.max}` : ""}
+          value={filters.debtRange ? `${filters.debtRange.min}-${filters.debtRange.max}` : ''}
           onChange={handleDebtRangeChange}
         >
           <option value="">Tous</option>
-          {debtRanges.map(range => (
+          {debtRanges.map((range) => (
             <option key={`${range.min}-${range.max}`} value={`${range.min}-${range.max}`}>
               {range.label}
             </option>

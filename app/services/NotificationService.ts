@@ -59,7 +59,7 @@ export class NotificationService {
     // On attend que tous les envois soient terminés
     const results = await Promise.all(promises);
     // Si au moins un envoi a réussi, on considère que c'est réussi
-    return results.some(result => result);
+    return results.some((result) => result);
   }
 
   /**
@@ -93,7 +93,7 @@ export class NotificationService {
     // On attend que tous les envois soient terminés
     const results = await Promise.all(promises);
     // Si au moins un envoi a réussi, on considère que c'est réussi
-    return results.some(result => result);
+    return results.some((result) => result);
   }
 
   /**
@@ -117,17 +117,17 @@ export class NotificationService {
               {
                 title: 'Catégorie',
                 value: this.formatCategory(alert.category),
-                short: true
+                short: true,
               },
               {
                 title: 'Type',
                 value: alert.type === 'degradation' ? 'Dégradation' : 'Amélioration',
-                short: true
-              }
+                short: true,
+              },
             ],
-            footer: `Détecté le ${new Date(alert.timestamp).toLocaleString()}`
-          }
-        ]
+            footer: `Détecté le ${new Date(alert.timestamp).toLocaleString()}`,
+          },
+        ],
       };
 
       // Ajout des valeurs précédentes et actuelles si disponibles
@@ -135,12 +135,12 @@ export class NotificationService {
         payload.attachments[0].fields.push({
           title: 'Avant',
           value: `${alert.previousValue}/100`,
-          short: true
+          short: true,
         });
         payload.attachments[0].fields.push({
           title: 'Après',
           value: `${alert.currentValue}/100`,
-          short: true
+          short: true,
         });
       }
 
@@ -148,14 +148,14 @@ export class NotificationService {
       if (alert.file) {
         payload.attachments[0].fields.push({
           title: 'Fichier',
-          value: alert.file
+          value: alert.file,
         });
       }
 
       await axios.post(this.config.slack.webhookUrl, payload);
       return true;
     } catch (error) {
-      console.error('Erreur lors de l\'envoi de l\'alerte vers Slack:', error);
+      console.error("Erreur lors de l'envoi de l'alerte vers Slack:", error);
       return false;
     }
   }
@@ -171,23 +171,23 @@ export class NotificationService {
       const facts = [
         {
           name: 'Catégorie',
-          value: this.formatCategory(alert.category)
+          value: this.formatCategory(alert.category),
         },
         {
           name: 'Type',
-          value: alert.type === 'degradation' ? 'Dégradation' : 'Amélioration'
-        }
+          value: alert.type === 'degradation' ? 'Dégradation' : 'Amélioration',
+        },
       ];
 
       // Ajout des valeurs précédentes et actuelles si disponibles
       if (alert.previousValue !== undefined && alert.currentValue !== undefined) {
         facts.push({
           name: 'Avant',
-          value: `${alert.previousValue}/100`
+          value: `${alert.previousValue}/100`,
         });
         facts.push({
           name: 'Après',
-          value: `${alert.currentValue}/100`
+          value: `${alert.currentValue}/100`,
         });
       }
 
@@ -195,7 +195,7 @@ export class NotificationService {
       if (alert.file) {
         facts.push({
           name: 'Fichier',
-          value: alert.file
+          value: alert.file,
         });
       }
 
@@ -209,8 +209,8 @@ export class NotificationService {
             activityTitle: `${emoji} Alerte de qualité`,
             activitySubtitle: alert.message,
             facts: facts,
-            markdown: true
-          }
+            markdown: true,
+          },
         ],
         potentialAction: [
           {
@@ -219,17 +219,17 @@ export class NotificationService {
             targets: [
               {
                 os: 'default',
-                uri: 'https://example.com/dashboard/quality'
-              }
-            ]
-          }
-        ]
+                uri: 'https://example.com/dashboard/quality',
+              },
+            ],
+          },
+        ],
       };
 
       await axios.post(this.config.teams.webhookUrl, payload);
       return true;
     } catch (error) {
-      console.error('Erreur lors de l\'envoi de l\'alerte vers Microsoft Teams:', error);
+      console.error("Erreur lors de l'envoi de l'alerte vers Microsoft Teams:", error);
       return false;
     }
   }
@@ -237,13 +237,13 @@ export class NotificationService {
   /**
    * Envoie un email avec l'alerte
    */
-  private async sendEmail(alert: QualityAlert): Promise<boolean> {
+  private async sendEmail(_alert: QualityAlert): Promise<boolean> {
     try {
       // Utilisation de la bibliothèque nodemailer (à installer)
       // Cette implémentation est simplifiée, à adapter selon vos besoins
       return true;
     } catch (error) {
-      console.error('Erreur lors de l\'envoi de l\'email:', error);
+      console.error("Erreur lors de l'envoi de l'email:", error);
       return false;
     }
   }
@@ -254,8 +254,8 @@ export class NotificationService {
   private async sendMultipleToSlack(alerts: QualityAlert[]): Promise<boolean> {
     try {
       // Compteurs pour le résumé
-      const degradations = alerts.filter(a => a.type === 'degradation').length;
-      const improvements = alerts.filter(a => a.type === 'improvement').length;
+      const degradations = alerts.filter((a) => a.type === 'degradation').length;
+      const improvements = alerts.filter((a) => a.type === 'improvement').length;
 
       const payload = {
         channel: this.config.slack.channel,
@@ -269,16 +269,16 @@ export class NotificationService {
               {
                 title: 'Dégradations',
                 value: degradations,
-                short: true
+                short: true,
               },
               {
                 title: 'Améliorations',
                 value: improvements,
-                short: true
-              }
-            ]
-          }
-        ]
+                short: true,
+              },
+            ],
+          },
+        ],
       };
 
       // Ajouter les 5 alertes les plus critiques (dégradations d'abord)
@@ -288,14 +288,14 @@ export class NotificationService {
         return 0;
       });
 
-      sortedAlerts.slice(0, 5).forEach(alert => {
+      sortedAlerts.slice(0, 5).forEach((alert) => {
         const color = alert.type === 'degradation' ? '#FF5252' : '#4CAF50';
         const emoji = alert.type === 'degradation' ? ':warning:' : ':chart_with_upwards_trend:';
 
         payload.attachments.push({
           color,
           text: `${emoji} *${alert.message}*\n_Catégorie: ${this.formatCategory(alert.category)}_`,
-          footer: `Détecté le ${new Date(alert.timestamp).toLocaleString()}`
+          footer: `Détecté le ${new Date(alert.timestamp).toLocaleString()}`,
         });
       });
 
@@ -303,14 +303,16 @@ export class NotificationService {
       if (alerts.length > 5) {
         payload.attachments.push({
           color: '#BBBBBB',
-          text: `<https://example.com/dashboard/quality|Voir les ${alerts.length - 5} autres alertes sur le tableau de bord>`
+          text: `<https://example.com/dashboard/quality|Voir les ${
+            alerts.length - 5
+          } autres alertes sur le tableau de bord>`,
         });
       }
 
       await axios.post(this.config.slack.webhookUrl, payload);
       return true;
     } catch (error) {
-      console.error('Erreur lors de l\'envoi des alertes vers Slack:', error);
+      console.error("Erreur lors de l'envoi des alertes vers Slack:", error);
       return false;
     }
   }
@@ -321,8 +323,8 @@ export class NotificationService {
   private async sendMultipleToTeams(alerts: QualityAlert[]): Promise<boolean> {
     try {
       // Compteurs pour le résumé
-      const degradations = alerts.filter(a => a.type === 'degradation').length;
-      const improvements = alerts.filter(a => a.type === 'improvement').length;
+      const degradations = alerts.filter((a) => a.type === 'degradation').length;
+      const improvements = alerts.filter((a) => a.type === 'improvement').length;
 
       const payload = {
         '@type': 'MessageCard',
@@ -334,19 +336,19 @@ export class NotificationService {
             activityTitle: '📊 Récapitulatif des alertes de qualité',
             facts: [
               {
-                name: 'Nombre d\'alertes',
-                value: alerts.length.toString()
+                name: "Nombre d'alertes",
+                value: alerts.length.toString(),
               },
               {
                 name: 'Dégradations',
-                value: degradations.toString()
+                value: degradations.toString(),
               },
               {
                 name: 'Améliorations',
-                value: improvements.toString()
-              }
-            ]
-          }
+                value: improvements.toString(),
+              },
+            ],
+          },
         ],
         potentialAction: [
           {
@@ -355,11 +357,11 @@ export class NotificationService {
             targets: [
               {
                 os: 'default',
-                uri: 'https://example.com/dashboard/quality'
-              }
-            ]
-          }
-        ]
+                uri: 'https://example.com/dashboard/quality',
+              },
+            ],
+          },
+        ],
       };
 
       // Ajouter les 5 alertes les plus critiques
@@ -372,10 +374,15 @@ export class NotificationService {
       if (sortedAlerts.length > 0) {
         const alertsSection = {
           title: 'Alertes principales',
-          text: sortedAlerts.slice(0, 5).map(alert => {
-            const emoji = alert.type === 'degradation' ? '⚠️' : '📈';
-            return `**${emoji} ${alert.message}**  \n_Catégorie: ${this.formatCategory(alert.category)}_  \n`;
-          }).join('\n\n')
+          text: sortedAlerts
+            .slice(0, 5)
+            .map((alert) => {
+              const emoji = alert.type === 'degradation' ? '⚠️' : '📈';
+              return `**${emoji} ${alert.message}**  \n_Catégorie: ${this.formatCategory(
+                alert.category
+              )}_  \n`;
+            })
+            .join('\n\n'),
         };
         payload.sections.push(alertsSection);
       }
@@ -383,7 +390,7 @@ export class NotificationService {
       await axios.post(this.config.teams.webhookUrl, payload);
       return true;
     } catch (error) {
-      console.error('Erreur lors de l\'envoi des alertes vers Microsoft Teams:', error);
+      console.error("Erreur lors de l'envoi des alertes vers Microsoft Teams:", error);
       return false;
     }
   }
@@ -391,13 +398,13 @@ export class NotificationService {
   /**
    * Envoie plusieurs alertes par email
    */
-  private async sendMultipleEmails(alerts: QualityAlert[]): Promise<boolean> {
+  private async sendMultipleEmails(_alerts: QualityAlert[]): Promise<boolean> {
     try {
       // Utilisation de la bibliothèque nodemailer (à installer)
       // Cette implémentation est simplifiée, à adapter selon vos besoins
       return true;
     } catch (error) {
-      console.error('Erreur lors de l\'envoi des emails:', error);
+      console.error("Erreur lors de l'envoi des emails:", error);
       return false;
     }
   }

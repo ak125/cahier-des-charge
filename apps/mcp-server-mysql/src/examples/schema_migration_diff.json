@@ -84,25 +84,18 @@
     {
       "type": "typeConversion",
       "description": "Convertir TINYINT(1) en Boolean dans Prisma pour une meilleure lisibilité",
-      "affectedColumns": [
-        "users.is_active"
-      ]
+      "affectedColumns": ["users.is_active"]
     },
     {
       "type": "dataLoss",
       "description": "Risque de perte de précision en utilisant Float pour des valeurs monétaires",
-      "affectedColumns": [
-        "products.price",
-        "orders.total_amount"
-      ],
+      "affectedColumns": ["products.price", "orders.total_amount"],
       "recommendation": "Utiliser Decimal dans Prisma au lieu de Float"
     },
     {
       "type": "missingData",
       "description": "Colonnes présentes dans Prisma mais absentes de MySQL",
-      "affectedColumns": [
-        "users.profile_picture"
-      ],
+      "affectedColumns": ["users.profile_picture"],
       "recommendation": "Ajouter ces colonnes à MySQL ou les supprimer de Prisma"
     }
   ],

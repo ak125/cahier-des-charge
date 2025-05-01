@@ -1,26 +1,42 @@
-import { json } from "@remix-run/node";
-import { useLoaderData, useFetcher } from "@remix-run/react";
+import { json } from '@remix-run/node';
+import { useFetcher, useLoaderData } from '@remix-run/react';
 import {
-  Card, Title, Text, Grid,
-  BarChart, LineChart, DonutChart,
-  Legend, AreaChart, Tab, TabGroup,
-  TabList, TabPanel, TabPanels,
+  AreaChart,
+  Badge,
+  BarChart,
+  Button,
+  Callout,
+  Card,
+  Color,
   DateRangePicker,
   DateRangePickerValue,
-  Select, SelectItem,
-  Table, TableHead, TableHeaderCell,
-  TableBody, TableRow, TableCell,
-  Badge, Button,
-  Color,
-  Callout
-} from "@tremor/react";
-import { useState, useEffect } from "react";
+  DonutChart,
+  Grid,
+  Legend,
+  LineChart,
+  Select,
+  SelectItem,
+  Tab,
+  TabGroup,
+  TabList,
+  TabPanel,
+  TabPanels,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeaderCell,
+  TableRow,
+  Text,
+  Title,
+} from '@tremor/react';
+import { useEffect, useState } from 'react';
 import {
-  loadPipelineAuditData,
-  type PipelineAuditData,
   type AuditReport,
-  type TraceSummary
-} from "../utils/auditDataService";
+  type PipelineAuditData,
+  type TraceSummary,
+  loadPipelineAuditData,
+} from '../utils/auditDataService';
 
 // Types déjà existants (laissés inchangés)
 interface AgentMetric {
@@ -84,168 +100,168 @@ export const loader = async () => {
   // 1. Métriques des agents
   const agentMetrics: AgentMetric[] = [
     {
-      date: "2025-04-16",
-      agent: "php-analyzer-agent",
+      date: '2025-04-16',
+      agent: 'php-analyzer-agent',
       executions: 32,
       successRate: 96.7,
       avgDuration: 1432,
       maxMemory: 245,
     },
     {
-      date: "2025-04-17",
-      agent: "php-analyzer-agent",
+      date: '2025-04-17',
+      agent: 'php-analyzer-agent',
       executions: 28,
       successRate: 92.8,
       avgDuration: 1567,
       maxMemory: 258,
     },
     {
-      date: "2025-04-18",
-      agent: "php-analyzer-agent",
+      date: '2025-04-18',
+      agent: 'php-analyzer-agent',
       executions: 35,
       successRate: 97.1,
       avgDuration: 1398,
       maxMemory: 240,
     },
     {
-      date: "2025-04-19",
-      agent: "php-analyzer-agent",
+      date: '2025-04-19',
+      agent: 'php-analyzer-agent',
       executions: 26,
       successRate: 95.4,
       avgDuration: 1425,
       maxMemory: 236,
     },
     {
-      date: "2025-04-20",
-      agent: "php-analyzer-agent",
+      date: '2025-04-20',
+      agent: 'php-analyzer-agent',
       executions: 29,
       successRate: 97.5,
       avgDuration: 1375,
       maxMemory: 235,
     },
     {
-      date: "2025-04-21",
-      agent: "php-analyzer-agent",
+      date: '2025-04-21',
+      agent: 'php-analyzer-agent',
       executions: 34,
       successRate: 98.2,
       avgDuration: 1296,
       maxMemory: 230,
     },
     {
-      date: "2025-04-22",
-      agent: "php-analyzer-agent",
+      date: '2025-04-22',
+      agent: 'php-analyzer-agent',
       executions: 38,
       successRate: 98.6,
       avgDuration: 1245,
       maxMemory: 228,
     },
     {
-      date: "2025-04-16",
-      agent: "remix-generator",
+      date: '2025-04-16',
+      agent: 'remix-generator',
       executions: 25,
       successRate: 88.5,
       avgDuration: 3250,
       maxMemory: 456,
     },
     {
-      date: "2025-04-17",
-      agent: "remix-generator",
+      date: '2025-04-17',
+      agent: 'remix-generator',
       executions: 22,
       successRate: 87.2,
       avgDuration: 3345,
       maxMemory: 478,
     },
     {
-      date: "2025-04-18",
-      agent: "remix-generator",
+      date: '2025-04-18',
+      agent: 'remix-generator',
       executions: 28,
       successRate: 89.7,
       avgDuration: 3215,
       maxMemory: 465,
     },
     {
-      date: "2025-04-19",
-      agent: "remix-generator",
+      date: '2025-04-19',
+      agent: 'remix-generator',
       executions: 19,
       successRate: 88.9,
       avgDuration: 3280,
       maxMemory: 470,
     },
     {
-      date: "2025-04-20",
-      agent: "remix-generator",
+      date: '2025-04-20',
+      agent: 'remix-generator',
       executions: 23,
       successRate: 90.1,
       avgDuration: 3190,
       maxMemory: 462,
     },
     {
-      date: "2025-04-21",
-      agent: "remix-generator",
+      date: '2025-04-21',
+      agent: 'remix-generator',
       executions: 26,
       successRate: 91.5,
       avgDuration: 3150,
       maxMemory: 455,
     },
     {
-      date: "2025-04-22",
-      agent: "remix-generator",
+      date: '2025-04-22',
+      agent: 'remix-generator',
       executions: 30,
       successRate: 93.2,
       avgDuration: 3100,
       maxMemory: 450,
     },
     {
-      date: "2025-04-16",
-      agent: "mysql-analyzer",
+      date: '2025-04-16',
+      agent: 'mysql-analyzer',
       executions: 18,
       successRate: 91.2,
       avgDuration: 2150,
       maxMemory: 320,
     },
     {
-      date: "2025-04-17",
-      agent: "mysql-analyzer",
+      date: '2025-04-17',
+      agent: 'mysql-analyzer',
       executions: 15,
       successRate: 90.5,
       avgDuration: 2210,
       maxMemory: 328,
     },
     {
-      date: "2025-04-18",
-      agent: "mysql-analyzer",
+      date: '2025-04-18',
+      agent: 'mysql-analyzer',
       executions: 20,
       successRate: 91.8,
       avgDuration: 2140,
       maxMemory: 322,
     },
     {
-      date: "2025-04-19",
-      agent: "mysql-analyzer",
+      date: '2025-04-19',
+      agent: 'mysql-analyzer',
       executions: 14,
       successRate: 92.3,
       avgDuration: 2120,
       maxMemory: 318,
     },
     {
-      date: "2025-04-20",
-      agent: "mysql-analyzer",
+      date: '2025-04-20',
+      agent: 'mysql-analyzer',
       executions: 16,
       successRate: 93.1,
       avgDuration: 2080,
       maxMemory: 315,
     },
     {
-      date: "2025-04-21",
-      agent: "mysql-analyzer",
+      date: '2025-04-21',
+      agent: 'mysql-analyzer',
       executions: 19,
       successRate: 94.5,
       avgDuration: 2050,
       maxMemory: 310,
     },
     {
-      date: "2025-04-22",
-      agent: "mysql-analyzer",
+      date: '2025-04-22',
+      agent: 'mysql-analyzer',
       executions: 22,
       successRate: 95.2,
       avgDuration: 2010,
@@ -272,43 +288,43 @@ export const loader = async () => {
   // 3. Métriques des migrations
   const migrationMetrics: MigrationMetric[] = [
     {
-      date: "2025-04-16",
+      date: '2025-04-16',
       completed: 12,
       failed: 2,
       active: 3,
     },
     {
-      date: "2025-04-17",
+      date: '2025-04-17',
       completed: 9,
       failed: 1,
       active: 5,
     },
     {
-      date: "2025-04-18",
+      date: '2025-04-18',
       completed: 15,
       failed: 3,
       active: 4,
     },
     {
-      date: "2025-04-19",
+      date: '2025-04-19',
       completed: 8,
       failed: 0,
       active: 2,
     },
     {
-      date: "2025-04-20",
+      date: '2025-04-20',
       completed: 11,
       failed: 1,
       active: 3,
     },
     {
-      date: "2025-04-21",
+      date: '2025-04-21',
       completed: 14,
       failed: 2,
       active: 6,
     },
     {
-      date: "2025-04-22",
+      date: '2025-04-22',
       completed: 17,
       failed: 1,
       active: 8,
@@ -318,42 +334,42 @@ export const loader = async () => {
   // Statistiques des agents agrégées
   const agentStats = [
     {
-      agent: "php-analyzer-agent",
+      agent: 'php-analyzer-agent',
       totalExecutions: 222,
       avgSuccessRate: 96.7,
       avgTime: 1391,
       avgMemory: 239,
     },
     {
-      agent: "remix-generator",
+      agent: 'remix-generator',
       totalExecutions: 173,
       avgSuccessRate: 89.9,
       avgTime: 3218,
       avgMemory: 462,
     },
     {
-      agent: "mysql-analyzer",
+      agent: 'mysql-analyzer',
       totalExecutions: 124,
       avgSuccessRate: 92.7,
       avgTime: 2109,
       avgMemory: 317,
     },
     {
-      agent: "seo-meta",
+      agent: 'seo-meta',
       totalExecutions: 98,
       avgSuccessRate: 99.1,
       avgTime: 945,
       avgMemory: 150,
     },
     {
-      agent: "ab-strategy-tester",
+      agent: 'ab-strategy-tester',
       totalExecutions: 54,
       avgSuccessRate: 100,
       avgTime: 5320,
       avgMemory: 540,
     },
     {
-      agent: "migration-orchestrator",
+      agent: 'migration-orchestrator',
       totalExecutions: 86,
       avgSuccessRate: 94.8,
       avgTime: 1850,
@@ -364,37 +380,37 @@ export const loader = async () => {
   // Données de performance par type de fichier
   const fileTypePerformance = [
     {
-      fileType: "PHP Controllers",
+      fileType: 'PHP Controllers',
       avgTime: 3120,
       successRate: 92,
       fileCount: 152,
     },
     {
-      fileType: "PHP Models",
+      fileType: 'PHP Models',
       avgTime: 2850,
       successRate: 95,
       fileCount: 78,
     },
     {
-      fileType: "PHP Views",
+      fileType: 'PHP Views',
       avgTime: 3450,
       successRate: 88,
       fileCount: 215,
     },
     {
-      fileType: "JavaScript",
+      fileType: 'JavaScript',
       avgTime: 1980,
       successRate: 96,
       fileCount: 124,
     },
     {
-      fileType: "CSS",
+      fileType: 'CSS',
       avgTime: 980,
       successRate: 99,
       fileCount: 67,
     },
     {
-      fileType: "SQL Schema",
+      fileType: 'SQL Schema',
       avgTime: 2150,
       successRate: 91,
       fileCount: 22,
@@ -403,12 +419,12 @@ export const loader = async () => {
 
   // Répartition des métriques de migration par catégorie
   const migrationCategories = [
-    { name: "UI Components", value: 35 },
-    { name: "Controllers", value: 25 },
-    { name: "Data Models", value: 22 },
-    { name: "API Endpoints", value: 18 },
-    { name: "CSS & Styling", value: 12 },
-    { name: "Assets", value: 8 },
+    { name: 'UI Components', value: 35 },
+    { name: 'Controllers', value: 25 },
+    { name: 'Data Models', value: 22 },
+    { name: 'API Endpoints', value: 18 },
+    { name: 'CSS & Styling', value: 12 },
+    { name: 'Assets', value: 8 },
   ];
 
   // Charger les données d'audit du pipeline
@@ -424,7 +440,7 @@ export const loader = async () => {
     migrationCategories,
 
     // Données d'audit du pipeline
-    ...pipelineAuditData
+    ...pipelineAuditData,
   });
 };
 
@@ -438,18 +454,18 @@ function formatDuration(ms: number): string {
 // Fonction pour déterminer la couleur du badge en fonction du statut
 function getStatusColor(status: string): Color {
   const statusColors: Record<string, Color> = {
-    "planned": "gray",
-    "detected": "blue",
-    "analyzed": "indigo",
-    "structured": "purple",
-    "generated": "violet",
-    "validated": "amber",
-    "integrated": "orange",
-    "completed": "green",
-    "in_progress": "cyan"
+    planned: 'gray',
+    detected: 'blue',
+    analyzed: 'indigo',
+    structured: 'purple',
+    generated: 'violet',
+    validated: 'amber',
+    integrated: 'orange',
+    completed: 'green',
+    in_progress: 'cyan',
   };
 
-  return statusColors[status] || "gray";
+  return statusColors[status] || 'gray';
 }
 
 export default function MetricsPage() {
@@ -469,28 +485,28 @@ export default function MetricsPage() {
         byType: {},
         missingAgents: {},
         ageDistribution: {},
-        completionRate: 0
-      }
+        completionRate: 0,
+      },
     },
     traceSummary = {
       timestamp: new Date().toISOString(),
       totalManifests: 0,
       tracesGenerated: 0,
       tracesWithMissing: 0,
-      completionPercentage: 0
+      completionPercentage: 0,
     },
     trendReport,
     missingAgentsData = [],
     statusDistribution = [],
-    lastUpdated = new Date()
+    lastUpdated = new Date(),
   } = useLoaderData<typeof loader>();
 
   const [dateRange, setDateRange] = useState<DateRangePickerValue>({
-    from: new Date("2025-04-16"),
-    to: new Date("2025-04-22"),
+    from: new Date('2025-04-16'),
+    to: new Date('2025-04-22'),
   });
 
-  const [selectedAgent, setSelectedAgent] = useState<string>("all");
+  const [selectedAgent, setSelectedAgent] = useState<string>('all');
   const [isAuditRunning, setIsAuditRunning] = useState(false);
 
   // Fetcher pour déclencher l'audit à la demande
@@ -498,9 +514,9 @@ export default function MetricsPage() {
 
   // Détecter lorsque l'audit est terminé
   useEffect(() => {
-    if (auditFetcher.state === "submitting") {
+    if (auditFetcher.state === 'submitting') {
       setIsAuditRunning(true);
-    } else if (auditFetcher.state === "idle" && auditFetcher.data) {
+    } else if (auditFetcher.state === 'idle' && auditFetcher.data) {
       setIsAuditRunning(false);
     }
   }, [auditFetcher.state, auditFetcher.data]);
@@ -508,48 +524,54 @@ export default function MetricsPage() {
   // Transformer les données pour les graphiques
 
   // Données pour le taux de réussite par agent
-  const successRateData = agentStats.map(stat => ({
+  const successRateData = agentStats.map((stat) => ({
     agent: stat.agent.replace('-agent', ''),
-    "Taux de réussite (%)": stat.avgSuccessRate
+    'Taux de réussite (%)': stat.avgSuccessRate,
   }));
 
   // Données pour le temps moyen d'exécution par agent
-  const executionTimeData = agentStats.map(stat => ({
+  const executionTimeData = agentStats.map((stat) => ({
     agent: stat.agent.replace('-agent', ''),
-    "Temps moyen (ms)": stat.avgTime
+    'Temps moyen (ms)': stat.avgTime,
   }));
 
   // Données pour le nombre d'exécutions par jour
-  const dailyExecutions = agentMetrics.reduce((acc, metric) => {
-    const existingDay = acc.find(day => day.date === metric.date);
-    if (existingDay) {
-      existingDay[metric.agent] = metric.executions;
-    } else {
-      const newDay: any = { date: metric.date };
-      newDay[metric.agent] = metric.executions;
-      acc.push(newDay);
-    }
-    return acc;
-  }, [] as any[]);
+  const dailyExecutions = agentMetrics.reduce(
+    (acc, metric) => {
+      const existingDay = acc.find((day) => day.date === metric.date);
+      if (existingDay) {
+        existingDay[metric.agent] = metric.executions;
+      } else {
+        const newDay: any = { date: metric.date };
+        newDay[metric.agent] = metric.executions;
+        acc.push(newDay);
+      }
+      return acc;
+    },
+    [] as any[]
+  );
 
   // Données pour les métriques système avec horodatage formaté
-  const formattedSystemMetrics = systemMetrics.map(metric => ({
+  const formattedSystemMetrics = systemMetrics.map((metric) => ({
     ...metric,
-    hour: metric.timestamp.split(' ')[1].split(':')[0] + 'h'
+    hour: `${metric.timestamp.split(' ')[1].split(':')[0]}h`,
   }));
 
   // Données pour le camembert des catégories de migration
-  const migrationCategoriesData = migrationCategories.map(category => ({
+  const migrationCategoriesData = migrationCategories.map((category) => ({
     name: category.name,
-    value: category.value
+    value: category.value,
   }));
 
   const handleRunAudit = () => {
     if (!isAuditRunning) {
-      auditFetcher.submit({}, {
-        method: "post",
-        action: "/api/pipeline-audit/trigger"
-      });
+      auditFetcher.submit(
+        {},
+        {
+          method: 'post',
+          action: '/api/pipeline-audit/trigger',
+        }
+      );
     }
   };
 
@@ -577,7 +599,7 @@ export default function MetricsPage() {
           className="max-w-xs"
         >
           <SelectItem value="all" text="Tous les agents" />
-          {agentStats.map(stat => (
+          {agentStats.map((stat) => (
             <SelectItem
               key={stat.agent}
               value={stat.agent}
@@ -605,8 +627,8 @@ export default function MetricsPage() {
                 <BarChart
                   data={successRateData}
                   index="agent"
-                  categories={["Taux de réussite (%)"]}
-                  colors={["green"]}
+                  categories={['Taux de réussite (%)']}
+                  colors={['green']}
                   valueFormatter={(value) => `${value.toFixed(1)}%`}
                   yAxisWidth={48}
                   className="mt-6 h-72"
@@ -618,8 +640,8 @@ export default function MetricsPage() {
                 <AreaChart
                   data={migrationMetrics}
                   index="date"
-                  categories={["completed", "failed", "active"]}
-                  colors={["green", "red", "blue"]}
+                  categories={['completed', 'failed', 'active']}
+                  colors={['green', 'red', 'blue']}
                   valueFormatter={(value) => value.toString()}
                   yAxisWidth={32}
                   className="mt-6 h-72"
@@ -633,7 +655,7 @@ export default function MetricsPage() {
                   category="value"
                   index="name"
                   valueFormatter={(value) => `${value}%`}
-                  colors={["slate", "violet", "indigo", "rose", "cyan", "amber"]}
+                  colors={['slate', 'violet', 'indigo', 'rose', 'cyan', 'amber']}
                   className="mt-6 h-72"
                 />
               </Card>
@@ -645,8 +667,8 @@ export default function MetricsPage() {
                 <LineChart
                   data={formattedSystemMetrics}
                   index="hour"
-                  categories={["cpuUsage", "memoryUsage"]}
-                  colors={["blue", "orange"]}
+                  categories={['cpuUsage', 'memoryUsage']}
+                  colors={['blue', 'orange']}
                   valueFormatter={(value) => `${value}%`}
                   yAxisWidth={40}
                   className="mt-6 h-72"
@@ -658,8 +680,8 @@ export default function MetricsPage() {
                 <BarChart
                   data={fileTypePerformance}
                   index="fileType"
-                  categories={["avgTime"]}
-                  colors={["blue"]}
+                  categories={['avgTime']}
+                  colors={['blue']}
                   valueFormatter={(value) => `${(value / 1000).toFixed(1)}s`}
                   yAxisWidth={48}
                   className="mt-6 h-72"
@@ -687,7 +709,10 @@ export default function MetricsPage() {
                     {agentStats.map((stat) => (
                       <tr key={stat.agent} className="border-b border-gray-100">
                         <td className="py-3 font-medium">
-                          {stat.agent.replace('-agent', '').replace('php-', 'PHP ').replace('-', ' ')}
+                          {stat.agent
+                            .replace('-agent', '')
+                            .replace('php-', 'PHP ')
+                            .replace('-', ' ')}
                         </td>
                         <td className="py-3 text-right">{stat.totalExecutions}</td>
                         <td className="py-3 text-right">{stat.avgSuccessRate.toFixed(1)}%</td>
@@ -706,8 +731,8 @@ export default function MetricsPage() {
                 <BarChart
                   data={executionTimeData}
                   index="agent"
-                  categories={["Temps moyen (ms)"]}
-                  colors={["blue"]}
+                  categories={['Temps moyen (ms)']}
+                  colors={['blue']}
                   valueFormatter={(value) => formatDuration(value)}
                   yAxisWidth={60}
                   className="mt-6 h-72"
@@ -719,19 +744,15 @@ export default function MetricsPage() {
                 <AreaChart
                   data={dailyExecutions}
                   index="date"
-                  categories={["php-analyzer-agent", "remix-generator", "mysql-analyzer"]}
-                  colors={["indigo", "violet", "cyan"]}
+                  categories={['php-analyzer-agent', 'remix-generator', 'mysql-analyzer']}
+                  colors={['indigo', 'violet', 'cyan']}
                   valueFormatter={(value) => value.toString()}
                   yAxisWidth={32}
                   className="mt-6 h-72"
                 />
                 <Legend
-                  categories={[
-                    "PHP Analyzer",
-                    "Remix Generator",
-                    "MySQL Analyzer"
-                  ]}
-                  colors={["indigo", "violet", "cyan"]}
+                  categories={['PHP Analyzer', 'Remix Generator', 'MySQL Analyzer']}
+                  colors={['indigo', 'violet', 'cyan']}
                   className="mt-4"
                 />
               </Card>
@@ -740,12 +761,12 @@ export default function MetricsPage() {
             <Card>
               <Title>Taux de Réussite par Jour</Title>
               <LineChart
-                data={agentMetrics.filter(m =>
-                  selectedAgent === "all" || m.agent === selectedAgent
+                data={agentMetrics.filter(
+                  (m) => selectedAgent === 'all' || m.agent === selectedAgent
                 )}
                 index="date"
-                categories={["successRate"]}
-                colors={["green"]}
+                categories={['successRate']}
+                colors={['green']}
                 valueFormatter={(value) => `${value.toFixed(1)}%`}
                 yAxisWidth={56}
                 className="mt-6 h-72"
@@ -761,8 +782,8 @@ export default function MetricsPage() {
                 <BarChart
                   data={migrationMetrics}
                   index="date"
-                  categories={["completed", "failed"]}
-                  colors={["green", "red"]}
+                  categories={['completed', 'failed']}
+                  colors={['green', 'red']}
                   stack
                   valueFormatter={(value) => value.toString()}
                   yAxisWidth={32}
@@ -777,7 +798,7 @@ export default function MetricsPage() {
                   index="fileType"
                   category="fileCount"
                   valueFormatter={(value) => `${value} fichiers`}
-                  colors={["slate", "violet", "indigo", "rose", "cyan", "amber"]}
+                  colors={['slate', 'violet', 'indigo', 'rose', 'cyan', 'amber']}
                   className="mt-6 h-72"
                 />
               </Card>
@@ -787,8 +808,8 @@ export default function MetricsPage() {
                 <BarChart
                   data={fileTypePerformance}
                   index="fileType"
-                  categories={["successRate"]}
-                  colors={["emerald"]}
+                  categories={['successRate']}
+                  colors={['emerald']}
                   valueFormatter={(value) => `${value}%`}
                   yAxisWidth={48}
                   className="mt-6 h-72"
@@ -805,7 +826,7 @@ export default function MetricsPage() {
                     category="value"
                     index="name"
                     valueFormatter={(value) => `${value}%`}
-                    colors={["slate", "violet", "indigo", "rose", "cyan", "amber"]}
+                    colors={['slate', 'violet', 'indigo', 'rose', 'cyan', 'amber']}
                     className="h-80"
                   />
                 </div>
@@ -816,7 +837,14 @@ export default function MetricsPage() {
                       <div
                         className="w-4 h-4 mr-2 rounded-full"
                         style={{
-                          backgroundColor: ["#64748b", "#8b5cf6", "#6366f1", "#f43f5e", "#06b6d4", "#f59e0b"][idx % 6]
+                          backgroundColor: [
+                            '#64748b',
+                            '#8b5cf6',
+                            '#6366f1',
+                            '#f43f5e',
+                            '#06b6d4',
+                            '#f59e0b',
+                          ][idx % 6],
                         }}
                       />
                       <span className="flex-1">{category.name}</span>
@@ -843,28 +871,28 @@ export default function MetricsPage() {
               <Card decoration="top" decorationColor="indigo">
                 <Text className="text-center text-gray-500">Utilisation CPU Maximum</Text>
                 <p className="text-center text-2xl font-semibold mt-2">
-                  {Math.max(...systemMetrics.map(m => m.cpuUsage))}%
+                  {Math.max(...systemMetrics.map((m) => m.cpuUsage))}%
                 </p>
               </Card>
 
               <Card decoration="top" decorationColor="orange">
                 <Text className="text-center text-gray-500">Utilisation Mémoire Maximum</Text>
                 <p className="text-center text-2xl font-semibold mt-2">
-                  {Math.max(...systemMetrics.map(m => m.memoryUsage))}%
+                  {Math.max(...systemMetrics.map((m) => m.memoryUsage))}%
                 </p>
               </Card>
 
               <Card decoration="top" decorationColor="cyan">
                 <Text className="text-center text-gray-500">Agents Actifs Maximum</Text>
                 <p className="text-center text-2xl font-semibold mt-2">
-                  {Math.max(...systemMetrics.map(m => m.activeAgents))}
+                  {Math.max(...systemMetrics.map((m) => m.activeAgents))}
                 </p>
               </Card>
 
               <Card decoration="top" decorationColor="amber">
                 <Text className="text-center text-gray-500">IO Disque Maximum</Text>
                 <p className="text-center text-2xl font-semibold mt-2">
-                  {Math.max(...systemMetrics.map(m => m.diskIo))} MB/s
+                  {Math.max(...systemMetrics.map((m) => m.diskIo))} MB/s
                 </p>
               </Card>
             </Grid>
@@ -875,15 +903,15 @@ export default function MetricsPage() {
                 <LineChart
                   data={formattedSystemMetrics}
                   index="hour"
-                  categories={["cpuUsage", "memoryUsage", "diskIo"]}
-                  colors={["blue", "orange", "amber"]}
+                  categories={['cpuUsage', 'memoryUsage', 'diskIo']}
+                  colors={['blue', 'orange', 'amber']}
                   valueFormatter={(value) => `${value}${value <= 100 ? '%' : ' MB/s'}`}
                   yAxisWidth={48}
                   className="mt-6 h-72"
                 />
                 <Legend
-                  categories={["CPU", "Mémoire", "IO Disque"]}
-                  colors={["blue", "orange", "amber"]}
+                  categories={['CPU', 'Mémoire', 'IO Disque']}
+                  colors={['blue', 'orange', 'amber']}
                   className="mt-4"
                 />
               </Card>
@@ -895,8 +923,8 @@ export default function MetricsPage() {
                 <AreaChart
                   data={formattedSystemMetrics}
                   index="hour"
-                  categories={["activeAgents"]}
-                  colors={["cyan"]}
+                  categories={['activeAgents']}
+                  colors={['cyan']}
                   valueFormatter={(value) => value.toString()}
                   showLegend={false}
                   yAxisWidth={32}
@@ -908,8 +936,12 @@ export default function MetricsPage() {
                 <Title>Corrélation Utilisation CPU et Mémoire</Title>
                 <div className="h-72 flex items-center justify-center p-6">
                   <div className="text-gray-500 text-center">
-                    <p className="mb-2">Graphique de corrélation détaillé disponible dans l'analyse complète</p>
-                    <p className="text-sm">Coefficient de corrélation: 0.87 (forte corrélation positive)</p>
+                    <p className="mb-2">
+                      Graphique de corrélation détaillé disponible dans l'analyse complète
+                    </p>
+                    <p className="text-sm">
+                      Coefficient de corrélation: 0.87 (forte corrélation positive)
+                    </p>
                   </div>
                 </div>
               </Card>
@@ -929,27 +961,21 @@ export default function MetricsPage() {
                 loading={isAuditRunning}
                 disabled={isAuditRunning}
               >
-                {isAuditRunning ? "Audit en cours..." : "Lancer l'audit"}
+                {isAuditRunning ? 'Audit en cours...' : "Lancer l'audit"}
               </Button>
             </div>
 
-            {auditFetcher.data && auditFetcher.data.success && (
-              <Callout
-                title="Audit terminé avec succès"
-                color="green"
-                className="mb-6"
-              >
-                L'audit du pipeline a été exécuté avec succès. Rafraîchissez la page pour voir les résultats mis à jour.
+            {auditFetcher.data?.success && (
+              <Callout title="Audit terminé avec succès" color="green" className="mb-6">
+                L'audit du pipeline a été exécuté avec succès. Rafraîchissez la page pour voir les
+                résultats mis à jour.
               </Callout>
             )}
 
             {auditFetcher.data && !auditFetcher.data.success && (
-              <Callout
-                title="Erreur lors de l'audit"
-                color="red"
-                className="mb-6"
-              >
-                {auditFetcher.data.message || "Une erreur est survenue lors de l'exécution de l'audit du pipeline."}
+              <Callout title="Erreur lors de l'audit" color="red" className="mb-6">
+                {auditFetcher.data.message ||
+                  "Une erreur est survenue lors de l'exécution de l'audit du pipeline."}
               </Callout>
             )}
 
@@ -990,25 +1016,39 @@ export default function MetricsPage() {
                 <LineChart
                   data={trendReport.data.dates.map((date, index) => ({
                     date,
-                    "Taux de complétion (%)": trendReport.data.completionRates[index],
-                    "Problèmes": trendReport.data.issuesCounts[index],
+                    'Taux de complétion (%)': trendReport.data.completionRates[index],
+                    Problèmes: trendReport.data.issuesCounts[index],
                   }))}
                   index="date"
-                  categories={["Taux de complétion (%)", "Problèmes"]}
-                  colors={["emerald", "rose"]}
+                  categories={['Taux de complétion (%)', 'Problèmes']}
+                  colors={['emerald', 'rose']}
                   valueFormatter={(value, category) =>
-                    category === "Taux de complétion (%)" ? `${value}%` : `${value}`
+                    category === 'Taux de complétion (%)' ? `${value}%` : `${value}`
                   }
                   yAxisWidth={56}
                   className="mt-6 h-72"
                 />
                 <div className="mt-4 border-t pt-4">
                   <div className="flex gap-4">
-                    <div className={`${trendReport.analysis.improvingCompletionRate ? 'text-emerald-600' : 'text-amber-600'}`}>
+                    <div
+                      className={`${
+                        trendReport.analysis.improvingCompletionRate
+                          ? 'text-emerald-600'
+                          : 'text-amber-600'
+                      }`}
+                    >
                       <span className="font-medium">Tendance complétion: </span>
-                      {trendReport.analysis.improvingCompletionRate ? 'En amélioration' : 'En baisse'}
+                      {trendReport.analysis.improvingCompletionRate
+                        ? 'En amélioration'
+                        : 'En baisse'}
                     </div>
-                    <div className={`${trendReport.analysis.decreasingIssues ? 'text-emerald-600' : 'text-amber-600'}`}>
+                    <div
+                      className={`${
+                        trendReport.analysis.decreasingIssues
+                          ? 'text-emerald-600'
+                          : 'text-amber-600'
+                      }`}
+                    >
                       <span className="font-medium">Tendance problèmes: </span>
                       {trendReport.analysis.decreasingIssues ? 'En baisse' : 'En hausse'}
                     </div>
@@ -1024,8 +1064,8 @@ export default function MetricsPage() {
                   <BarChart
                     data={missingAgentsData}
                     index="agent"
-                    categories={["count"]}
-                    colors={["rose"]}
+                    categories={['count']}
+                    colors={['rose']}
                     valueFormatter={(value) => value.toString()}
                     yAxisWidth={32}
                     className="mt-6 h-72"
@@ -1045,7 +1085,16 @@ export default function MetricsPage() {
                     index="status"
                     category="count"
                     valueFormatter={(value) => `${value} migrations`}
-                    colors={["gray", "blue", "indigo", "purple", "violet", "amber", "orange", "green"]}
+                    colors={[
+                      'gray',
+                      'blue',
+                      'indigo',
+                      'purple',
+                      'violet',
+                      'amber',
+                      'orange',
+                      'green',
+                    ]}
                     className="mt-6 h-72"
                   />
                 ) : (
@@ -1060,26 +1109,26 @@ export default function MetricsPage() {
               <Title>Distribution des Âges par Statut</Title>
               <BarChart
                 data={[
-                  { status: "planned", "<3j": 2, "3-7j": 4, "7-14j": 3, ">14j": 3 },
-                  { status: "detected", "<3j": 3, "3-7j": 3, "7-14j": 2, ">14j": 0 },
-                  { status: "analyzed", "<3j": 5, "3-7j": 5, "7-14j": 4, ">14j": 1 },
-                  { status: "structured", "<3j": 4, "3-7j": 3, "7-14j": 2, ">14j": 1 },
-                  { status: "generated", "<3j": 6, "3-7j": 5, "7-14j": 2, ">14j": 1 },
-                  { status: "validated", "<3j": 4, "3-7j": 3, "7-14j": 2, ">14j": 0 },
-                  { status: "integrated", "<3j": 4, "3-7j": 2, "7-14j": 0, ">14j": 0 },
-                  { status: "completed", "<3j": 4, "3-7j": 3, "7-14j": 3, ">14j": 2 }
+                  { status: 'planned', '<3j': 2, '3-7j': 4, '7-14j': 3, '>14j': 3 },
+                  { status: 'detected', '<3j': 3, '3-7j': 3, '7-14j': 2, '>14j': 0 },
+                  { status: 'analyzed', '<3j': 5, '3-7j': 5, '7-14j': 4, '>14j': 1 },
+                  { status: 'structured', '<3j': 4, '3-7j': 3, '7-14j': 2, '>14j': 1 },
+                  { status: 'generated', '<3j': 6, '3-7j': 5, '7-14j': 2, '>14j': 1 },
+                  { status: 'validated', '<3j': 4, '3-7j': 3, '7-14j': 2, '>14j': 0 },
+                  { status: 'integrated', '<3j': 4, '3-7j': 2, '7-14j': 0, '>14j': 0 },
+                  { status: 'completed', '<3j': 4, '3-7j': 3, '7-14j': 3, '>14j': 2 },
                 ]}
                 index="status"
-                categories={["<3j", "3-7j", "7-14j", ">14j"]}
-                colors={["green", "amber", "orange", "red"]}
+                categories={['<3j', '3-7j', '7-14j', '>14j']}
+                colors={['green', 'amber', 'orange', 'red']}
                 stack
                 valueFormatter={(value) => `${value}`}
                 yAxisWidth={32}
                 className="mt-6 h-72"
               />
               <Legend
-                categories={["Moins de 3 jours", "3-7 jours", "7-14 jours", "Plus de 14 jours"]}
-                colors={["green", "amber", "orange", "red"]}
+                categories={['Moins de 3 jours', '3-7 jours', '7-14 jours', 'Plus de 14 jours']}
+                colors={['green', 'amber', 'orange', 'red']}
                 className="mt-4"
               />
             </Card>
@@ -1089,7 +1138,7 @@ export default function MetricsPage() {
                 <Title>Migrations avec Problèmes</Title>
 
                 {auditReport.issues.length > 0 && (
-                  <Badge size="md" color={auditReport.issues.length > 10 ? "red" : "amber"}>
+                  <Badge size="md" color={auditReport.issues.length > 10 ? 'red' : 'amber'}>
                     {auditReport.issues.length} problèmes
                   </Badge>
                 )}
@@ -1116,9 +1165,7 @@ export default function MetricsPage() {
                       <TableRow key={issue.id}>
                         <TableCell>{issue.id}</TableCell>
                         <TableCell>
-                          <Badge color={getStatusColor(issue.status)}>
-                            {issue.status}
-                          </Badge>
+                          <Badge color={getStatusColor(issue.status)}>{issue.status}</Badge>
                         </TableCell>
                         <TableCell>{issue.type || 'standard'}</TableCell>
                         <TableCell>{issue.age}</TableCell>

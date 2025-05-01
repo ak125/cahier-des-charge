@@ -42,8 +42,8 @@ const defaultSEOConfig: SEOConfig = {
   additionalMeta: {
     'twitter:card': 'summary_large_image',
     'og:type': 'website',
-    'og:site_name': 'Mon Site'
-  }
+    'og:site_name': 'Mon Site',
+  },
 };
 
 /**
@@ -56,7 +56,7 @@ export async function loadSEOData(slug: string, config: SEOConfig = defaultSEOCo
       const { createClient } = await import('@supabase/supabase-js');
       const supabaseUrl = process.env.SUPABASE_URL;
       const supabaseKey = process.env.SUPABASE_ANON_KEY;
-      
+
       if (supabaseUrl && supabaseKey) {
         const supabase = createClient(supabaseUrl, supabaseKey);
         const { data, error } = await supabase
@@ -64,13 +64,13 @@ export async function loadSEOData(slug: string, config: SEOConfig = defaultSEOCo
           .select('*')
           .eq('slug', slug)
           .single();
-        
+
         if (!error && data) {
           return data;
         }
       }
     }
-    
+
     // Fallback: charger depuis un fichier JSON
     if (config.seoDataPath) {
       const fs = await import('fs/promises');
@@ -78,10 +78,10 @@ export async function loadSEOData(slug: string, config: SEOConfig = defaultSEOCo
       const filePath = path.resolve(process.cwd(), config.seoDataPath);
       const fileContent = await fs.readFile(filePath, 'utf-8');
       const seoData = JSON.parse(fileContent);
-      
+
       return seoData[slug] || null;
     }
-    
+
     return null;
   } catch (error) {
     console.warn(`Impossible de charger les données SEO pour ${slug}:`, error);
@@ -92,35 +92,38 @@ export async function loadSEOData(slug: string, config: SEOConfig = defaultSEOCo
 /**
  * Crée la fonction meta pour une route Remix avec support canonique
  */
-export function createSEOMeta(options: SEOOptions = {}, config: SEOConfig = defaultSEOConfig): MetaFunction {
+export function createSEOMeta(
+  options: SEOOptions = {},
+  config: SEOConfig = defaultSEOConfig
+): MetaFunction {
   return ({ data, params, location }) => {
     // Récupérer les données SEO si elles existent
     const seoData = data?.seo || {};
-    
+
     // Variables pour stocker les métadonnées
     const title = seoData.title || options.data?.title || config.defaultTitle;
     const description = seoData.description || options.data?.description || '';
     const canonical = options.canonical || seoData.canonical || '';
-    
+
     // Construire l'URL canonique si elle n'est pas fournie
     const canonicalUrl = canonical || `${config.baseUrl}${location.pathname}`;
-    
+
     // Métadonnées de base
     const metaTags: Record<string, string>[] = [
       { title: config.titleTemplate ? config.titleTemplate.replace('{title}', title) : title },
-      { name: 'description', content: description }
+      { name: 'description', content: description },
     ];
-    
+
     // Ajouter la balise canonique
     metaTags.push(createCanonicalMeta(canonicalUrl));
-    
+
     // Ajouter les balises Open Graph
     metaTags.push(
       { property: 'og:title', content: title },
       { property: 'og:description', content: description },
       { property: 'og:url', content: canonicalUrl }
     );
-    
+
     // Ajouter les métadonnées supplémentaires de la configuration
     if (config.additionalMeta) {
       Object.entries(config.additionalMeta).forEach(([key, value]) => {
@@ -131,12 +134,12 @@ export function createSEOMeta(options: SEOOptions = {}, config: SEOConfig = defa
         }
       });
     }
-    
+
     // Ajouter les métadonnées personnalisées
     if (options.meta) {
       metaTags.push(...options.meta);
     }
-    
+
     return metaTags;
   };
 }
@@ -147,10 +150,10 @@ export function createSEOMeta(options: SEOOptions = {}, config: SEOConfig = defa
 export function generateSEO(options: SEOOptions = {}) {
   // Récupérer les données du loader si elles existent
   const data = useLoaderData();
-  
+
   // Configuration adaptée au template
-  let config = { ...defaultSEOConfig };
-  
+  const config = { ...defaultSEOConfig };
+
   // Adapter la configuration selon le template
   if (options.template) {
     switch (options.template) {
@@ -163,10 +166,13 @@ export function generateSEO(options: SEOOptions = {}) {
       // Autres templates...
     }
   }
-  
+
   // Créer les méta-balises
-  const meta = createSEOMeta(options, config)({ data, params: {}, location: { pathname: window.location.pathname } });
-  
+  const meta = createSEOMeta(
+    options,
+    config
+  )({ data, params: {}, location: { pathname: window.location.pathname } });
+
   return meta;
 }
 
@@ -177,22 +183,23 @@ export function createSEOLoader(loaderFn: (args: LoaderFunctionArgs) => Promise<
   return async (args: LoaderFunctionArgs) => {
     // Exécuter le loader original
     const result = await loaderFn(args);
-    
+
     // Si le résultat est un objet Response, on ne peut pas y ajouter de données
     if (result instanceof Response) {
       return result;
     }
-    
+
     // Déterminer le slug à utiliser pour les données SEO
-    const slug = args.params.slug || args.params.id || args.request.url.split('/').pop()?.split('?')[0] || '';
-    
+    const slug =
+      args.params.slug || args.params.id || args.request.url.split('/').pop()?.split('?')[0] || '';
+
     // Charger les données SEO
     const seoData = await loadSEOData(slug);
-    
+
     // Ajouter les données SEO au résultat
     return {
       ...result,
-      seo: seoData
+      seo: seoData,
     };
   };
 }

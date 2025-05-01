@@ -8,8 +8,8 @@ import { AnalyzerAgent } from '@workspaces/cahier-des-charge/src/core/interfaces
  * - Analyse le surusage de NULL
  */
 
-import { MySQLSchema, TableInfo, ColumnInfo, DebtScore, FieldRenamingSuggestion } from '../models/schema';
 import { BaseAgent, BusinessAgent } from '../core/interfaces/BaseAgent';
+import { ColumnInfo, DebtScore, FieldRenamingSuggestion, MySQLSchema, TableInfo } from '../models/schema';
 
 
 export class DebtDetector implements BaseAgent, BusinessAgent, BaseAgent, BusinessAgent , AnalyzerAgent{

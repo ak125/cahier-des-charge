@@ -1,1 +1,6 @@
-{"agent": "migration-strategist", "status": "SKIPPED", "message": "Fichier de test non trouvé", "timestamp": "2025-04-20T04:18:55+00:00"}
+{
+  "agent": "migration-strategist",
+  "status": "SKIPPED",
+  "message": "Fichier de test non trouvé",
+  "timestamp": "2025-04-20T04:18:55+00:00"
+}

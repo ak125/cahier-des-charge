@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
-import { JobListenerService } from './job.listener';
 import { RedisModule } from '../redis/redis.module';
+import { JobListenerService } from './job.listener';
 
 @Module({
   imports: [RedisModule],
   providers: [JobListenerService],
-  exports: []
+  exports: [],
 })
 export class ListenersModule {}

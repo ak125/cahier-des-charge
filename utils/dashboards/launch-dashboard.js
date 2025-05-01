@@ -25,7 +25,7 @@ const env = Object.assign({}, process.env, {
   DASHBOARD_PORT: MIGRATION_PORT,
   AUDIT_DASHBOARD_PORT: AUDIT_PORT,
   AGENTS_DASHBOARD_PORT: AGENTS_PORT,
-  UNIFIED_DASHBOARD_PORT: UNIFIED_PORT
+  UNIFIED_DASHBOARD_PORT: UNIFIED_PORT,
 });
 
 /**
@@ -56,9 +56,21 @@ function isPortAvailable(port) {
  * @returns {Promise<boolean>} - true si le port a été libéré, false sinon
  */
 function killProcessOnPort(port) {
-  return new Promise(async (resolve) => {
+  return new Promise((resolve) => {
     try {
       console.log(chalk.yellow(`🔄 Nettoyage du port ${port}...`));
+
+      // Fonction auxiliaire pour vérifier si le port est disponible
+      const checkPortAvailability = async () => {
+        await new Promise((r) => setTimeout(r, 1000));
+        const available = await isPortAvailable(port);
+        if (available) {
+          console.log(chalk.green(`✅ Port ${port} libéré avec succès!`));
+          resolve(true);
+          return true;
+        }
+        return false;
+      };
 
       // Essayons plusieurs méthodes pour tuer les processus, avec et sans sudo
       const commands = [
@@ -77,51 +89,47 @@ function killProcessOnPort(port) {
         `sudo kill $(sudo lsof -t -i:${port}) 2>/dev/null`,
 
         // 5. Avec sudo (méthode radicale)
-        `sudo ss -lptn 'sport = :${port}' | grep -oP '(?<=pid=)\\d+' | xargs -r sudo kill -9`
+        `sudo ss -lptn 'sport = :${port}' | grep -oP '(?<=pid=)\\d+' | xargs -r sudo kill -9`,
       ];
 
       // Essayer chaque commande séquentiellement jusqu'à ce qu'une fonctionne
-      for (const cmd of commands) {
-        try {
-          console.log(chalk.yellow(`Tentative de libération du port ${port} avec: ${cmd.split(' ')[0]}...`));
+      (async () => {
+        for (const cmd of commands) {
+          try {
+            console.log(
+              chalk.yellow(`Tentative de libération du port ${port} avec: ${cmd.split(' ')[0]}...`)
+            );
 
-          // Exécuter la commande de façon synchrone pour plus de fiabilité
-          exec(cmd, { timeout: 5000 }, async () => {
-            // Vérifions si le port est maintenant disponible
-            await new Promise(r => setTimeout(r, 1000));
-            const available = await isPortAvailable(port);
+            // Exécuter la commande de façon synchrone pour plus de fiabilité
+            exec(cmd, { timeout: 5000 }, async () => {
+              // Vérifions si le port est maintenant disponible
+              const available = await checkPortAvailability();
+              if (available) return;
+            });
 
-            if (available) {
-              console.log(chalk.green(`✅ Port ${port} libéré avec succès!`));
-              return resolve(true);
-            }
-          });
-
-          // Attendons un peu entre chaque tentative
-          await new Promise(r => setTimeout(r, 2000));
-          const available = await isPortAvailable(port);
-          if (available) {
-            console.log(chalk.green(`✅ Port ${port} libéré avec succès!`));
-            return resolve(true);
+            // Attendons un peu entre chaque tentative
+            await new Promise((r) => setTimeout(r, 2000));
+            const available = await checkPortAvailability();
+            if (available) return;
+          } catch (_cmdError) {
+            // Continuer avec la prochaine commande si celle-ci échoue
+            console.log(chalk.yellow(`La commande n'a pas fonctionné, essai suivant...`));
           }
-
-        } catch (cmdError) {
-          // Continuer avec la prochaine commande si celle-ci échoue
-          console.log(chalk.yellow(`La commande n'a pas fonctionné, essai suivant...`));
         }
-      }
 
-      // Dernière vérification
-      const finalCheck = await isPortAvailable(port);
-      if (finalCheck) {
-        console.log(chalk.green(`✅ Port ${port} finalement libéré avec succès!`));
-        return resolve(true);
-      }
+        // Dernière vérification
+        const finalCheck = await isPortAvailable(port);
+        if (finalCheck) {
+          console.log(chalk.green(`✅ Port ${port} finalement libéré avec succès!`));
+          return resolve(true);
+        }
 
-      // Si nous sommes ici, aucune commande n'a fonctionné
-      console.log(chalk.red(`❌ Impossible de libérer le port ${port} après plusieurs tentatives.`));
-      resolve(false);
-
+        // Si nous sommes ici, aucune commande n'a fonctionné
+        console.log(
+          chalk.red(`❌ Impossible de libérer le port ${port} après plusieurs tentatives.`)
+        );
+        resolve(false);
+      })();
     } catch (error) {
       console.error(chalk.red(`❌ Erreur lors du nettoyage du port ${port}: ${error.message}`));
       resolve(false);
@@ -148,11 +156,14 @@ async function startProcess(command, args, name, port) {
 
       // Vérifier à nouveau si le port est disponible après le nettoyage
       if (!portFreed) {
-        console.log(chalk.red(`❌ Impossible de libérer le port ${port}. Le tableau de bord ${name} ne sera pas lancé.`));
+        console.log(
+          chalk.red(
+            `❌ Impossible de libérer le port ${port}. Le tableau de bord ${name} ne sera pas lancé.`
+          )
+        );
         return null;
-      } else {
-        console.log(chalk.green(`✅ Port ${port} libéré avec succès.`));
       }
+      console.log(chalk.green(`✅ Port ${port} libéré avec succès.`));
     }
 
     return new Promise((resolve, reject) => {
@@ -163,8 +174,8 @@ async function startProcess(command, args, name, port) {
         shell: true,
         env: {
           ...env,
-          PORT: port.toString()
-        }
+          PORT: port.toString(),
+        },
       });
 
       // Attendre quelques secondes pour s'assurer que le serveur a démarré
@@ -174,19 +185,25 @@ async function startProcess(command, args, name, port) {
       }, 3000);
 
       childProcess.on('error', (error) => {
-        console.error(chalk.red(`❌ Erreur lors du lancement du tableau de bord ${name}: ${error.message}`));
+        console.error(
+          chalk.red(`❌ Erreur lors du lancement du tableau de bord ${name}: ${error.message}`)
+        );
         reject(error);
       });
 
       childProcess.on('exit', (code) => {
         if (code !== 0 && code !== null) {
-          console.error(chalk.red(`❌ Le tableau de bord ${name} s'est arrêté avec le code ${code}`));
+          console.error(
+            chalk.red(`❌ Le tableau de bord ${name} s'est arrêté avec le code ${code}`)
+          );
           reject(new Error(`Processus terminé avec le code ${code}`));
         }
       });
     });
   } catch (error) {
-    console.error(chalk.red(`❌ Erreur lors du démarrage du tableau de bord ${name}: ${error.message}`));
+    console.error(
+      chalk.red(`❌ Erreur lors du démarrage du tableau de bord ${name}: ${error.message}`)
+    );
     return null;
   }
 }
@@ -208,26 +225,34 @@ async function startAllDashboards() {
       killProcessOnPort(MIGRATION_PORT),
       killProcessOnPort(AUDIT_PORT),
       killProcessOnPort(AGENTS_PORT),
-      killProcessOnPort(UNIFIED_PORT)
+      killProcessOnPort(UNIFIED_PORT),
     ];
 
     const cleanupResults = await Promise.all(cleanupPromises);
-    const allPortsClean = cleanupResults.every(result => result === true);
+    const allPortsClean = cleanupResults.every((result) => result === true);
 
     if (!allPortsClean) {
-      console.log(chalk.yellow('⚠️ Certains ports n\'ont pas pu être nettoyés. Tentative de lancement quand même...'));
+      console.log(
+        chalk.yellow(
+          "⚠️ Certains ports n'ont pas pu être nettoyés. Tentative de lancement quand même..."
+        )
+      );
     } else {
       console.log(chalk.green('✅ Tous les ports ont été nettoyés avec succès.'));
     }
 
     // Fonction pour attendre avant de passer au prochain dashboard
-    const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+    const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
     // Fonction personnalisée pour démarrer un processus sans toucher aux ports actifs
     const safeStartProcess = async (command, args, name, port) => {
       // Si le port est déjà utilisé par un de nos processus, ne pas le lancer
       if (activePortsToSkip.has(port)) {
-        console.log(chalk.yellow(`⚠️ Le port ${port} est déjà utilisé par un autre tableau de bord. Le tableau de bord ${name} ne sera pas lancé.`));
+        console.log(
+          chalk.yellow(
+            `⚠️ Le port ${port} est déjà utilisé par un autre tableau de bord. Le tableau de bord ${name} ne sera pas lancé.`
+          )
+        );
         return null;
       }
 
@@ -240,11 +265,14 @@ async function startAllDashboards() {
 
         // Vérifier à nouveau si le port est disponible après le nettoyage
         if (!portFreed) {
-          console.log(chalk.red(`❌ Impossible de libérer le port ${port}. Le tableau de bord ${name} ne sera pas lancé.`));
+          console.log(
+            chalk.red(
+              `❌ Impossible de libérer le port ${port}. Le tableau de bord ${name} ne sera pas lancé.`
+            )
+          );
           return null;
-        } else {
-          console.log(chalk.green(`✅ Port ${port} libéré avec succès.`));
         }
+        console.log(chalk.green(`✅ Port ${port} libéré avec succès.`));
       }
 
       return new Promise((resolve, reject) => {
@@ -255,8 +283,8 @@ async function startAllDashboards() {
           shell: true,
           env: {
             ...env,
-            PORT: port.toString()
-          }
+            PORT: port.toString(),
+          },
         });
 
         // Ajouter le port à la liste des ports actifs
@@ -264,19 +292,25 @@ async function startAllDashboards() {
 
         // Attendre quelques secondes pour s'assurer que le serveur a démarré
         setTimeout(() => {
-          console.log(chalk.green(`✅ Tableau de bord ${name} démarré sur http://localhost:${port}`));
+          console.log(
+            chalk.green(`✅ Tableau de bord ${name} démarré sur http://localhost:${port}`)
+          );
           resolve(childProcess);
         }, 3000);
 
         childProcess.on('error', (error) => {
-          console.error(chalk.red(`❌ Erreur lors du lancement du tableau de bord ${name}: ${error.message}`));
+          console.error(
+            chalk.red(`❌ Erreur lors du lancement du tableau de bord ${name}: ${error.message}`)
+          );
           activePortsToSkip.delete(port); // Retirer de la liste des ports actifs
           reject(error);
         });
 
         childProcess.on('exit', (code) => {
           if (code !== 0 && code !== null) {
-            console.error(chalk.red(`❌ Le tableau de bord ${name} s'est arrêté avec le code ${code}`));
+            console.error(
+              chalk.red(`❌ Le tableau de bord ${name} s'est arrêté avec le code ${code}`)
+            );
             activePortsToSkip.delete(port); // Retirer de la liste des ports actifs
             reject(new Error(`Processus terminé avec le code ${code}`));
           }
@@ -304,7 +338,7 @@ async function startAllDashboards() {
     }
 
     // Lancer le tableau de bord d'audit
-    console.log(chalk.yellow('🔄 Lancement du tableau de bord d\'audit...'));
+    console.log(chalk.yellow("🔄 Lancement du tableau de bord d'audit..."));
     const auditDashboard = await safeStartProcess(
       'node',
       ['-r', 'ts-node/register', 'agents/agent-audit.ts', '--dashboard'],
@@ -363,11 +397,11 @@ async function startAllDashboards() {
     // Résumé final
     if (dashboards.length > 0) {
       console.log(chalk.green('\n✅ Tableaux de bord lancés :'));
-      dashboards.forEach(dashboard => {
+      dashboards.forEach((dashboard) => {
         console.log(chalk.blue(`📊 ${dashboard.name}: http://localhost:${dashboard.port}`));
       });
     } else {
-      console.log(chalk.red('❌ Aucun tableau de bord n\'a pu être lancé.'));
+      console.log(chalk.red("❌ Aucun tableau de bord n'a pu être lancé."));
       process.exit(1);
     }
 
@@ -385,7 +419,6 @@ async function startAllDashboards() {
 
     // Éviter que le script ne se termine
     process.stdin.resume();
-
   } catch (error) {
     console.error(chalk.red(`❌ Erreur lors du lancement des tableaux de bord: ${error.message}`));
     process.exit(1);

@@ -3,9 +3,6 @@
  * Generated automatically on 2025-04-20
  */
 
-import { SqlAnalysisRunnerAgent } from ./SqlAnalysisRunnerAgentstructure-agent';
+import { SqlAnalysisRunnerAgent } from './SqlAnalysisRunnerAgent';
 
-export {
-  SqlAnalysisRunnerAgent,
-};
-
+export { SqlAnalysisRunnerAgent };

@@ -1,7 +1,7 @@
 /**
  * Htaccess Router Analyzer
  * Agent export file
- * 
+ *
  * Version corrigée: 2025-04-19
  */
 
@@ -32,37 +32,8 @@ export { HtaccessRouterAnalyzer };
 // Export par défaut de l'instance agent
 export default agent;
 
-
-
-
-
-
-
 import { BaseAgent } from '@workspaces/cahier-des-charge/src/core/interfaces/BaseAgent';
-import { BusinessAgent, AnalyzerAgent } from '@workspaces/cahier-des-charge/src/core/interfaces/business';
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+import {
+  AnalyzerAgent,
+  BusinessAgent,
+} from '@workspaces/cahier-des-charge/src/core/interfaces/business';

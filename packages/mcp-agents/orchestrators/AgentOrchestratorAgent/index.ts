@@ -5,7 +5,4 @@
 
 import { AgentOrchestratorAgent } from './AgentOrchestratorAgent';
 
-export {
-  AgentOrchestratorAgent,
-};
-
+export { AgentOrchestratorAgent };

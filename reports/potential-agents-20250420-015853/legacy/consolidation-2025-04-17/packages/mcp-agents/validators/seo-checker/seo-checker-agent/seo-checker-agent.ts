@@ -6,11 +6,11 @@ import { AbstractValidatorAgent } from '../AbstractValidator';
  * pour les sites Remix migrés depuis PHP
  */
 
-import { MCPAgent, AgentContext, AgentConfig } from '../packagesDoDotmcp-core';
-import { SEOChecker } from '../packagesDoDotmcp-agents/seo-checker/seo-checker';
+import { execSync } from 'child_process';
 import path from 'path';
 import fs from 'fs-extra';
-import { execSync } from 'child_process';
+import { SEOChecker } from '../packagesDoDotmcp-agents/seo-checker/seo-checker';
+import { AgentConfig, AgentContext, MCPAgent } from '../packagesDoDotmcp-core';
 
 interface SEOCheckerConfig extends AgentConfig {
   // Répertoires source et cible

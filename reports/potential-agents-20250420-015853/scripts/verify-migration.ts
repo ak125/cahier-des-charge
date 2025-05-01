@@ -9,10 +9,10 @@
  * 4. Génère un rapport de validation post-migration
  */
 
-import * as fs from 'fs-extra';
-import * as path from 'path';
 import { exec } from 'child_process';
+import * as path from 'path';
 import { promisify } from 'util';
+import * as fs from 'fs-extra';
 import LayeredAgentAuditor from '../packagesDoDotmcp-agents/tools/LayeredAgentAuditor/LayeredAgentAuditor';
 
 const execAsync = promisify(exec);

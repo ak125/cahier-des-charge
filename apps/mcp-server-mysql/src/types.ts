@@ -104,9 +104,17 @@ export interface SchemaDiff {
 
 // Changement dans un schéma
 export interface SchemaDiffChange {
-  type: 'table_added' | 'table_removed' | 'column_added' | 'column_removed' | 
-        'column_type_changed' | 'column_constraint_changed' | 'index_added' | 
-        'index_removed' | 'foreign_key_added' | 'foreign_key_removed';
+  type:
+    | 'table_added'
+    | 'table_removed'
+    | 'column_added'
+    | 'column_removed'
+    | 'column_type_changed'
+    | 'column_constraint_changed'
+    | 'index_added'
+    | 'index_removed'
+    | 'foreign_key_added'
+    | 'foreign_key_removed';
   tableName: string;
   columnName?: string;
   indexName?: string;

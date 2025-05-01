@@ -1,9 +1,9 @@
 /**
- *DoDotmcp
+ * DoDotmcp
  * Agent export file
  */
 
-import {DoDotmcp } from '.DoDotmcp-verifier.worker';
+import { DoDotmcp } from './DoDotmcp-verifier.worker';
 
-export {DoDotmcp };
-export defaultDoDotmcp;
+export { DoDotmcp };
+export default DoDotmcp;

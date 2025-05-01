@@ -4,13 +4,7 @@
   "taxonomySchema": {
     "layer": {
       "description": "Couche architecturale dans MCP OS",
-      "values": [
-        "orchestration",
-        "coordination",
-        "business",
-        "shared",
-        "unknown"
-      ]
+      "values": ["orchestration", "coordination", "business", "shared", "unknown"]
     },
     "domain": {
       "description": "Domaine fonctionnel",
@@ -30,15 +24,7 @@
     },
     "status": {
       "description": "État du fichier dans le cycle de vie",
-      "values": [
-        "active",
-        "developing",
-        "testing",
-        "stable",
-        "deprecated",
-        "legacy",
-        "unknown"
-      ]
+      "values": ["active", "developing", "testing", "stable", "deprecated", "legacy", "unknown"]
     }
   },
   "defaultClassification": {

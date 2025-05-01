@@ -38,13 +38,13 @@ export async function sendTeamsNotification(
 ): Promise<boolean> {
   // Récupérer l'URL du webhook
   const teamsWebhook = webhookUrl || process.env.TEAMS_WEBHOOK;
-  
+
   // Si aucune URL de webhook n'est fournie, retourner false
   if (!teamsWebhook) {
     console.warn('⚠️ Aucune URL de webhook Teams configurée. Notification ignorée.');
     return false;
   }
-  
+
   try {
     // Préparer les facts pour la carte Teams
     const facts = [];
@@ -55,71 +55,75 @@ export async function sendTeamsNotification(
         }
       }
     }
-    
+
     // Préparer la payload pour Teams (format Carte Adaptative)
     const payload = {
-      "@type": "MessageCard",
-      "@context": "http://schema.org/extensions",
-      "themeColor": options.themeColor || "0076D7", // Bleu par défaut
-      "summary": options.title || "Notification de Migration",
-      "title": options.title || "Pipeline de Migration PHP → NestJS + Remix",
-      "text": message,
-      "sections": options.sections || [],
-      "potentialAction": [
+      '@type': 'MessageCard',
+      '@context': 'http://schema.org/extensions',
+      themeColor: options.themeColor || '0076D7', // Bleu par défaut
+      summary: options.title || 'Notification de Migration',
+      title: options.title || 'Pipeline de Migration PHP → NestJS + Remix',
+      text: message,
+      sections: options.sections || [],
+      potentialAction: [
         {
-          "@type": "OpenUri",
-          "name": "Voir le Projet",
-          "targets": [
-            { "os": "default", "uri": "https:/DoDoDoDoDoDotgithub.com/votre-organisation/votre-projet" }
-          ]
-        }
-      ]
+          '@type': 'OpenUri',
+          name: 'Voir le Projet',
+          targets: [
+            {
+              os: 'default',
+              uri: 'https:/DoDoDoDoDoDotgithub.com/votre-organisation/votre-projet',
+            },
+          ],
+        },
+      ],
     };
-    
+
     // Ajouter un timestamp si demandé
     if (options.timestamp) {
       if (!payload.sections || payload.sections.length === 0) {
         payload.sections = [{}];
       }
-      
+
       if (!payload.sections[0].facts) {
         payload.sections[0].facts = [];
       }
-      
+
       payload.sections[0].facts.push({
-        name: "Horodatage",
-        value: new Date().toLocaleString()
+        name: 'Horodatage',
+        value: new Date().toLocaleString(),
       });
     }
-    
+
     // Ajouter un footer si demandé
     if (options.footer) {
       if (!payload.sections || payload.sections.length === 0) {
         payload.sections = [{}];
       }
-      
+
       payload.sections.push({
-        text: `<em>${options.footer}</em>`
+        text: `<em>${options.footer}</em>`,
       });
     }
-    
+
     // Envoyer la notification
     const response = await axios.post(teamsWebhook, payload, {
       headers: {
-        'Content-Type': 'application/json'
-      }
+        'Content-Type': 'application/json',
+      },
     });
-    
+
     // Vérifier si la notification a été envoyée avec succès
     if (response.status === 200) {
       console.log('✅ Notification Teams envoyée avec succès.');
       return true;
-    } else {
-      console.error(`❌ Erreur lors de l'envoi de la notification Teams: ${response.status} ${response.statusText}`);
-      return false;
     }
+    console.error(
+      `❌ Erreur lors de l'envoi de la notification Teams: ${response.status} ${response.statusText}`
+    );
+    return false;
   } catch (error) {
-    console.error('❌ Exception lors de l\'envoi de la notification Teams:', error);
+    console.error("❌ Exception lors de l'envoi de la notification Teams:", error);
     return false;
   }
 }
@@ -133,7 +137,7 @@ export async function sendTeamsMigrationStartNotification(
   webhookUrl?: string
 ): Promise<boolean> {
   return sendTeamsNotification(
-    `🚀 Démarrage de la migration PHP → NestJS + Remix`,
+    '🚀 Démarrage de la migration PHP → NestJS + Remix',
     {
       title: 'Migration Démarrée',
       themeColor: '2EB886', // Vert
@@ -142,20 +146,20 @@ export async function sendTeamsMigrationStartNotification(
           facts: [
             {
               name: 'Répertoire Source',
-              value: sourceDir
+              value: sourceDir,
             },
             {
               name: 'Mode',
-              value: mode
+              value: mode,
             },
             {
               name: 'État',
-              value: 'En cours'
-            }
-          ]
-        }
+              value: 'En cours',
+            },
+          ],
+        },
       ],
-      timestamp: true
+      timestamp: true,
     },
     webhookUrl
   );
@@ -177,7 +181,7 @@ export async function sendTeamsMigrationProgressNotification(
 ): Promise<boolean> {
   // Créer une barre de progression visuelle
   const progressBar = createProgressBar(progress);
-  
+
   return sendTeamsNotification(
     `⏳ Migration en cours: ${progress.toFixed(1)}% terminée`,
     {
@@ -188,28 +192,28 @@ export async function sendTeamsMigrationProgressNotification(
           facts: [
             {
               name: 'Répertoire Source',
-              value: sourceDir
+              value: sourceDir,
             },
             {
               name: 'Progression',
-              value: progressBar
+              value: progressBar,
             },
             {
               name: 'Fichiers Traités',
-              value: `${stats.filesProcessed}/${stats.totalFiles}`
+              value: `${stats.filesProcessed}/${stats.totalFiles}`,
             },
             {
               name: 'Succès',
-              value: `${stats.filesSucceeded}`
+              value: `${stats.filesSucceeded}`,
             },
             {
               name: 'Échecs',
-              value: `${stats.filesFailed}`
-            }
-          ]
-        }
+              value: `${stats.filesFailed}`,
+            },
+          ],
+        },
       ],
-      timestamp: true
+      timestamp: true,
     },
     webhookUrl
   );
@@ -233,10 +237,10 @@ export async function sendTeamsMigrationCompleteNotification(
 ): Promise<boolean> {
   // Formater la durée
   const duration = formatDuration(stats.duration);
-  
+
   return sendTeamsNotification(
-    success 
-      ? `✅ Migration terminée avec succès en ${duration}` 
+    success
+      ? `✅ Migration terminée avec succès en ${duration}`
       : `⚠️ Migration terminée avec des problèmes en ${duration}`,
     {
       title: success ? 'Migration Réussie' : 'Migration Terminée avec Avertissements',
@@ -246,36 +250,36 @@ export async function sendTeamsMigrationCompleteNotification(
           facts: [
             {
               name: 'Répertoire Source',
-              value: sourceDir
+              value: sourceDir,
             },
             {
               name: 'Répertoire Cible',
-              value: targetDir
+              value: targetDir,
             },
             {
               name: 'Durée',
-              value: duration
+              value: duration,
             },
             {
               name: 'Fichiers Traités',
-              value: `${stats.filesProcessed}/${stats.totalFiles}`
+              value: `${stats.filesProcessed}/${stats.totalFiles}`,
             },
             {
               name: 'Succès',
-              value: `${stats.filesSucceeded}`
+              value: `${stats.filesSucceeded}`,
             },
             {
               name: 'Échecs',
-              value: `${stats.filesFailed}`
+              value: `${stats.filesFailed}`,
             },
             {
               name: 'Taux de Réussite',
-              value: `${((stats.filesSucceeded / stats.totalFiles) * 100).toFixed(1)}%`
-            }
-          ]
-        }
+              value: `${((stats.filesSucceeded / stats.totalFiles) * 100).toFixed(1)}%`,
+            },
+          ],
+        },
       ],
-      timestamp: true
+      timestamp: true,
     },
     webhookUrl
   );
@@ -290,7 +294,7 @@ export async function sendTeamsMigrationErrorNotification(
   webhookUrl?: string
 ): Promise<boolean> {
   return sendTeamsNotification(
-    `❌ Erreur lors de la migration PHP → NestJS + Remix`,
+    '❌ Erreur lors de la migration PHP → NestJS + Remix',
     {
       title: 'Erreur de Migration',
       themeColor: 'E81123', // Rouge
@@ -299,16 +303,16 @@ export async function sendTeamsMigrationErrorNotification(
           facts: [
             {
               name: 'Répertoire Source',
-              value: sourceDir
+              value: sourceDir,
             },
             {
               name: 'Erreur',
-              value: error
-            }
-          ]
-        }
+              value: error,
+            },
+          ],
+        },
       ],
-      timestamp: true
+      timestamp: true,
     },
     webhookUrl
   );
@@ -326,7 +330,7 @@ export async function sendTeamsDesyncAlert(
     source: string;
     target: string;
     timestamp?: Date;
-    differences?: Array<{field: string, sourceValue: any, targetValue: any}>;
+    differences?: Array<{ field: string; sourceValue: any; targetValue: any }>;
   },
   webhookUrl?: string
 ): Promise<boolean> {
@@ -336,7 +340,7 @@ export async function sendTeamsDesyncAlert(
     case 'low':
       themeColor = '2EB886'; // Vert
       break;
-    case 'medium': 
+    case 'medium':
       themeColor = 'FFC107'; // Jaune
       break;
     case 'high':
@@ -346,40 +350,42 @@ export async function sendTeamsDesyncAlert(
       themeColor = 'E81123'; // Rouge
       break;
   }
-  
+
   // Préparer les facts avec les différences
   const facts = [
     {
-      name: 'Type d\'entité',
-      value: details.entityType
+      name: "Type d'entité",
+      value: details.entityType,
     },
     {
-      name: 'ID de l\'entité',
-      value: details.entityId
+      name: "ID de l'entité",
+      value: details.entityId,
     },
     {
       name: 'Sévérité',
-      value: `${getSeverityEmoji(details.severity)} ${details.severity.charAt(0).toUpperCase() + details.severity.slice(1)}`
+      value: `${getSeverityEmoji(details.severity)} ${
+        details.severity.charAt(0).toUpperCase() + details.severity.slice(1)
+      }`,
     },
     {
       name: 'Source',
-      value: details.source
+      value: details.source,
     },
     {
       name: 'Cible',
-      value: details.target
-    }
+      value: details.target,
+    },
   ];
-  
+
   // Ajouter les différences si elles existent
   let differencesText = '';
   if (details.differences && details.differences.length > 0) {
     differencesText = '**Différences détectées:**\n\n';
-    details.differences.forEach(diff => {
+    details.differences.forEach((diff) => {
       differencesText += `- **${diff.field}**: '${diff.sourceValue}' → '${diff.targetValue}'\n`;
     });
   }
-  
+
   return sendTeamsNotification(
     `🚨 ${message}`,
     {
@@ -387,14 +393,14 @@ export async function sendTeamsDesyncAlert(
       themeColor: themeColor,
       sections: [
         {
-          facts: facts
+          facts: facts,
         },
         {
-          text: differencesText
-        }
+          text: differencesText,
+        },
       ],
       timestamp: true,
-      footer: "Alerte générée automatiquement par le système de surveillance de désynchronisation"
+      footer: 'Alerte générée automatiquement par le système de surveillance de désynchronisation',
     },
     webhookUrl
   );
@@ -409,11 +415,13 @@ function createProgressBar(progress: number): string {
   const filledBar = '█';
   const emptyBar = '░';
   const barLength = 20;
-  
+
   const filledLength = Math.floor((progress / 100) * barLength);
   const emptyLength = barLength - filledLength;
-  
-  return `${filledBar.repeat(filledLength)}${emptyLength > 0 ? emptyBar.repeat(emptyLength) : ''} ${progress.toFixed(1)}%`;
+
+  return `${filledBar.repeat(filledLength)}${
+    emptyLength > 0 ? emptyBar.repeat(emptyLength) : ''
+  } ${progress.toFixed(1)}%`;
 }
 
 // Formate une durée en secondes en format lisible
@@ -421,16 +429,20 @@ function formatDuration(seconds: number): string {
   if (seconds < 60) {
     return `${seconds.toFixed(1)} seconde${seconds !== 1 ? 's' : ''}`;
   }
-  
+
   if (seconds < 3600) {
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = seconds % 60;
-    return `${minutes} minute${minutes !== 1 ? 's' : ''} ${remainingSeconds.toFixed(0)} seconde${remainingSeconds !== 1 ? 's' : ''}`;
+    return `${minutes} minute${minutes !== 1 ? 's' : ''} ${remainingSeconds.toFixed(0)} seconde${
+      remainingSeconds !== 1 ? 's' : ''
+    }`;
   }
-  
+
   const hours = Math.floor(seconds / 3600);
   const remainingMinutes = Math.floor((seconds % 3600) / 60);
-  return `${hours} heure${hours !== 1 ? 's' : ''} ${remainingMinutes} minute${remainingMinutes !== 1 ? 's' : ''}`;
+  return `${hours} heure${hours !== 1 ? 's' : ''} ${remainingMinutes} minute${
+    remainingMinutes !== 1 ? 's' : ''
+  }`;
 }
 
 // Renvoie un emoji représentant le niveau de sévérité
@@ -463,15 +475,15 @@ if (require.main === module) {
             facts: [
               {
                 name: 'Test',
-                value: 'Valeur de test'
-              }
-            ]
-          }
+                value: 'Valeur de test',
+              },
+            ],
+          },
         ],
-        timestamp: true
+        timestamp: true,
       }
     );
-    
+
     if (success) {
       console.log('✅ Test de notification Teams envoyé avec succès');
     } else {

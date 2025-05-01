@@ -4,47 +4,46 @@
  * Script pour mettre à jour les références technologiques dans le cahier des charges
  */
 
-const fs = require(fsstructure-agent').promises;
-const path = require(pathstructure-agent');
-const { execSync } = require(child_processstructure-agent');
-const chalk = require(chalkstructure-agent');
-const yargs = require(yargs/yargsstructure-agent');
-const { hideBin } = require(yargs/helpersstructure-agent');
-const readline = require(readlinestructure-agent');
+const fs = require('fsstructure-agent').promises;
+const path = require('pathstructure-agent');
+const { execSync } = require('child_processstructure-agent');
+const chalk = require('chalkstructure-agent');
+const yargs = require('yargs/yargsstructure-agent');
+const { hideBin } = require('yargs/helpersstructure-agent');
+const readline = require('readlinestructure-agent');
 
 const argv = yargs(hideBin(process.argv))
   .option('replace', {
     alias: 'r',
     description: 'Technologie à remplacer',
     type: 'string',
-    demandOption: true
+    demandOption: true,
   })
   .option('with', {
     alias: 'w',
     description: 'Technologie de remplacement',
     type: 'string',
-    demandOption: true
+    demandOption: true,
   })
   .option('files', {
     alias: 'f',
     description: 'Fichiers à modifier (glob pattern)',
-    type: 'string'
+    type: 'string',
   })
   .option('yes', {
     alias: 'y',
     description: 'Confirmer automatiquement les modifications',
     type: 'boolean',
-    default: false
+    default: false,
   })
   .option('context', {
     alias: 'c',
     description: 'Ajouter un contexte de migration',
     type: 'boolean',
-    default: true
+    default: true,
   })
   .help()
-  .alias('help', 'h')
-  .argv;
+  .alias('help', 'h').argv;
 
 const CDC_DIR = path.join(process.cwd(), 'cahier-des-charges');
 
@@ -54,34 +53,34 @@ const CDC_DIR = path.join(process.cwd(), 'cahier-des-charges');
 async function main() {
   try {
     console.log(chalk.blue(`🔄 Mise à jour de la technologie: ${argv.replace} → ${argv.with}`));
-    
+
     let filesToProcess = [];
-    
+
     if (argv.files) {
       // Si un pattern de fichiers est fourni
-      const glob = require(globstructure-agent');
+      const glob = require('globstructure-agent');
       filesToProcess = glob.sync(argv.files);
     } else {
       // Sinon, rechercher dans tous les fichiers markdown
       filesToProcess = await findFilesWithTech(CDC_DIR, argv.replace);
     }
-    
+
     if (filesToProcess.length === 0) {
       console.log(chalk.yellow(`⚠️ Aucun fichier trouvé contenant '${argv.replace}'`));
       process.exit(0);
     }
-    
+
     console.log(chalk.blue(`📁 ${filesToProcess.length} fichiers à traiter:`));
-    filesToProcess.forEach(file => console.log(`  - ${file}`));
-    
+    filesToProcess.forEach((file) => console.log(`  - ${file}`));
+
     if (!argv.yes) {
-      const confirmed = await confirmAction(`Voulez-vous continuer? [y/N] `);
+      const confirmed = await confirmAction('Voulez-vous continuer? [y/N] ');
       if (!confirmed) {
         console.log(chalk.yellow('⚠️ Opération annulée'));
         process.exit(0);
       }
     }
-    
+
     // Traiter chaque fichier
     let updatedFiles = 0;
     for (const file of filesToProcess) {
@@ -90,12 +89,12 @@ async function main() {
         updatedFiles++;
       }
     }
-    
+
     console.log(chalk.green(`✅ Mise à jour terminée: ${updatedFiles} fichiers modifiés`));
-    
+
     // Mise à jour du changelog
     await updateChangelog(argv.replace, argv.with, updatedFiles);
-    
+
     process.exit(0);
   } catch (error) {
     console.error(chalk.red(`❌ Erreur: ${error.message}`));
@@ -109,17 +108,17 @@ async function main() {
 async function findFilesWithTech(dir, tech) {
   const files = [];
   const allFiles = await findMarkdownFiles(dir);
-  
+
   // Créer une expression régulière pour rechercher la technologie
   const techRegex = new RegExp(`\\b${escapeRegExp(tech)}\\b`, 'i');
-  
+
   for (const file of allFiles) {
     const content = await fs.readFile(file, 'utf8');
     if (techRegex.test(content)) {
       files.push(file);
     }
   }
-  
+
   return files;
 }
 
@@ -128,13 +127,13 @@ async function findFilesWithTech(dir, tech) {
  */
 async function findMarkdownFiles(dir) {
   const files = [];
-  
+
   async function scan(directory) {
     const entries = await fs.readdir(directory, { withFileTypes: true });
-    
+
     for (const entry of entries) {
       const fullPath = path.join(directory, entry.name);
-      
+
       if (entry.isDirectory()) {
         await scan(fullPath);
       } else if (entry.isFile() && entry.name.endsWith('.md')) {
@@ -142,7 +141,7 @@ async function findMarkdownFiles(dir) {
       }
     }
   }
-  
+
   await scan(dir);
   return files;
 }
@@ -153,19 +152,19 @@ async function findMarkdownFiles(dir) {
 async function updateTechInFile(filePath, oldTech, newTech) {
   let content = await fs.readFile(filePath, 'utf8');
   const originalContent = content;
-  
+
   // Créer une expression régulière pour rechercher la technologie
   const techRegex = new RegExp(`\\b${escapeRegExp(oldTech)}\\b`, 'gi');
-  
+
   // Compter les occurrences
   const matches = content.match(techRegex) || [];
   if (matches.length === 0) {
     return false;
   }
-  
+
   // Remplacer la technologie
   content = content.replace(techRegex, newTech);
-  
+
   // Ajouter un encadré de contexte si demandé
   if (argv.context && !content.includes('[!MIGRATION]')) {
     const migrationNote = `
@@ -173,24 +172,24 @@ async function updateTechInFile(filePath, oldTech, newTech) {
 > Ce document fait référence à la technologie **${newTech}**, qui remplace **${oldTech}** précédemment utilisée.
 > La migration a été effectuée le ${new Date().toLocaleDateString()} pour améliorer les performances et la maintenabilité.
 `;
-    
+
     // Insérer après le premier titre
     const titleMatch = content.match(/^# .*/m);
     if (titleMatch) {
       const index = titleMatch.index + titleMatch[0].length;
-      content = content.substring(0, index) + '\n' + migrationNote + content.substring(index);
+      content = `${content.substring(0, index)}\n${migrationNote}${content.substring(index)}`;
     } else {
       content = migrationNote + content;
     }
   }
-  
+
   // Écrire le contenu mis à jour
   if (content !== originalContent) {
     await fs.writeFile(filePath, content, 'utf8');
     console.log(chalk.green(`✅ Fichier mis à jour: ${filePath} (${matches.length} occurrences)`));
     return true;
   }
-  
+
   return false;
 }
 
@@ -207,11 +206,11 @@ function escapeRegExp(string) {
 async function confirmAction(question) {
   const rl = readline.createInterface({
     input: process.stdin,
-    output: process.stdout
+    output: process.stdout,
   });
-  
-  return new Promise(resolve => {
-    rl.question(question, answer => {
+
+  return new Promise((resolve) => {
+    rl.question(question, (answer) => {
       rl.close();
       resolve(answer.toLowerCase() === 'y');
     });
@@ -223,10 +222,10 @@ async function confirmAction(question) {
  */
 async function updateChangelog(oldTech, newTech, fileCount) {
   const changelogPath = path.join(CDC_DIR, 'changelog.md');
-  
+
   try {
     let content = await fs.readFile(changelogPath, 'utf8');
-    
+
     // Ajouter l'entrée au changelog
     const date = new Date().toISOString().split('T')[0];
     const newEntry = `
@@ -236,9 +235,9 @@ async function updateChangelog(oldTech, newTech, fileCount) {
 - Mise à jour de ${fileCount} fichier(s) du cahier des charges
 - Migration initiée suite à l'analyse d'obsolescence technologique
 `;
-    
+
     content = newEntry + content;
-    
+
     await fs.writeFile(changelogPath, content, 'utf8');
     console.log(chalk.green('✅ Changelog mis à jour'));
   } catch (error) {

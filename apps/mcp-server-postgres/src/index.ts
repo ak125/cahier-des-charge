@@ -6,32 +6,32 @@
  * Ce serveur implémente le protocole Model Context Protocol pour interagir avec des bases PostgreSQL
  */
 
-import express from 'express';
-import cors from 'cors';
 import bodyParser from 'body-parser';
-import { Pool } from 'pg';
+import cors from 'cors';
 import dotenv from 'dotenv';
-import { createLogger, format, transports } from 'winston';
+import express from 'express';
+import { Pool } from 'pg';
 import { pgStructure } from 'pg-structure';
+import { createLogger, format, transports } from 'winston';
 
 // Types et interfaces
-import { 
-  SchemaMap, 
-  TableInfo, 
-  ColumnInfo, 
+import {
+  ColumnInfo,
   ForeignKeyInfo,
   IndexInfo,
+  PrismaModel,
   SchemaDiff,
-  PrismaModel
+  SchemaMap,
+  TableInfo
 } from './types';
 
+import { initializeRoutes } from './routes';
+import { generatePrismaModel } from './services/PrismaGenerator';
+import { suggestIndexes } from './services/index-suggester';
+import { compareSchemas } from './services/schema-comparator';
+import { createSchemaMap } from './services/schema-mapper';
 // Configuration et services
 import { parseConnectionString } from './utils/connection';
-import { createSchemaMap } from './services/schema-mapper';
-import { generatePrismaModel } from './services/PrismaGenerator';
-import { compareSchemas } from './services/schema-comparator';
-import { suggestIndexes } from './services/index-suggester';
-import { initializeRoutes } from './routes';
 
 // Charger la configuration depuis .env si disponible
 dotenv.config();
@@ -48,7 +48,7 @@ const logger = createLogger({
   ),
   transports: [
     new transports.Console(),
-    new transports.File({ filename: DoDotmcp-postgres.log' })
+    new transports.File({ filename: 'mcp-postgres.log' })
   ]
 });
 
@@ -59,54 +59,54 @@ export class PostgresMCPServer {
   private port: number;
   private connectionString: string;
   private schema: string;
-  
-  constructor(connectionString: string, port: number = 3050, schema: string = 'public') {
+
+  constructor(connectionString: string, port = 3050, schema = 'public') {
     this.connectionString = connectionString;
     this.port = port;
     this.schema = schema;
-    
+
     // Initialiser la connexion PostgreSQL
     this.pool = new Pool({
-      connectionString: this.connectionString
+      connectionString: this.connectionString,
     });
-    
+
     // Initialiser l'application Express
     this.app = express();
     this.app.use(cors());
     this.app.use(bodyParser.json());
-    
+
     // Initialiser les routes
     initializeRoutes(this.app, this);
-    
+
     logger.info(`Serveur MCP PostgreSQL initialisé (${this.schema})`);
   }
-  
+
   // Démarrer le serveur HTTP
   public async start(): Promise<void> {
     try {
       // Tester la connexion à la base de données
       await this.testConnection();
-      
+
       // Démarrer le serveur HTTP
       this.app.listen(this.port, () => {
         logger.info(`🚀 Serveur MCP PostgreSQL démarré sur le port ${this.port}`);
         logger.info(`📊 Connecté à: ${this.maskConnectionString(this.connectionString)}`);
         logger.info(`📝 Schéma: ${this.schema}`);
-        logger.info(`📡 Endpoint MCP: http://localhost:${this.port}DoDotmcp`);
+        logger.info(`📡 Endpoint MCP: http://localhost:${this.port}/mcp`);
       });
     } catch (error) {
       logger.error(`❌ Échec du démarrage du serveur: ${error}`);
       throw error;
     }
   }
-  
+
   // Tester la connexion à la base de données
   public async testConnection(): Promise<boolean> {
     try {
       const client = await this.pool.connect();
       const result = await client.query('SELECT NOW()');
       client.release();
-      
+
       logger.info(`✅ Connexion à PostgreSQL établie: ${result.rows[0].now}`);
       return true;
     } catch (error) {
@@ -114,7 +114,7 @@ export class PostgresMCPServer {
       throw error;
     }
   }
-  
+
   // Récupérer la liste des tables
   public async listTables(): Promise<string[]> {
     const client = await this.pool.connect();
@@ -126,10 +126,10 @@ export class PostgresMCPServer {
           AND table_type = 'BASE TABLE'
         ORDER BY table_name
       `;
-      
+
       const result = await client.query(query, [this.schema]);
       const tables = result.rows.map(row => row.table_name);
-      
+
       logger.debug(`📋 ${tables.length} tables trouvées dans le schéma ${this.schema}`);
       return tables;
     } catch (error) {
@@ -139,7 +139,7 @@ export class PostgresMCPServer {
       client.release();
     }
   }
-  
+
   // Décrire une table (colonnes, types, etc.)
   public async describeTable(tableName: string): Promise<TableInfo> {
     const client = await this.pool.connect();
@@ -159,9 +159,9 @@ export class PostgresMCPServer {
           AND table_name = $2
         ORDER BY ordinal_position
       `;
-      
+
       const columnsResult = await client.query(columnsQuery, [this.schema, tableName]);
-      
+
       // Récupérer les clés primaires
       const pkQuery = `
         SELECT 
@@ -174,10 +174,10 @@ export class PostgresMCPServer {
           AND tc.table_name = $2
           AND tc.constraint_type = 'PRIMARY KEY'
       `;
-      
+
       const pkResult = await client.query(pkQuery, [this.schema, tableName]);
       const primaryKeys = pkResult.rows.map(row => row.column_name);
-      
+
       // Récupérer les index
       const indexQuery = `
         SELECT
@@ -198,9 +198,9 @@ export class PostgresMCPServer {
         GROUP BY
           i.relname, ix.indisunique, am.amname
       `;
-      
+
       const indexResult = await client.query(indexQuery, [tableName, this.schema]);
-      
+
       // Construire la structure de la table
       const tableInfo: TableInfo = {
         name: tableName,
@@ -208,7 +208,7 @@ export class PostgresMCPServer {
         primaryKey: primaryKeys,
         indexes: []
       };
-      
+
       // Ajouter les colonnes
       columnsResult.rows.forEach(row => {
         const column: ColumnInfo = {
@@ -219,22 +219,22 @@ export class PostgresMCPServer {
           isPrimary: primaryKeys.includes(row.column_name),
           isUnique: false // Sera mis à jour avec les informations d'index
         };
-        
+
         // Ajouter les informations spécifiques au type
         if (row.character_maximum_length) {
           column.length = row.character_maximum_length;
         }
-        
+
         if (row.numeric_precision) {
           column.precision = row.numeric_precision;
           if (row.numeric_scale) {
             column.scale = row.numeric_scale;
           }
         }
-        
+
         tableInfo.columns[row.column_name] = column;
       });
-      
+
       // Ajouter les index
       indexResult.rows.forEach(row => {
         const index: IndexInfo = {
@@ -243,9 +243,9 @@ export class PostgresMCPServer {
           isUnique: row.is_unique,
           type: row.index_type
         };
-        
+
         tableInfo.indexes.push(index);
-        
+
         // Mettre à jour la propriété isUnique des colonnes indexées
         if (row.is_unique) {
           row.column_names.forEach((colName: string) => {
@@ -255,7 +255,7 @@ export class PostgresMCPServer {
           });
         }
       });
-      
+
       logger.debug(`📝 Table ${tableName} décrite: ${Object.keys(tableInfo.columns).length} colonnes`);
       return tableInfo;
     } catch (error) {
@@ -265,7 +265,7 @@ export class PostgresMCPServer {
       client.release();
     }
   }
-  
+
   // Récupérer les clés étrangères
   public async getForeignKeys(): Promise<ForeignKeyInfo[]> {
     const client = await this.pool.connect();
@@ -289,9 +289,9 @@ export class PostgresMCPServer {
           AND tc.table_schema = $1
         ORDER BY tc.table_name, kcu.column_name
       `;
-      
+
       const result = await client.query(query, [this.schema]);
-      
+
       const foreignKeys: ForeignKeyInfo[] = result.rows.map(row => ({
         name: `fk_${row.source_table}_${row.source_column}`,
         sourceTable: row.source_table,
@@ -301,7 +301,7 @@ export class PostgresMCPServer {
         onDelete: row.delete_rule,
         onUpdate: row.update_rule
       }));
-      
+
       logger.debug(`🔗 ${foreignKeys.length} clés étrangères trouvées`);
       return foreignKeys;
     } catch (error) {
@@ -311,17 +311,17 @@ export class PostgresMCPServer {
       client.release();
     }
   }
-  
+
   // Exécuter une requête SQL en lecture seule
   public async runQuery(query: string, params: any[] = []): Promise<any[]> {
     // Vérifier que la requête est en lecture seule
     const normalizedQuery = query.trim().toLowerCase();
-    if (!normalizedQuery.startsWith('select') && 
-        !normalizedQuery.startsWith('explain') && 
-        !normalizedQuery.startsWith('show')) {
+    if (!normalizedQuery.startsWith('select') &&
+      !normalizedQuery.startsWith('explain') &&
+      !normalizedQuery.startsWith('show')) {
       throw new Error('Seules les requêtes SELECT, EXPLAIN ou SHOW sont autorisées');
     }
-    
+
     const client = await this.pool.connect();
     try {
       const result = await client.query(query, params);
@@ -334,24 +334,24 @@ export class PostgresMCPServer {
       client.release();
     }
   }
-  
+
   // Générer un schéma Prisma pour une table
   public async suggestPrismaModel(tableName: string): Promise<PrismaModel> {
     try {
       // Récupérer les informations sur la table
       const tableInfo = await this.describeTable(tableName);
-      
+
       // Récupérer les clés étrangères
       const allForeignKeys = await this.getForeignKeys();
-      
+
       // Filtrer les clés étrangères pour cette table
-      const relatedForeignKeys = allForeignKeys.filter(fk => 
+      const relatedForeignKeys = allForeignKeys.filter(fk =>
         fk.sourceTable === tableName || fk.targetTable === tableName
       );
-      
+
       // Générer le modèle Prisma
       const prismaModel = generatePrismaModel(tableInfo, relatedForeignKeys);
-      
+
       logger.debug(`✨ Modèle Prisma généré pour la table ${tableName}`);
       return prismaModel;
     } catch (error) {
@@ -359,25 +359,25 @@ export class PostgresMCPServer {
       throw error;
     }
   }
-  
+
   // Générer la carte complète du schéma PostgreSQL
   public async exportSchemaMap(): Promise<SchemaMap> {
     try {
       // Récupérer la liste des tables
       const tables = await this.listTables();
-      
+
       // Récupérer les informations sur chaque table
       const tablesInfo: Record<string, TableInfo> = {};
       for (const tableName of tables) {
         tablesInfo[tableName] = await this.describeTable(tableName);
       }
-      
+
       // Récupérer les clés étrangères
       const foreignKeys = await this.getForeignKeys();
-      
+
       // Créer la carte du schéma
       const schemaMap = createSchemaMap(tablesInfo, foreignKeys);
-      
+
       logger.info(`📊 Carte du schéma générée avec ${tables.length} tables`);
       return schemaMap;
     } catch (error) {
@@ -385,16 +385,16 @@ export class PostgresMCPServer {
       throw error;
     }
   }
-  
+
   // Comparer le schéma actuel à un schéma MySQL (pour la migration)
   public async schemaMigrationDiff(mysqlSchemaMap: SchemaMap): Promise<SchemaDiff> {
     try {
       // Exporter le schéma PostgreSQL actuel
       const postgresSchemaMap = await this.exportSchemaMap();
-      
+
       // Comparer les deux schémas
       const diff = compareSchemas(mysqlSchemaMap, postgresSchemaMap);
-      
+
       logger.info(`🔄 Comparaison des schémas terminée: ${diff.changes.length} changements trouvés`);
       return diff;
     } catch (error) {
@@ -402,20 +402,20 @@ export class PostgresMCPServer {
       throw error;
     }
   }
-  
+
   // Suggérer des index pour améliorer les performances
   public async suggestIndexes(tableName: string): Promise<IndexInfo[]> {
     try {
       // Récupérer les informations sur la table
       const tableInfo = await this.describeTable(tableName);
-      
+
       // Récupérer les clés étrangères
       const allForeignKeys = await this.getForeignKeys();
       const tableForeignKeys = allForeignKeys.filter(fk => fk.sourceTable === tableName);
-      
+
       // Suggérer des index
       const suggestedIndexes = suggestIndexes(tableInfo, tableForeignKeys);
-      
+
       logger.debug(`💡 ${suggestedIndexes.length} index suggérés pour la table ${tableName}`);
       return suggestedIndexes;
     } catch (error) {
@@ -423,33 +423,33 @@ export class PostgresMCPServer {
       throw error;
     }
   }
-  
+
   // Générer le fichier schema.prisma complet
   public async generatePrismaFile(): Promise<string> {
     try {
       // Exporter le schéma PostgreSQL actuel
       const schemaMap = await this.exportSchemaMap();
-      
+
       // Récupérer les clés étrangères
       const foreignKeys = await this.getForeignKeys();
-      
+
       // Générer le fichier schema.prisma
       const prismaSchema = await generatePrismaFile(schemaMap, foreignKeys);
-      
-      logger.info(`📄 Fichier schema.prisma généré`);
+
+      logger.info("📄 Fichier schema.prisma généré");
       return prismaSchema;
     } catch (error) {
       logger.error(`❌ Échec de génération du fichier schema.prisma: ${error}`);
       throw error;
     }
   }
-  
+
   // Masquer les informations sensibles dans la chaîne de connexion
   private maskConnectionString(connectionString: string): string {
     try {
       const connInfo = parseConnectionString(connectionString);
       return `postgresql://${connInfo.user}:****@${connInfo.host}:${connInfo.port}/${connInfo.database}`;
-    } catch (error) {
+    } catch (_error) {
       return 'postgresql://****';
     }
   }
@@ -475,22 +475,22 @@ datasource db {
   // Générer un modèle Prisma pour chaque table
   for (const [tableName, tableInfo] of Object.entries(schemaMap.tables)) {
     // Filtrer les clés étrangères pour cette table
-    const relatedForeignKeys = foreignKeys.filter(fk => 
+    const relatedForeignKeys = foreignKeys.filter(fk =>
       fk.sourceTable === tableName || fk.targetTable === tableName
     );
-    
+
     // Générer le modèle Prisma
-    const model = generatePrismaModel({ 
-      name: tableName, 
-      columns: tableInfo.columns, 
+    const model = generatePrismaModel({
+      name: tableName,
+      columns: tableInfo.columns,
       primaryKey: tableInfo.primaryKey,
       indexes: tableInfo.indexes || []
     }, relatedForeignKeys);
-    
+
     // Ajouter le modèle au fichier
-    prismaSchema += model.schema + '\n\n';
+    prismaSchema += `${model.schema}\n\n`;
   }
-  
+
   return prismaSchema;
 }
 

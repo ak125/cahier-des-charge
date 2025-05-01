@@ -71,7 +71,7 @@ export const SEOIssuesList: React.FC<SEOIssuesListProps> = ({ issues }) => {
 
   return (
     <div className="overflow-hidden">
-      <ul role="list" className="divide-y divide-gray-200">
+      <ul className="divide-y divide-gray-200">
         {issues.map((issue) => (
           <li key={issue.id} className="px-0 py-4">
             <div className="flex items-start space-x-4">
@@ -83,7 +83,12 @@ export const SEOIssuesList: React.FC<SEOIssuesListProps> = ({ issues }) => {
                 <p className="mt-1 text-sm text-gray-500">{issue.description}</p>
                 <div className="mt-2 flex items-center text-xs text-gray-500">
                   <p className="truncate">
-                    <a href={issue.url} target="_blank" rel="noopener noreferrer" className="hover:underline">
+                    <a
+                      href={issue.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="hover:underline"
+                    >
                       {issue.pageTitle || issue.url}
                     </a>
                   </p>

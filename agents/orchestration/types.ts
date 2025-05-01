@@ -8,13 +8,9 @@ import { AgentOptions, AgentResult } from '../core/types';
 /**
  * Options spécifiques aux agents orchestration
  */
-export interface OrchestrationAgentOptions extends AgentOptions {
-  // Options spécifiques à cette catégorie
-}
+export type OrchestrationAgentOptions = AgentOptions;
 
 /**
  * Résultat spécifique aux agents orchestration
  */
-export interface OrchestrationResult extends AgentResult {
-  // Données spécifiques à cette catégorie
-}
+export type OrchestrationResult = AgentResult;

@@ -1,9 +1,8 @@
+import * as fs from 'fs';
+import * as path from 'path';
+import { Logger } from '@nestjs/common';
 import { CoordinationAgent } from '@workspaces/cahier-des-charge/src/core/interfaces/coordination';
-import { Logger } from "@nestjs/common";
-import * as fs from "fs";
-import * as path from "path";
 import { BaseAgent, OrchestrationAgent } from '../core/interfaces/BaseAgent';
-
 
 /**
  * Interface pour les métriques collectées
@@ -17,47 +16,50 @@ export interface Metrics {
 
 /**
  * Service de métriques simple pour l'orchestration
- * 
+ *
  * Cette classe permet de collecter des métriques sur les workflows et jobs
  * et de les exporter dans différents formats (JSON, exposé via HTTP)
  */
-export class MetricsService implements BaseAgent, OrchestrationAgent , CoordinationAgent{
+export class MetricsService implements BaseAgent, OrchestrationAgent, CoordinationAgent {
   private metrics: Metrics = {
     counters: {},
     gauges: {},
     histograms: {},
-    lastUpdated: new Date().toISOString()
+    lastUpdated: new Date().toISOString(),
   };
-  
+
   private readonly logger = new Logger('MetricsService');
   private readonly metricsFilePath: string;
   private saveInterval: NodeJS.Timeout | null = null;
-  
+
   constructor(options: {
     metricsFilePath?: string;
     autoSave?: boolean;
     saveIntervalMs?: number;
   }) {
     this.metricsFilePath = options.metricsFilePath || path.join(process.cwd(), 'metrics.json');
-    
+
     // Configuration de la sauvegarde automatique
     if (options.autoSave) {
-      this.saveInterval = setInterval(() => {
-        this.saveToFile();
-      }, options.saveIntervalMs || 60000); // Par défaut sauvegarde toutes les minutes
+      this.saveInterval = setInterval(
+        () => {
+          this.saveToFile();
+        },
+        options.saveIntervalMs || 60000
+      ); // Par défaut sauvegarde toutes les minutes
     }
-    
+
     // Charger les métriques depuis le fichier si elles existent
     this.loadFromFile();
   }
-  
+
   /**
    * Incrémente un compteur
    * @param name Nom du compteur
    * @param value Valeur à ajouter (défaut: 1)
    * @param labels Labels pour catégoriser la métrique
    */
-  incrementCounter(name: string, value: number = 1, labels?: Record<string, string>): void {
+  incrementCounter(name: string, value = 1, labels?: Record<string, string>): void {
     const metricName = this.formatMetricName(name, labels);
     if (!this.metrics.counters[metricName]) {
       this.metrics.counters[metricName] = 0;
@@ -65,7 +67,7 @@ export class MetricsService implements BaseAgent, OrchestrationAgent , Coordinat
     this.metrics.counters[metricName] += value;
     this.metrics.lastUpdated = new Date().toISOString();
   }
-  
+
   /**
    * Définit la valeur d'une jauge
    * @param name Nom de la jauge
@@ -77,7 +79,7 @@ export class MetricsService implements BaseAgent, OrchestrationAgent , Coordinat
     this.metrics.gauges[metricName] = value;
     this.metrics.lastUpdated = new Date().toISOString();
   }
-  
+
   /**
    * Ajoute une observation à un histogramme
    * @param name Nom de l'histogramme
@@ -90,22 +92,22 @@ export class MetricsService implements BaseAgent, OrchestrationAgent , Coordinat
       this.metrics.histograms[metricName] = [];
     }
     this.metrics.histograms[metricName].push(value);
-    
+
     // Limiter le nombre de points à conserver pour éviter une utilisation excessive de la mémoire
     if (this.metrics.histograms[metricName].length > 1000) {
       this.metrics.histograms[metricName] = this.metrics.histograms[metricName].slice(-1000);
     }
-    
+
     this.metrics.lastUpdated = new Date().toISOString();
   }
-  
+
   /**
    * Récupère toutes les métriques
    */
   getMetrics(): Metrics {
     return this.metrics;
   }
-  
+
   /**
    * Sauvegarde les métriques dans un fichier JSON
    */
@@ -117,7 +119,7 @@ export class MetricsService implements BaseAgent, OrchestrationAgent , Coordinat
       this.logger.error(`Erreur lors de la sauvegarde des métriques: ${error.message}`);
     }
   }
-  
+
   /**
    * Charge les métriques depuis un fichier JSON
    */
@@ -132,37 +134,37 @@ export class MetricsService implements BaseAgent, OrchestrationAgent , Coordinat
       this.logger.error(`Erreur lors du chargement des métriques: ${error.message}`);
     }
   }
-  
+
   /**
    * Format de sortie pour exposition HTTP compatible Prometheus
    */
   getPrometheusFormat(): string {
     let output = '';
-    
+
     // Compteurs
     Object.entries(this.metrics.counters).forEach(([name, value]) => {
       output += `# TYPE ${name} counter\n`;
       output += `${name} ${value}\n`;
     });
-    
+
     // Jauges
     Object.entries(this.metrics.gauges).forEach(([name, value]) => {
       output += `# TYPE ${name} gauge\n`;
       output += `${name} ${value}\n`;
     });
-    
+
     // Histogrammes (simplifiés)
     Object.entries(this.metrics.histograms).forEach(([name, values]) => {
       if (values.length > 0) {
         output += `# TYPE ${name} histogram\n`;
-        
+
         // Calculer des percentiles simples pour l'histogramme
         const sorted = [...values].sort((a, b) => a - b);
         const p50 = sorted[Math.floor(sorted.length * 0.5)];
         const p90 = sorted[Math.floor(sorted.length * 0.9)];
         const p95 = sorted[Math.floor(sorted.length * 0.95)];
         const p99 = sorted[Math.floor(sorted.length * 0.99)];
-        
+
         output += `${name}{quantile="0.5"} ${p50}\n`;
         output += `${name}{quantile="0.9"} ${p90}\n`;
         output += `${name}{quantile="0.95"} ${p95}\n`;
@@ -171,10 +173,10 @@ export class MetricsService implements BaseAgent, OrchestrationAgent , Coordinat
         output += `${name}_sum ${values.reduce((a, b) => a + b, 0)}\n`;
       }
     });
-    
+
     return output;
   }
-  
+
   /**
    * Arrête la sauvegarde automatique
    */
@@ -183,11 +185,11 @@ export class MetricsService implements BaseAgent, OrchestrationAgent , Coordinat
       clearInterval(this.saveInterval);
       this.saveInterval = null;
     }
-    
+
     // Sauvegarde finale
     this.saveToFile();
   }
-  
+
   /**
    * Formatte le nom d'une métrique avec ses labels
    */
@@ -195,18 +197,18 @@ export class MetricsService implements BaseAgent, OrchestrationAgent , Coordinat
     if (!labels || Object.keys(labels).length === 0) {
       return name;
     }
-    
+
     const labelStr = Object.entries(labels)
       .map(([key, value]) => `${key}="${value}"`)
       .join(',');
-    
+
     return `${name}{${labelStr}}`;
   }
 
-  id: string = '';
-  name: string = '';
-  type: string = '';
-  version: string = '1.0.0';
+  id = '';
+  name = '';
+  type = '';
+  version = '1.0.0';
 
   /**
    * Initialise l'agent avec des options spécifiques
@@ -231,7 +233,7 @@ export class MetricsService implements BaseAgent, OrchestrationAgent , Coordinat
       id: this.id,
       name: this.name,
       type: this.type,
-      version: this.version
+      version: this.version,
     };
   }
 
@@ -241,7 +243,7 @@ export class MetricsService implements BaseAgent, OrchestrationAgent , Coordinat
   async getSystemState(): Promise<Record<string, any>> {
     return {
       status: 'active',
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     };
   }
 }

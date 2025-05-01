@@ -3,8 +3,8 @@
  * Agent export file
  */
 
-import { DependencyAgent } from './DependencyAgent';
 import { BusinessAgent } from '../../core/interfaces';
+import { DependencyAgent } from './DependencyAgent';
 
 export { DependencyAgent };
 export default DependencyAgent;

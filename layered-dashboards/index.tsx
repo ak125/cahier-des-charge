@@ -1,11 +1,11 @@
+import { Box, Center, ChakraProvider, Spinner, Text, extendTheme } from '@chakra-ui/react';
 /**
  * Point d'entrée pour l'application des tableaux de bord en couches
  */
 import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom/client';
-import { ChakraProvider, extendTheme, Box, Spinner, Center, Text } from '@chakra-ui/react';
-import UnifiedLayeredDashboard from './unified-layered-dashboard';
 import { TraceabilityService } from '../utils/traceability/traceability-service';
+import UnifiedLayeredDashboard from './unified-layered-dashboard';
 
 // Configuration du thème Chakra UI avec des couleurs personnalisées pour les tableaux de bord
 const theme = extendTheme({
@@ -91,14 +91,14 @@ const theme = extendTheme({
 const DashboardApp: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const [config, setConfig] = useState<any>(null);
+  const [_config, setConfig] = useState<any>(null);
 
   // Effet pour charger la configuration du tableau de bord
   useEffect(() => {
     const loadDashboardConfig = async () => {
       try {
         setIsLoading(true);
-        
+
         // Tenter de charger la configuration depuis le fichier
         let dashboardConfig;
         try {
@@ -109,65 +109,70 @@ const DashboardApp: React.FC = () => {
             throw new Error(`Erreur lors du chargement de la configuration: ${response.status}`);
           }
         } catch (fetchError) {
-          console.warn('Impossible de charger la configuration, utilisation des valeurs par défaut', fetchError);
+          console.warn(
+            'Impossible de charger la configuration, utilisation des valeurs par défaut',
+            fetchError
+          );
           // Configuration par défaut si le fichier n'est pas disponible
           dashboardConfig = {
             api: {
               baseUrl: '/api',
               timeout: 30000,
-              retryAttempts: 3
+              retryAttempts: 3,
             },
             dashboards: {
               refreshInterval: 30,
               traceability: {
                 enabled: true,
-                storageType: 'memory'
+                storageType: 'memory',
               },
               circuitBreaker: {
                 enabled: true,
                 failureThreshold: 5,
-                resetTimeout: 30000
+                resetTimeout: 30000,
               },
               governance: {
                 enabled: true,
-                conflictResolution: 'majority'
-              }
+                conflictResolution: 'majority',
+              },
             },
             layers: {
               orchestration: { enabled: true },
               agents: { enabled: true },
-              business: { enabled: true }
-            }
+              business: { enabled: true },
+            },
           };
         }
-        
+
         // Initialiser le service de traçabilité
         const traceabilityService = new TraceabilityService({
           layer: 'all',
           enabled: dashboardConfig.dashboards.traceability.enabled,
           idFormat: 'dashboard-{timestamp}-{random}',
-          storageStrategy: dashboardConfig.dashboards.traceability.storageType
+          storageStrategy: dashboardConfig.dashboards.traceability.storageType,
         });
-        
+
         // Journaliser le démarrage de l'application
         await traceabilityService.logTrace({
           traceId: await traceabilityService.generateTraceId(),
           event: 'dashboard:app:started',
           context: { config: dashboardConfig },
           timestamp: new Date(),
-          success: true
+          success: true,
         });
-        
+
         // Mettre à jour l'état avec la configuration chargée
         setConfig(dashboardConfig);
         setIsLoading(false);
       } catch (err) {
-        console.error('Erreur lors de l\'initialisation de l\'application:', err);
-        setError(`Erreur lors de l'initialisation: ${err instanceof Error ? err.message : String(err)}`);
+        console.error("Erreur lors de l'initialisation de l'application:", err);
+        setError(
+          `Erreur lors de l'initialisation: ${err instanceof Error ? err.message : String(err)}`
+        );
         setIsLoading(false);
       }
     };
-    
+
     loadDashboardConfig();
   }, []);
 
@@ -177,7 +182,9 @@ const DashboardApp: React.FC = () => {
       <Center height="100vh">
         <Box textAlign="center">
           <Spinner size="xl" color="brand.500" thickness="4px" speed="0.65s" />
-          <Text mt={4} fontSize="lg">Chargement des tableaux de bord...</Text>
+          <Text mt={4} fontSize="lg">
+            Chargement des tableaux de bord...
+          </Text>
         </Box>
       </Center>
     );
@@ -211,7 +218,7 @@ const DashboardApp: React.FC = () => {
 // Rendu de l'application dans le DOM
 const rootElement = document.getElementById('root');
 if (!rootElement) {
-  throw new Error("Élément racine non trouvé dans le DOM");
+  throw new Error('Élément racine non trouvé dans le DOM');
 }
 
 const root = ReactDOM.createRoot(rootElement);

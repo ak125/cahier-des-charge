@@ -1,7 +1,7 @@
 /**
  * Component Generator Agent
- * 
- * Génère automatiquement des composants React (.tsx), des contrôleurs (controller.ts), 
+ *
+ * Génère automatiquement des composants React (.tsx), des contrôleurs (controller.ts),
  * et des objets de transfert de données (dto.ts) basés sur des analyses de code existant.
  */
 
@@ -75,7 +75,7 @@ interface ValidationRule {
 export class ComponentGenerator {
   private outputDir: string;
 
-  constructor(outputDir: string = './src/generated') {
+  constructor(outputDir = './src/generated') {
     this.outputDir = outputDir;
   }
 
@@ -86,7 +86,7 @@ export class ComponentGenerator {
     const directories = [
       path.join(this.outputDir, 'components'),
       path.join(this.outputDir, 'controllers'),
-      path.join(this.outputDir, 'dtos')
+      path.join(this.outputDir, 'dtos'),
     ];
 
     for (const dir of directories) {
@@ -105,24 +105,26 @@ export class ComponentGenerator {
 
     // Imports par défaut pour React
     const defaultImports = [`import React from 'react';`];
-    
+
     // Combiner les imports
     const allImports = [...defaultImports, ...imports].join('\n');
-    
+
     // Générer l'interface TypeScript pour les props
     const propsInterface = `
 interface ${name}Props {
-${props.map(prop => {
-  const required = prop.required ? '' : '?';
-  const comment = prop.description ? `  // ${prop.description}` : '';
-  return `  ${prop.name}${required}: ${prop.type};${comment}`;
-}).join('\n')}
+${props
+  .map((prop) => {
+    const required = prop.required ? '' : '?';
+    const comment = prop.description ? `  // ${prop.description}` : '';
+    return `  ${prop.name}${required}: ${prop.type};${comment}`;
+  })
+  .join('\n')}
 }`;
 
     // Générer les valeurs par défaut pour les props optionnelles
     const defaultProps = props
-      .filter(prop => !prop.required && prop.defaultValue !== undefined)
-      .map(prop => `  ${prop.name}: ${JSON.stringify(prop.defaultValue)},`)
+      .filter((prop) => !prop.required && prop.defaultValue !== undefined)
+      .map((prop) => `  ${prop.name}: ${JSON.stringify(prop.defaultValue)},`)
       .join('\n');
 
     const hasDefaultProps = defaultProps.length > 0;
@@ -136,7 +138,16 @@ ${props.map(prop => {
 ${propsInterface}
 
 const ${name}: React.FC<${name}Props> = (${props.length > 0 ? '{' : ''}
-${props.map(prop => `  ${prop.name}${!prop.required && prop.defaultValue === undefined ? ` = ${getDefaultValueForType(prop.type)}` : ''}`).join(',\n')}
+${props
+  .map(
+    (prop) =>
+      `  ${prop.name}${
+        !prop.required && prop.defaultValue === undefined
+          ? ` = ${getDefaultValueForType(prop.type)}`
+          : ''
+      }`
+  )
+  .join(',\n')}
 ${props.length > 0 ? '}' : ''}) => {
   return (
     <div className="${name.toLowerCase()}">
@@ -145,9 +156,13 @@ ${props.length > 0 ? '}' : ''}) => {
   );
 };
 
-${hasDefaultProps ? `${name}.defaultProps = {
+${
+  hasDefaultProps
+    ? `${name}.defaultProps = {
 ${defaultProps}
-};` : ''}
+};`
+    : ''
+}
 
 export default ${name};
 `;
@@ -155,7 +170,7 @@ export default ${name};
     // Écrire le fichier
     const filePath = path.join(this.outputDir, 'components', `${name}.tsx`);
     await writeFile(filePath, componentCode);
-    
+
     return filePath;
   }
 
@@ -167,31 +182,34 @@ export default ${name};
 
     // Imports par défaut
     const defaultImports = [
-      `import { Controller, Get, Post, Put, Delete, Patch, Body, Param, Query } from '@nestjs/common';`
+      `import { Controller, Get, Post, Put, Delete, Patch, Body, Param, Query } from '@nestjs/common';`,
     ];
 
     // Importer les services si nécessaire
-    const serviceImports = services.map(service => 
-      `import { ${service} } from '../services/${service}';`
+    const serviceImports = services.map(
+      (service) => `import { ${service} } from '../services/${service}';`
     );
-    
-    // Générer les décorateurs pour les routes
-    const routeHandlers = routes.map(route => {
-      const methodDecorator = route.method.charAt(0) + route.method.slice(1).toLowerCase();
-      const params = route.params || [];
-      
-      const paramDecorators = params.map(param => {
-        switch (param.source) {
-          case 'body':
-            return `@Body() ${param.name}: ${param.type}`;
-          case 'param':
-            return `@Param('${param.name}') ${param.name}: ${param.type}`;
-          case 'query':
-            return `@Query('${param.name}') ${param.name}: ${param.type}`;
-        }
-      }).join(', ');
 
-      return `
+    // Générer les décorateurs pour les routes
+    const routeHandlers = routes
+      .map((route) => {
+        const methodDecorator = route.method.charAt(0) + route.method.slice(1).toLowerCase();
+        const params = route.params || [];
+
+        const paramDecorators = params
+          .map((param) => {
+            switch (param.source) {
+              case 'body':
+                return `@Body() ${param.name}: ${param.type}`;
+              case 'param':
+                return `@Param('${param.name}') ${param.name}: ${param.type}`;
+              case 'query':
+                return `@Query('${param.name}') ${param.name}: ${param.type}`;
+            }
+          })
+          .join(', ');
+
+        return `
   /**
    * ${route.description || `Route ${route.method} ${route.path}`}
    */
@@ -200,7 +218,8 @@ export default ${name};
     // Implémentation de la route
     return { success: true };
   }`;
-    }).join('\n');
+      })
+      .join('\n');
 
     // Construction du code du contrôleur
     const controllerCode = `${[...defaultImports, ...imports, ...serviceImports].join('\n')}
@@ -208,7 +227,12 @@ export default ${name};
 @Controller()
 export class ${name} {
   constructor(
-${services.map(service => `    private readonly ${service.charAt(0).toLowerCase() + service.slice(1)}: ${service},`).join('\n')}
+${services
+  .map(
+    (service) =>
+      `    private readonly ${service.charAt(0).toLowerCase() + service.slice(1)}: ${service},`
+  )
+  .join('\n')}
   ) {}
 ${routeHandlers}
 }
@@ -217,7 +241,7 @@ ${routeHandlers}
     // Écrire le fichier
     const filePath = path.join(this.outputDir, 'controllers', `${name}.controller.ts`);
     await writeFile(filePath, controllerCode);
-    
+
     return filePath;
   }
 
@@ -229,7 +253,7 @@ ${routeHandlers}
 
     // Imports par défaut
     const defaultImports = [
-      `import { IsNotEmpty, IsString, IsNumber, IsBoolean, IsOptional, IsEmail, IsDate } from 'class-validator';`
+      `import { IsNotEmpty, IsString, IsNumber, IsBoolean, IsOptional, IsEmail, IsDate } from 'class-validator';`,
     ];
 
     // Constructeur du code DTO
@@ -239,51 +263,57 @@ ${routeHandlers}
  * Objet de transfert de données pour ${name}
  */
 export class ${name}DTO {
-${fields.map(field => {
-  const validations = (field.validations || []).map(validation => {
-    // Générer les décorateurs de validation
-    if (validation.params) {
-      return `  @${validation.type}(${JSON.stringify(validation.params)})`;
-    }
-    return `  @${validation.type}()`;
-  }).join('\n');
+${fields
+  .map((field) => {
+    const validations = (field.validations || [])
+      .map((validation) => {
+        // Générer les décorateurs de validation
+        if (validation.params) {
+          return `  @${validation.type}(${JSON.stringify(validation.params)})`;
+        }
+        return `  @${validation.type}()`;
+      })
+      .join('\n');
 
-  // Générer les commentaires si présents
-  const comment = field.description ? `  /**\n   * ${field.description}\n   */\n` : '';
-  
-  // Générateur des décorations basé sur le type
-  let typeValidation = '';
-  if (field.required) {
-    typeValidation = '  @IsNotEmpty()\n';
-    
-    switch (field.type.toLowerCase()) {
-      case 'string':
-        typeValidation += '  @IsString()\n';
-        break;
-      case 'number':
-        typeValidation += '  @IsNumber()\n';
-        break;
-      case 'boolean':
-        typeValidation += '  @IsBoolean()\n';
-        break;
-      case 'date':
-        typeValidation += '  @IsDate()\n';
-        break;
+    // Générer les commentaires si présents
+    const comment = field.description ? `  /**\n   * ${field.description}\n   */\n` : '';
+
+    // Générateur des décorations basé sur le type
+    let typeValidation = '';
+    if (field.required) {
+      typeValidation = '  @IsNotEmpty()\n';
+
+      switch (field.type.toLowerCase()) {
+        case 'string':
+          typeValidation += '  @IsString()\n';
+          break;
+        case 'number':
+          typeValidation += '  @IsNumber()\n';
+          break;
+        case 'boolean':
+          typeValidation += '  @IsBoolean()\n';
+          break;
+        case 'date':
+          typeValidation += '  @IsDate()\n';
+          break;
+      }
+    } else {
+      typeValidation = '  @IsOptional()\n';
     }
-  } else {
-    typeValidation = '  @IsOptional()\n';
-  }
-  
-  return `${comment}${typeValidation}${validations}  ${field.name}${field.required ? '' : '?'}: ${field.type};
+
+    return `${comment}${typeValidation}${validations}  ${field.name}${field.required ? '' : '?'}: ${
+      field.type
+    };
 `;
-}).join('\n')}
+  })
+  .join('\n')}
 }
 `;
 
     // Écrire le fichier
     const filePath = path.join(this.outputDir, 'dtos', `${name}.dto.ts`);
     await writeFile(filePath, dtoCode);
-    
+
     return filePath;
   }
 
@@ -292,20 +322,20 @@ ${fields.map(field => {
    * pour un modèle donné
    */
   async generateFullStack(
-    componentDef: ComponentDefinition, 
-    controllerDef: ControllerDefinition, 
+    componentDef: ComponentDefinition,
+    controllerDef: ControllerDefinition,
     dtoDef: DTODefinition
   ): Promise<{ component: string; controller: string; dto: string }> {
     await this.initialize();
-    
+
     const componentPath = await this.generateReactComponent(componentDef);
     const controllerPath = await this.generateController(controllerDef);
     const dtoPath = await this.generateDTO(dtoDef);
-    
+
     return {
       component: componentPath,
       controller: controllerPath,
-      dto: dtoPath
+      dto: dtoPath,
     };
   }
 
@@ -315,23 +345,23 @@ ${fields.map(field => {
   async generateFromModel(modelPath: string): Promise<any> {
     // Lire le fichier modèle
     const modelContent = await readFile(modelPath, 'utf8');
-    
+
     // Analyse du modèle et extraction des informations
     // Implémentation à personnaliser selon le format du modèle
-    
+
     // Exemple simplifié
     const modelName = path.basename(modelPath, path.extname(modelPath));
-    
+
     // Créer des définitions basiques
     const componentDef: ComponentDefinition = {
       name: `${modelName}Component`,
       props: [
         { name: 'data', type: `${modelName}DTO`, required: true, description: 'Données du modèle' },
-        { name: 'onUpdate', type: `(data: ${modelName}DTO) => void`, required: false }
+        { name: 'onUpdate', type: `(data: ${modelName}DTO) => void`, required: false },
       ],
-      imports: [`import { ${modelName}DTO } from '../dtos/${modelName}.dto';`]
+      imports: [`import { ${modelName}DTO } from '../dtos/${modelName}.dto';`],
     };
-    
+
     const controllerDef: ControllerDefinition = {
       name: `${modelName}Controller`,
       routes: [
@@ -339,41 +369,49 @@ ${fields.map(field => {
           path: `/${modelName.toLowerCase()}`,
           method: 'GET',
           handler: 'findAll',
-          responseType: `${modelName}DTO[]`
+          responseType: `${modelName}DTO[]`,
         },
         {
           path: `/${modelName.toLowerCase()}/:id`,
           method: 'GET',
           handler: 'findOne',
           params: [{ name: 'id', type: 'string', source: 'param', required: true }],
-          responseType: `${modelName}DTO`
+          responseType: `${modelName}DTO`,
         },
         {
           path: `/${modelName.toLowerCase()}`,
           method: 'POST',
           handler: 'create',
           params: [{ name: 'dto', type: `${modelName}DTO`, source: 'body', required: true }],
-          responseType: `${modelName}DTO`
-        }
+          responseType: `${modelName}DTO`,
+        },
       ],
       imports: [`import { ${modelName}DTO } from '../dtos/${modelName}.dto';`],
-      services: [`${modelName}Service`]
+      services: [`${modelName}Service`],
     };
-    
+
     // Analyser le contenu du modèle pour extraire les champs
     // Cette partie dépend fortement du format du modèle
     const fields: FieldDefinition[] = [];
     // Implémentation de l'analyse du modèle ici
-    
+
     const dtoDef: DTODefinition = {
       name: modelName,
-      fields: fields.length > 0 ? fields : [
-        { name: 'id', type: 'string', required: true },
-        { name: 'name', type: 'string', required: true, validations: [{ type: 'IsString' }] },
-        { name: 'createdAt', type: 'Date', required: true, validations: [{ type: 'IsDate' }] }
-      ]
+      fields:
+        fields.length > 0
+          ? fields
+          : [
+              { name: 'id', type: 'string', required: true },
+              { name: 'name', type: 'string', required: true, validations: [{ type: 'IsString' }] },
+              {
+                name: 'createdAt',
+                type: 'Date',
+                required: true,
+                validations: [{ type: 'IsDate' }],
+              },
+            ],
     };
-    
+
     return this.generateFullStack(componentDef, controllerDef, dtoDef);
   }
 }
@@ -408,12 +446,12 @@ function getDefaultValueForType(type: string): string {
 // Point d'entrée si exécuté directement
 if (require.main === module) {
   const generator = new ComponentGenerator();
-  
+
   // Exemple d'utilisation
   (async () => {
     try {
       await generator.initialize();
-      
+
       // Exemple de génération à partir d'un modèle
       if (process.argv.length > 2) {
         const modelPath = process.argv[2];

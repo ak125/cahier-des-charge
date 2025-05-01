@@ -1,7 +1,7 @@
-import { Controller, Get, Post, Body, Param, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { MismatchTrackerService } from './mismatch-tracker.service';
 import { MismatchResolutionDto } from './dto/mismatch-resolution.dto';
+import { MismatchTrackerService } from './mismatch-tracker.service';
 
 @Controller('mismatches')
 @UseGuards(AuthGuard('jwt'))
@@ -14,11 +14,11 @@ export class MismatchTrackerController {
     const filter = {};
     
     if (query.severity) {
-      filter['severity'] = query.severity;
+      filter.severity = query.severity;
     }
     
     if (query.type) {
-      filter['type'] = query.type;
+      filter.type = query.type;
     }
     
     if (query.team) {

@@ -140,7 +140,7 @@ export function parsePhpCode(
 
     // Parsing du code PHP
     const ast = parser.parseCode(code, filePath);
-    
+
     // Extraction des données structurelles
     const result: ParsedPhpFile = {
       ast,
@@ -157,9 +157,9 @@ export function parsePhpCode(
     };
 
     // Calcul du ratio code/commentaires
-    result.codeToCommentRatio = 
-      result.commentLines > 0 
-        ? (result.linesOfCode - result.commentLines) / result.commentLines 
+    result.codeToCommentRatio =
+      result.commentLines > 0
+        ? (result.linesOfCode - result.commentLines) / result.commentLines
         : result.linesOfCode;
 
     return result;
@@ -208,7 +208,7 @@ function extractClasses(ast: any): PhpClassInfo[] {
           classInfo.extends = getExtendsName(node.extends);
         }
 
-        if (node.implements && node.implements.length) {
+        if (node.implements?.length) {
           classInfo.implements = node.implements.map((impl: any) => getImplementsName(impl));
         }
 
@@ -246,46 +246,46 @@ function extractClasses(ast: any): PhpClassInfo[] {
 /**
  * Extrait les définitions de fonctions à partir de l'AST
  */
-function extractFunctions(ast: any): PhpFunctionInfo[] {
+function extractFunctions(_ast: any): PhpFunctionInfo[] {
   const functions: PhpFunctionInfo[] = [];
   // Implémentation d'extraction des fonctions
   // Version simplifiée pour l'exemple
-  
+
   return functions;
 }
 
 /**
  * Extrait les variables et constantes globales
  */
-function extractGlobals(ast: any): PhpGlobalInfo[] {
+function extractGlobals(_ast: any): PhpGlobalInfo[] {
   const globals: PhpGlobalInfo[] = [];
   // Implémentation d'extraction des globales
   // Version simplifiée pour l'exemple
-  
+
   return globals;
 }
 
 /**
  * Extrait les dépendances (use, require, include, etc.)
  */
-function extractDependencies(ast: any): string[] {
+function extractDependencies(_ast: any): string[] {
   const dependencies: string[] = [];
   // Implémentation d'extraction des dépendances
   // Version simplifiée pour l'exemple
-  
+
   return dependencies;
 }
 
 /**
  * Calcule la complexité du code
  */
-function calculateComplexity(ast: any, code: string) {
+function calculateComplexity(_ast: any, _code: string) {
   // Implémentation du calcul de complexité cyclomatique et maintainability index
   // Version simplifiée pour l'exemple
-  
+
   return {
     cyclomaticComplexity: 1,
-    maintainabilityIndex: 100
+    maintainabilityIndex: 100,
   };
 }
 
@@ -306,7 +306,7 @@ function countCommentLines(code: string): number {
 
   for (const line of lines) {
     const trimmedLine = line.trim();
-    
+
     // Commentaires multi-lignes
     if (inMultilineComment) {
       commentCount++;
@@ -339,19 +339,19 @@ function countCommentLines(code: string): number {
  */
 function detectIssues(ast: any, code: string): PhpIssue[] {
   const issues: PhpIssue[] = [];
-  
+
   // Détecter les problèmes de sécurité
   detectSecurityIssues(ast, code, issues);
-  
+
   // Détecter les problèmes de qualité de code
   detectQualityIssues(ast, code, issues);
-  
+
   // Détecter les problèmes spécifiques au projet
   detectProjectSpecificIssues(ast, code, issues);
-  
+
   // Détecter les problèmes de performance
   detectPerformanceIssues(ast, code, issues);
-  
+
   return issues;
 }
 
@@ -360,16 +360,26 @@ function detectIssues(ast: any, code: string): PhpIssue[] {
  */
 function detectSecurityIssues(ast: any, code: string, issues: PhpIssue[]): void {
   const lines = code.split('\n');
-  
+
   // Recherche de fonctions dangereuses
   const dangerousFunctions = [
-    'eval', 'system', 'exec', 'passthru', 'shell_exec', 'popen', 'proc_open',
-    'unserialize', 'assert', 'create_function', 'include_once', 'require_once'
+    'eval',
+    'system',
+    'exec',
+    'passthru',
+    'shell_exec',
+    'popen',
+    'proc_open',
+    'unserialize',
+    'assert',
+    'create_function',
+    'include_once',
+    'require_once',
   ];
-  
+
   // Regex pour les fonctions dangereuses
   const dangerousFuncRegex = new RegExp(`\\b(${dangerousFunctions.join('|')})\\s*\\(`, 'g');
-  
+
   // Vérifier chaque ligne de code
   lines.forEach((line, index) => {
     let match;
@@ -378,26 +388,27 @@ function detectSecurityIssues(ast: any, code: string, issues: PhpIssue[]): void 
         type: 'warning',
         message: `Utilisation de la fonction potentiellement dangereuse ${match[1]}()`,
         location: {
-          start: { line: index + 1, column: match.index }
+          start: { line: index + 1, column: match.index },
         },
-        code: 'security-risky-function'
+        code: 'security-risky-function',
       });
     }
-    
+
     // Détection d'injections SQL potentielles
     if (line.includes('query(') || line.includes('mysql_query(')) {
       if (line.includes('$_GET') || line.includes('$_POST') || line.includes('$_REQUEST')) {
         issues.push({
           type: 'error',
-          message: 'Possible injection SQL détectée: données non filtrées utilisées dans une requête',
+          message:
+            'Possible injection SQL détectée: données non filtrées utilisées dans une requête',
           location: {
-            start: { line: index + 1, column: 0 }
+            start: { line: index + 1, column: 0 },
           },
-          code: 'security-sql-injection'
+          code: 'security-sql-injection',
         });
       }
     }
-    
+
     // Détection de XSS potentiels
     if (line.includes('echo') || line.includes('print')) {
       if (line.includes('$_GET') || line.includes('$_POST') || line.includes('$_REQUEST')) {
@@ -406,19 +417,19 @@ function detectSecurityIssues(ast: any, code: string, issues: PhpIssue[]): void 
             type: 'warning',
             message: 'Possible XSS détecté: donnée utilisateur affichée sans échappement',
             location: {
-              start: { line: index + 1, column: 0 }
+              start: { line: index + 1, column: 0 },
             },
-            code: 'security-xss'
+            code: 'security-xss',
           });
         }
       }
     }
   });
-  
+
   // Analyse récursive de l'AST pour détecter les problèmes de sécurité
   const traverseForSecurity = (node: any) => {
     if (!node) return;
-    
+
     // Vérifier l'utilisation de variables superglobales sans validation
     if (node.kind === 'variable' && node.name) {
       const name = typeof node.name === 'string' ? node.name : '';
@@ -428,14 +439,14 @@ function detectSecurityIssues(ast: any, code: string, issues: PhpIssue[]): void 
             type: 'info',
             message: `Utilisation de la variable superglobale ${name} - vérifiez que les données sont validées`,
             location: {
-              start: { line: node.loc.start.line, column: node.loc.start.column }
+              start: { line: node.loc.start.line, column: node.loc.start.column },
             },
-            code: 'security-superglobal-usage'
+            code: 'security-superglobal-usage',
           });
         }
       }
     }
-    
+
     // Vérifier les conditions de traversée
     if (node.children && Array.isArray(node.children)) {
       node.children.forEach((child: any) => traverseForSecurity(child));
@@ -453,7 +464,7 @@ function detectSecurityIssues(ast: any, code: string, issues: PhpIssue[]): void 
       traverseForSecurity(node.expr);
     }
   };
-  
+
   traverseForSecurity(ast);
 }
 
@@ -462,7 +473,7 @@ function detectSecurityIssues(ast: any, code: string, issues: PhpIssue[]): void 
  */
 function detectQualityIssues(ast: any, code: string, issues: PhpIssue[]): void {
   const lines = code.split('\n');
-  
+
   // Vérifier la longueur des lignes
   const maxLineLength = 120;
   lines.forEach((line, index) => {
@@ -471,13 +482,13 @@ function detectQualityIssues(ast: any, code: string, issues: PhpIssue[]): void {
         type: 'info',
         message: `Ligne trop longue (${line.length} caractères, max recommandé: ${maxLineLength})`,
         location: {
-          start: { line: index + 1, column: 0 }
+          start: { line: index + 1, column: 0 },
         },
-        code: 'quality-line-length'
+        code: 'quality-line-length',
       });
     }
   });
-  
+
   // Vérifier la présence de commentaires TODO/FIXME
   const todoRegex = /\/\/\s*(TODO|FIXME):|\/\*\s*(TODO|FIXME):|#\s*(TODO|FIXME):/i;
   lines.forEach((line, index) => {
@@ -485,34 +496,38 @@ function detectQualityIssues(ast: any, code: string, issues: PhpIssue[]): void {
     if (match) {
       issues.push({
         type: 'info',
-        message: `Commentaire ${match[1] || match[2] || match[3]} trouvé, à résoudre avant la mise en production`,
+        message: `Commentaire ${
+          match[1] || match[2] || match[3]
+        } trouvé, à résoudre avant la mise en production`,
         location: {
-          start: { line: index + 1, column: match.index || 0 }
+          start: { line: index + 1, column: match.index || 0 },
         },
-        code: 'quality-todo-comment'
+        code: 'quality-todo-comment',
       });
     }
   });
-  
+
   // Analyse récursive de l'AST pour détecter les problèmes de qualité
   const traverseForQuality = (node: any) => {
     if (!node) return;
-    
+
     // Détecter les fonctions/méthodes trop longues
     if ((node.kind === 'function' || node.kind === 'method') && node.loc) {
       const functionLines = node.loc.end.line - node.loc.start.line;
       if (functionLines > 50) {
         issues.push({
           type: 'warning',
-          message: `Fonction/méthode ${node.name || 'anonyme'} trop longue (${functionLines} lignes)`,
+          message: `Fonction/méthode ${
+            node.name || 'anonyme'
+          } trop longue (${functionLines} lignes)`,
           location: {
-            start: { line: node.loc.start.line, column: node.loc.start.column }
+            start: { line: node.loc.start.line, column: node.loc.start.column },
           },
-          code: 'quality-function-length'
+          code: 'quality-function-length',
         });
       }
     }
-    
+
     // Détecter les noms de variables trop courts
     if (node.kind === 'variable' && typeof node.name === 'string' && node.name.length <= 2) {
       // Ignorer les variables de boucle standard
@@ -521,13 +536,13 @@ function detectQualityIssues(ast: any, code: string, issues: PhpIssue[]): void {
           type: 'info',
           message: `Nom de variable trop court: ${node.name}`,
           location: {
-            start: { line: node.loc.start.line, column: node.loc.start.column }
+            start: { line: node.loc.start.line, column: node.loc.start.column },
           },
-          code: 'quality-variable-name'
+          code: 'quality-variable-name',
         });
       }
     }
-    
+
     // Vérifier les conditions de traversée
     if (node.children && Array.isArray(node.children)) {
       node.children.forEach((child: any) => traverseForQuality(child));
@@ -545,7 +560,7 @@ function detectQualityIssues(ast: any, code: string, issues: PhpIssue[]): void {
       traverseForQuality(node.expr);
     }
   };
-  
+
   traverseForQuality(ast);
 }
 
@@ -554,18 +569,19 @@ function detectQualityIssues(ast: any, code: string, issues: PhpIssue[]): void {
  */
 function detectProjectSpecificIssues(ast: any, code: string, issues: PhpIssue[]): void {
   const lines = code.split('\n');
-  
+
   // Règles spécifiques au projet MCP
   const projectForbiddenFunctions = [
     'mysql_connect', // Utiliser mysqli ou PDO à la place
-    'ereg', 'eregi', // Utiliser preg_match à la place
+    'ereg',
+    'eregi', // Utiliser preg_match à la place
     'split', // Utiliser explode ou preg_split à la place
-    'mcrypt' // Utiliser openssl à la place
+    'mcrypt', // Utiliser openssl à la place
   ];
-  
+
   // Vérifier chaque ligne pour détecter les fonctions interdites dans le projet
   lines.forEach((line, index) => {
-    projectForbiddenFunctions.forEach(func => {
+    projectForbiddenFunctions.forEach((func) => {
       const funcRegex = new RegExp(`\\b${func}\\s*\\(`, 'g');
       let match;
       while ((match = funcRegex.exec(line)) !== null) {
@@ -573,34 +589,47 @@ function detectProjectSpecificIssues(ast: any, code: string, issues: PhpIssue[])
           type: 'error',
           message: `Fonction ${func}() interdite dans ce projet - utilisez les alternatives recommandées`,
           location: {
-            start: { line: index + 1, column: match.index }
+            start: { line: index + 1, column: match.index },
           },
-          code: 'project-forbidden-function'
+          code: 'project-forbidden-function',
         });
       }
     });
   });
-  
+
   // Vérifier l'utilisation des namespaces selon les conventions du projet
   if (!code.includes('namespace App\\') && !code.includes('namespace MCP\\')) {
     issues.push({
       type: 'warning',
-      message: 'Namespace non conforme aux standards du projet (devrait commencer par App\\ ou MCP\\)',
+      message:
+        'Namespace non conforme aux standards du projet (devrait commencer par App\\ ou MCP\\)',
       location: {
-        start: { line: 1, column: 0 }
+        start: { line: 1, column: 0 },
       },
-      code: 'project-namespace-standard'
+      code: 'project-namespace-standard',
     });
   }
-  
+
   // Vérifier si les fichiers de modèles suivent le pattern MCP
   if (code.includes('class') && code.includes('extends')) {
     const modelPatterns = [
-      { pattern: /class\s+\w+\s+extends\s+\w+Model/g, expected: true, message: 'Les modèles doivent étendre BaseModel ou AbstractModel' },
-      { pattern: /class\s+(\w+Controller)\s+/g, expected: code.includes('extends BaseController'), message: 'Les contrôleurs doivent étendre BaseController' },
-      { pattern: /class\s+(\w+Service)\s+/g, expected: code.includes('implements ServiceInterface'), message: 'Les services doivent implémenter ServiceInterface' }
+      {
+        pattern: /class\s+\w+\s+extends\s+\w+Model/g,
+        expected: true,
+        message: 'Les modèles doivent étendre BaseModel ou AbstractModel',
+      },
+      {
+        pattern: /class\s+(\w+Controller)\s+/g,
+        expected: code.includes('extends BaseController'),
+        message: 'Les contrôleurs doivent étendre BaseController',
+      },
+      {
+        pattern: /class\s+(\w+Service)\s+/g,
+        expected: code.includes('implements ServiceInterface'),
+        message: 'Les services doivent implémenter ServiceInterface',
+      },
     ];
-    
+
     modelPatterns.forEach(({ pattern, expected, message }) => {
       const match = code.match(pattern);
       if (match && !expected) {
@@ -608,44 +637,52 @@ function detectProjectSpecificIssues(ast: any, code: string, issues: PhpIssue[])
           type: 'warning',
           message,
           location: {
-            start: { line: 1, column: 0 }
+            start: { line: 1, column: 0 },
           },
-          code: 'project-class-pattern'
+          code: 'project-class-pattern',
         });
       }
     });
   }
-  
+
   // Détecter l'absence de docblocks sur les classes et méthodes
   const traverseForDocs = (node: any) => {
     if (!node) return;
-    
-    if ((node.kind === 'class' || node.kind === 'interface' || node.kind === 'trait') && !node.docComment) {
+
+    if (
+      (node.kind === 'class' || node.kind === 'interface' || node.kind === 'trait') &&
+      !node.docComment
+    ) {
       if (node.loc) {
         issues.push({
           type: 'info',
-          message: `La ${node.kind} ${node.name || 'anonyme'} devrait avoir un DocBlock selon les standards du projet`,
+          message: `La ${node.kind} ${
+            node.name || 'anonyme'
+          } devrait avoir un DocBlock selon les standards du projet`,
           location: {
-            start: { line: node.loc.start.line, column: node.loc.start.column }
+            start: { line: node.loc.start.line, column: node.loc.start.column },
           },
-          code: 'project-missing-docblock'
+          code: 'project-missing-docblock',
         });
       }
     }
-    
+
     if ((node.kind === 'method' || node.kind === 'function') && !node.docComment) {
-      if (node.loc && node.name !== '__construct') { // Ignorer les constructeurs
+      if (node.loc && node.name !== '__construct') {
+        // Ignorer les constructeurs
         issues.push({
           type: 'info',
-          message: `La ${node.kind === 'method' ? 'méthode' : 'fonction'} ${node.name || 'anonyme'} devrait avoir un DocBlock selon les standards du projet`,
+          message: `La ${node.kind === 'method' ? 'méthode' : 'fonction'} ${
+            node.name || 'anonyme'
+          } devrait avoir un DocBlock selon les standards du projet`,
           location: {
-            start: { line: node.loc.start.line, column: node.loc.start.column }
+            start: { line: node.loc.start.line, column: node.loc.start.column },
           },
-          code: 'project-missing-docblock'
+          code: 'project-missing-docblock',
         });
       }
     }
-    
+
     // Vérifier les conditions de traversée
     if (node.children && Array.isArray(node.children)) {
       node.children.forEach((child: any) => traverseForDocs(child));
@@ -654,7 +691,7 @@ function detectProjectSpecificIssues(ast: any, code: string, issues: PhpIssue[])
       node.body.forEach((child: any) => traverseForDocs(child));
     }
   };
-  
+
   traverseForDocs(ast);
 }
 
@@ -663,62 +700,77 @@ function detectProjectSpecificIssues(ast: any, code: string, issues: PhpIssue[])
  */
 function detectPerformanceIssues(ast: any, code: string, issues: PhpIssue[]): void {
   const lines = code.split('\n');
-  
+
   // Détecter les requêtes SQL dans les boucles
   let inLoop = false;
-  let loopStartLine = 0;
-  
+  let _loopStartLine = 0;
+
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i];
-    
+
     // Détecter le début d'une boucle
     if (line.match(/\b(for|foreach|while|do)\b/)) {
       inLoop = true;
-      loopStartLine = i + 1;
+      _loopStartLine = i + 1;
     }
-    
+
     // Détecter la fin d'une boucle
     if (inLoop && line.match(/^\s*}/) && !line.match(/^\s*}\s*else/)) {
       inLoop = false;
     }
-    
+
     // Vérifier les requêtes SQL dans les boucles
-    if (inLoop && (line.includes('query(') || line.includes('->execute(') || line.includes('->prepare('))) {
+    if (
+      inLoop &&
+      (line.includes('query(') || line.includes('->execute(') || line.includes('->prepare('))
+    ) {
       issues.push({
         type: 'warning',
-        message: 'Requête SQL potentielle à l\'intérieur d\'une boucle - risque de performance',
+        message: "Requête SQL potentielle à l'intérieur d'une boucle - risque de performance",
         location: {
-          start: { line: i + 1, column: 0 }
+          start: { line: i + 1, column: 0 },
         },
-        code: 'performance-query-in-loop'
+        code: 'performance-query-in-loop',
       });
     }
   }
-  
+
   // Détecter les requêtes N+1 potentielles
   const findNPlusOnePattern = (node: any) => {
     if (!node) return;
-    
+
     // Chercher les boucles qui contiennent des requêtes à l'intérieur du corps
-    if ((node.kind === 'for' || node.kind === 'foreach' || node.kind === 'while' || node.kind === 'do') && node.body) {
+    if (
+      (node.kind === 'for' ||
+        node.kind === 'foreach' ||
+        node.kind === 'while' ||
+        node.kind === 'do') &&
+      node.body
+    ) {
       const findQueries = (bodyNode: any): boolean => {
         if (!bodyNode) return false;
-        
+
         // Détecter les appels de fonction qui pourraient être des requêtes
         if (bodyNode.kind === 'call' && bodyNode.what) {
           const isFunctionCall = bodyNode.what.kind === 'identifier';
           const isMethodCall = bodyNode.what.kind === 'propertylookup';
-          
-          if (isFunctionCall && ['query', 'execute', 'fetch', 'findBy'].some(f => bodyNode.what.name === f)) {
+
+          if (
+            isFunctionCall &&
+            ['query', 'execute', 'fetch', 'findBy'].some((f) => bodyNode.what.name === f)
+          ) {
             return true;
           }
-          
-          if (isMethodCall && bodyNode.what.offset && 
-              ['query', 'execute', 'fetch', 'findBy'].some(f => bodyNode.what.offset.name === f)) {
+
+          if (
+            isMethodCall &&
+            bodyNode.what.offset &&
+            ['query', 'execute', 'fetch', 'findBy'].some((f) => bodyNode.what.offset.name === f)
+          ) {
             return true;
           }
         }
-        
+
         // Rechercher récursivement dans les nœuds enfants
         if (bodyNode.children && Array.isArray(bodyNode.children)) {
           return bodyNode.children.some((child: any) => findQueries(child));
@@ -735,26 +787,27 @@ function detectPerformanceIssues(ast: any, code: string, issues: PhpIssue[]): vo
         if (bodyNode.expr) {
           return findQueries(bodyNode.expr);
         }
-        
+
         return false;
       };
-      
+
       if (node.body.children && Array.isArray(node.body.children)) {
         if (node.body.children.some((child: any) => findQueries(child))) {
           if (node.loc) {
             issues.push({
               type: 'warning',
-              message: 'Problème potentiel N+1: requêtes de base de données à l\'intérieur d\'une boucle. Utilisez des JOINs ou préchargez les données.',
+              message:
+                "Problème potentiel N+1: requêtes de base de données à l'intérieur d'une boucle. Utilisez des JOINs ou préchargez les données.",
               location: {
-                start: { line: node.loc.start.line, column: node.loc.start.column }
+                start: { line: node.loc.start.line, column: node.loc.start.column },
               },
-              code: 'performance-n-plus-1'
+              code: 'performance-n-plus-1',
             });
           }
         }
       }
     }
-    
+
     // Parcourir récursivement les nœuds enfants
     if (node.children && Array.isArray(node.children)) {
       node.children.forEach((child: any) => findNPlusOnePattern(child));
@@ -772,7 +825,7 @@ function detectPerformanceIssues(ast: any, code: string, issues: PhpIssue[]): vo
       findNPlusOnePattern(node.expr);
     }
   };
-  
+
   findNPlusOnePattern(ast);
 }
 
@@ -781,13 +834,13 @@ function detectPerformanceIssues(ast: any, code: string, issues: PhpIssue[]): vo
  */
 function getNamespaceString(node: any): string {
   try {
-    if (node.name && node.name.name) {
+    if (node.name?.name) {
       return node.name.name;
     }
     if (node.name) {
       return node.name;
     }
-  } catch (e) {}
+  } catch (_e) {}
   return '';
 }
 
@@ -796,7 +849,7 @@ function getExtendsName(node: any): string {
     if (node.name) {
       return node.name;
     }
-  } catch (e) {}
+  } catch (_e) {}
   return '';
 }
 
@@ -805,7 +858,7 @@ function getImplementsName(node: any): string {
     if (node.name) {
       return node.name;
     }
-  } catch (e) {}
+  } catch (_e) {}
   return '';
 }
 
@@ -829,9 +882,9 @@ function extractMethod(node: any): PhpMethodInfo {
   if (node.location) {
     method.location = {
       start: { line: node.location.start.line, column: node.location.start.column },
-      end: { line: node.location.end.line, column: node.location.end.column }
+      end: { line: node.location.end.line, column: node.location.end.column },
     };
-    
+
     if (method.location.start && method.location.end) {
       method.linesOfCode = method.location.end.line - method.location.start.line + 1;
     }
@@ -859,7 +912,7 @@ function extractProperty(node: any): PhpPropertyInfo {
   if (node.location) {
     property.location = {
       start: { line: node.location.start.line, column: node.location.start.column },
-      end: { line: node.location.end.line, column: node.location.end.column }
+      end: { line: node.location.end.line, column: node.location.end.column },
     };
   }
 
@@ -867,13 +920,13 @@ function extractProperty(node: any): PhpPropertyInfo {
 }
 
 function extractParameters(args: any[]): PhpParameterInfo[] {
-  return args.map(arg => ({
+  return args.map((arg) => ({
     name: arg.name || '',
     type: arg.type ? getTypeName(arg.type) : undefined,
     defaultValue: arg.value ? getValueAsString(arg.value) : undefined,
     isOptional: !!arg.value,
     isVariadic: !!arg.variadic,
-    isReference: !!arg.byref
+    isReference: !!arg.byref,
   }));
 }
 
@@ -889,7 +942,7 @@ function getPropertyName(node: any): string {
     if (node.name) {
       return node.name;
     }
-  } catch (e) {}
+  } catch (_e) {}
   return 'unknownProperty';
 }
 
@@ -901,7 +954,7 @@ function getTypeName(typeNode: any): string {
     if (typeNode.name) {
       return typeNode.name;
     }
-  } catch (e) {}
+  } catch (_e) {}
   return 'mixed';
 }
 
@@ -922,6 +975,6 @@ function getValueAsString(valueNode: any): string {
     if (valueNode.raw) {
       return valueNode.raw;
     }
-  } catch (e) {}
+  } catch (_e) {}
   return '';
 }

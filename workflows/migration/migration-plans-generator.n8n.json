@@ -12,10 +12,7 @@
       "name": "Find PHP Files",
       "type": "n8n-nodes-base.fileSearch",
       "id": "1",
-      "position": [
-        250,
-        300
-      ]
+      "position": [250, 300]
     },
     {
       "parameters": {
@@ -24,10 +21,7 @@
       "name": "Prepare Migration Commands",
       "type": "n8n-nodes-base.function",
       "id": "2",
-      "position": [
-        450,
-        300
-      ]
+      "position": [450, 300]
     },
     {
       "parameters": {
@@ -37,10 +31,7 @@
       "name": "Execute Generate Commands",
       "type": "n8n-nodes-base.executeCommand",
       "id": "3",
-      "position": [
-        650,
-        300
-      ]
+      "position": [650, 300]
     },
     {
       "parameters": {
@@ -49,10 +40,7 @@
       "name": "Process Results",
       "type": "n8n-nodes-base.function",
       "id": "4",
-      "position": [
-        850,
-        300
-      ]
+      "position": [850, 300]
     },
     {
       "parameters": {
@@ -71,10 +59,7 @@
       "name": "Store in Supabase",
       "type": "n8n-nodes-base.supabase",
       "id": "5",
-      "position": [
-        1050,
-        300
-      ],
+      "position": [1050, 300],
       "credentials": {
         "supabaseApi": {
           "id": "1",
@@ -97,10 +82,7 @@
       "name": "Workflow Data",
       "type": "n8n-nodes-base.set",
       "id": "6",
-      "position": [
-        50,
-        300
-      ]
+      "position": [50, 300]
     },
     {
       "parameters": {
@@ -117,10 +99,7 @@
       "name": "Schedule Trigger",
       "type": "n8n-nodes-base.cron",
       "id": "7",
-      "position": [
-        50,
-        500
-      ]
+      "position": [50, 500]
     },
     {
       "parameters": {},
@@ -128,10 +107,7 @@
       "type": "n8n-nodes-base.webhook",
       "webhookId": "migration-plan-generation",
       "id": "8",
-      "position": [
-        50,
-        100
-      ]
+      "position": [50, 100]
     },
     {
       "parameters": {
@@ -147,10 +123,7 @@
       "name": "Successful Only",
       "type": "n8n-nodes-base.if",
       "id": "9",
-      "position": [
-        1050,
-        500
-      ]
+      "position": [1050, 500]
     },
     {
       "parameters": {
@@ -162,10 +135,7 @@
       "name": "Send Email",
       "type": "n8n-nodes-base.emailSend",
       "id": "10",
-      "position": [
-        1250,
-        500
-      ],
+      "position": [1250, 500],
       "credentials": {
         "smtp": {
           "id": "1",
@@ -180,10 +150,7 @@
       "name": "Generate Summary",
       "type": "n8n-nodes-base.function",
       "id": "11",
-      "position": [
-        1050,
-        700
-      ]
+      "position": [1050, 700]
     },
     {
       "parameters": {
@@ -198,10 +165,7 @@
       "name": "Upload to S3",
       "type": "n8n-nodes-base.s3",
       "id": "12",
-      "position": [
-        1250,
-        700
-      ],
+      "position": [1250, 700],
       "credentials": {
         "s3": {
           "id": "1",

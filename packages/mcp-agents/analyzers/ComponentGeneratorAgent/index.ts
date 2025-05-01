@@ -5,7 +5,4 @@
 
 import { ComponentGeneratorAgent } from './ComponentGeneratorAgent';
 
-export {
-  ComponentGeneratorAgent,
-};
-
+export { ComponentGeneratorAgent };

@@ -5,7 +5,4 @@
 
 import { QualityAgent } from './QualityAgent';
 
-export {
-  QualityAgent,
-};
-
+export { QualityAgent };

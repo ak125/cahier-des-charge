@@ -1,5 +1,5 @@
-import { Controller, Post, Body, HttpException, HttpStatus } from @nestjs/commonstructure-agent';
-import { agentRegistry, executeAgent } from @fafaDoDotmcp-agentsstructure-agent';
+import { agentRegistry, executeAgent  } from './@fafaDoDotmcp-agentsstructure-agent'
+import { Body, Controller, HttpException, HttpStatus,  Post } from './@nestjs/commonstructure-agent'
 
 interface AgentRequestDto {
   agentName: string;

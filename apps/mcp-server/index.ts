@@ -1,22 +1,22 @@
 // appsDoDotmcp-server/index.ts
 
-import fs from "fs";
-import path from "path";
-import chalk from "chalk";
-import { processFilesInParallel, FileProcessingOptions } from "./utils/file-processor";
-import express from 'express';
-import bodyParser from 'body-parser';
-import cors from 'cors';
-import dotenv from 'dotenv';
-import { supabase } from '../../utils/supabaseClient';
 import { exec } from 'child_process';
+import fs from 'fs';
+import path from 'path';
 import { promisify } from 'util';
-import axios from 'axios';
 // Import du registre centralisé d'agents MCP
 import { agentRegistry, executeAgent as runMcpAgent } from '@fafa/mcp-agents';
+import axios from 'axios';
+import bodyParser from 'body-parser';
+import chalk from 'chalk';
+import cors from 'cors';
+import dotenv from 'dotenv';
+import express from 'express';
+import { supabase } from '../../utils/supabaseClient';
+import { FileProcessingOptions, processFilesInParallel } from './utils/file-processor';
 
 // Convertir exec en version Promise
-const execAsync = promisify(exec);
+const _execAsync = promisify(exec);
 
 // Charger les variables d'environnement
 dotenv.config();
@@ -30,11 +30,7 @@ app.use(bodyParser.json({ limit: '50mb' }));
 app.use(cors());
 
 // Vérifier que les variables d'environnement requises sont définies
-const requiredEnvVars = [
-  'SUPABASE_URL',
-  'SUPABASE_SERVICE_ROLE_KEY',
-  'N8N_WEBHOOK_URL'
-];
+const requiredEnvVars = ['SUPABASE_URL', 'SUPABASE_SERVICE_ROLE_KEY', 'N8N_WEBHOOK_URL'];
 
 for (const envVar of requiredEnvVars) {
   if (!process.env[envVar]) {
@@ -44,12 +40,12 @@ for (const envVar of requiredEnvVars) {
 }
 
 // Route de vérification de santé
-app.get('/health', (req, res) => {
+app.get('/health', (_req, res) => {
   res.status(200).json({ status: 'ok', version: '1.0.0' });
 });
 
 // Route d'information sur le serveur MCP
-app.get('/info', (req, res) => {
+app.get('/info', (_req, res) => {
   res.status(200).json({
     name: 'MCP Server Supabase',
     version: '1.0.0',
@@ -60,19 +56,19 @@ app.get('/info', (req, res) => {
       { path: '/agents', method: 'GET', description: 'Liste des agents disponibles' },
       { path: '/events', method: 'GET', description: 'Liste des événements récents' },
       { path: '/webhook/trigger', method: 'POST', description: 'Déclencher un agent via webhook' },
-      { path: '/run/:agentName', method: 'POST', description: 'Exécuter un agent spécifique' }
-    ]
+      { path: '/run/:agentName', method: 'POST', description: 'Exécuter un agent spécifique' },
+    ],
   });
 });
 
 // Route pour lister les agents disponibles
-app.get('/agents', async (req, res) => {
+app.get('/agents', async (_req, res) => {
   try {
     // Récupérer les agents depuis le registre centralisé
-    const agents = Object.keys(agentRegistry).map(agentName => ({
+    const agents = Object.keys(agentRegistry).map((agentName) => ({
       name: agentName,
       category: agentRegistry[agentName].category || 'default',
-      description: agentRegistry[agentName].description || 'Aucune description disponible'
+      description: agentRegistry[agentName].description || 'Aucune description disponible',
     }));
 
     // Récupérer aussi les statistiques d'exécution depuis Supabase
@@ -84,12 +80,12 @@ app.get('/agents', async (req, res) => {
     if (error) throw error;
 
     // Combiner les informations
-    const result = agents.map(agent => {
-      const stats = agentStats?.find(stat => stat.agent_name === agent.name) || null;
+    const result = agents.map((agent) => {
+      const stats = agentStats?.find((stat) => stat.agent_name === agent.name) || null;
       return {
         ...agent,
         runs: stats ? parseInt(stats.count) : 0,
-        lastRun: stats ? stats.last_run : null
+        lastRun: stats ? stats.last_run : null,
       };
     });
 
@@ -101,7 +97,7 @@ app.get('/agents', async (req, res) => {
 });
 
 // Route pour récupérer les événements récents
-app.get('/events', async (req, res) => {
+app.get('/events', async (_req, res) => {
   try {
     const { data, error } = await supabase
       .from('mcp_events')
@@ -124,39 +120,46 @@ app.post('/webhook/trigger', async (req, res) => {
     const { agent, params, source, priority } = req.body;
 
     if (!agent) {
-      return res.status(400).json({ error: 'Le nom de l\'agent est requis' });
+      return res.status(400).json({ error: "Le nom de l'agent est requis" });
     }
 
     // Créer un événement dans la base de données
-    const { data: event, error } = await supabase.from('mcp_events').insert({
-      event_type: 'agent_trigger',
-      payload: { agent, params, source },
-      source: source || 'webhook',
-      status: 'received',
-      priority: priority || 3,
-    }).select().single();
+    const { data: event, error } = await supabase
+      .from('mcp_events')
+      .insert({
+        event_type: 'agent_trigger',
+        payload: { agent, params, source },
+        source: source || 'webhook',
+        status: 'received',
+        priority: priority || 3,
+      })
+      .select()
+      .single();
 
     if (error) throw error;
 
     // Répondre immédiatement pour ne pas bloquer le client
     res.status(202).json({
-      message: 'Déclenchement de l\'agent en cours',
-      eventId: event.id
+      message: "Déclenchement de l'agent en cours",
+      eventId: event.id,
     });
 
     // Déclencher l'agent de façon asynchrone
-    executeAgent(agent, params, event.id).catch(err => {
+    executeAgent(agent, params, event.id).catch((err) => {
       console.error(`Erreur lors de l'exécution de l'agent ${agent}:`, err);
       // Mettre à jour l'événement en cas d'erreur
-      supabase.from('mcp_events').update({
-        status: 'failed',
-        error_message: err.message,
-        processed_at: new Date().toISOString(),
-      }).eq('id', event.id);
+      supabase
+        .from('mcp_events')
+        .update({
+          status: 'failed',
+          error_message: err.message,
+          processed_at: new Date().toISOString(),
+        })
+        .eq('id', event.id);
     });
   } catch (error) {
-    console.error('Erreur lors du déclenchement de l\'agent:', error);
-    res.status(500).json({ error: 'Erreur lors du déclenchement de l\'agent' });
+    console.error("Erreur lors du déclenchement de l'agent:", error);
+    res.status(500).json({ error: "Erreur lors du déclenchement de l'agent" });
   }
 });
 
@@ -172,18 +175,22 @@ app.post('/run/:agentName', async (req, res) => {
     }
 
     // Créer un enregistrement d'exécution d'agent
-    const { data: agentRun, error } = await supabase.from('agent_runs').insert({
-      agent_name: agentName,
-      status: 'started',
-      input_params: params,
-    }).select().single();
+    const { data: agentRun, error } = await supabase
+      .from('agent_runs')
+      .insert({
+        agent_name: agentName,
+        status: 'started',
+        input_params: params,
+      })
+      .select()
+      .single();
 
     if (error) throw error;
 
     // Répondre immédiatement
     res.status(202).json({
       message: `Exécution de l'agent ${agentName} en cours`,
-      runId: agentRun.id
+      runId: agentRun.id,
     });
 
     // Exécuter l'agent de façon asynchrone via le registre centralisé
@@ -191,24 +198,30 @@ app.post('/run/:agentName', async (req, res) => {
     runMcpAgent(agentName, params)
       .then(async (result) => {
         // Mettre à jour l'enregistrement d'agent en cas de succès
-        await supabase.from('agent_runs').update({
-          status: 'completed',
-          output_result: result,
-        }).eq('id', agentRun.id);
+        await supabase
+          .from('agent_runs')
+          .update({
+            status: 'completed',
+            output_result: result,
+          })
+          .eq('id', agentRun.id);
 
         console.log(`Agent ${agentName} exécuté avec succès`);
       })
       .catch(async (err) => {
         console.error(`Erreur lors de l'exécution de l'agent ${agentName}:`, err);
         // Mettre à jour l'enregistrement d'agent en cas d'erreur
-        await supabase.from('agent_runs').update({
-          status: 'failed',
-          error_message: err.message,
-        }).eq('id', agentRun.id);
+        await supabase
+          .from('agent_runs')
+          .update({
+            status: 'failed',
+            error_message: err.message,
+          })
+          .eq('id', agentRun.id);
       });
   } catch (error) {
-    console.error('Erreur lors de l\'exécution de l\'agent:', error);
-    res.status(500).json({ error: 'Erreur lors de l\'exécution de l\'agent' });
+    console.error("Erreur lors de l'exécution de l'agent:", error);
+    res.status(500).json({ error: "Erreur lors de l'exécution de l'agent" });
   }
 });
 
@@ -218,7 +231,7 @@ app.post('/notify/n8n', async (req, res) => {
     const { eventType, data } = req.body;
 
     if (!eventType) {
-      return res.status(400).json({ error: 'Le type d\'événement est requis' });
+      return res.status(400).json({ error: "Le type d'événement est requis" });
     }
 
     // Envoyer la notification à n8n
@@ -227,16 +240,16 @@ app.post('/notify/n8n', async (req, res) => {
       eventType,
       data,
       timestamp: new Date().toISOString(),
-      source: 'mcp-server'
+      source: 'mcp-server',
     });
 
     res.status(200).json({
       message: 'Notification envoyée à n8n',
-      n8nResponse: response.data
+      n8nResponse: response.data,
     });
   } catch (error) {
-    console.error('Erreur lors de l\'envoi de la notification à n8n:', error);
-    res.status(500).json({ error: 'Erreur lors de l\'envoi de la notification à n8n' });
+    console.error("Erreur lors de l'envoi de la notification à n8n:", error);
+    res.status(500).json({ error: "Erreur lors de l'envoi de la notification à n8n" });
   }
 });
 
@@ -255,18 +268,24 @@ async function executeAgent(agentName: string, params: any, eventId?: number, ru
 
     // Mettre à jour l'événement si un ID a été fourni
     if (eventId) {
-      await supabase.from('mcp_events').update({
-        status: 'completed',
-        processed_at: new Date().toISOString(),
-      }).eq('id', eventId);
+      await supabase
+        .from('mcp_events')
+        .update({
+          status: 'completed',
+          processed_at: new Date().toISOString(),
+        })
+        .eq('id', eventId);
     }
 
     // Mettre à jour l'enregistrement d'exécution d'agent si un ID a été fourni
     if (runId) {
-      await supabase.from('agent_runs').update({
-        status: 'completed',
-        output_result: result,
-      }).eq('id', runId);
+      await supabase
+        .from('agent_runs')
+        .update({
+          status: 'completed',
+          output_result: result,
+        })
+        .eq('id', runId);
     }
 
     console.log(`Agent ${agentName} exécuté avec succès`);
@@ -276,19 +295,25 @@ async function executeAgent(agentName: string, params: any, eventId?: number, ru
 
     // Mettre à jour l'événement en cas d'erreur
     if (eventId) {
-      await supabase.from('mcp_events').update({
-        status: 'failed',
-        error_message: error.message,
-        processed_at: new Date().toISOString(),
-      }).eq('id', eventId);
+      await supabase
+        .from('mcp_events')
+        .update({
+          status: 'failed',
+          error_message: error.message,
+          processed_at: new Date().toISOString(),
+        })
+        .eq('id', eventId);
     }
 
     // Mettre à jour l'enregistrement d'exécution d'agent en cas d'erreur
     if (runId) {
-      await supabase.from('agent_runs').update({
-        status: 'failed',
-        error_message: error.message,
-      }).eq('id', runId);
+      await supabase
+        .from('agent_runs')
+        .update({
+          status: 'failed',
+          error_message: error.message,
+        })
+        .eq('id', runId);
     }
 
     throw error;
@@ -321,9 +346,10 @@ const config: MCPConfig = JSON.parse(fs.readFileSync(configPath, 'utf-8'));
 async function main() {
   const AGENTS = config.agents;
   const SOURCE_DIR = path.resolve(__dirname, config.sourceDir);
-  const OUTPUT_DIR = path.resolve(__dirname, config.outputDir || "outputs");
-  const EXTENSIONS = config.filters?.includeExtensions || [".php"];
-  const MAX_WORKERS = config.performance?.maxWorkers || Math.max(1, require('os').cpus().length - 1);
+  const OUTPUT_DIR = path.resolve(__dirname, config.outputDir || 'outputs');
+  const EXTENSIONS = config.filters?.includeExtensions || ['.php'];
+  const MAX_WORKERS =
+    config.performance?.maxWorkers || Math.max(1, require('os').cpus().length - 1);
   const CHUNK_SIZE = config.performance?.chunkSize || 1024 * 1024; // 1MB par défaut
 
   console.log(chalk.blue(`📂 Dossier analysé : ${SOURCE_DIR}`));
@@ -341,18 +367,20 @@ async function main() {
   // Vérification que des fichiers existent dans le répertoire source
   try {
     const allFiles = fs.readdirSync(SOURCE_DIR);
-    const phpFiles = allFiles.filter(file =>
-      EXTENSIONS.some(ext => file.endsWith(ext))
-    );
+    const phpFiles = allFiles.filter((file) => EXTENSIONS.some((ext) => file.endsWith(ext)));
 
     if (phpFiles.length === 0) {
-      console.info(chalk.yellow("⚠️  Aucun fichier correspondant trouvé."));
+      console.info(chalk.yellow('⚠️  Aucun fichier correspondant trouvé.'));
       process.exit(0);
     }
 
-    console.log(chalk.green(`✅ ${phpFiles.length} fichier(s) à traiter avec ${MAX_WORKERS} workers.`));
+    console.log(
+      chalk.green(`✅ ${phpFiles.length} fichier(s) à traiter avec ${MAX_WORKERS} workers.`)
+    );
   } catch (error) {
-    console.error(chalk.red(`❌ Erreur lors de la lecture du répertoire source : ${error.message}`));
+    console.error(
+      chalk.red(`❌ Erreur lors de la lecture du répertoire source : ${error.message}`)
+    );
     process.exit(1);
   }
 
@@ -371,7 +399,7 @@ async function main() {
       const options: FileProcessingOptions = {
         maxWorkers: MAX_WORKERS,
         chunkSize: CHUNK_SIZE,
-        includeExtensions: EXTENSIONS
+        includeExtensions: EXTENSIONS,
       };
 
       console.log(chalk.cyan(`🚀 Démarrage du traitement parallèle avec l'agent ${agentName}...`));
@@ -385,7 +413,9 @@ async function main() {
       const results = await processFilesInParallel(SOURCE_DIR, agentFunction, options);
 
       const duration = ((Date.now() - startTime) / 1000).toFixed(2);
-      console.log(chalk.green(`✅ Traitement terminé en ${duration}s avec ${results.length} résultats.`));
+      console.log(
+        chalk.green(`✅ Traitement terminé en ${duration}s avec ${results.length} résultats.`)
+      );
 
       // Écriture des résultats
       let filesWritten = 0;
@@ -402,7 +432,7 @@ async function main() {
                 fs.mkdirSync(outputDir, { recursive: true });
               }
 
-              fs.writeFileSync(outputPath, res.content, "utf-8");
+              fs.writeFileSync(outputPath, res.content, 'utf-8');
               filesWritten++;
             }
           }
@@ -415,14 +445,16 @@ async function main() {
             fs.mkdirSync(outputDir, { recursive: true });
           }
 
-          fs.writeFileSync(outputPath, result.content, "utf-8");
+          fs.writeFileSync(outputPath, result.content, 'utf-8');
           filesWritten++;
         }
       }
 
       console.log(chalk.green(`💾 ${filesWritten} fichier(s) généré(s) dans ${OUTPUT_DIR}`));
     } catch (error) {
-      console.error(chalk.red(`❌ Erreur lors du traitement avec l'agent ${agentName} : ${error.message}`));
+      console.error(
+        chalk.red(`❌ Erreur lors du traitement avec l'agent ${agentName} : ${error.message}`)
+      );
       console.error(error.stack);
     }
   }
@@ -431,7 +463,7 @@ async function main() {
 }
 
 // Exécution du programme principal
-main().catch(error => {
+main().catch((error) => {
   console.error(chalk.red(`❌ Erreur fatale : ${error.message}`));
   console.error(error.stack);
   process.exit(1);

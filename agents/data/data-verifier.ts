@@ -1,9 +1,9 @@
 /**
- * data
+ * data-verifier
  * Agent export file
  */
 
-import { data } from ./data-verifierstructure-agent';
+import { data } from './data-verifier';
 
 export { data };
 export default data;

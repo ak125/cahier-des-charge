@@ -4,11 +4,12 @@ import { runCITester } from '@fafaDoDotmcp-agents-CiTester';
 app.post('/api/ci/generate', async (req, res) => {
   const result = await runCITester({
     outputPath: req.body.outputPath,
-    localTest: req.body.runLocalTests
+    localTest: req.body.runLocalTests,
   });
-  
+
   return res.json({ success: true, result });
-});import axios from 'axios';
+});
+import axios from 'axios';
 import dotenv from 'dotenv';
 
 // Charger les variables d'environnement
@@ -18,12 +19,13 @@ dotenv.config();
  * Interface pour les options de notification Discord
  */
 interface DiscordNotificationOptions {
-  username?: string;         // Nom d'utilisateur du webhook
-  avatar_url?: string;       // URL de l'avatar
-  tts?: boolean;             // Text-to-speech
-  embeds?: DiscordEmbed[];   // Embeds Discord
-  components?: any[];        // Composants interactifs
-  allowedMentions?: {        // Mentions autorisées
+  username?: string; // Nom d'utilisateur du webhook
+  avatar_url?: string; // URL de l'avatar
+  tts?: boolean; // Text-to-speech
+  embeds?: DiscordEmbed[]; // Embeds Discord
+  components?: any[]; // Composants interactifs
+  allowedMentions?: {
+    // Mentions autorisées
     parse?: string[];
     users?: string[];
     roles?: string[];
@@ -34,27 +36,32 @@ interface DiscordNotificationOptions {
  * Interface pour les embeds Discord
  */
 interface DiscordEmbed {
-  title?: string;            // Titre de l'embed
-  description?: string;      // Description de l'embed
-  url?: string;              // URL du titre
-  timestamp?: string;        // Timestamp ISO8601
-  color?: number;            // Couleur (entier)
-  footer?: {                 // Pied de page
+  title?: string; // Titre de l'embed
+  description?: string; // Description de l'embed
+  url?: string; // URL du titre
+  timestamp?: string; // Timestamp ISO8601
+  color?: number; // Couleur (entier)
+  footer?: {
+    // Pied de page
     text: string;
     icon_url?: string;
   };
-  image?: {                  // Image
+  image?: {
+    // Image
     url: string;
   };
-  thumbnail?: {              // Miniature
+  thumbnail?: {
+    // Miniature
     url: string;
   };
-  author?: {                 // Auteur
+  author?: {
+    // Auteur
     name: string;
     url?: string;
     icon_url?: string;
   };
-  fields?: {                 // Champs
+  fields?: {
+    // Champs
     name: string;
     value: string;
     inline?: boolean;
@@ -65,12 +72,12 @@ interface DiscordEmbed {
  * Couleurs prédéfinies pour les différents niveaux de sévérité
  */
 export enum DiscordColors {
-  DEFAULT = 0x000000,      // Noir
-  SUCCESS = 0x57F287,      // Vert
-  INFO = 0x3498DB,         // Bleu
-  WARNING = 0xFEE75C,      // Jaune
-  ERROR = 0xED4245,        // Rouge
-  CRITICAL = 0x9B59B6      // Violet
+  DEFAULT = 0x000000, // Noir
+  SUCCESS = 0x57f287, // Vert
+  INFO = 0x3498db, // Bleu
+  WARNING = 0xfee75c, // Jaune
+  ERROR = 0xed4245, // Rouge
+  CRITICAL = 0x9b59b6, // Violet
 }
 
 /**
@@ -87,13 +94,13 @@ export async function sendDiscordNotification(
 ): Promise<boolean> {
   // Récupérer l'URL du webhook
   const discordWebhook = webhookUrl || process.env.DISCORD_WEBHOOK;
-  
+
   // Si aucune URL de webhook n'est fournie, retourner false
   if (!discordWebhook) {
     console.warn('⚠️ Aucune URL de webhook Discord configurée. Notification ignorée.');
     return false;
   }
-  
+
   try {
     // Préparer la payload pour Discord
     const payload = {
@@ -103,26 +110,27 @@ export async function sendDiscordNotification(
       tts: options.tts || false,
       embeds: options.embeds || [],
       components: options.components || [],
-      allowed_mentions: options.allowedMentions
+      allowed_mentions: options.allowedMentions,
     };
-    
+
     // Envoyer la notification
     const response = await axios.post(discordWebhook, payload, {
       headers: {
-        'Content-Type': 'application/json'
-      }
+        'Content-Type': 'application/json',
+      },
     });
-    
+
     // Vérifier si la notification a été envoyée avec succès
     if (response.status === 204) {
       console.log('✅ Notification Discord envoyée avec succès.');
       return true;
-    } else {
-      console.error(`❌ Erreur lors de l'envoi de la notification Discord: ${response.status} ${response.statusText}`);
-      return false;
     }
+    console.error(
+      `❌ Erreur lors de l'envoi de la notification Discord: ${response.status} ${response.statusText}`
+    );
+    return false;
   } catch (error) {
-    console.error('❌ Exception lors de l\'envoi de la notification Discord:', error);
+    console.error("❌ Exception lors de l'envoi de la notification Discord:", error);
     return false;
   }
 }
@@ -143,18 +151,18 @@ export function createDiscordEmbed(
   color: number = DiscordColors.INFO,
   fields?: Array<{ name: string; value: string; inline?: boolean }>,
   footerText?: string,
-  includeTimestamp: boolean = false
+  includeTimestamp = false
 ): DiscordEmbed {
   const embed: DiscordEmbed = {
-    color
+    color,
   };
-  
+
   if (title) embed.title = title;
   if (description) embed.description = description;
   if (fields) embed.fields = fields;
   if (footerText) embed.footer = { text: footerText };
   if (includeTimestamp) embed.timestamp = new Date().toISOString();
-  
+
   return embed;
 }
 
@@ -172,14 +180,14 @@ export async function sendErrorNotification(
   details?: Record<string, string>,
   webhookUrl?: string
 ): Promise<boolean> {
-  const fields = details 
+  const fields = details
     ? Object.entries(details).map(([name, value]) => ({
         name,
         value,
-        inline: true
+        inline: true,
       }))
     : [];
-  
+
   const embed = createDiscordEmbed(
     `❌ ${title}`,
     description,
@@ -188,12 +196,12 @@ export async function sendErrorNotification(
     "Notification d'erreur automatique",
     true
   );
-  
+
   return sendDiscordNotification(
-    "", // Pas de contenu principal, tout est dans l'embed
+    '', // Pas de contenu principal, tout est dans l'embed
     {
-      username: "Error Reporter",
-      embeds: [embed]
+      username: 'Error Reporter',
+      embeds: [embed],
     },
     webhookUrl
   );
@@ -213,28 +221,28 @@ export async function sendSuccessNotification(
   details?: Record<string, string>,
   webhookUrl?: string
 ): Promise<boolean> {
-  const fields = details 
+  const fields = details
     ? Object.entries(details).map(([name, value]) => ({
         name,
         value,
-        inline: true
+        inline: true,
       }))
     : [];
-  
+
   const embed = createDiscordEmbed(
     `✅ ${title}`,
     description,
     DiscordColors.SUCCESS,
     fields,
-    "Notification de succès automatique",
+    'Notification de succès automatique',
     true
   );
-  
+
   return sendDiscordNotification(
-    "", // Pas de contenu principal, tout est dans l'embed
+    '', // Pas de contenu principal, tout est dans l'embed
     {
-      username: "Success Reporter",
-      embeds: [embed]
+      username: 'Success Reporter',
+      embeds: [embed],
     },
     webhookUrl
   );
@@ -259,7 +267,7 @@ export async function sendAlertNotification(
   // Choisir la couleur en fonction de la sévérité
   let color: number;
   let emoji: string;
-  
+
   switch (severity) {
     case 'info':
       color = DiscordColors.INFO;
@@ -281,15 +289,15 @@ export async function sendAlertNotification(
       color = DiscordColors.INFO;
       emoji = 'ℹ️';
   }
-  
-  const fields = details 
+
+  const fields = details
     ? Object.entries(details).map(([name, value]) => ({
         name,
         value,
-        inline: true
+        inline: true,
       }))
     : [];
-  
+
   const embed = createDiscordEmbed(
     `${emoji} ${title}`,
     description,
@@ -298,12 +306,12 @@ export async function sendAlertNotification(
     `Niveau de sévérité: ${severity.toUpperCase()}`,
     true
   );
-  
+
   return sendDiscordNotification(
-    "", // Pas de contenu principal, tout est dans l'embed
+    '', // Pas de contenu principal, tout est dans l'embed
     {
-      username: "Alert System",
-      embeds: [embed]
+      username: 'Alert System',
+      embeds: [embed],
     },
     webhookUrl
   );
@@ -327,41 +335,41 @@ export async function sendProgressNotification(
 ): Promise<boolean> {
   // Créer une barre de progression visuelle
   const progressBar = createProgressBar(progress);
-  
+
   // Préparer les champs
   const fields = [
     {
-      name: "Progression",
+      name: 'Progression',
       value: progressBar,
-      inline: false
-    }
+      inline: false,
+    },
   ];
-  
+
   // Ajouter les statistiques si elles existent
   if (stats) {
     for (const [key, value] of Object.entries(stats)) {
       fields.push({
         name: key,
         value: String(value),
-        inline: true
+        inline: true,
       });
     }
   }
-  
+
   const embed = createDiscordEmbed(
     title,
     description,
     DiscordColors.INFO,
     fields,
-    "Notification de progression",
+    'Notification de progression',
     true
   );
-  
+
   return sendDiscordNotification(
-    "", // Pas de contenu principal, tout est dans l'embed
+    '', // Pas de contenu principal, tout est dans l'embed
     {
-      username: "Progress Tracker",
-      embeds: [embed]
+      username: 'Progress Tracker',
+      embeds: [embed],
     },
     webhookUrl
   );
@@ -376,14 +384,16 @@ function createProgressBar(progress: number): string {
   const filledBar = '█';
   const emptyBar = '░';
   const barLength = 20;
-  
+
   // S'assurer que la progression est entre 0 et 100
   const clampedProgress = Math.max(0, Math.min(100, progress));
-  
+
   const filledLength = Math.round((clampedProgress / 100) * barLength);
   const emptyLength = barLength - filledLength;
-  
-  return `${filledBar.repeat(filledLength)}${emptyBar.repeat(emptyLength)} ${clampedProgress.toFixed(1)}%`;
+
+  return `${filledBar.repeat(filledLength)}${emptyBar.repeat(
+    emptyLength
+  )} ${clampedProgress.toFixed(1)}%`;
 }
 
 // Pour tester l'envoi de notification si ce script est exécuté directement
@@ -403,16 +413,16 @@ if (require.main === module) {
               {
                 name: 'Test',
                 value: 'Valeur de test',
-                inline: true
-              }
+                inline: true,
+              },
             ],
             'Ceci est un test',
             true
-          )
-        ]
+          ),
+        ],
       }
     );
-    
+
     if (success) {
       console.log('✅ Test de notification Discord envoyé avec succès');
     } else {

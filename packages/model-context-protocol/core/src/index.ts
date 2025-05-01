@@ -41,16 +41,20 @@ export class MCPCore implements ModelContextProtocol {
 }
 
 // Export de l'instance par défaut
-export constDoDotmcpCore = new MCPCore();
+export const mcpCore = new MCPCore();
 
 // Fonction utilitaire pour créer un nouvel agent
-export function createAgent(name: string, handler: (context: any) => Promise<any>, options?: { description?: string, category?: string }): MCPAgent {
+export function createAgent(
+  name: string,
+  handler: (context: any) => Promise<any>,
+  options?: { description?: string; category?: string }
+): MCPAgent {
   return {
     name,
     description: options?.description || '',
     category: options?.category || 'default',
-    run: handler
+    run: handler,
   };
 }
 
-export defaultDoDotmcpCore;
+export default mcpCore;

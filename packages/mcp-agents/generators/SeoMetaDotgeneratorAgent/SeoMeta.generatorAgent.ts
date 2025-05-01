@@ -3,8 +3,8 @@
  * Agent export file
  */
 
-import { SeoMetadataGenerator } from './SeoMetaDotgenerator';
 import { GeneratorAgent } from '../../core/interfaces';
+import { SeoMetadataGenerator } from './SeoMetaDotgenerator';
 
 export { SeoMetadataGenerator };
 export default SeoMetadataGenerator;

@@ -176,7 +176,7 @@ async function generateTechnicalFiles() {
         await generateFromTemplates(sourcePath, newOutputPath);
       } else {
         // Traiter le nom du fichier avec les variables
-        let destFileName = file
+        const destFileName = file
           .replace('.mustache', '')
           .replace(/\[kebabName\]/g, templateVars.kebabName)
           .replace(/\[camelName\]/g, templateVars.camelName)

@@ -5,7 +5,4 @@
 
 import { agents } from './agents';
 
-export {
-  agents,
-};
-
+export { agents };

@@ -8,13 +8,9 @@ import { AgentOptions, AgentResult } from '../core/types';
 /**
  * Options spécifiques aux agents data
  */
-export interface DataAgentOptions extends AgentOptions {
-  // Options spécifiques à cette catégorie
-}
+export type DataAgentOptions = AgentOptions;
 
 /**
  * Résultat spécifique aux agents data
  */
-export interface DataResult extends AgentResult {
-  // Données spécifiques à cette catégorie
-}
+export type DataResult = AgentResult;

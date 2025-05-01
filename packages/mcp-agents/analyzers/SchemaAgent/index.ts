@@ -5,7 +5,4 @@
 
 import { SchemaAgent } from './SchemaAgent';
 
-export {
-  SchemaAgent,
-};
-
+export { SchemaAgent };

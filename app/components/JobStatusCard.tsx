@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import type { TemporalJob } from '~/models/job.server';
 import { cancelTemporalJob, retryTemporalJob } from '~/models/job.server';
-import LangfuseTraceCard from './LangfuseTraceCard';
-import GitHubPRCard from './GitHubPRCard';
 import ExecutionHistoryPanel from './ExecutionHistoryPanel';
+import GitHubPRCard from './GitHubPRCard';
+import LangfuseTraceCard from './LangfuseTraceCard';
 
 interface JobStatusCardProps {
   job: TemporalJob;
@@ -14,7 +14,7 @@ interface JobStatusCardProps {
 export default function JobStatusCard({ job, onRefresh, compact = false }: JobStatusCardProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [activeTab, setActiveTab] = useState<'details' | 'history' | 'langfuse' | DoDoDoDoDoDotgithub'>('details');
+  const [activeTab, setActiveTab] = useState<'details' | 'history' | 'langfuse' | DoDoDoDogithub'>('details');
   
   // Formater la durée en format lisible
   const formatDuration = (ms: number) => {
@@ -215,7 +215,7 @@ export default function JobStatusCard({ job, onRefresh, compact = false }: JobSt
               <div 
                 className="h-full bg-blue-500 rounded-full"
                 style={{ width: `${job.progress}%` }}
-              ></div>
+              />
             </div>
           </div>
         )}
@@ -274,8 +274,8 @@ export default function JobStatusCard({ job, onRefresh, compact = false }: JobSt
                 
                 {jobDoDoDoDoDoDotgithubPR && (
                   <button 
-                    onClick={() => setActiveTab(DoDoDoDoDoDotgithub')}
-                    className={`px-4 py-2 text-sm font-medium flex items-center gap-1 ${activeTab === DoDoDoDoDoDotgithub' ? 'border-b-2 border-blue-500 text-blue-600' : 'text-gray-500 hover:text-gray-700'}`}
+                    onClick={() => setActiveTab(DoDoDoDogithub')}
+                    className={`px-4 py-2 text-sm font-medium flex items-center gap-1 ${activeTab === DoDoDoDogithub' ? 'border-b-2 border-blue-500 text-blue-600' : 'text-gray-500 hover:text-gray-700'}`}
                   >
                     <span>🔀</span>
                     <span>GitHub PR</span>
@@ -337,7 +337,7 @@ export default function JobStatusCard({ job, onRefresh, compact = false }: JobSt
               </div>
             )}
             
-            {activeTab === DoDoDoDoDoDotgithub' && jobDoDoDoDoDoDotgithubPR && (
+            {activeTab === DoDoDoDogithub' && jobDoDoDoDoDoDotgithubPR && (
               <GitHubPRCard pr={jobDoDoDoDoDoDotgithubPR} />
             )}
           </div>

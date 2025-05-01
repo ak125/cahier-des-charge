@@ -10,7 +10,16 @@
   "agents": {
     "default": ["business", "structure", "data", "dependency", "quality", "strategy", "assembler"],
     "quick": ["structure", "data", "strategy"],
-    "full": ["business", "structure", "data", "dependency", "quality", "strategy", "security", "assembler"]
+    "full": [
+      "business",
+      "structure",
+      "data",
+      "dependency",
+      "quality",
+      "strategy",
+      "security",
+      "assembler"
+    ]
   },
   "migrationSteps": [
     {

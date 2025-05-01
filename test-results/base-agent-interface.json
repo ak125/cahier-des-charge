@@ -1,1 +1,6 @@
-{"agent": "base-agent", "interfaces": ["BaseAgent"], "status": "COMPLIANT", "timestamp": "2025-04-20T04:18:51+00:00"}
+{
+  "agent": "base-agent",
+  "interfaces": ["BaseAgent"],
+  "status": "COMPLIANT",
+  "timestamp": "2025-04-20T04:18:51+00:00"
+}

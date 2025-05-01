@@ -3,9 +3,6 @@
  * Generated automatically on 2025-04-20
  */
 
-import { RemixRouteGeneratorAgent } from ./RemixRouteGeneratorAgentstructure-agent';
+import { RemixRouteGeneratorAgent } from './RemixRouteGeneratorAgent';
 
-export {
-  RemixRouteGeneratorAgent,
-};
-
+export { RemixRouteGeneratorAgent };

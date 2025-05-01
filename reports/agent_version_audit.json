@@ -158,10 +158,7 @@
     },
     {
       "name": "mcp-verifier",
-      "files": [
-        "packages/mcp-agents/mcp-verifier.ts",
-        "agents/mcp-verifier.ts"
-      ],
+      "files": ["packages/mcp-agents/mcp-verifier.ts", "agents/mcp-verifier.ts"],
       "redundancyScore": 2.5,
       "hasTest": false
     },
@@ -194,10 +191,7 @@
     },
     {
       "name": "types",
-      "files": [
-        "packages/mcp-agents/shared/types.ts",
-        "packages/mcp-agents/core/types.ts"
-      ],
+      "files": ["packages/mcp-agents/shared/types.ts", "packages/mcp-agents/core/types.ts"],
       "redundancyScore": 2.5,
       "hasTest": false
     },

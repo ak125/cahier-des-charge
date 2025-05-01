@@ -62,10 +62,10 @@ export class TemporalAdapter implements BaseAgent extends AbstractOrchestratorAg
     distributedTransactions: true,
     scheduling: true,
     versioning: true,
-    'childWorkflows': true,
-    'localActivities': true,
-    'sideEffects': true,
-    'continueAsNew': true
+    childWorkflows: true,
+    localActivities: true,
+    sideEffects: true,
+    continueAsNew: true
   };
 
   /**
@@ -168,7 +168,7 @@ export class TemporalAdapter implements BaseAgent extends AbstractOrchestratorAg
     // avec les métadonnées associées
     try {
       // Convertir au format natif de Temporal si nécessaire
-      const temporalWorkflow = this.convertToNativeFormat(workflowDefinition);
+      const _temporalWorkflow = this.convertToNativeFormat(workflowDefinition);
       
       // Temporal n'a pas de concept strict de "déploiement", 
       // mais on peut stocker les métadonnées dans un système externe si nécessaire
@@ -898,7 +898,7 @@ export class TemporalAdapter implements BaseAgent extends AbstractOrchestratorAg
       
       // Trouver la tâche actuelle
       const currentTask = tasks.find(t => t.id === taskId);
-      if (currentTask && currentTask.dependencies) {
+      if (currentTask?.dependencies) {
         for (const dep of currentTask.dependencies) {
           if (hasCycleFromNode(dep)) return true;
         }

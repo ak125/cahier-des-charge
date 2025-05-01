@@ -1,6 +1,6 @@
+import { execSync } from 'child_process';
 import fs from 'fs';
 import path from 'path';
-import { execSync } from 'child_process';
 import * as glob from 'glob';
 
 // Types pour l'agent
@@ -542,7 +542,7 @@ export const consolidatorAgent = {
     markdown += `| ${result.technicalSummary.remixLoader ? '✅' : '❌'} Loader Remix | ${result.technicalSummary.remixLoader ? 'OK' : 'Non implémenté'} |\n`;
     
     // Nom du service NestJS
-    let serviceName = `${this.capitalizeFirstLetter(result.file)}Service`;
+    const serviceName = `${this.capitalizeFirstLetter(result.file)}Service`;
     markdown += `| ${result.technicalSummary.nestjsService ? '✅' : '❌'} Service NestJS | ${result.technicalSummary.nestjsService ? `\`${serviceName}\` implémenté` : 'Non implémenté'} |\n`;
     
     markdown += `| ${result.technicalSummary.apiRoutes ? '✅' : '❌'} DTOs & Routes API | ${result.technicalSummary.apiRoutes ? 'Générés' : 'Non implémentés'} |\n`;
@@ -699,7 +699,7 @@ export const consolidatorAgent = {
       const markdownContent = fs.readFileSync(result.finalReportPath, 'utf-8');
       
       // Convertir le Markdown en HTML (implémentation simple)
-      let htmlContent = `
+      const htmlContent = `
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -911,7 +911,7 @@ if (require.main === module) {
     contextArg = args[0];
   } else {
     // Sinon, traiter les arguments de ligne de commande
-    let context: ConsolidatorContext = {};
+    const context: ConsolidatorContext = {};
     
     for (let i = 0; i < args.length; i++) {
       if (args[i] === '--file' && i + 1 < args.length) {

@@ -1,18 +1,18 @@
 /**
  * Script de validation des fichiers d'audit générés
- * 
+ *
  * Ce script vérifie :
  * 1. L'existence de tous les fichiers nécessaires pour chaque *.php
  * 2. La cohérence des champs slug, table, route, type entre fichiers
  * 3. Les doublons d'analyse
- * 
+ *
  * Génère un rapport audit_consistency_report.json
  */
 
 import * as fs from 'fs';
 import * as path from 'path';
-import * as glob from 'glob';
 import chalk from 'chalk';
+import * as glob from 'glob';
 
 // Interfaces pour les types de données
 interface AuditFile {
@@ -87,7 +87,7 @@ const CONFIG = {
 export async function validateAuditOutputs(
   options: { verbose: boolean; autoFix: boolean } = { verbose: false, autoFix: false }
 ): Promise<ValidationReport> {
-  console.log(chalk.blue('📊 Validation des fichiers d\'audit...'));
+  console.log(chalk.blue("📊 Validation des fichiers d'audit..."));
 
   // Initialiser le rapport
   const report: ValidationReport = {
@@ -101,11 +101,11 @@ export async function validateAuditOutputs(
   const auditFiles = await getAuditFiles();
   const backlogFiles = await getBacklogFiles();
   const impactGraphFiles = await getImpactGraphFiles();
-  let auditIndex: AuditIndex = { audits: [] };
+  let _auditIndex: AuditIndex = { audits: [] };
 
   try {
-    auditIndex = JSON.parse(fs.readFileSync(CONFIG.indexFile, 'utf8'));
-  } catch (error) {
+    _auditIndex = JSON.parse(fs.readFileSync(CONFIG.indexFile, 'utf8'));
+  } catch (_error) {
     console.warn(chalk.yellow(`⚠️ Fichier d'index non trouvé: ${CONFIG.indexFile}`));
   }
 
@@ -134,14 +134,14 @@ export async function validateAuditOutputs(
  */
 async function getAuditFiles(): Promise<AuditFile[]> {
   const files = glob.sync(`${CONFIG.directories.audits}/**/*${CONFIG.extensions.audit}`);
-  return files.map(filePath => {
+  return files.map((filePath) => {
     const content = fs.readFileSync(filePath, 'utf8');
     const moduleName = extractModuleName(content);
     const slug = extractField(content, 'slug');
     const table = extractField(content, 'table');
     const route = extractField(content, 'route');
     const type = extractField(content, 'type');
-    
+
     return { path: filePath, moduleName, slug, table, route, type };
   });
 }
@@ -151,7 +151,7 @@ async function getAuditFiles(): Promise<AuditFile[]> {
  */
 async function getBacklogFiles(): Promise<BacklogFile[]> {
   const files = glob.sync(`${CONFIG.directories.backlogs}/**/*${CONFIG.extensions.backlog}`);
-  return files.map(filePath => {
+  return files.map((filePath) => {
     try {
       const content = JSON.parse(fs.readFileSync(filePath, 'utf8'));
       return {
@@ -173,8 +173,10 @@ async function getBacklogFiles(): Promise<BacklogFile[]> {
  * Récupère tous les fichiers de graphe d'impact
  */
 async function getImpactGraphFiles(): Promise<ImpactGraphFile[]> {
-  const files = glob.sync(`${CONFIG.directories.impactGraphs}/**/*${CONFIG.extensions.impactGraph}`);
-  return files.map(filePath => {
+  const files = glob.sync(
+    `${CONFIG.directories.impactGraphs}/**/*${CONFIG.extensions.impactGraph}`
+  );
+  return files.map((filePath) => {
     try {
       const content = JSON.parse(fs.readFileSync(filePath, 'utf8'));
       return {
@@ -217,23 +219,23 @@ function checkMissingFiles(
 ): void {
   // Récupérer tous les slugs uniques
   const allSlugs = new Set([
-    ...auditFiles.filter(f => f.slug).map(f => f.slug),
-    ...backlogFiles.filter(f => f.slug).map(f => f.slug),
-    ...impactGraphFiles.filter(f => f.slug).map(f => f.slug),
+    ...auditFiles.filter((f) => f.slug).map((f) => f.slug),
+    ...backlogFiles.filter((f) => f.slug).map((f) => f.slug),
+    ...impactGraphFiles.filter((f) => f.slug).map((f) => f.slug),
   ]);
 
-  allSlugs.forEach(slug => {
+  allSlugs.forEach((slug) => {
     if (!slug) return;
-    
-    const hasAudit = auditFiles.some(f => f.slug === slug);
-    const hasBacklog = backlogFiles.some(f => f.slug === slug);
-    const hasImpactGraph = impactGraphFiles.some(f => f.slug === slug);
-    
+
+    const hasAudit = auditFiles.some((f) => f.slug === slug);
+    const hasBacklog = backlogFiles.some((f) => f.slug === slug);
+    const hasImpactGraph = impactGraphFiles.some((f) => f.slug === slug);
+
     const missingTypes = [];
     if (!hasAudit) missingTypes.push('audit.md');
     if (!hasBacklog) missingTypes.push('backlog.json');
     if (!hasImpactGraph) missingTypes.push('impact_graph.json');
-    
+
     if (missingTypes.length > 0) {
       report.missingFiles.push({
         sourcePath: `Source: ${slug}`,
@@ -254,26 +256,26 @@ function checkFieldConsistency(
 ): void {
   // Récupérer tous les slugs uniques
   const allSlugs = new Set([
-    ...auditFiles.filter(f => f.slug).map(f => f.slug),
-    ...backlogFiles.filter(f => f.slug).map(f => f.slug),
-    ...impactGraphFiles.filter(f => f.slug).map(f => f.slug),
+    ...auditFiles.filter((f) => f.slug).map((f) => f.slug),
+    ...backlogFiles.filter((f) => f.slug).map((f) => f.slug),
+    ...impactGraphFiles.filter((f) => f.slug).map((f) => f.slug),
   ]);
 
-  allSlugs.forEach(slug => {
+  allSlugs.forEach((slug) => {
     if (!slug) return;
-    
+
     const filesForSlug = {
-      audit: auditFiles.find(f => f.slug === slug),
-      backlog: backlogFiles.find(f => f.slug === slug),
-      impactGraph: impactGraphFiles.find(f => f.slug === slug),
+      audit: auditFiles.find((f) => f.slug === slug),
+      backlog: backlogFiles.find((f) => f.slug === slug),
+      impactGraph: impactGraphFiles.find((f) => f.slug === slug),
     };
-    
+
     // Vérifier la cohérence du champ 'table'
     checkFieldAcrossFiles(slug, 'table', filesForSlug, report);
-    
+
     // Vérifier la cohérence du champ 'route'
     checkFieldAcrossFiles(slug, 'route', filesForSlug, report);
-    
+
     // Vérifier la cohérence du champ 'type'
     checkFieldAcrossFiles(slug, 'type', filesForSlug, report);
   });
@@ -289,19 +291,19 @@ function checkFieldAcrossFiles(
   report: ValidationReport
 ): void {
   const values: { [key: string]: string } = {};
-  
-  if (files.audit && files.audit[fieldName]) {
-    values['audit'] = files.audit[fieldName] as string;
+
+  if (files.audit?.[fieldName]) {
+    values.audit = files.audit[fieldName] as string;
   }
-  
-  if (files.backlog && files.backlog[fieldName]) {
-    values['backlog'] = files.backlog[fieldName] as string;
+
+  if (files.backlog?.[fieldName]) {
+    values.backlog = files.backlog[fieldName] as string;
   }
-  
-  if (files.impactGraph && files.impactGraph[fieldName]) {
-    values['impactGraph'] = files.impactGraph[fieldName] as string;
+
+  if (files.impactGraph?.[fieldName]) {
+    values.impactGraph = files.impactGraph[fieldName] as string;
   }
-  
+
   // Si plusieurs valeurs différentes existent pour le même champ
   const uniqueValues = new Set(Object.values(values));
   if (uniqueValues.size > 1) {
@@ -323,8 +325,8 @@ function checkDuplicateAnalyses(
 ): void {
   // Créer un mapping slug -> files
   const slugMap: { [key: string]: string[] } = {};
-  
-  auditFiles.forEach(file => {
+
+  auditFiles.forEach((file) => {
     if (file.slug) {
       if (!slugMap[file.slug]) {
         slugMap[file.slug] = [];
@@ -332,8 +334,8 @@ function checkDuplicateAnalyses(
       slugMap[file.slug].push(file.path);
     }
   });
-  
-  backlogFiles.forEach(file => {
+
+  backlogFiles.forEach((file) => {
     if (file.slug) {
       if (!slugMap[file.slug]) {
         slugMap[file.slug] = [];
@@ -341,12 +343,12 @@ function checkDuplicateAnalyses(
       slugMap[file.slug].push(file.path);
     }
   });
-  
+
   // Identifier les doublons
   Object.entries(slugMap).forEach(([slug, files]) => {
-    const auditCount = files.filter(f => f.endsWith(CONFIG.extensions.audit)).length;
-    const backlogCount = files.filter(f => f.endsWith(CONFIG.extensions.backlog)).length;
-    
+    const auditCount = files.filter((f) => f.endsWith(CONFIG.extensions.audit)).length;
+    const backlogCount = files.filter((f) => f.endsWith(CONFIG.extensions.backlog)).length;
+
     if (auditCount > 1 || backlogCount > 1) {
       report.duplicateAnalyses.push({
         slug,
@@ -359,50 +361,47 @@ function checkDuplicateAnalyses(
 /**
  * Affiche et enregistre le rapport
  */
-function outputReport(
-  report: ValidationReport,
-  options: { verbose: boolean }
-): void {
+function outputReport(report: ValidationReport, options: { verbose: boolean }): void {
   // Créer le répertoire de sortie s'il n'existe pas
   const outputDir = path.dirname(CONFIG.outputFile);
   if (!fs.existsSync(outputDir)) {
     fs.mkdirSync(outputDir, { recursive: true });
   }
-  
+
   // Écrire le rapport JSON
   fs.writeFileSync(CONFIG.outputFile, JSON.stringify(report, null, 2), 'utf8');
-  
+
   // Afficher le résumé
   console.log(chalk.green(`📝 Rapport de cohérence des audits généré: ${CONFIG.outputFile}`));
-  console.log(chalk.blue(`\n📊 Résumé:`));
+  console.log(chalk.blue('\n📊 Résumé:'));
   console.log(chalk.yellow(`→ Fichiers manquants: ${report.missingFiles.length}`));
   console.log(chalk.yellow(`→ Champs incohérents: ${report.inconsistentFields.length}`));
   console.log(chalk.yellow(`→ Analyses en double: ${report.duplicateAnalyses.length}`));
-  
+
   // Afficher les détails si demandé
   if (options.verbose) {
     if (report.missingFiles.length > 0) {
       console.log(chalk.blue('\n📦 Fichiers manquants:'));
-      report.missingFiles.forEach(item => {
+      report.missingFiles.forEach((item) => {
         console.log(chalk.red(`  → ${item.sourcePath}: ${item.missingTypes.join(', ')}`));
       });
     }
-    
+
     if (report.inconsistentFields.length > 0) {
       console.log(chalk.blue('\n🔄 Champs incohérents:'));
-      report.inconsistentFields.forEach(item => {
+      report.inconsistentFields.forEach((item) => {
         console.log(chalk.red(`  → ${item.sourcePath}, champ '${item.fieldName}':`));
         Object.entries(item.values).forEach(([fileType, value]) => {
           console.log(chalk.yellow(`    - ${fileType}: ${value}`));
         });
       });
     }
-    
+
     if (report.duplicateAnalyses.length > 0) {
       console.log(chalk.blue('\n🔄 Analyses en double:'));
-      report.duplicateAnalyses.forEach(item => {
+      report.duplicateAnalyses.forEach((item) => {
         console.log(chalk.red(`  → ${item.slug}:`));
-        item.files.forEach(file => {
+        item.files.forEach((file) => {
           console.log(chalk.yellow(`    - ${file}`));
         });
       });
@@ -413,11 +412,11 @@ function outputReport(
 /**
  * Tente de corriger automatiquement les problèmes détectés
  */
-async function autoFixIssues(report: ValidationReport): Promise<void> {
+async function autoFixIssues(_report: ValidationReport): Promise<void> {
   console.log(chalk.blue('\n🔧 Tentative de correction automatique des problèmes...'));
-  
+
   // TODO: Implémenter les corrections automatiques
-  console.log(chalk.yellow('⚠️ La correction automatique n\'est pas encore implémentée'));
+  console.log(chalk.yellow("⚠️ La correction automatique n'est pas encore implémentée"));
 }
 
 // Point d'entrée si exécuté directement
@@ -425,9 +424,9 @@ if (require.main === module) {
   (async () => {
     const options = {
       verbose: process.argv.includes('--verbose') || process.argv.includes('-v'),
-      autoFix: process.argv.includes('--auto-fix') || process.argv.includes('-f')
+      autoFix: process.argv.includes('--auto-fix') || process.argv.includes('-f'),
     };
-    
+
     await validateAuditOutputs(options);
   })();
 }

@@ -26,10 +26,7 @@
         "getStatus",
         "cleanup"
       ],
-      "interfaces": [
-        "BaseAgent",
-        "AnalyzerConfig"
-      ]
+      "interfaces": ["BaseAgent", "AnalyzerConfig"]
     },
     {
       "filePath": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/abstract-analyzer.ts",
@@ -51,12 +48,7 @@
         "getStatus",
         "cleanup"
       ],
-      "interfaces": [
-        "BaseAgent",
-        "any",
-        "TOutput",
-        "any"
-      ]
+      "interfaces": ["BaseAgent", "any", "TOutput", "any"]
     },
     {
       "filePath": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/base-analyzer-agent.ts",
@@ -78,10 +70,7 @@
         "getStatus",
         "cleanup"
       ],
-      "interfaces": [
-        "BaseAgent",
-        "any"
-      ]
+      "interfaces": ["BaseAgent", "any"]
     },
     {
       "filePath": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/data-analyzer/DataAgent/DataAgent.ts",
@@ -101,12 +90,7 @@
         "extractSqlColumns",
         "analyzeOutputs"
       ],
-      "properties": [
-        "id",
-        "name",
-        "version",
-        "description"
-      ],
+      "properties": ["id", "name", "version", "description"],
       "missingMethods": [
         "initialize",
         "validate",
@@ -119,9 +103,7 @@
         "cleanup"
       ],
       "inheritance": "AbstractAnalyzerAgent",
-      "interfaces": [
-        "BusinessAgent"
-      ]
+      "interfaces": ["BusinessAgent"]
     },
     {
       "filePath": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/data-analyzer/DataAgent.ts",
@@ -154,10 +136,7 @@
         "cleanup"
       ],
       "inheritance": "BaseAgent",
-      "interfaces": [
-        "BusinessAgent",
-        "AnalyzerAgent"
-      ]
+      "interfaces": ["BusinessAgent", "AnalyzerAgent"]
     },
     {
       "filePath": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/data-analyzer/data-analyzer-v2.ts",
@@ -206,9 +185,7 @@
         "cleanup"
       ],
       "inheritance": "AbstractAnalyzerAgent",
-      "interfaces": [
-        "BaseAgent"
-      ]
+      "interfaces": ["BaseAgent"]
     },
     {
       "filePath": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/dependency-analyzer/DependencyAgent/DependencyAgent.ts",
@@ -228,13 +205,7 @@
         "extractIncludes",
         "saveImpactGraph"
       ],
-      "properties": [
-        "id",
-        "name",
-        "version",
-        "description",
-        "impactGraph"
-      ],
+      "properties": ["id", "name", "version", "description", "impactGraph"],
       "missingMethods": [
         "initialize",
         "validate",
@@ -247,9 +218,7 @@
         "cleanup"
       ],
       "inheritance": "AbstractAnalyzerAgent",
-      "interfaces": [
-        "BusinessAgent"
-      ]
+      "interfaces": ["BusinessAgent"]
     },
     {
       "filePath": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/dependency-analyzer/DependencyAgent.ts",
@@ -269,9 +238,7 @@
         "extractIncludes",
         "saveImpactGraph"
       ],
-      "properties": [
-        "impactGraph"
-      ],
+      "properties": ["impactGraph"],
       "missingMethods": [
         "initialize",
         "validate",
@@ -284,10 +251,7 @@
         "cleanup"
       ],
       "inheritance": "BaseAgent",
-      "interfaces": [
-        "BusinessAgent",
-        "AnalyzerAgent"
-      ]
+      "interfaces": ["BusinessAgent", "AnalyzerAgent"]
     },
     {
       "filePath": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/dependency-analyzer/dependency-analyzer-v2.ts",
@@ -337,9 +301,7 @@
         "cleanup"
       ],
       "inheritance": "AbstractAnalyzerAgent",
-      "interfaces": [
-        "BaseAgent"
-      ]
+      "interfaces": ["BaseAgent"]
     },
     {
       "filePath": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/php-analyzer/php-analyzer-agent.ts",
@@ -347,14 +309,8 @@
       "isAbstract": false,
       "isExportedAsInstance": false,
       "exportType": "class",
-      "implementedMethods": [
-        "initializeInternal",
-        "cleanupInternal"
-      ],
-      "properties": [
-        "metadata",
-        "logger"
-      ],
+      "implementedMethods": ["initializeInternal", "cleanupInternal"],
+      "properties": ["metadata", "logger"],
       "missingMethods": [
         "initialize",
         "validate",
@@ -368,9 +324,7 @@
         "cleanup"
       ],
       "inheritance": "BaseMcpAgent",
-      "interfaces": [
-        "BaseAgent"
-      ]
+      "interfaces": ["BaseAgent"]
     },
     {
       "filePath": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/structure-analyzer/StructureAgent/StructureAgent.ts",
@@ -386,12 +340,7 @@
         "identifyEntryPoints",
         "analyzeTemplateUsage"
       ],
-      "properties": [
-        "id",
-        "name",
-        "version",
-        "description"
-      ],
+      "properties": ["id", "name", "version", "description"],
       "missingMethods": [
         "initialize",
         "validate",
@@ -404,9 +353,7 @@
         "cleanup"
       ],
       "inheritance": "AbstractAnalyzerAgent",
-      "interfaces": [
-        "BusinessAgent"
-      ]
+      "interfaces": ["BusinessAgent"]
     },
     {
       "filePath": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/structure-analyzer/StructureAgent.ts",
@@ -435,10 +382,7 @@
         "cleanup"
       ],
       "inheritance": "BaseAgent",
-      "interfaces": [
-        "BusinessAgent",
-        "AnalyzerAgent"
-      ]
+      "interfaces": ["BusinessAgent", "AnalyzerAgent"]
     },
     {
       "filePath": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/structure-analyzer/structure-analyzer-v2.ts",
@@ -486,9 +430,7 @@
         "cleanup"
       ],
       "inheritance": "AbstractAnalyzerAgent",
-      "interfaces": [
-        "BaseAgent"
-      ]
+      "interfaces": ["BaseAgent"]
     },
     {
       "filePath": "/workspaces/cahier-des-charge/packages/mcp-agents/business/misc/agent-business/agent-business.ts",
@@ -550,13 +492,7 @@
         "getStatus",
         "cleanup"
       ],
-      "interfaces": [
-        "BaseAgent",
-        "BusinessAgent",
-        "BaseAgent",
-        "BusinessAgent",
-        "UnknownAgent"
-      ]
+      "interfaces": ["BaseAgent", "BusinessAgent", "BaseAgent", "BusinessAgent", "UnknownAgent"]
     },
     {
       "filePath": "/workspaces/cahier-des-charge/packages/mcp-agents/business/misc/agent-donnees/agent-donnees.ts",
@@ -659,13 +595,7 @@
         "getStatus",
         "cleanup"
       ],
-      "interfaces": [
-        "BaseAgent",
-        "BusinessAgent",
-        "BaseAgent",
-        "BusinessAgent",
-        "UnknownAgent"
-      ]
+      "interfaces": ["BaseAgent", "BusinessAgent", "BaseAgent", "BusinessAgent", "UnknownAgent"]
     },
     {
       "filePath": "/workspaces/cahier-des-charge/packages/mcp-agents/business/misc/agent-structure/agent-structure.ts",
@@ -782,13 +712,7 @@
         "getStatus",
         "cleanup"
       ],
-      "interfaces": [
-        "BaseAgent",
-        "BusinessAgent",
-        "BaseAgent",
-        "BusinessAgent",
-        "UnknownAgent"
-      ]
+      "interfaces": ["BaseAgent", "BusinessAgent", "BaseAgent", "BusinessAgent", "UnknownAgent"]
     },
     {
       "filePath": "/workspaces/cahier-des-charge/packages/mcp-agents/business/misc/agent-version-auditor/agent-version-auditor.ts",
@@ -888,13 +812,7 @@
         "getStatus",
         "cleanup"
       ],
-      "interfaces": [
-        "BaseAgent",
-        "BusinessAgent",
-        "BaseAgent",
-        "BusinessAgent",
-        "UnknownAgent"
-      ]
+      "interfaces": ["BaseAgent", "BusinessAgent", "BaseAgent", "BusinessAgent", "UnknownAgent"]
     },
     {
       "filePath": "/workspaces/cahier-des-charge/packages/mcp-agents/business/misc/baseagent/baseagent.ts",
@@ -952,13 +870,7 @@
         "getStatus",
         "cleanup"
       ],
-      "interfaces": [
-        "BaseAgent",
-        "BusinessAgent",
-        "BaseAgent",
-        "BusinessAgent",
-        "UnknownAgent"
-      ]
+      "interfaces": ["BaseAgent", "BusinessAgent", "BaseAgent", "BusinessAgent", "UnknownAgent"]
     },
     {
       "filePath": "/workspaces/cahier-des-charge/packages/mcp-agents/business/misc/businessagent/businessagent.ts",
@@ -1012,13 +924,7 @@
         "getStatus",
         "cleanup"
       ],
-      "interfaces": [
-        "BaseAgent",
-        "BusinessAgent",
-        "BaseAgent",
-        "BusinessAgent",
-        "UnknownAgent"
-      ]
+      "interfaces": ["BaseAgent", "BusinessAgent", "BaseAgent", "BusinessAgent", "UnknownAgent"]
     },
     {
       "filePath": "/workspaces/cahier-des-charge/packages/mcp-agents/business/misc/dataagent/dataagent.ts",
@@ -1096,13 +1002,7 @@
         "getStatus",
         "cleanup"
       ],
-      "interfaces": [
-        "BaseAgent",
-        "BusinessAgent",
-        "BaseAgent",
-        "BusinessAgent",
-        "UnknownAgent"
-      ]
+      "interfaces": ["BaseAgent", "BusinessAgent", "BaseAgent", "BusinessAgent", "UnknownAgent"]
     },
     {
       "filePath": "/workspaces/cahier-des-charge/packages/mcp-agents/business/misc/dependencyagent/dependencyagent.ts",
@@ -1175,13 +1075,7 @@
         "getStatus",
         "cleanup"
       ],
-      "interfaces": [
-        "BaseAgent",
-        "BusinessAgent",
-        "BaseAgent",
-        "BusinessAgent",
-        "UnknownAgent"
-      ]
+      "interfaces": ["BaseAgent", "BusinessAgent", "BaseAgent", "BusinessAgent", "UnknownAgent"]
     },
     {
       "filePath": "/workspaces/cahier-des-charge/packages/mcp-agents/business/misc/discovery-agent/discovery-agent.ts",
@@ -1261,13 +1155,7 @@
         "getStatus",
         "cleanup"
       ],
-      "interfaces": [
-        "BaseAgent",
-        "BusinessAgent",
-        "BaseAgent",
-        "BusinessAgent",
-        "UnknownAgent"
-      ]
+      "interfaces": ["BaseAgent", "BusinessAgent", "BaseAgent", "BusinessAgent", "UnknownAgent"]
     },
     {
       "filePath": "/workspaces/cahier-des-charge/packages/mcp-agents/business/misc/qualityagent/qualityagent.ts",
@@ -1341,13 +1229,7 @@
         "getStatus",
         "cleanup"
       ],
-      "interfaces": [
-        "BaseAgent",
-        "BusinessAgent",
-        "BaseAgent",
-        "BusinessAgent",
-        "UnknownAgent"
-      ]
+      "interfaces": ["BaseAgent", "BusinessAgent", "BaseAgent", "BusinessAgent", "UnknownAgent"]
     },
     {
       "filePath": "/workspaces/cahier-des-charge/packages/mcp-agents/business/misc/structureagent/structureagent.ts",
@@ -1410,13 +1292,7 @@
         "getStatus",
         "cleanup"
       ],
-      "interfaces": [
-        "BaseAgent",
-        "BusinessAgent",
-        "BaseAgent",
-        "BusinessAgent",
-        "UnknownAgent"
-      ]
+      "interfaces": ["BaseAgent", "BusinessAgent", "BaseAgent", "BusinessAgent", "UnknownAgent"]
     },
     {
       "filePath": "/workspaces/cahier-des-charge/packages/mcp-agents/business/misc/type-audit-agent/type-audit-agent.ts",
@@ -1499,13 +1375,7 @@
         "getStatus",
         "cleanup"
       ],
-      "interfaces": [
-        "BaseAgent",
-        "BusinessAgent",
-        "BaseAgent",
-        "BusinessAgent",
-        "ValidatorAgent"
-      ]
+      "interfaces": ["BaseAgent", "BusinessAgent", "BaseAgent", "BusinessAgent", "ValidatorAgent"]
     },
     {
       "filePath": "/workspaces/cahier-des-charge/packages/mcp-agents/core/abstract-agent.ts",
@@ -1527,10 +1397,7 @@
         "getStatus",
         "cleanup"
       ],
-      "interfaces": [
-        "BaseAgent",
-        "AgentConfig"
-      ]
+      "interfaces": ["BaseAgent", "AgentConfig"]
     },
     {
       "filePath": "/workspaces/cahier-des-charge/packages/mcp-agents/core/abstract-analyzer-agent.ts",
@@ -1552,10 +1419,7 @@
         "getStatus",
         "cleanup"
       ],
-      "interfaces": [
-        "BaseAgent",
-        "AnalyzerConfig"
-      ]
+      "interfaces": ["BaseAgent", "AnalyzerConfig"]
     },
     {
       "filePath": "/workspaces/cahier-des-charge/packages/mcp-agents/core/abstract-generator-agent.ts",
@@ -1577,10 +1441,7 @@
         "getStatus",
         "cleanup"
       ],
-      "interfaces": [
-        "BaseAgent",
-        "GeneratorConfig"
-      ]
+      "interfaces": ["BaseAgent", "GeneratorConfig"]
     },
     {
       "filePath": "/workspaces/cahier-des-charge/packages/mcp-agents/core/abstract-orchestrator-agent.ts",
@@ -1602,10 +1463,7 @@
         "getStatus",
         "cleanup"
       ],
-      "interfaces": [
-        "BaseAgent",
-        "OrchestratorConfig"
-      ]
+      "interfaces": ["BaseAgent", "OrchestratorConfig"]
     },
     {
       "filePath": "/workspaces/cahier-des-charge/packages/mcp-agents/core/abstract-processor-agent.ts",
@@ -1627,10 +1485,7 @@
         "getStatus",
         "cleanup"
       ],
-      "interfaces": [
-        "BaseAgent",
-        "ProcessorConfig"
-      ]
+      "interfaces": ["BaseAgent", "ProcessorConfig"]
     },
     {
       "filePath": "/workspaces/cahier-des-charge/packages/mcp-agents/core/abstract-validator-agent.ts",
@@ -1652,10 +1507,7 @@
         "getStatus",
         "cleanup"
       ],
-      "interfaces": [
-        "BaseAgent",
-        "ValidatorConfig"
-      ]
+      "interfaces": ["BaseAgent", "ValidatorConfig"]
     },
     {
       "filePath": "/workspaces/cahier-des-charge/packages/mcp-agents/core/agent-registry.ts",
@@ -1680,13 +1532,7 @@
         "loadAgentsFromDirectory",
         "reset"
       ],
-      "properties": [
-        "instance",
-        "agents",
-        "logger",
-        "metrics",
-        "events"
-      ],
+      "properties": ["instance", "agents", "logger", "metrics", "events"],
       "missingMethods": [
         "validate",
         "execute",
@@ -1698,10 +1544,7 @@
         "getStatus",
         "cleanup"
       ],
-      "interfaces": [
-        "BaseAgent",
-        "BusinessAgent"
-      ]
+      "interfaces": ["BaseAgent", "BusinessAgent"]
     },
     {
       "filePath": "/workspaces/cahier-des-charge/packages/mcp-agents/core/base-agent.ts",
@@ -1724,11 +1567,7 @@
         "cleanup"
       ],
       "inheritance": "AgentConfig",
-      "interfaces": [
-        "BaseAgent",
-        "any",
-        "TConfig"
-      ]
+      "interfaces": ["BaseAgent", "any", "TConfig"]
     },
     {
       "filePath": "/workspaces/cahier-des-charge/packages/mcp-agents/core/interfaces/base-agent.ts",
@@ -1751,11 +1590,7 @@
         "cleanup"
       ],
       "inheritance": "AgentConfig",
-      "interfaces": [
-        "BaseAgent",
-        "any",
-        "TConfig"
-      ]
+      "interfaces": ["BaseAgent", "any", "TConfig"]
     },
     {
       "filePath": "/workspaces/cahier-des-charge/packages/mcp-agents/core/interfaces.ts",
@@ -1778,11 +1613,7 @@
         "cleanup"
       ],
       "inheritance": "AgentConfig",
-      "interfaces": [
-        "BaseAgent",
-        "any",
-        "TConfig"
-      ]
+      "interfaces": ["BaseAgent", "any", "TConfig"]
     },
     {
       "filePath": "/workspaces/cahier-des-charge/packages/mcp-agents/generators/abstract-generator-agent.ts",
@@ -1804,10 +1635,7 @@
         "getStatus",
         "cleanup"
       ],
-      "interfaces": [
-        "BaseAgent",
-        "GeneratorConfig"
-      ]
+      "interfaces": ["BaseAgent", "GeneratorConfig"]
     },
     {
       "filePath": "/workspaces/cahier-des-charge/packages/mcp-agents/generators/abstract-generator.ts",
@@ -1829,12 +1657,7 @@
         "getStatus",
         "cleanup"
       ],
-      "interfaces": [
-        "BaseAgent",
-        "any",
-        "TOutput",
-        "any"
-      ]
+      "interfaces": ["BaseAgent", "any", "TOutput", "any"]
     },
     {
       "filePath": "/workspaces/cahier-des-charge/packages/mcp-agents/generators/base-generator-agent.ts",
@@ -1862,9 +1685,7 @@
         "cleanup"
       ],
       "inheritance": "BaseMcpAgent",
-      "interfaces": [
-        "BaseAgent"
-      ]
+      "interfaces": ["BaseAgent"]
     },
     {
       "filePath": "/workspaces/cahier-des-charge/packages/mcp-agents/orchestration/misc/agent-audit/agent-audit.ts",
@@ -2401,27 +2222,9 @@
         "cleanup",
         "cleanupInternal"
       ],
-      "properties": [
-        "id",
-        "version",
-        "name",
-        "description",
-        "config",
-        "_status"
-      ],
-      "missingMethods": [
-        "validate",
-        "execute",
-        "process",
-        "analyze",
-        "generate",
-        "validateData"
-      ],
-      "interfaces": [
-        "OrchestratorAgent",
-        "BaseAgent",
-        "BusinessAgent"
-      ]
+      "properties": ["id", "version", "name", "description", "config", "_status"],
+      "missingMethods": ["validate", "execute", "process", "analyze", "generate", "validateData"],
+      "interfaces": ["OrchestratorAgent", "BaseAgent", "BusinessAgent"]
     },
     {
       "filePath": "/workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/base-orchestrator-agent.ts",
@@ -2439,10 +2242,7 @@
         "updateStatusFile",
         "onWorkflowEvent"
       ],
-      "properties": [
-        "workflowEvents",
-        "workflowState"
-      ],
+      "properties": ["workflowEvents", "workflowState"],
       "missingMethods": [
         "initialize",
         "validate",
@@ -2455,9 +2255,7 @@
         "cleanup"
       ],
       "inheritance": "BaseMcpAgent",
-      "interfaces": [
-        "BaseAgent"
-      ]
+      "interfaces": ["BaseAgent"]
     },
     {
       "filePath": "/workspaces/cahier-des-charge/packages/mcp-agents/remix-generator/index.ts",
@@ -2483,11 +2281,7 @@
         "pascalCase",
         "titleCase"
       ],
-      "properties": [
-        "name",
-        "version",
-        "description"
-      ],
+      "properties": ["name", "version", "description"],
       "missingMethods": [
         "initialize",
         "run",
@@ -2499,9 +2293,7 @@
         "cleanup"
       ],
       "inheritance": "BaseMcpAgent",
-      "interfaces": [
-        "BaseAgent"
-      ]
+      "interfaces": ["BaseAgent"]
     },
     {
       "filePath": "/workspaces/cahier-des-charge/packages/mcp-agents/shared/base-agent.ts",
@@ -2524,11 +2316,7 @@
         "cleanup"
       ],
       "inheritance": "AgentConfig",
-      "interfaces": [
-        "BaseAgent",
-        "any",
-        "TConfig"
-      ]
+      "interfaces": ["BaseAgent", "any", "TConfig"]
     },
     {
       "filePath": "/workspaces/cahier-des-charge/packages/mcp-agents/tools/layered-agent-auditor/layered-agent-auditor.ts",
@@ -2544,10 +2332,7 @@
         "generateMarkdownReport",
         "auditAndGenerateReport"
       ],
-      "properties": [
-        "baseDir",
-        "packagesDir"
-      ],
+      "properties": ["baseDir", "packagesDir"],
       "missingMethods": [
         "initialize",
         "validate",
@@ -2603,10 +2388,7 @@
         "getStatus",
         "cleanup"
       ],
-      "interfaces": [
-        "BaseAgent",
-        "BusinessAgent"
-      ]
+      "interfaces": ["BaseAgent", "BusinessAgent"]
     },
     {
       "filePath": "/workspaces/cahier-des-charge/packages/mcp-agents/validators/abstract-validator-agent.ts",
@@ -2628,10 +2410,7 @@
         "getStatus",
         "cleanup"
       ],
-      "interfaces": [
-        "BaseAgent",
-        "ValidatorConfig"
-      ]
+      "interfaces": ["BaseAgent", "ValidatorConfig"]
     },
     {
       "filePath": "/workspaces/cahier-des-charge/packages/mcp-agents/validators/abstract-validator.ts",
@@ -2653,10 +2432,7 @@
         "getStatus",
         "cleanup"
       ],
-      "interfaces": [
-        "BaseAgent",
-        "any"
-      ]
+      "interfaces": ["BaseAgent", "any"]
     },
     {
       "filePath": "/workspaces/cahier-des-charge/packages/mcp-agents/validators/base-validator-agent.ts",
@@ -2684,9 +2460,7 @@
         "cleanup"
       ],
       "inheritance": "BaseMcpAgent",
-      "interfaces": [
-        "BaseAgent"
-      ]
+      "interfaces": ["BaseAgent"]
     },
     {
       "filePath": "/workspaces/cahier-des-charge/packages/mcp-agents/validators/seo-checker/seo-checker-agent/seo-checker-agent.ts",
@@ -2694,14 +2468,8 @@
       "isAbstract": false,
       "isExportedAsInstance": false,
       "exportType": "class",
-      "implementedMethods": [
-        "initializeInternal",
-        "cleanupInternal"
-      ],
-      "properties": [
-        "seoChecker",
-        "metadata"
-      ],
+      "implementedMethods": ["initializeInternal", "cleanupInternal"],
+      "properties": ["seoChecker", "metadata"],
       "missingMethods": [
         "initialize",
         "validate",
@@ -2715,9 +2483,7 @@
         "cleanup"
       ],
       "inheritance": "BaseValidatorAgent",
-      "interfaces": [
-        "BaseAgent"
-      ]
+      "interfaces": ["BaseAgent"]
     },
     {
       "filePath": "/workspaces/cahier-des-charge/packages/mcp-agents/validators/seo-checker/seo-checker-agent.ts",
@@ -2725,14 +2491,8 @@
       "isAbstract": false,
       "isExportedAsInstance": false,
       "exportType": "class",
-      "implementedMethods": [
-        "initializeInternal",
-        "cleanupInternal"
-      ],
-      "properties": [
-        "seoChecker",
-        "metadata"
-      ],
+      "implementedMethods": ["initializeInternal", "cleanupInternal"],
+      "properties": ["seoChecker", "metadata"],
       "missingMethods": [
         "initialize",
         "validate",
@@ -2746,9 +2506,7 @@
         "cleanup"
       ],
       "inheritance": "BaseValidatorAgent",
-      "interfaces": [
-        "BaseAgent"
-      ]
+      "interfaces": ["BaseAgent"]
     },
     {
       "filePath": "/workspaces/cahier-des-charge/packages/mcp-agents/validators/seo-checker-agent.ts",
@@ -2756,14 +2514,8 @@
       "isAbstract": false,
       "isExportedAsInstance": false,
       "exportType": "class",
-      "implementedMethods": [
-        "initializeInternal",
-        "cleanupInternal"
-      ],
-      "properties": [
-        "seoChecker",
-        "metadata"
-      ],
+      "implementedMethods": ["initializeInternal", "cleanupInternal"],
+      "properties": ["seoChecker", "metadata"],
       "missingMethods": [
         "initialize",
         "validate",
@@ -2777,9 +2529,7 @@
         "cleanup"
       ],
       "inheritance": "BaseValidatorAgent",
-      "interfaces": [
-        "BaseAgent"
-      ]
+      "interfaces": ["BaseAgent"]
     },
     {
       "filePath": "/workspaces/cahier-des-charge/agents/analysis/DataAgent.ts",
@@ -2812,10 +2562,7 @@
         "cleanup"
       ],
       "inheritance": "BaseAgent",
-      "interfaces": [
-        "BusinessAgent",
-        "AnalyzerAgent"
-      ]
+      "interfaces": ["BusinessAgent", "AnalyzerAgent"]
     },
     {
       "filePath": "/workspaces/cahier-des-charge/agents/analysis/DependencyAgent.ts",
@@ -2835,9 +2582,7 @@
         "extractIncludes",
         "saveImpactGraph"
       ],
-      "properties": [
-        "impactGraph"
-      ],
+      "properties": ["impactGraph"],
       "missingMethods": [
         "initialize",
         "validate",
@@ -2850,10 +2595,7 @@
         "cleanup"
       ],
       "inheritance": "BaseAgent",
-      "interfaces": [
-        "BusinessAgent",
-        "AnalyzerAgent"
-      ]
+      "interfaces": ["BusinessAgent", "AnalyzerAgent"]
     },
     {
       "filePath": "/workspaces/cahier-des-charge/agents/analysis/StructureAgent.ts",
@@ -2882,10 +2624,7 @@
         "cleanup"
       ],
       "inheritance": "BaseAgent",
-      "interfaces": [
-        "BusinessAgent",
-        "AnalyzerAgent"
-      ]
+      "interfaces": ["BusinessAgent", "AnalyzerAgent"]
     },
     {
       "filePath": "/workspaces/cahier-des-charge/agents/analysis/agent-donnees.ts",
@@ -2904,11 +2643,7 @@
         "updateBacklog",
         "generateSqlImpactGraph"
       ],
-      "properties": [
-        "phpContent",
-        "filePath",
-        "fileBaseName"
-      ],
+      "properties": ["phpContent", "filePath", "fileBaseName"],
       "missingMethods": [
         "initialize",
         "validate",
@@ -2920,11 +2655,7 @@
         "getStatus",
         "cleanup"
       ],
-      "interfaces": [
-        "BaseAgent",
-        "BusinessAgent",
-        "AnalyzerAgent"
-      ]
+      "interfaces": ["BaseAgent", "BusinessAgent", "AnalyzerAgent"]
     },
     {
       "filePath": "/workspaces/cahier-des-charge/agents/analysis/agent-structure.ts",
@@ -2952,11 +2683,7 @@
         "generateAuditSection",
         "updateBacklog"
       ],
-      "properties": [
-        "phpCode",
-        "filePath",
-        "rules"
-      ],
+      "properties": ["phpCode", "filePath", "rules"],
       "missingMethods": [
         "initialize",
         "validate",
@@ -2968,11 +2695,7 @@
         "getStatus",
         "cleanup"
       ],
-      "interfaces": [
-        "BaseAgent",
-        "BusinessAgent",
-        "AnalyzerAgent"
-      ]
+      "interfaces": ["BaseAgent", "BusinessAgent", "AnalyzerAgent"]
     },
     {
       "filePath": "/workspaces/cahier-des-charge/agents/auto-pr-agent.ts",
@@ -2990,13 +2713,7 @@
         "generateDefaultPRBody",
         "checkExistingPR"
       ],
-      "properties": [
-        "logger",
-        "octokit",
-        "config",
-        "manifestManager",
-        "notifier"
-      ],
+      "properties": ["logger", "octokit", "config", "manifestManager", "notifier"],
       "missingMethods": [
         "initialize",
         "validate",
@@ -3009,10 +2726,7 @@
         "getStatus",
         "cleanup"
       ],
-      "interfaces": [
-        "BaseAgent",
-        "BusinessAgent"
-      ]
+      "interfaces": ["BaseAgent", "BusinessAgent"]
     },
     {
       "filePath": "/workspaces/cahier-des-charge/agents/core/BaseAgent.ts",
@@ -3050,10 +2764,7 @@
         "getStatus",
         "cleanup"
       ],
-      "interfaces": [
-        "IAgent",
-        "OrchestrationAgent"
-      ]
+      "interfaces": ["IAgent", "OrchestrationAgent"]
     },
     {
       "filePath": "/workspaces/cahier-des-charge/agents/core/agent-orchestrator.ts",
@@ -3081,10 +2792,7 @@
         "countFiles",
         "countFilesWithCondition"
       ],
-      "properties": [
-        "pipelineStatus",
-        "runId"
-      ],
+      "properties": ["pipelineStatus", "runId"],
       "missingMethods": [
         "initialize",
         "validate",
@@ -3214,12 +2922,7 @@
         "runLighthouseAnalysis",
         "commentOnPR"
       ],
-      "properties": [
-        "config",
-        "previewDir",
-        "previewUrl",
-        "prInfo"
-      ],
+      "properties": ["config", "previewDir", "previewUrl", "prInfo"],
       "missingMethods": [
         "initialize",
         "validate",
@@ -3231,10 +2934,7 @@
         "getStatus",
         "cleanup"
       ],
-      "interfaces": [
-        "BaseAgent",
-        "BusinessAgent"
-      ]
+      "interfaces": ["BaseAgent", "BusinessAgent"]
     },
     {
       "filePath": "/workspaces/cahier-des-charge/agents/migration/BusinessAgent.ts",
@@ -3286,14 +2986,7 @@
         "getMetadata",
         "getState"
       ],
-      "properties": [
-        "filePath",
-        "fileContent",
-        "sections",
-        "id",
-        "type",
-        "version"
-      ],
+      "properties": ["filePath", "fileContent", "sections", "id", "type", "version"],
       "missingMethods": [
         "validate",
         "execute",
@@ -3303,10 +2996,7 @@
         "getStatus",
         "cleanup"
       ],
-      "interfaces": [
-        "BaseAgent",
-        "BusinessAgent"
-      ]
+      "interfaces": ["BaseAgent", "BusinessAgent"]
     },
     {
       "filePath": "/workspaces/cahier-des-charge/agents/migration/php-to-remix/canonical-sync-agent.ts",
@@ -3322,14 +3012,7 @@
         "getMetadata",
         "checkConnection"
       ],
-      "properties": [
-        "name",
-        "description",
-        "id",
-        "name",
-        "type",
-        "version"
-      ],
+      "properties": ["name", "description", "id", "name", "type", "version"],
       "missingMethods": [
         "validate",
         "execute",
@@ -3340,12 +3023,7 @@
         "getStatus",
         "cleanup"
       ],
-      "interfaces": [
-        "BaseAgent",
-        "CoordinationAgent",
-        "MCPAgent",
-        "BusinessAgent"
-      ]
+      "interfaces": ["BaseAgent", "CoordinationAgent", "MCPAgent", "BusinessAgent"]
     },
     {
       "filePath": "/workspaces/cahier-des-charge/agents/migration/progressive-migration-agent.ts",
@@ -3362,10 +3040,7 @@
         "generateProgressiveMigrationSection",
         "generateProxyConfig"
       ],
-      "properties": [
-        "proxyConfigs",
-        "proxyConfigPath"
-      ],
+      "properties": ["proxyConfigs", "proxyConfigPath"],
       "missingMethods": [
         "initialize",
         "validate",
@@ -3378,9 +3053,7 @@
         "cleanup"
       ],
       "inheritance": "BaseAgent",
-      "interfaces": [
-        "BusinessAgent"
-      ]
+      "interfaces": ["BusinessAgent"]
     },
     {
       "filePath": "/workspaces/cahier-des-charge/agents/migration/type-audit-agent.ts",
@@ -3401,11 +3074,7 @@
         "toPascalCase",
         "toCamelCase"
       ],
-      "properties": [
-        "typeMappingRules",
-        "suggestedFieldSizes",
-        "enumPatterns"
-      ],
+      "properties": ["typeMappingRules", "suggestedFieldSizes", "enumPatterns"],
       "missingMethods": [
         "initialize",
         "validate",
@@ -3440,12 +3109,7 @@
         "sendNotifications",
         "run"
       ],
-      "properties": [
-        "config",
-        "results",
-        "environment",
-        "migrationData"
-      ],
+      "properties": ["config", "results", "environment", "migrationData"],
       "missingMethods": [
         "initialize",
         "validate",
@@ -3457,10 +3121,7 @@
         "getStatus",
         "cleanup"
       ],
-      "interfaces": [
-        "BaseAgent",
-        "BusinessAgent"
-      ]
+      "interfaces": ["BaseAgent", "BusinessAgent"]
     },
     {
       "filePath": "/workspaces/cahier-des-charge/agents/optimization/agent8-optimizer.ts",
@@ -3487,13 +3148,7 @@
         "getMetadata",
         "getState"
       ],
-      "properties": [
-        "description",
-        "id",
-        "name",
-        "type",
-        "version"
-      ],
+      "properties": ["description", "id", "name", "type", "version"],
       "missingMethods": [
         "validate",
         "run",
@@ -3504,11 +3159,7 @@
         "getStatus",
         "cleanup"
       ],
-      "interfaces": [
-        "BaseAgent",
-        "BusinessAgent",
-        "INodeType"
-      ]
+      "interfaces": ["BaseAgent", "BusinessAgent", "INodeType"]
     },
     {
       "filePath": "/workspaces/cahier-des-charge/agents/quality/QualityAgent.ts",
@@ -3537,9 +3188,7 @@
         "cleanup"
       ],
       "inheritance": "BaseAgent",
-      "interfaces": [
-        "BusinessAgent"
-      ]
+      "interfaces": ["BusinessAgent"]
     },
     {
       "filePath": "/workspaces/cahier-des-charge/agents/quality/agent-quality.ts",
@@ -3557,11 +3206,7 @@
         "saveSections",
         "process"
       ],
-      "properties": [
-        "filePath",
-        "fileContent",
-        "sections"
-      ],
+      "properties": ["filePath", "fileContent", "sections"],
       "missingMethods": [
         "initialize",
         "validate",
@@ -3572,12 +3217,7 @@
         "getStatus",
         "cleanup"
       ],
-      "interfaces": [
-        "BaseAgent",
-        "BusinessAgent",
-        "BaseAgent",
-        "BusinessAgent"
-      ]
+      "interfaces": ["BaseAgent", "BusinessAgent", "BaseAgent", "BusinessAgent"]
     },
     {
       "filePath": "/workspaces/cahier-des-charge/agents/seo-checker-agent.ts",
@@ -3594,14 +3234,7 @@
         "generateSEOReport",
         "logSEORouteTrace"
       ],
-      "properties": [
-        "id",
-        "name",
-        "description",
-        "version",
-        "seoChecker",
-        "traceService"
-      ],
+      "properties": ["id", "name", "description", "version", "seoChecker", "traceService"],
       "missingMethods": [
         "validate",
         "execute",
@@ -3612,11 +3245,7 @@
         "getStatus",
         "cleanup"
       ],
-      "interfaces": [
-        "BaseAgent",
-        "BusinessAgent",
-        "MCPAgent"
-      ]
+      "interfaces": ["BaseAgent", "BusinessAgent", "MCPAgent"]
     },
     {
       "filePath": "/workspaces/cahier-des-charge/agents/status-writer.ts",
@@ -3659,11 +3288,7 @@
         "getStatus",
         "cleanup"
       ],
-      "interfaces": [
-        "BaseAgent",
-        "OrchestrationAgent",
-        "BusinessAgent"
-      ]
+      "interfaces": ["BaseAgent", "OrchestrationAgent", "BusinessAgent"]
     }
   ]
 }

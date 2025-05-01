@@ -5,7 +5,4 @@
 
 import { PrismaMigrationGeneratorAgent } from './PrismaMigrationGeneratorAgent';
 
-export {
-  PrismaMigrationGeneratorAgent,
-};
-
+export { PrismaMigrationGeneratorAgent };

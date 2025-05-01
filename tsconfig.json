@@ -59,7 +59,8 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "composite": true,
-    "incremental": true
+    "incremental": true,
+    "declarationMap": true
   },
   "include": [
     "packages/**/*.ts",
@@ -76,20 +77,16 @@
     "node_modules",
     "dist",
     "**/*.js",
-    "**/*.jsx"
+    "**/*.jsx",
+    "packages/mcp-agents/**/*.ts",
+    "packages/mcp-cli/**/*.ts"
   ],
   "references": [
     {
       "path": "./packages/mcp-agents"
     },
     {
-      "path": "./packages/mcp-core"
-    },
-    {
       "path": "./packages/mcp-cli"
-    },
-    {
-      "path": "./packages/mcp-orchestrator"
     }
   ]
 }

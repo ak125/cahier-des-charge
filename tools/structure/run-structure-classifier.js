@@ -15,17 +15,17 @@ const tsFilePath = path.resolve(__dirname, 'structure-classifier-agent.ts');
 const tsNodeBin = path.resolve(__dirname, '../../node_modules/.bin/ts-node');
 
 // Exécuter ts-node directement avec le fichier TypeScript
-const result = spawnSync(tsNodeBin, [
-    '--transpile-only',
-    '--compiler-options', '{"module":"CommonJS"}',
-    tsFilePath
-], {
+const result = spawnSync(
+  tsNodeBin,
+  ['--transpile-only', '--compiler-options', '{"module":"CommonJS"}', tsFilePath],
+  {
     stdio: 'inherit',
     env: {
-        ...process.env,
-        TS_NODE_PROJECT: path.resolve(__dirname, '../../tsconfig.json')
-    }
-});
+      ...process.env,
+      TS_NODE_PROJECT: path.resolve(__dirname, '../../tsconfig.json'),
+    },
+  }
+);
 
 // Propager le code de sortie
 process.exit(result.status);

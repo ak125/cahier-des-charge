@@ -3,8 +3,8 @@
  * Agent export file
  */
 
-import { DevGenerator } from ./dev-generatorstructure-agent';
-import { GeneratorAgent } from ../../core/interfacesstructure-agent';
+import { GeneratorAgent } from '../../core/interfacesstructure-agent';
+import { DevGenerator } from './dev-generatorstructure-agent';
 
 export { DevGenerator };
 export default DevGenerator;

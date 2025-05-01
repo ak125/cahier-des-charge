@@ -3,7 +3,7 @@
  * Agent export file
  */
 
-import { StructureAgent } from ./StructureAgentstructure-agent';
+import { StructureAgent } from './StructureAgentstructure-agent';
 
 export { StructureAgent };
 export default StructureAgent;

@@ -11,7 +11,7 @@ import { MySqlMcpServer } from './index';
 const args = process.argv.slice(2);
 
 // Démarrer le serveur
-MySqlMcpServer.start(args).catch(error => {
+MySqlMcpServer.start(args).catch((error) => {
   console.error('Erreur fatale:', error);
   process.exit(1);
 });

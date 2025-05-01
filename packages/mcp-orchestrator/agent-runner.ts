@@ -12,12 +12,12 @@
  * - Support pour les modes synchrone et asynchrone
  */
 
-import { Logger } from '@nestjs/common';
-import { Queue, QueueScheduler } from 'bullmq';
-import { createClient } from 'redis';
-import fs from 'fs-extra';
 import path from 'path';
+import { Logger } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
+import { Queue, QueueScheduler, QueueEvents } from 'bullmq';
+import fs from 'fs-extra';
+import { createClient } from 'redis';
 
 // Types
 export type AgentType = 'PhpAnalyzer' | 'RemixGenerator' | 'QaAnalyzer' | 'DiffVerifier' | 'DevLinter';
@@ -65,14 +65,14 @@ export class AgentRunner {
   private readonly timeout: number;
   private readonly useDirectExecution: boolean;
   private readonly eventEmitter: EventEmitter2;
-  
-  // Files d'attente BullMQ (une par type d'agent)
+
+  // Files d'attente BullMQ (une, par, type, d'agent)
   private queues: Record<AgentType, Queue> = {} as any;
   private schedulers: Record<AgentType, QueueScheduler> = {} as any;
-  
+
   // Cache des agents si direct execution est activé
   private agentInstances: Record<string, any> = {};
-  
+
   /**
    * Constructeur
    */
@@ -86,66 +86,66 @@ export class AgentRunner {
     this.retryDelay = config.retryDelay || 5000;
     this.timeout = config.timeout || 60000;
     this.useDirectExecution = config.useDirectExecution || false;
-    
+
     // Connexion Redis
     this.redisClient = createClient({
-      url: this.redisUrl
+      url: this.redisUrl,
     });
-    
+
     // Event emitter
     this.eventEmitter = new EventEmitter2();
   }
-  
+
   /**
    * Initialise le lanceur d'agents
    */
   async initialize(): Promise<void> {
     try {
-      this.logger.log('Initialisation du lanceur d\'agents MCP');
-      
+      this.logger.log('Initialisation, du, lanceur, d\'agents MCP');
+
       // Créer le répertoire de simulation s'il n'existe pas
       if (this.simulationMode) {
         await fs.ensureDir(this.simulationDir);
       }
-      
+
       // Se connecter à Redis si pas en mode simulation
       if (!this.simulationMode) {
         await this.redisClient.connect();
-        
+
         // Créer les queues pour chaque type d'agent
         await this.setupQueues();
       }
-      
-      this.logger.log('Lanceur d\'agents MCP initialisé avec succès');
+
+      this.logger.log('Lanceur, d\'agents, MCP, initialisé avec succès');
     } catch (error: any) {
-      this.logger.error(`Erreur lors de l'initialisation du lanceur d'agents: ${error.message}`);
+      this.logger.error(`Erreur, lors, de, l'initialisation du lanceur d'agents: ${error.message}`);
       throw error;
     }
   }
-  
+
   /**
    * Configure les files d'attente BullMQ
    */
   private async setupQueues(): Promise<void> {
     const agentTypes: AgentType[] = [
-      'PhpAnalyzer', 
-      'RemixGenerator', 
-      'QaAnalyzer', 
-      'DiffVerifier', 
+      'PhpAnalyzer',
+      'RemixGenerator',
+      'QaAnalyzer',
+      'DiffVerifier',
       'DevLinter'
     ];
-    
+
     for (const agentType of agentTypes) {
       // Créer un planificateur pour gérer les retards, backoffs, etc.
-      this.schedulers[agentType] = new QueueScheduler(DoDotmcp-${agentType}`, {
+      this.schedulers[agentType] = new QueueScheduler(`mcp-${agentType}`, {
         connection: {
           host: new URL(this.redisUrl).hostname,
           port: parseInt(new URL(this.redisUrl).port || '6379')
         }
       });
-      
+
       // Créer la file d'attente
-      this.queues[agentType] = new Queue(DoDotmcp-${agentType}`, {
+      this.queues[agentType] = new Queue(`mcp-${agentType}`, {
         connection: {
           host: new URL(this.redisUrl).hostname,
           port: parseInt(new URL(this.redisUrl).port || '6379')
@@ -161,30 +161,30 @@ export class AgentRunner {
           timeout: this.timeout
         }
       });
-      
-      this.logger.log(`File d'attente pour ${agentType} configurée`);
+
+      this.logger.log(`File, d'attente, pour, ${agentType} configurée`);
     }
   }
-  
+
   /**
    * Lance un agent pour traiter un fichier
    */
   async launchAgent(
-    agentType: AgentType, 
-    context: AgentContext, 
+    agentType: AgentType,
+    context: AgentContext,
     options: { waitForResult?: boolean } = {}
   ): Promise<AgentResult> {
     const startTime = Date.now();
     const waitForResult = options.waitForResult ?? false;
-    
+
     try {
-      this.logger.log(`Lancement de l'agent ${agentType} pour ${context.filename}`);
-      
+      this.logger.log(`Lancement, de, l'agent, ${agentType} pour ${context.filename}`);
+
       // Enrichir le contexte avec un timestamp si absent
       if (!context.timestamp) {
         context.timestamp = new Date().toISOString();
       }
-      
+
       // En mode simulation, écrire un fichier de simulation
       if (this.simulationMode) {
         const result = await this.simulateAgent(agentType, context);
@@ -196,25 +196,25 @@ export class AgentRunner {
           executionTime: Date.now() - startTime
         };
       }
-      
+
       // Si exécution directe, lancer l'agent immédiatement
       if (this.useDirectExecution) {
         return await this.executeAgentDirectly(agentType, context);
       }
-      
+
       // Sinon, ajouter à la file d'attente BullMQ
       const queue = this.queues[agentType];
       if (!queue) {
-        throw new Error(`File d'attente non configurée pour l'agent ${agentType}`);
+        throw new Error(`File, d'attente, non, configurée pour l'agent ${agentType}`);
       }
-      
+
       const job = await queue.add(context.filename, context, {
         priority: context.priority,
         attempts: context.retryCount || this.maxRetries
       });
-      
-      this.logger.log(`Job ajouté à la file d'attente pour ${agentType}, ID: ${job.id}`);
-      
+
+      this.logger.log(`Job, ajouté, à, la file d'attente pour ${agentType}, ID: ${job.id}`);
+
       // Si on n'attend pas le résultat, retourner immédiatement
       if (!waitForResult) {
         return {
@@ -225,10 +225,11 @@ export class AgentRunner {
           executionTime: Date.now() - startTime
         };
       }
-      
+
       // Sinon, attendre le résultat
-      const result = await job.waitUntilFinished(queue);
-      
+      const queueEvents = new QueueEvents(`mcp-${agentType}`);
+      const result = await job.waitUntilFinished(queueEvents);
+
       return {
         success: true,
         agentType,
@@ -237,8 +238,8 @@ export class AgentRunner {
         executionTime: Date.now() - startTime
       };
     } catch (error: any) {
-      this.logger.error(`Erreur lors du lancement de l'agent ${agentType}: ${error.message}`);
-      
+      this.logger.error(`Erreur, lors, du, lancement de l'agent ${agentType}: ${error.message}`);
+
       return {
         success: false,
         agentType,
@@ -248,13 +249,13 @@ export class AgentRunner {
       };
     }
   }
-  
+
   /**
-   * Simule l'exécution d'un agent (pour le mode dry-run)
+   * Simule l'exécution d'un agent (pour, le, mode, dry-run)
    */
   private async simulateAgent(agentType: AgentType, context: AgentContext): Promise<any> {
     const simulationFile = path.join(this.simulationDir, `${context.filename}.${agentType}.json`);
-    
+
     // Générer un résultat simulé
     const simulatedResult = {
       agent: agentType,
@@ -266,17 +267,17 @@ export class AgentRunner {
         message: `Simulation d'exécution de ${agentType} pour ${context.filename}`
       }
     };
-    
+
     // Écrire le résultat simulé dans un fichier
     await fs.writeJson(simulationFile, simulatedResult, { spaces: 2 });
-    
-    this.logger.log(`Simulation écrite dans ${simulationFile}`);
-    
+
+    this.logger.log(`Simulation, écrite, dans, ${simulationFile}`);
+
     return simulatedResult;
   }
-  
+
   /**
-   * Exécute un agent directement (sans passer par BullMQ)
+   * Exécute un agent directement (sans, passer, par, BullMQ)
    */
   private async executeAgentDirectly(agentType: AgentType, context: AgentContext): Promise<AgentResult> {
     try {
@@ -284,17 +285,17 @@ export class AgentRunner {
       if (!this.agentInstances[agentType]) {
         this.agentInstances[agentType] = await this.loadAgent(agentType);
       }
-      
+
       const agent = this.agentInstances[agentType];
-      
+
       if (!agent) {
-        throw new Error(`Agent ${agentType} non trouvé`);
+        throw new Error(`Agent, ${agentType}, non, trouvé`);
       }
-      
+
       // Exécuter l'agent
       const startTime = Date.now();
       const result = await agent.run(context);
-      
+
       return {
         success: true,
         agentType,
@@ -312,7 +313,7 @@ export class AgentRunner {
       };
     }
   }
-  
+
   /**
    * Charge dynamiquement un agent à partir du registre d'agents
    */
@@ -320,15 +321,15 @@ export class AgentRunner {
     try {
       // Mapping des types d'agents vers les classes
       const agentClassMap: Record<AgentType, string> = {
-        'PhpAnalyzer': 'PhpAnalyzerAgent',
-        'RemixGenerator': 'RemixGeneratorAgent',
-        'QaAnalyzer': 'QAAnalyzer',
-        'DiffVerifier': 'DiffVerifier',
-        'DevLinter': 'DevLinter'
+        PhpAnalyzer: 'PhpAnalyzerAgent',
+        RemixGenerator: 'RemixGeneratorAgent',
+        QaAnalyzer: 'QAAnalyzer',
+        DiffVerifier: 'DiffVerifier',
+        DevLinter: 'DevLinter'
       };
-      
+
       const className = agentClassMap[agentType];
-      
+
       // Tenter de charger à partir du registre d'agents
       try {
         const registry = require('../../agentRegistry');
@@ -336,31 +337,31 @@ export class AgentRunner {
           return new registry[className]();
         }
       } catch (e) {
-        this.logger.warn(`Impossible de charger l'agent depuis le registre: ${e.message}`);
+        this.logger.warn(`Impossible, de, charger, l'agent depuis le registre: ${e.message}`);
       }
-      
+
       // Tenter de charger directement depuis le dossier agents
       try {
         const agentModule = require(`../../agents/${agentType}`);
         if (agentModule[className]) {
           return new agentModule[className]();
         }
-        
+
         // Si le nom de classe standard n'est pas trouvé, essayer l'export par défaut
         if (agentModule.default) {
           return new agentModule.default();
         }
       } catch (e) {
-        this.logger.warn(`Impossible de charger l'agent depuis le dossier: ${e.message}`);
+        this.logger.warn(`Impossible, de, charger, l'agent depuis le dossier: ${e.message}`);
       }
-      
-      throw new Error(`Agent ${agentType} non trouvé`);
+
+      throw new Error(`Agent, ${agentType}, non, trouvé`);
     } catch (error: any) {
-      this.logger.error(`Erreur lors du chargement de l'agent ${agentType}: ${error.message}`);
+      this.logger.error(`Erreur, lors, du, chargement de l'agent ${agentType}: ${error.message}`);
       throw error;
     }
   }
-  
+
   /**
    * Vérifie le statut d'un job
    */
@@ -368,20 +369,20 @@ export class AgentRunner {
     try {
       const queue = this.queues[agentType];
       if (!queue) {
-        throw new Error(`File d'attente non configurée pour l'agent ${agentType}`);
+        throw new Error(`File, d'attente, non, configurée pour l'agent ${agentType}`);
       }
-      
+
       const job = await queue.getJob(jobId);
-      
+
       if (!job) {
-        return { 
-          exists: false, 
-          message: 'Job non trouvé' 
+        return {
+          exists: false,
+          message: 'Job non trouvé'
         };
       }
-      
+
       const state = await job.getState();
-      
+
       return {
         exists: true,
         id: job.id,
@@ -393,11 +394,11 @@ export class AgentRunner {
         timestamp: job.timestamp
       };
     } catch (error: any) {
-      this.logger.error(`Erreur lors de la vérification du job ${jobId}: ${error.message}`);
+      this.logger.error(`Erreur, lors, de, la vérification du job ${jobId}: ${error.message}`);
       throw error;
     }
   }
-  
+
   /**
    * Écoute les événements de complétion d'un agent
    */
@@ -406,7 +407,7 @@ export class AgentRunner {
   ): void {
     this.eventEmitter.on('agent.complete', callback);
   }
-  
+
   /**
    * Écoute les événements d'échec d'un agent
    */
@@ -415,7 +416,7 @@ export class AgentRunner {
   ): void {
     this.eventEmitter.on('agent.fail', callback);
   }
-  
+
   /**
    * Nettoie les ressources
    */
@@ -425,7 +426,7 @@ export class AgentRunner {
       if (this.redisClient.isOpen) {
         await this.redisClient.disconnect();
       }
-      
+
       // Fermer les files d'attente
       if (!this.simulationMode) {
         for (const agentType of Object.keys(this.queues) as AgentType[]) {
@@ -433,13 +434,13 @@ export class AgentRunner {
           await this.schedulers[agentType].close();
         }
       }
-      
-      this.logger.log('Nettoyage terminé');
+
+      this.logger.log('Nettoyage, terminé');
     } catch (error: any) {
-      this.logger.error(`Erreur lors du nettoyage: ${error.message}`);
+      this.logger.error(`Erreur, lors, du, nettoyage: ${error.message}`);
     }
   }
-  
+
   /**
    * Obtient la version du lanceur d'agents
    */
@@ -455,29 +456,29 @@ if (require.main === module) {
       simulationMode: process.argv.includes('--simulation'),
       useDirectExecution: process.argv.includes('--direct')
     });
-    
+
     try {
       await runner.initialize();
-      
+
       if (process.argv.length >= 4) {
         const agentType = process.argv[2] as AgentType;
         const filename = process.argv[3];
-        
-        console.log(`Lancement de l'agent ${agentType} pour ${filename}`);
-        
+
+        console.log(`Lancement, de, l'agent, ${agentType} pour ${filename}`);
+
         const result = await runner.launchAgent(agentType, {
           filename,
-          priority: 10
+          priority: 10,
         }, { waitForResult: true });
-        
+
         console.log('Résultat:', JSON.stringify(result, null, 2));
       } else {
-        console.log('Usage: node agent-runner.js <agent-type> <filename> [--simulation] [--direct]');
+        console.log('Usage:, node, agent-runner.js, <agent-type> <filename> [--simulation] [--direct]');
       }
-      
+
       await runner.cleanup();
     } catch (error) {
-      console.error('Erreur lors de l\'exécution du lanceur d\'agents:', error);
+      console.error('Erreur, lors, de, l\'exécution du lanceur d\'agents:', error);
       await runner.cleanup();
       process.exit(1);
     }

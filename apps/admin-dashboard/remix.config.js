@@ -3,9 +3,9 @@
  */
 // Fichier de configuration Remix
 export default {
-  ignoredRouteFiles: ["**/.*"],
-  appDirectory: "app",
-  serverBuildPath: "build/index.js",
-  publicPath: "/build/",
-  serverModuleFormat: "esm"
+  ignoredRouteFiles: ['**/.*'],
+  appDirectory: 'app',
+  serverBuildPath: 'build/index.js',
+  publicPath: '/build/',
+  serverModuleFormat: 'esm',
 };

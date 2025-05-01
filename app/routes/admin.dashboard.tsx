@@ -1,16 +1,16 @@
-import { json, LoaderFunction } from "@remix-run/node";
-import { useLoaderData } from "@remix-run/react";
-import { getMigratedModules } from "~/models/migration.server";
-import { getRecentActivities } from "~/models/activity.server";
-import { getBacklogStatus } from "~/models/backlog.server";
-import MigratedModulesList from "~/components/MigratedModulesList";
-import AIActivityLog from "~/components/AIActivityLog";
-import BacklogStatus from "~/components/BacklogStatus";
-import DashboardHeader from "~/components/DashboardHeader";
-import styles from "~/styles/dashboard.css";
+import { LoaderFunction, json } from '@remix-run/node';
+import { useLoaderData } from '@remix-run/react';
+import AIActivityLog from '~/components/AIActivityLog';
+import BacklogStatus from '~/components/BacklogStatus';
+import DashboardHeader from '~/components/DashboardHeader';
+import MigratedModulesList from '~/components/MigratedModulesList';
+import { getRecentActivities } from '~/models/activity.server';
+import { getBacklogStatus } from '~/models/backlog.server';
+import { getMigratedModules } from '~/models/migration.server';
+import styles from '~/styles/dashboard.css';
 
 export function links() {
-  return [{ rel: "stylesheet", href: styles }];
+  return [{ rel: 'stylesheet', href: styles }];
 }
 
 type LoaderData = {
@@ -27,7 +27,7 @@ export const loader: LoaderFunction = async ({ request }) => {
   return json<LoaderData>({
     migratedModules,
     recentActivities,
-    backlogStatus
+    backlogStatus,
   });
 };
 
@@ -37,18 +37,18 @@ export default function AdminDashboard() {
   return (
     <div className="dashboard-container">
       <DashboardHeader title="Command Center" subtitle="Tableau de bord de migration IA" />
-      
+
       <div className="dashboard-grid">
         <div className="dashboard-section modules-section">
           <h2>Modules Migrés</h2>
           <MigratedModulesList modules={migratedModules} />
         </div>
-        
+
         <div className="dashboard-section activity-section">
           <h2>Journal d'Activité IA</h2>
           <AIActivityLog activities={recentActivities} />
         </div>
-        
+
         <div className="dashboard-section backlog-section">
           <h2>État du Backlog</h2>
           <BacklogStatus backlog={backlogStatus} />

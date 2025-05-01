@@ -10,10 +10,6 @@
     "outDir": "/workspaces/cahier-des-charge/reports/ci-agents-20250419-142634/dist",
     "resolveJsonModule": true
   },
-  "include": [
-    "/workspaces/cahier-des-charge/reports/ci-agents-20250419-142634/*.ts"
-  ],
-  "exclude": [
-    "node_modules"
-  ]
+  "include": ["/workspaces/cahier-des-charge/reports/ci-agents-20250419-142634/*.ts"],
+  "exclude": ["node_modules"]
 }

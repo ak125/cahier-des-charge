@@ -16,9 +16,11 @@ export class SeoStrategyRegistry {
    */
   registerStrategy(strategy: ISeoAnalysisStrategy): void {
     if (this.strategies.has(strategy.id)) {
-      this.logger.warn(`Une stratégie avec l'ID ${strategy.id} est déjà enregistrée. Elle sera remplacée.`);
+      this.logger.warn(
+        `Une stratégie avec l'ID ${strategy.id} est déjà enregistrée. Elle sera remplacée.`
+      );
     }
-    
+
     this.strategies.set(strategy.id, strategy);
     this.logger.log(`Stratégie d'analyse SEO '${strategy.name}' (${strategy.id}) enregistrée.`);
   }
@@ -45,7 +47,7 @@ export class SeoStrategyRegistry {
    */
   getApplicableStrategies(url: string, content?: string): ISeoAnalysisStrategy[] {
     return Array.from(this.strategies.values())
-      .filter(strategy => strategy.isApplicable(url, content))
+      .filter((strategy) => strategy.isApplicable(url, content))
       .sort((a, b) => a.priority - b.priority);
   }
 
@@ -58,7 +60,7 @@ export class SeoStrategyRegistry {
   async analyzeUrl(
     url: string,
     content: string,
-    options?: { 
+    options?: {
       strategyIds?: string[];
       aggregateResults?: boolean;
     }
@@ -68,38 +70,38 @@ export class SeoStrategyRegistry {
     metadata: Record<string, any>;
   }> {
     const { strategyIds, aggregateResults = true } = options || {};
-    
+
     // Filtrer les stratégies à utiliser
     let strategiesToUse: ISeoAnalysisStrategy[];
-    
+
     if (strategyIds && strategyIds.length > 0) {
       // Utiliser uniquement les stratégies spécifiées
       strategiesToUse = strategyIds
-        .map(id => this.getStrategy(id))
+        .map((id) => this.getStrategy(id))
         .filter(Boolean) as ISeoAnalysisStrategy[];
     } else {
       // Utiliser toutes les stratégies applicables
       strategiesToUse = this.getApplicableStrategies(url, content);
     }
-    
+
     if (strategiesToUse.length === 0) {
       this.logger.warn(`Aucune stratégie applicable trouvée pour l'URL: ${url}`);
       return {
         overallScore: 0,
         issuesByStrategy: {},
-        metadata: { noApplicableStrategies: true }
+        metadata: { noApplicableStrategies: true },
       };
     }
-    
+
     // Exécuter chaque stratégie
     const results = await Promise.all(
-      strategiesToUse.map(async strategy => {
+      strategiesToUse.map(async (strategy) => {
         try {
           const result = await strategy.analyze(url, content);
           return {
             strategyId: strategy.id,
             strategyName: strategy.name,
-            ...result
+            ...result,
           };
         } catch (error) {
           this.logger.error(
@@ -110,44 +112,44 @@ export class SeoStrategyRegistry {
             strategyId: strategy.id,
             strategyName: strategy.name,
             score: 0,
-            issues: [{
-              type: 'error',
-              severity: 'critical',
-              message: `Erreur lors de l'analyse: ${error.message}`,
-              details: { error: error.message }
-            }],
-            metadata: { error: true }
+            issues: [
+              {
+                type: 'error',
+                severity: 'critical',
+                message: `Erreur lors de l'analyse: ${error.message}`,
+                details: { error: error.message },
+              },
+            ],
+            metadata: { error: true },
           };
         }
       })
     );
-    
+
     // Agréger les résultats
     const issuesByStrategy: Record<string, any> = {};
     let totalScore = 0;
     const metadata: Record<string, any> = {};
-    
-    results.forEach(result => {
+
+    results.forEach((result) => {
       issuesByStrategy[result.strategyId] = {
         name: result.strategyName,
         score: result.score,
         issues: result.issues,
-        metadata: result.metadata
+        metadata: result.metadata,
       };
-      
+
       totalScore += result.score;
-      
+
       // Fusionner les métadonnées
       if (result.metadata) {
         Object.assign(metadata, { [result.strategyId]: result.metadata });
       }
     });
-    
+
     // Calculer le score global
-    const overallScore = aggregateResults
-      ? Math.round(totalScore / results.length)
-      : 0;
-    
+    const overallScore = aggregateResults ? Math.round(totalScore / results.length) : 0;
+
     return {
       overallScore,
       issuesByStrategy,
@@ -155,8 +157,8 @@ export class SeoStrategyRegistry {
         ...metadata,
         analyzedAt: new Date().toISOString(),
         url,
-        strategiesUsed: results.length
-      }
+        strategiesUsed: results.length,
+      },
     };
   }
 }

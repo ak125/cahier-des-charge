@@ -1,13 +1,13 @@
-import { useState, useEffect } from "react";
-import type { Agent, AgentStatus as AgentStatusType } from "../types";
+import { useEffect, useState } from 'react';
+import type { Agent, AgentStatus as AgentStatusType } from '../types';
 
 interface AgentStatusProps {
   agents: Agent[];
   onRefresh?: () => void;
   onRestartAgent?: (agentId: string) => void;
   onViewLogs?: (agentId: string) => void;
-  onViewMetrics?: (agentId: string) => void;  // Nouvelle prop pour visualiser les métriques
-  onConfigureAgent?: (agentId: string) => void;  // Nouvelle prop pour configurer l'agent
+  onViewMetrics?: (agentId: string) => void; // Nouvelle prop pour visualiser les métriques
+  onConfigureAgent?: (agentId: string) => void; // Nouvelle prop pour configurer l'agent
 }
 
 export default function AgentStatus({
@@ -18,18 +18,18 @@ export default function AgentStatus({
   onViewMetrics,
   onConfigureAgent,
 }: AgentStatusProps) {
-  const [filter, setFilter] = useState("");
-  const [sortBy, setSortBy] = useState<"name" | "status" | "lastRunTime" | "performance">("name");
-  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
+  const [filter, setFilter] = useState('');
+  const [sortBy, setSortBy] = useState<'name' | 'status' | 'lastRunTime' | 'performance'>('name');
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
   const [filterStatus, setFilterStatus] = useState<string | null>(null);
-  const [groupByLayer, setGroupByLayer] = useState(false);
+  const [_groupByLayer, _setGroupByLayer] = useState(false);
 
   const handleSort = (field: typeof sortBy) => {
     if (field === sortBy) {
-      setSortDirection(sortDirection === "asc" ? "desc" : "asc");
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
     } else {
       setSortBy(field);
-      setSortDirection("asc");
+      setSortDirection('asc');
     }
   };
 
@@ -43,60 +43,59 @@ export default function AgentStatus({
   });
 
   const sortedAgents = [...filteredAgents].sort((a, b) => {
-    if (sortBy === "name") {
-      return sortDirection === "asc"
-        ? a.name.localeCompare(b.name)
-        : b.name.localeCompare(a.name);
-    } else if (sortBy === "status") {
-      return sortDirection === "asc"
+    if (sortBy === 'name') {
+      return sortDirection === 'asc' ? a.name.localeCompare(b.name) : b.name.localeCompare(a.name);
+    }
+    if (sortBy === 'status') {
+      return sortDirection === 'asc'
         ? a.status.localeCompare(b.status)
         : b.status.localeCompare(a.status);
-    } else if (sortBy === "performance") {
-      return sortDirection === "asc"
+    }
+    if (sortBy === 'performance') {
+      return sortDirection === 'asc'
         ? a.performance - b.performance
         : b.performance - a.performance;
-    } else {
-      // lastRunTime
-      const aTime = a.lastRunTime ? new Date(a.lastRunTime).getTime() : 0;
-      const bTime = b.lastRunTime ? new Date(b.lastRunTime).getTime() : 0;
-      return sortDirection === "asc" ? aTime - bTime : bTime - aTime;
     }
+    // lastRunTime
+    const aTime = a.lastRunTime ? new Date(a.lastRunTime).getTime() : 0;
+    const bTime = b.lastRunTime ? new Date(b.lastRunTime).getTime() : 0;
+    return sortDirection === 'asc' ? aTime - bTime : bTime - aTime;
   });
 
   const getStatusIndicator = (status: string) => {
     switch (status.toLowerCase()) {
-      case "running":
+      case 'running':
         return (
           <span className="flex items-center">
-            <span className="h-2.5 w-2.5 rounded-full bg-green-400 mr-2"></span>
+            <span className="h-2.5 w-2.5 rounded-full bg-green-400 mr-2" />
             Actif
           </span>
         );
-      case "idle":
+      case 'idle':
         return (
           <span className="flex items-center">
-            <span className="h-2.5 w-2.5 rounded-full bg-blue-400 mr-2"></span>
+            <span className="h-2.5 w-2.5 rounded-full bg-blue-400 mr-2" />
             En attente
           </span>
         );
-      case "error":
+      case 'error':
         return (
           <span className="flex items-center">
-            <span className="h-2.5 w-2.5 rounded-full bg-red-400 mr-2"></span>
+            <span className="h-2.5 w-2.5 rounded-full bg-red-400 mr-2" />
             Erreur
           </span>
         );
-      case "disabled":
+      case 'disabled':
         return (
           <span className="flex items-center">
-            <span className="h-2.5 w-2.5 rounded-full bg-gray-400 mr-2"></span>
+            <span className="h-2.5 w-2.5 rounded-full bg-gray-400 mr-2" />
             Désactivé
           </span>
         );
       default:
         return (
           <span className="flex items-center">
-            <span className="h-2.5 w-2.5 rounded-full bg-yellow-400 mr-2"></span>
+            <span className="h-2.5 w-2.5 rounded-full bg-yellow-400 mr-2" />
             {status}
           </span>
         );
@@ -107,9 +106,7 @@ export default function AgentStatus({
     <div className="bg-white shadow overflow-hidden sm:rounded-lg">
       <div className="p-4 border-b border-gray-200">
         <div className="flex items-center justify-between">
-          <h3 className="text-lg font-medium leading-6 text-gray-900">
-            État des Agents MCP
-          </h3>
+          <h3 className="text-lg font-medium leading-6 text-gray-900">État des Agents MCP</h3>
           <div className="flex items-center space-x-2">
             <input
               type="text"
@@ -120,7 +117,7 @@ export default function AgentStatus({
             />
             <select
               className="px-4 py-2 border border-gray-300 rounded-md"
-              value={filterStatus || ""}
+              value={filterStatus || ''}
               onChange={(e) => setFilterStatus(e.target.value || null)}
             >
               <option value="">Tous les statuts</option>
@@ -144,21 +141,21 @@ export default function AgentStatus({
             <th
               scope="col"
               className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 cursor-pointer"
-              onClick={() => handleSort("name")}
+              onClick={() => handleSort('name')}
             >
               Agent
-              {sortBy === "name" && (
-                <span className="ml-1">{sortDirection === "asc" ? "▲" : "▼"}</span>
+              {sortBy === 'name' && (
+                <span className="ml-1">{sortDirection === 'asc' ? '▲' : '▼'}</span>
               )}
             </th>
             <th
               scope="col"
               className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 cursor-pointer"
-              onClick={() => handleSort("status")}
+              onClick={() => handleSort('status')}
             >
               Statut
-              {sortBy === "status" && (
-                <span className="ml-1">{sortDirection === "asc" ? "▲" : "▼"}</span>
+              {sortBy === 'status' && (
+                <span className="ml-1">{sortDirection === 'asc' ? '▲' : '▼'}</span>
               )}
             </th>
             <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
@@ -167,11 +164,11 @@ export default function AgentStatus({
             <th
               scope="col"
               className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 cursor-pointer"
-              onClick={() => handleSort("lastRunTime")}
+              onClick={() => handleSort('lastRunTime')}
             >
               Dernière exécution
-              {sortBy === "lastRunTime" && (
-                <span className="ml-1">{sortDirection === "asc" ? "▲" : "▼"}</span>
+              {sortBy === 'lastRunTime' && (
+                <span className="ml-1">{sortDirection === 'asc' ? '▲' : '▼'}</span>
               )}
             </th>
             <th scope="col" className="relative py-3.5 pl-3 pr-4 sm:pr-6">
@@ -189,13 +186,9 @@ export default function AgentStatus({
               <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                 {getStatusIndicator(agent.status)}
               </td>
+              <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{agent.version}</td>
               <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                {agent.version}
-              </td>
-              <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                {agent.lastRunTime
-                  ? new Date(agent.lastRunTime).toLocaleString("fr-FR")
-                  : "-"}
+                {agent.lastRunTime ? new Date(agent.lastRunTime).toLocaleString('fr-FR') : '-'}
               </td>
               <td className="whitespace-nowrap px-3 py-4 text-sm font-medium text-right space-x-2">
                 <button

@@ -3,8 +3,5 @@
   "status": "pending",
   "progress": 0,
   "complexity": "high",
-  "dependencies": [
-    "Cart",
-    "Authentication"
-  ]
+  "dependencies": ["Cart", "Authentication"]
 }

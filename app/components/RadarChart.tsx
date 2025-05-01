@@ -1,5 +1,13 @@
-import React from "react";
-import { Chart as ChartJS, RadialLinearScale, PointElement, LineElement, Filler, Tooltip, Legend } from 'chart.js';
+import {
+  Chart as ChartJS,
+  Filler,
+  Legend,
+  LineElement,
+  PointElement,
+  RadialLinearScale,
+  Tooltip,
+} from 'chart.js';
+import React from 'react';
 import { Radar } from 'react-chartjs-2';
 
 // Enregistrer les composants nécessaires pour le graphique radar
@@ -20,9 +28,9 @@ export const RadarChart: React.FC<RadarChartProps> = ({
   performanceScore,
   accessibilityScore,
   bestPracticesScore,
-  label = "Score de qualité",
+  label = 'Score de qualité',
   height = 300,
-  width = 300
+  width = 300,
 }) => {
   const data = {
     labels: ['SEO', 'Performance', 'Accessibilité', 'Meilleures pratiques'],
@@ -62,10 +70,10 @@ export const RadarChart: React.FC<RadarChartProps> = ({
         callbacks: {
           label: (context: any) => {
             return `Score: ${context.raw}/100`;
-          }
-        }
-      }
-    }
+          },
+        },
+      },
+    },
   };
 
   return (

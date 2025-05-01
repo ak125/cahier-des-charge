@@ -1,17 +1,17 @@
+import path from 'path';
+import { Logger } from '@nestjs/common';
 /**
  * Système de configuration unifié pour l'architecture à 3 couches
  * Sert de source unique de vérité pour toutes les couches
  */
 import fs from 'fs-extra';
-import path from 'path';
 import { merge } from 'lodash';
 import { z } from 'zod';
-import { Logger } from '@nestjs/common';
 
-// Schémas de validation pour chaque couche
-import { orchestrationConfigSchema } from './schemas/orchestration-schema';
 import { agentConfigSchema } from './schemas/agent-schema';
 import { businessConfigSchema } from './schemas/business-schema';
+// Schémas de validation pour chaque couche
+import { orchestrationConfigSchema } from './schemas/orchestration-schema';
 
 // Types des configurations par couche
 export type OrchestrationConfig = z.infer<typeof orchestrationConfigSchema>;
@@ -76,9 +76,9 @@ export class ConfigManager {
         resetTimeout: 60000,
         failureThreshold: 5,
         fallbackStrategies: {
-          "orchestration": "isolateWorkflow",
-          "agents": "disableTemporarily",
-          "business": "isolateDomain"
+          orchestration: "isolateWorkflow",
+          agents: "disableTemporarily",
+          business: "isolateDomain"
         }
       },
       governance: {

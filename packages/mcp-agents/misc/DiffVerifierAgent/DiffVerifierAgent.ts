@@ -3,8 +3,8 @@
  * Agent export file
  */
 
-import { diff } from './diff-verifier';
 import { BusinessAgent } from '../../core/interfaces';
+import { diff } from './diff-verifier';
 
 export { diff };
 export default diff;

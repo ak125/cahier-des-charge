@@ -1,5 +1,5 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
-import { Queue, JobsOptions } from 'bullmq';
+import { JobsOptions, Queue } from 'bullmq';
 
 // Interface pour les options personnalisées pour nos jobs
 export interface McpJobOptions {

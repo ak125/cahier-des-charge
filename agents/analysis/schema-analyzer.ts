@@ -3,7 +3,7 @@
  * Agent export file
  */
 
-import { SchemaAnalyzer } from ./schema-analyzerstructure-agent';
+import { SchemaAnalyzer } from './schema-analyzer-structure-agent';
 
 export { SchemaAnalyzer };
 export default SchemaAnalyzer;

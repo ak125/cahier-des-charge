@@ -28,9 +28,7 @@
       "fileType": ".dto.ts",
       "status": "not-found",
       "tags": ["⏳ À vérifier", "❓ Fichier manquant"],
-      "messages": [
-        "Fichier fiche.dto.ts non trouvé dans ./apps/frontend/app/generated"
-      ]
+      "messages": ["Fichier fiche.dto.ts non trouvé dans ./apps/frontend/app/generated"]
     },
     {
       "fileType": ".zod.ts",

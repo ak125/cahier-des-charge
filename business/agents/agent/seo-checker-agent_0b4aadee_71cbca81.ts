@@ -1,19 +1,19 @@
-import { AbstractValidatorAgent } from ../AbstractValidatorstructure-agent';
+import { AbstractValidatorAgent } from '../AbstractValidatorstructure-agent'
 /**
-import { BaseAgent } from @workspaces/cahier-des-charge/src/core/interfaces/BaseAgentstructure-agent';
+import { BaseAgent }  from '@workspaces/cahier-des-charge/src/core/interfaces/BaseAgent';
  * SEOCheckerAgent - Agent standardisé de validation SEO
  * 
  * Vérifie, valide et corrige les métadonnées SEO pour les sites Remix migrés depuis PHP
  */
 
-import { AgentContext, AgentMetadata } from ../core/interfacesstructure-agent';
-import { BaseValidatorAgent, ValidatorAgentConfig, ValidationResult } from ./BaseValidator-agentstructure-agent';
-import path from pathstructure-agent';
-import fs from fs-extrastructure-agent';
-import { execSync } from child_processstructure-agent';
+import path from 'path';
+import { AgentContext, AgentMetadata  } from '../core/interfacesstructure-agent'
+import { BaseValidatorAgent, ValidationResult,  ValidatorAgentConfig } from './BaseValidator-agentstructure-agent'
+import { execSync } from './child_processstructure-agent'
+import fs from './fs-extrastructure-agent'
 
 // Importation de la classe utilitaire SEOChecker
-import { SEOChecker } from ../core/seo/seo-checkerstructure-agent';
+import { SEOChecker } from '../core/seo/seo-checkerstructure-agent'
 
 // Configuration spécifique à l'agent SEO
 export interface SEOCheckerConfig extends ValidatorAgentConfig {
@@ -87,7 +87,7 @@ export class SEOCheckerAgent implements BaseAgent extends AbstractValidatorAgent
     if (this.config.runLighthouse) {
       try {
         execSync('lighthouse --version', { stdio: 'ignore' });
-      } catch (error) {
+      } catch (_error) {
         this.log('warn', 'Lighthouse n\'est pas installé. Installation en cours...');
         execSync('npm install -g lighthouse', { stdio: 'inherit' });
       }
@@ -97,7 +97,7 @@ export class SEOCheckerAgent implements BaseAgent extends AbstractValidatorAgent
   /**
    * Implémentation de la méthode de validation requise par BaseValidatorAgent
    */
-  protected async performValidation(context: AgentContext): Promise<ValidationResult> {
+  protected async performValidation(_context: AgentContext): Promise<ValidationResult> {
     this.log('info', 'Démarrage de la vérification SEO');
     
     // Initialiser le résultat de validation
@@ -149,7 +149,7 @@ export class SEOCheckerAgent implements BaseAgent extends AbstractValidatorAgent
   /**
    * Correction automatique des problèmes SEO courants
    */
-  protected async applyAutofixes(result: ValidationResult, context: AgentContext): Promise<void> {
+  protected async applyAutofixes(result: ValidationResult, _context: AgentContext): Promise<void> {
     this.log('info', 'Lancement de la correction automatique des problèmes SEO');
     
     // Garder trace des fixes appliqués

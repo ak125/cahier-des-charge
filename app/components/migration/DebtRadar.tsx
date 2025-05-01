@@ -1,5 +1,5 @@
-import React, { useEffect, useRef } from "react";
-import Chart from "chart.js/auto";
+import Chart from 'chart.js/auto';
+import React, { useEffect, useRef } from 'react';
 
 interface DebtMetric {
   name: string;
@@ -34,37 +34,39 @@ export default function DebtRadar({ debtData, tableName }: DebtRadarProps) {
     if (!ctx) return;
 
     const metrics = debtData.metrics || [];
-    
+
     // Créer le graphique radar
     chartInstance.current = new Chart(ctx, {
       type: 'radar',
       data: {
-        labels: metrics.map(metric => metric.name),
-        datasets: [{
-          label: 'Dette Technique',
-          data: metrics.map(metric => metric.value),
-          backgroundColor: 'rgba(255, 99, 132, 0.2)',
-          borderColor: 'rgb(255, 99, 132)',
-          pointBackgroundColor: 'rgb(255, 99, 132)',
-          pointBorderColor: '#fff',
-          pointHoverBackgroundColor: '#fff',
-          pointHoverBorderColor: 'rgb(255, 99, 132)'
-        }]
+        labels: metrics.map((metric) => metric.name),
+        datasets: [
+          {
+            label: 'Dette Technique',
+            data: metrics.map((metric) => metric.value),
+            backgroundColor: 'rgba(255, 99, 132, 0.2)',
+            borderColor: 'rgb(255, 99, 132)',
+            pointBackgroundColor: 'rgb(255, 99, 132)',
+            pointBorderColor: '#fff',
+            pointHoverBackgroundColor: '#fff',
+            pointHoverBorderColor: 'rgb(255, 99, 132)',
+          },
+        ],
       },
       options: {
         responsive: true,
         scales: {
           r: {
             angleLines: {
-              display: true
+              display: true,
             },
             suggestedMin: 0,
-            suggestedMax: 100
-          }
-        }
-      }
+            suggestedMax: 100,
+          },
+        },
+      },
     });
-    
+
     // Nettoyer en détruisant le graphique lors du démontage du composant
     return () => {
       if (chartInstance.current) {
@@ -91,16 +93,14 @@ export default function DebtRadar({ debtData, tableName }: DebtRadarProps) {
   return (
     <div className="debt-radar-container">
       <div className="debt-score">
-        <span className={`score ${getDebtClass(debtData.score)}`}>
-          {debtData.score}
-        </span>
+        <span className={`score ${getDebtClass(debtData.score)}`}>{debtData.score}</span>
         <span className="score-label">Score de dette</span>
       </div>
-      
+
       <div className="radar-chart-container">
-        <canvas ref={chartRef}></canvas>
+        <canvas ref={chartRef} />
       </div>
-      
+
       {debtData.metrics && debtData.metrics.length > 0 && (
         <div className="metrics-details">
           <h4>Détails des métriques</h4>
@@ -114,7 +114,7 @@ export default function DebtRadar({ debtData, tableName }: DebtRadarProps) {
           </ul>
         </div>
       )}
-      
+
       {debtData.suggestions && debtData.suggestions.length > 0 && (
         <div className="debt-suggestions">
           <h4>Suggestions d'amélioration</h4>

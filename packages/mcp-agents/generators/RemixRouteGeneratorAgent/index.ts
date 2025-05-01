@@ -5,7 +5,4 @@
 
 import { RemixRouteGeneratorAgent } from './RemixRouteGeneratorAgent';
 
-export {
-  RemixRouteGeneratorAgent,
-};
-
+export { RemixRouteGeneratorAgent };

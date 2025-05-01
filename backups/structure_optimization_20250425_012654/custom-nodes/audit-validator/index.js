@@ -1,1 +1,0 @@
-module.exports = require(./dist/nodes/AuditValidator/AuditValidator.node.jsstructure-agent');

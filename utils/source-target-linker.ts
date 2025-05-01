@@ -15,10 +15,10 @@ interface SourceTargetLinkOptions {
     description?: string;
     tags?: string[];
   };
-  
+
   // Indique si le lien doit être ajouté aux fichiers générés comme commentaire
   addCommentToTargetFile?: boolean;
-  
+
   // Format du commentaire à ajouter (utilise ${sourceFile} et ${targetFile} comme variables)
   commentTemplate?: string;
 }
@@ -67,7 +67,7 @@ export class SourceTargetLinker {
       }
 
       const componentType = options.metadata?.componentType || this.inferComponentType(targetFile);
-      
+
       // Enregistrer le mapping dans Supabase
       const mappingId = await auditHistoryManager.saveFileMapping(
         auditId,
@@ -78,7 +78,7 @@ export class SourceTargetLinker {
       );
 
       if (!mappingId) {
-        throw new Error('Échec de l\'enregistrement du mapping dans Supabase');
+        throw new Error("Échec de l'enregistrement du mapping dans Supabase");
       }
 
       // Si le fichier cible existe et que l'option est activée, ajouter un commentaire
@@ -105,7 +105,7 @@ export class SourceTargetLinker {
     try {
       // Obtenir le contenu du fichier
       const content = fs.readFileSync(targetFile, 'utf-8');
-      
+
       // Générer le commentaire
       const date = new Date().toISOString();
       const comment = (commentTemplate || this.DEFAULT_COMMENT_TEMPLATE)
@@ -120,10 +120,10 @@ export class SourceTargetLinker {
 
       // Préparer le nouveau contenu avec le commentaire
       let newContent = '';
-      
+
       // Ajouter le commentaire selon le type de fichier
       const ext = path.extname(targetFile).toLowerCase();
-      
+
       if (['.ts', '.tsx', '.js', '.jsx'].includes(ext)) {
         // Fichiers JavaScript/TypeScript
         newContent = `${comment}\n\n${content}`;
@@ -137,7 +137,9 @@ export class SourceTargetLinker {
         }
       } else if (['.html', '.vue'].includes(ext)) {
         // Fichiers HTML/Vue
-        newContent = `<!-- ${comment.replace(/\*\//g, '').replace(/\/\*\*/g, '')} -->\n\n${content}`;
+        newContent = `<!-- ${comment
+          .replace(/\*\//g, '')
+          .replace(/\/\*\*/g, '')} -->\n\n${content}`;
       } else {
         // Autres types de fichiers
         newContent = `${comment}\n\n${content}`;
@@ -160,54 +162,57 @@ export class SourceTargetLinker {
     try {
       const fileName = path.basename(targetFile).toLowerCase();
       const ext = path.extname(targetFile).toLowerCase();
-      
+
       // Si le fichier existe, analyser son contenu
       if (fs.existsSync(targetFile)) {
         const content = fs.readFileSync(targetFile, 'utf-8');
-        
+
         // Vérifier les patterns de code spécifiques
         if (content.includes('@Controller') || fileName.includes('controller')) {
           return 'controller';
         }
-        
+
         if (content.includes('@Injectable') || fileName.includes('service')) {
           return 'service';
         }
-        
+
         if (content.includes('@Entity') || fileName.includes('entity')) {
           return 'entity';
         }
-        
-        if (content.includes('React.') || content.includes('function') && content.includes('return')) {
+
+        if (
+          content.includes('React.') ||
+          (content.includes('function') && content.includes('return'))
+        ) {
           return 'component';
         }
-        
+
         if (content.includes('export const loader') || fileName.includes('route')) {
           return 'route';
         }
       }
-      
+
       // Sinon, déduire à partir du nom de fichier
       if (fileName.includes('controller')) {
         return 'controller';
       }
-      
+
       if (fileName.includes('service')) {
         return 'service';
       }
-      
+
       if (fileName.includes('entity')) {
         return 'entity';
       }
-      
+
       if (fileName.includes('component') || ext === '.tsx' || ext === '.jsx') {
         return 'component';
       }
-      
+
       if (fileName.includes('route') || fileName.includes('loader')) {
         return 'route';
       }
-      
+
       return 'other';
     } catch (err) {
       console.warn(`⚠️ Impossible d'inférer le type de composant pour ${targetFile}:`, err);
@@ -218,10 +223,7 @@ export class SourceTargetLinker {
   /**
    * Génère une carte de migration pour visualiser les liens entre fichiers
    */
-  async generateMigrationMap(
-    auditId: string,
-    outputPath?: string
-  ): Promise<MigrationMap | null> {
+  async generateMigrationMap(auditId: string, outputPath?: string): Promise<MigrationMap | null> {
     try {
       // Récupérer l'audit
       const audit = await auditHistoryManager.getAuditReport(auditId);
@@ -240,24 +242,20 @@ export class SourceTargetLinker {
         auditId,
         sourceDirectory: audit.source_dir,
         targetDirectory: this.inferTargetDirectory(mappings),
-        mappings: mappings.map(mapping => ({
+        mappings: mappings.map((mapping) => ({
           id: mapping.id,
           sourceFile: mapping.source_file,
           targetFile: mapping.target_file,
           componentType: mapping.component_type,
           migrationStatus: mapping.migration_status,
-          metadata: {} // À enrichir si nécessaire
+          metadata: {}, // À enrichir si nécessaire
         })),
-        generated: new Date().toISOString()
+        generated: new Date().toISOString(),
       };
 
       // Écrire dans un fichier si demandé
       if (outputPath) {
-        fs.writeFileSync(
-          outputPath,
-          JSON.stringify(migrationMap, null, 2),
-          'utf-8'
-        );
+        fs.writeFileSync(outputPath, JSON.stringify(migrationMap, null, 2), 'utf-8');
         console.log(`✅ Carte de migration générée: ${outputPath}`);
       }
 
@@ -278,9 +276,9 @@ export class SourceTargetLinker {
 
     // Trouver le chemin commun le plus long
     const targetPaths = mappings
-      .map(mapping => mapping.target_file)
+      .map((mapping) => mapping.target_file)
       .filter(Boolean)
-      .map(file => path.dirname(file));
+      .map((file) => path.dirname(file));
 
     if (targetPaths.length === 0) {
       return 'Non déterminé';
@@ -316,10 +314,7 @@ export class SourceTargetLinker {
   /**
    * Génère un composant React/Remix pour visualiser les mappings
    */
-  async generateMappingVisualization(
-    auditId: string,
-    outputPath: string
-  ): Promise<string | null> {
+  async generateMappingVisualization(auditId: string, outputPath: string): Promise<string | null> {
     try {
       // Générer la carte de migration
       const migrationMap = await this.generateMigrationMap(auditId);
@@ -570,11 +565,11 @@ export function links() {
       // Générer aussi la feuille de style CSS
       const cssPath = path.join(path.dirname(outputPath), '../public/styles/migration-map.css');
       const cssDir = path.dirname(cssPath);
-      
+
       if (!fs.existsSync(cssDir)) {
         fs.mkdirSync(cssDir, { recursive: true });
       }
-      
+
       const cssContent = `/* 
  * migration-map.css
  * Styles pour la visualisation de la carte de migration
@@ -812,12 +807,12 @@ h1 {
   }
 }
 `;
-      
+
       fs.writeFileSync(cssPath, cssContent, 'utf-8');
-      
+
       console.log(`✅ Composant de visualisation généré: ${outputPath}`);
       console.log(`✅ Styles CSS générés: ${cssPath}`);
-      
+
       return outputPath;
     } catch (err) {
       console.error('❌ Erreur lors de la génération du composant de visualisation:', err);

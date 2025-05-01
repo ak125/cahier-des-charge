@@ -3,9 +3,6 @@
  * Generated automatically on 2025-04-20
  */
 
-import { PrismaSmartGeneratorAgent } from ./PrismaSmartGeneratorAgentstructure-agent';
+import { PrismaSmartGeneratorAgent } from './PrismaSmartGeneratorAgent';
 
-export {
-  PrismaSmartGeneratorAgent,
-};
-
+export { PrismaSmartGeneratorAgent };

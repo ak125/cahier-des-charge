@@ -3,7 +3,7 @@
  * Agent export file
  */
 
-import { MCPNotifier } from ./NotifierAgentstructure-agent';
+import { MCPNotifier } from './NotifierAgentstructure-agent';
 
 export { MCPNotifier };
 export default MCPNotifier;

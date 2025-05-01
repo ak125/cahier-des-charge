@@ -9,12 +9,6 @@
     "outDir": "dist",
     "declaration": true
   },
-  "include": [
-    "core/**/*.ts",
-    "business/**/*.ts",
-    "adapt-agents.ts"
-  ],
-  "exclude": [
-    "node_modules"
-  ]
+  "include": ["core/**/*.ts", "business/**/*.ts", "adapt-agents.ts"],
+  "exclude": ["node_modules"]
 }

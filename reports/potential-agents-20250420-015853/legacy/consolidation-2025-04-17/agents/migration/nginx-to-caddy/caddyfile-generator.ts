@@ -18,10 +18,10 @@ export class CaddyfileGenerator implements MCPAgent {
 
   async process(context: MCPContext): Promise<any> {
     const { nginxConfig, htaccessConfig, outputPath } = context.inputs;
-    
+
     try {
       let caddyConfig: CaddyfileConfig = {
-        sites: []
+        sites: [],
       };
 
       // Traiter la configuration Nginx si présente
@@ -36,23 +36,23 @@ export class CaddyfileGenerator implements MCPAgent {
 
       // Générer le contenu du Caddyfile
       const caddyfileContent = this.generateCaddyfileContent(caddyConfig);
-      
+
       // Écrire le fichier si un chemin de sortie est spécifié
       if (outputPath) {
         fs.writeFileSync(outputPath, caddyfileContent, 'utf8');
       }
-      
+
       return {
         success: true,
         data: {
           caddyfileContent,
-          config: caddyConfig
-        }
+          config: caddyConfig,
+        },
       };
     } catch (error) {
       return {
         success: false,
-        error: `Erreur lors de la génération du Caddyfile: ${error.message}`
+        error: `Erreur lors de la génération du Caddyfile: ${error.message}`,
       };
     }
   }
@@ -67,14 +67,14 @@ export class CaddyfileGenerator implements MCPAgent {
         const site = {
           hostname: serverName,
           routes: [],
-          options: {}
+          options: {},
         };
 
         // Configurer TLS/SSL
         if (server.ssl) {
           site.tls = {
             cert: server.sslCertificate,
-            key: server.sslCertificateKey
+            key: server.sslCertificateKey,
           };
         }
 
@@ -90,10 +90,12 @@ export class CaddyfileGenerator implements MCPAgent {
           // Traiter les différents types de locations
           if (location.proxyPass) {
             // Proxy pass
-            route.handle = [{
-              handler: 'reverse_proxy',
-              upstreams: [this.normalizeProxyPass(location.proxyPass)]
-            }];
+            route.handle = [
+              {
+                handler: 'reverse_proxy',
+                upstreams: [this.normalizeProxyPass(location.proxyPass)],
+              },
+            ];
 
             // Ajouter le chemin au besoin
             if (location.path !== '/') {
@@ -101,30 +103,36 @@ export class CaddyfileGenerator implements MCPAgent {
             }
           } else if (location.alias) {
             // Alias
-            route.handle = [{
-              handler: 'file_server',
-              root: location.alias
-            }];
+            route.handle = [
+              {
+                handler: 'file_server',
+                root: location.alias,
+              },
+            ];
             route.path = location.path;
           } else if (location.try_files && location.try_files.length > 0) {
             // Try files
-            route.handle = [{
-              handler: 'try_files',
-              files: location.try_files
-            }];
+            route.handle = [
+              {
+                handler: 'try_files',
+                files: location.try_files,
+              },
+            ];
             route.path = location.path;
           } else if (location.return) {
             // Return (redirect)
             const parts = location.return.split(' ');
             const code = parseInt(parts[0]);
             const url = parts.slice(1).join(' ');
-            
+
             if (code >= 300 && code < 400) {
-              route.handle = [{
-                handler: 'redir',
-                to: url,
-                code
-              }];
+              route.handle = [
+                {
+                  handler: 'redir',
+                  to: url,
+                  code,
+                },
+              ];
               route.path = location.path;
             }
           }
@@ -134,10 +142,10 @@ export class CaddyfileGenerator implements MCPAgent {
             if (!route.handle) {
               route.handle = [];
             }
-            
+
             route.handle.push({
               handler: 'headers',
-              headers: location.headers
+              headers: location.headers,
             });
           }
 
@@ -152,11 +160,13 @@ export class CaddyfileGenerator implements MCPAgent {
           for (const redirect of server.redirects) {
             site.routes.push({
               path: redirect.from,
-              handle: [{
-                handler: 'redir',
-                to: redirect.to,
-                code: redirect.code || 301
-              }]
+              handle: [
+                {
+                  handler: 'redir',
+                  to: redirect.to,
+                  code: redirect.code || 301,
+                },
+              ],
             });
           }
         }
@@ -175,12 +185,15 @@ export class CaddyfileGenerator implements MCPAgent {
     return caddyConfig;
   }
 
-  private processHtaccessConfig(htaccessConfig: any, caddyConfig: CaddyfileConfig): CaddyfileConfig {
+  private processHtaccessConfig(
+    htaccessConfig: any,
+    caddyConfig: CaddyfileConfig
+  ): CaddyfileConfig {
     // Si aucun site n'existe encore, créer un site par défaut
     if (caddyConfig.sites.length === 0) {
       caddyConfig.sites.push({
         hostname: ':80',
-        routes: []
+        routes: [],
       });
     }
 
@@ -192,54 +205,64 @@ export class CaddyfileGenerator implements MCPAgent {
         case 'redirect':
           defaultSite.routes.push({
             path: rule.pattern,
-            handle: [{
-              handler: 'redir',
-              to: rule.target,
-              code: rule.code || 302
-            }]
-          });
-          break;
-        
-        case 'rewrite':
-          // Pour les règles de réécriture complexes, on utilise la directive `rewrite`
-          const hasFlagRedirect = rule.flags && rule.flags.some(f => ['R', 'redirect'].includes(f));
-          
-          if (hasFlagRedirect) {
-            // C'est une redirection
-            const code = rule.flags.find(f => f.startsWith('R=')) ? 
-              parseInt(rule.flags.find(f => f.startsWith('R='))?.split('=')[1] || '302') : 302;
-            
-            defaultSite.routes.push({
-              path: rule.pattern,
-              handle: [{
+            handle: [
+              {
                 handler: 'redir',
                 to: rule.target,
-                code
-              }]
+                code: rule.code || 302,
+              },
+            ],
+          });
+          break;
+
+        case 'rewrite':
+          // Pour les règles de réécriture complexes, on utilise la directive `rewrite`
+          const hasFlagRedirect =
+            rule.flags && rule.flags.some((f) => ['R', 'redirect'].includes(f));
+
+          if (hasFlagRedirect) {
+            // C'est une redirection
+            const code = rule.flags.find((f) => f.startsWith('R='))
+              ? parseInt(rule.flags.find((f) => f.startsWith('R='))?.split('=')[1] || '302')
+              : 302;
+
+            defaultSite.routes.push({
+              path: rule.pattern,
+              handle: [
+                {
+                  handler: 'redir',
+                  to: rule.target,
+                  code,
+                },
+              ],
             });
           } else {
             // C'est une réécriture (URI interne)
             defaultSite.routes.push({
               path: rule.pattern,
-              handle: [{
-                handler: 'rewrite',
-                to: rule.target
-              }]
+              handle: [
+                {
+                  handler: 'rewrite',
+                  to: rule.target,
+                },
+              ],
             });
           }
           break;
-        
+
         case 'header':
           // Ajouter des en-têtes HTTP
           defaultSite.routes.push({
             path: '*',
-            handle: [{
-              handler: 'header',
-              [rule.header]: rule.target
-            }]
+            handle: [
+              {
+                handler: 'header',
+                [rule.header]: rule.target,
+              },
+            ],
           });
           break;
-        
+
         case 'errorDocument':
           // Gestion des documents d'erreur
           if (!defaultSite.options.errors) {
@@ -247,7 +270,7 @@ export class CaddyfileGenerator implements MCPAgent {
           }
           defaultSite.options.errors[rule.code.toString()] = rule.target;
           break;
-        
+
         // Autres cas selon les besoins
       }
     }
@@ -258,7 +281,7 @@ export class CaddyfileGenerator implements MCPAgent {
         // Similaire au traitement ci-dessus, mais avec un préfixe de chemin
         // basé sur le répertoire concerné
         const pathPrefix = directory.replace(/^\//, '').replace(/\/$/, '');
-        
+
         // Traitement similaire au bloc ci-dessus pour chaque type de règle
         // avec l'ajout du préfixe de chemin
       }
@@ -270,17 +293,18 @@ export class CaddyfileGenerator implements MCPAgent {
   private normalizeProxyPass(proxyPass: string): string {
     // Supprimer le préfixe http:// ou https://
     let normalized = proxyPass.replace(/^https?:\/\//, '');
-    
+
     // Gérer les cas particuliers comme les variables Nginx
     if (normalized.includes('$')) {
       // Pour les variables, nous utilisons une approximation
       // Dans un cas réel, ces variables devraient être résolues selon le contexte
-      normalized = normalized.replace(/\$host/g, '{host}')
-                            .replace(/\$server_name/g, '{host}')
-                            .replace(/\$remote_addr/g, '{remote_host}')
-                            .replace(/\$proxy_add_x_forwarded_for/g, '{remote_host}');
+      normalized = normalized
+        .replace(/\$host/g, '{host}')
+        .replace(/\$server_name/g, '{host}')
+        .replace(/\$remote_addr/g, '{remote_host}')
+        .replace(/\$proxy_add_x_forwarded_for/g, '{remote_host}');
     }
-    
+
     return normalized;
   }
 
@@ -299,7 +323,7 @@ export class CaddyfileGenerator implements MCPAgent {
     // Ajouter chaque site
     for (const site of config.sites) {
       content += `${site.hostname} {\n`;
-      
+
       // Ajouter les options du site
       if (site.options) {
         for (const [key, value] of Object.entries(site.options)) {
@@ -310,7 +334,7 @@ export class CaddyfileGenerator implements MCPAgent {
           }
         }
       }
-      
+
       // Ajouter la configuration TLS si présente
       if (site.tls) {
         if (site.tls.cert && site.tls.key) {
@@ -319,7 +343,7 @@ export class CaddyfileGenerator implements MCPAgent {
           content += '\ttls internal\n';
         }
       }
-      
+
       // Ajouter les routes
       for (const route of site.routes) {
         // Ajouter la directive de chemin si présente
@@ -328,11 +352,11 @@ export class CaddyfileGenerator implements MCPAgent {
             content += `\t@${this.sanitizeMatcher(route.path)} {\n`;
             content += `\t\tpath_regexp ${this.convertNginxRegexToCaddy(route.path)}\n`;
             content += '\t}\n';
-            
+
             // Les gestionnaires utilisent maintenant le matcher
             for (const handle of route.handle) {
               content += `\t${handle.handler} @${this.sanitizeMatcher(route.path)} `;
-              
+
               // Ajouter les détails du gestionnaire selon son type
               switch (handle.handler) {
                 case 'reverse_proxy':
@@ -362,16 +386,16 @@ export class CaddyfileGenerator implements MCPAgent {
                 default:
                   content += this.formatValue(handle);
               }
-              
+
               content += '\n';
             }
           } else {
             content += `\thandle_path ${route.path} {\n`;
-            
+
             // Ajouter les gestionnaires pour ce chemin
             for (const handle of route.handle) {
               content += `\t\t${handle.handler} `;
-              
+
               // Ajouter les détails du gestionnaire selon son type
               switch (handle.handler) {
                 case 'reverse_proxy':
@@ -401,17 +425,17 @@ export class CaddyfileGenerator implements MCPAgent {
                 default:
                   content += this.formatValue(handle);
               }
-              
+
               content += '\n';
             }
-            
+
             content += '\t}\n';
           }
         } else {
           // Routes sans chemin spécifique (racine du site)
           for (const handle of route.handle) {
             content += `\t${handle.handler} `;
-            
+
             // Similaire au bloc ci-dessus pour chaque type de gestionnaire
             switch (handle.handler) {
               case 'reverse_proxy':
@@ -441,12 +465,12 @@ export class CaddyfileGenerator implements MCPAgent {
               default:
                 content += this.formatValue(handle);
             }
-            
+
             content += '\n';
           }
         }
       }
-      
+
       content += '}\n\n';
     }
 
@@ -474,7 +498,7 @@ export class CaddyfileGenerator implements MCPAgent {
     } else if (typeof value === 'number' || typeof value === 'boolean') {
       return value.toString();
     } else if (Array.isArray(value)) {
-      return value.map(v => this.formatValue(v)).join(' ');
+      return value.map((v) => this.formatValue(v)).join(' ');
     } else if (typeof value === 'object') {
       return JSON.stringify(value);
     }

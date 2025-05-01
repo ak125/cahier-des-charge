@@ -16,10 +16,7 @@
       "name": "Déclencheur Planning",
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1,
-      "position": [
-        -540,
-        320
-      ]
+      "position": [-540, 320]
     },
     {
       "parameters": {
@@ -29,10 +26,7 @@
       "name": "Déclencheur Manuel",
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
-      "position": [
-        -540,
-        140
-      ]
+      "position": [-540, 140]
     },
     {
       "parameters": {
@@ -42,10 +36,7 @@
       "name": "Exécuter Routing Sync",
       "type": "n8n-nodes-base.executeCommand",
       "typeVersion": 1,
-      "position": [
-        -260,
-        240
-      ]
+      "position": [-260, 240]
     },
     {
       "parameters": {
@@ -64,10 +55,7 @@
       "name": "IF (Routing Sync OK)",
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
-      "position": [
-        -40,
-        240
-      ]
+      "position": [-40, 240]
     },
     {
       "parameters": {
@@ -77,10 +65,7 @@
       "name": "Exécuter SEO Extractor",
       "type": "n8n-nodes-base.executeCommand",
       "typeVersion": 1,
-      "position": [
-        180,
-        140
-      ]
+      "position": [180, 140]
     },
     {
       "parameters": {
@@ -90,10 +75,7 @@
       "name": "Générer Meta Remix",
       "type": "n8n-nodes-base.executeCommand",
       "typeVersion": 1,
-      "position": [
-        400,
-        140
-      ]
+      "position": [400, 140]
     },
     {
       "parameters": {
@@ -103,10 +85,7 @@
       "name": "Intégrer dans GitHub/MCP",
       "type": "n8n-nodes-base.executeCommand",
       "typeVersion": 1,
-      "position": [
-        680,
-        140
-      ]
+      "position": [680, 140]
     },
     {
       "parameters": {
@@ -116,10 +95,7 @@
       "name": "Enregistrer l'erreur",
       "type": "n8n-nodes-base.executeCommand",
       "typeVersion": 1,
-      "position": [
-        180,
-        360
-      ]
+      "position": [180, 360]
     },
     {
       "parameters": {
@@ -150,10 +126,7 @@
       "name": "Signaler Erreur Supabase",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.1,
-      "position": [
-        400,
-        360
-      ],
+      "position": [400, 360],
       "credentials": {
         "httpHeaderAuth": {
           "id": "2",
@@ -172,10 +145,7 @@
       "name": "Notification Slack Erreur",
       "type": "n8n-nodes-base.slack",
       "typeVersion": 1,
-      "position": [
-        620,
-        360
-      ],
+      "position": [620, 360],
       "credentials": {
         "slackApi": {
           "id": "1",
@@ -199,10 +169,7 @@
       "name": "IF (SEO Extractor OK)",
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
-      "position": [
-        180,
-        240
-      ]
+      "position": [180, 240]
     },
     {
       "parameters": {
@@ -220,10 +187,7 @@
       "name": "IF (Meta Generator OK)",
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
-      "position": [
-        480,
-        240
-      ]
+      "position": [480, 240]
     },
     {
       "parameters": {
@@ -241,10 +205,7 @@
       "name": "IF (Intégration OK)",
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
-      "position": [
-        760,
-        240
-      ]
+      "position": [760, 240]
     },
     {
       "parameters": {
@@ -279,10 +240,7 @@
       "name": "Enregistrer Succès Supabase",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.1,
-      "position": [
-        940,
-        120
-      ],
+      "position": [940, 120],
       "credentials": {
         "httpHeaderAuth": {
           "id": "2",
@@ -301,10 +259,7 @@
       "name": "Notification Slack Succès",
       "type": "n8n-nodes-base.slack",
       "typeVersion": 1,
-      "position": [
-        940,
-        300
-      ],
+      "position": [940, 300],
       "credentials": {
         "slackApi": {
           "id": "1",
@@ -329,10 +284,7 @@
       "name": "IF (Erreur MCP Integrator)",
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
-      "position": [
-        840,
-        480
-      ]
+      "position": [840, 480]
     },
     {
       "parameters": {
@@ -345,10 +297,7 @@
       "name": "Notification Erreur PR",
       "type": "n8n-nodes-base.slack",
       "typeVersion": 1,
-      "position": [
-        1060,
-        480
-      ],
+      "position": [1060, 480],
       "credentials": {
         "slackApi": {
           "id": "1",

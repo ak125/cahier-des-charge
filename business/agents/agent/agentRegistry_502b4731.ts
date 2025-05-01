@@ -6,28 +6,28 @@
  * progressivement la nouvelle architecture.
  */
 
-import * as fs from fs-extrastructure-agent';
-import * as path from pathstructure-agent';
-import { Logger } from @nestjs/commonstructure-agent';
+import * as fs from 'fs-extrastructure-agent'
+import * as path from 'pathstructure-agent'
+import { Logger } from './@nestjs/commonstructure-agent'
 
 // Importer les types de la nouvelle architecture
-import { BaseAgent } from ./src/core/interfaces/BaseAgentstructure-agent';
-import { OrchestratorAgent, SchedulerAgent, MonitorAgent } from ./src/core/interfaces/orchestrationstructure-agent';
-import { BridgeAgent, AdapterAgent, RegistryAgent } from ./src/core/interfaces/coordinationstructure-agent';
-import { AnalyzerAgent, GeneratorAgent, ValidatorAgent, ParserAgent } from ./src/core/interfaces/businessstructure-agent';
+import { BaseAgent } from './src/core/interfaces/BaseAgentstructure-agent'
+import { AnalyzerAgent, GeneratorAgent, ParserAgent,  ValidatorAgent } from './src/core/interfaces/businessstructure-agent'
+import { AdapterAgent, BridgeAgent, RegistryAgent  } from './src/core/interfaces/coordinationstructure-agent'
+import { MonitorAgent,  OrchestratorAgent, SchedulerAgent } from './src/core/interfaces/orchestrationstructure-agent'
 
+import { BullMQOrchestrator } from './agents/BullmqOrchestratorstructure-agent'
+import { DevLinter } from './agents/DevLinterstructure-agent'
+import { DiffVerifier } from './agents/DiffVerifierstructure-agent'
+import { MonitoringCheck } from './agents/MonitoringCheckstructure-agent'
+import { PhpAnalyzerAgent } from './agents/PhpAnalyzer-agentstructure-agent'
+import { PRCreator } from './agents/PrCreatorstructure-agent'
+import { SeoCheckerAgent } from './agents/SeoCheckerstructure-agent'
+import { Notifier } from './agents/notifierstructure-agent'
+import { Orchestrator } from './agents/orchestratorstructure-agent'
 // Import manuel des agents
-import { QAAnalyzer } from ./agents/qa-analyzer';
-import { PhpAnalyzerAgent } from ./agents/PhpAnalyzer-agentstructure-agent';
-import { DiffVerifier } from ./agents/DiffVerifierstructure-agent';
-import { SeoCheckerAgent } from ./agents/SeoCheckerstructure-agent';
-import { MCPManifestManager } from ./agentsDotMcpManifestManagerstructure-agent';
-import { DevLinter } from ./agents/DevLinterstructure-agent';
-import { MonitoringCheck } from ./agents/MonitoringCheckstructure-agent';
-import { Notifier } from ./agents/notifierstructure-agent';
-import { Orchestrator } from ./agents/orchestratorstructure-agent';
-import { PRCreator } from ./agents/PrCreatorstructure-agent';
-import { BullMQOrchestrator } from ./agents/BullmqOrchestratorstructure-agent';
+import { QAAnalyzer } from './agents/qa-analyzer';
+import { MCPManifestManager } from './agentsDotMcpManifestManagerstructure-agent'
 
 // Types pour le manifest
 export interface AgentManifestEntry {
@@ -93,7 +93,7 @@ export class AgentRegistryManager {
         this.manifestData = await fs.readJson(this.manifestPath);
         this.logger.log(`Manifest d'agents chargé: ${this.manifestPath}`);
         return this.manifestData;
-      } else {
+      }
         this.logger.warn(`Le manifest d'agents n'existe pas: ${this.manifestPath}`);
         // Créer un manifest vide par défaut
         this.manifestData = {
@@ -102,7 +102,6 @@ export class AgentRegistryManager {
           agents: []
         };
         return this.manifestData;
-      }
     } catch (error: any) {
       this.logger.error(`Erreur lors du chargement du manifest: ${error.message}`);
       throw error;
@@ -242,17 +241,17 @@ export const agentRegistryManager = AgentRegistryManager.getInstance();
 
 // Ancien registre d'agents (maintenu pour rétrocompatibilité)
 export const agentRegistry = {
-  'QaAnalyzer': QAAnalyzer,
-  'PhpAnalyzer': PhpAnalyzerAgent,
-  'DiffVerifier': DiffVerifier,
-  'SeoChecker': SeoCheckerAgent,
+  QaAnalyzer: QAAnalyzer,
+  PhpAnalyzer: PhpAnalyzerAgent,
+  DiffVerifier: DiffVerifier,
+  SeoChecker: SeoCheckerAgent,
   DotMcpManifestManager': MCPManifestManager,
-  'DevLinter': DevLinter,
-  'MonitoringCheck': MonitoringCheck,
-  'notifier': Notifier,
-  'orchestrator': Orchestrator,
-  'PrCreator': PRCreator,
-  'BullmqOrchestrator': BullMQOrchestrator
+  DevLinter: DevLinter,
+  MonitoringCheck: MonitoringCheck,
+  notifier: Notifier,
+  orchestrator: Orchestrator,
+  PrCreator: PRCreator,
+  BullmqOrchestrator: BullMQOrchestrator
 } as const;
 
 export type AgentName = keyof typeof agentRegistry;

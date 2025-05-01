@@ -320,7 +320,7 @@ async function analyzePHPFile(filePath: string, useAdvancedAnalysis = false): Pr
   };
   
   // Liste de tâches techniques avec prise en compte de l'analyse avancée
-  let tasks = [
+  const tasks = [
     `Extraire les fonctions SQL dans un fichier séparé`,
     `Créer ${fileName.replace('.php', '')}Service.ts avec méthodes appropriées`,
     `Créer route Remix \`/${fileName.replace('.php', '')}\` avec loader, meta, canonical`,
@@ -350,7 +350,7 @@ async function analyzePHPFile(filePath: string, useAdvancedAnalysis = false): Pr
   }
   
   // Recommandations IA
-  let recommendations = [
+  const recommendations = [
     '⚠️ Migrer en 2 étapes : découplage d\'abord, migration ensuite',
     `✅ Créer module ${fileName.replace('.php', '')} complet dans @fafa/backend/${fileName.replace('.php', '')}`,
     `🧩 Générer automatiquement :\n\n${fileName.replace('.php', '')}.controller.ts, ${fileName.replace('.php', '')}.service.ts, ${fileName.replace('.php', '')}.dto.ts\n\n${fileName.replace('.php', '')}.tsx, loader.ts, meta.ts`

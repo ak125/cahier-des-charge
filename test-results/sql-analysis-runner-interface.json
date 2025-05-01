@@ -1,1 +1,6 @@
-{"agent": "sql-analysis-runner", "interfaces": [""], "status": "COMPLIANT", "timestamp": "2025-04-20T04:18:53+00:00"}
+{
+  "agent": "sql-analysis-runner",
+  "interfaces": [""],
+  "status": "COMPLIANT",
+  "timestamp": "2025-04-20T04:18:53+00:00"
+}

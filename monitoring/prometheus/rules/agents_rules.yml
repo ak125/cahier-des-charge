@@ -1,0 +1,29 @@
+groups:
+  - name: agents
+    rules:
+      - alert: AgentDown
+        expr: up{group="agents"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Agent down ({{ $labels.instance }})"
+          description: "L'agent est arrêté depuis plus d'une minute."
+
+      - alert: AgentHighLatency
+        expr: agent_execution_time_seconds{quantile="0.9"} > 5
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Latence élevée de l'agent ({{ $labels.instance }})"
+          description: "L'agent {{ $labels.agent_name }} présente une latence élevée (> 5s au 90e percentile)."
+
+      - alert: AgentErrorRate
+        expr: rate(agent_errors_total[5m]) / rate(agent_executions_total[5m]) > 0.05
+        for: 3m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Taux d'erreur élevé ({{ $labels.instance }})"
+          description: "L'agent {{ $labels.agent_name }} présente un taux d'erreur > 5% depuis 3 minutes."

@@ -5,7 +5,4 @@
 
 import { MetricsServiceAgent } from './MetricsServiceAgent';
 
-export {
-  MetricsServiceAgent,
-};
-
+export { MetricsServiceAgent };

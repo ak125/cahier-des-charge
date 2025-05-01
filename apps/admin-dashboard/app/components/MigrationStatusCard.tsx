@@ -39,20 +39,16 @@ export default function MigrationStatusCard({
             </svg>
           </div>
           <div className="ml-5 w-0 flex-1">
-            <dt className="text-lg font-medium text-gray-900 truncate">
-              {title}
-            </dt>
+            <dt className="text-lg font-medium text-gray-900 truncate">{title}</dt>
             <dd>
               <div className="flex items-center mt-2">
                 <div className="w-full bg-gray-200 rounded-full h-2.5">
                   <div
                     className="bg-indigo-600 h-2.5 rounded-full"
                     style={{ width: `${percentageComplete}%` }}
-                  ></div>
+                  />
                 </div>
-                <span className="ml-3 text-gray-900">
-                  {percentageComplete}%
-                </span>
+                <span className="ml-3 text-gray-900">{percentageComplete}%</span>
               </div>
             </dd>
           </div>

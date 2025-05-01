@@ -5,12 +5,16 @@
  */
 
 declare module '@workspaces/cahier-des-charge/src/core/interfaces/business' {
-  import { BaseAgent, AgentContext, AgentResult } from '@workspaces/cahier-des-charge/src/core/interfaces/BaseAgent';
+  import {
+    BaseAgent,
+    AgentContext,
+    AgentResult,
+  } from '@workspaces/cahier-des-charge/src/core/interfaces/BaseAgent';
 
   export interface BusinessAgent extends BaseAgent {
     readonly domain: string;
     readonly capabilities: string[];
-    getSummary(): Promise<{ domain: string, capabilities: string[], status: string }>;
+    getSummary(): Promise<{ domain: string; capabilities: string[]; status: string }>;
   }
 
   export interface AnalyzerAgent extends BusinessAgent {
@@ -22,7 +26,10 @@ declare module '@workspaces/cahier-des-charge/src/core/interfaces/business' {
   }
 
   export interface ValidatorAgent extends BusinessAgent {
-    validate<T>(input: T, context?: AgentContext): Promise<AgentResult & { isValid: boolean, errors?: string[] }>;
+    validate<T>(
+      input: T,
+      context?: AgentContext
+    ): Promise<AgentResult & { isValid: boolean; errors?: string[] }>;
   }
 
   export interface ParserAgent extends BusinessAgent {

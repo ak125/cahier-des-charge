@@ -3,39 +3,39 @@
  * Ce script teste si l'agent est correctement implémenté et fonctionnel
  */
 
-import * as path from 'path';
 import * as fs from 'fs';
+import * as path from 'path';
 
 // Vérifier l'existence des chemins possibles
 const basePath = '/workspaces/cahier-des-charge';
 const possiblePaths = [
   'packagesDoDotmcp-agents/business/analyzers/HtaccessRouterAnalyzer/index.ts',
   'packagesDoDotmcp-agents/business/analyzers/HtaccessRouterAnalyzer.ts',
-  'packagesDoDotmcp-agents/analyzers/HtaccessRouterAnalyzer/index.ts'
+  'packagesDoDotmcp-agents/analyzers/HtaccessRouterAnalyzer/index.ts',
 ];
 
-console.log('Vérification des chemins possibles pour l\'agent:');
+console.log("Vérification des chemins possibles pour l'agent:");
 
 let agentPath = '';
 for (const relativePath of possiblePaths) {
   const fullPath = path.join(basePath, relativePath);
   const exists = fs.existsSync(fullPath);
-  console.log(`- ${relativePath}: ${exists ? 'Existe ✓' : 'N\'existe pas ✗'}`);
-  
+  console.log(`- ${relativePath}: ${exists ? 'Existe ✓' : "N'existe pas ✗"}`);
+
   if (exists && !agentPath) {
     agentPath = fullPath;
   }
 }
 
 if (!agentPath) {
-  console.error('❌ Aucun fichier d\'agent trouvé');
+  console.error("❌ Aucun fichier d'agent trouvé");
   process.exit(1);
 }
 
 console.log(`✅ Agent trouvé à: ${agentPath}`);
 
 // Créer un fichier temporaire pour importer et tester l'agent
-console.log('Création d\'un fichier de test temporaire...');
+console.log("Création d'un fichier de test temporaire...");
 
 const tempTestDir = path.join(basePath, 'temp-test');
 if (!fs.existsSync(tempTestDir)) {
@@ -118,39 +118,34 @@ console.log(`node ${tempFile}`);
 // Créer un fichier tsconfig.json approprié pour l'agent
 const tsConfigPath = path.join(basePath, 'packagesDoDotmcp-agents/tsconfig.json');
 if (!fs.existsSync(tsConfigPath)) {
-  console.log('\nCréation d\'un fichier tsconfig.json pour les agents...');
-  
+  console.log("\nCréation d'un fichier tsconfig.json pour les agents...");
+
   const tsConfig = {
     compilerOptions: {
-      target: "ES2020",
-      module: "CommonJS",
-      moduleResolution: "node",
+      target: 'ES2020',
+      module: 'CommonJS',
+      moduleResolution: 'node',
       esModuleInterop: true,
       strict: true,
       skipLibCheck: true,
       forceConsistentCasingInFileNames: true,
       resolveJsonModule: true,
-      outDir: "dist",
+      outDir: 'dist',
       declaration: true,
-      baseUrl: "."
+      baseUrl: '.',
     },
-    include: [
-      "**/*.ts"
-    ],
-    exclude: [
-      "node_modules",
-      "dist"
-    ]
+    include: ['**/*.ts'],
+    exclude: ['node_modules', 'dist'],
   };
-  
+
   const tsConfigDir = path.dirname(tsConfigPath);
   if (!fs.existsSync(tsConfigDir)) {
     fs.mkdirSync(tsConfigDir, { recursive: true });
   }
-  
+
   fs.writeFileSync(tsConfigPath, JSON.stringify(tsConfig, null, 2));
   console.log(`✅ Fichier tsconfig.json créé à: ${tsConfigPath}`);
 }
 
-console.log('\nPour compiler l\'agent avec TypeScript, utilisez:');
+console.log("\nPour compiler l'agent avec TypeScript, utilisez:");
 console.log(`npx tsc -p ${tsConfigPath} --noEmit`);

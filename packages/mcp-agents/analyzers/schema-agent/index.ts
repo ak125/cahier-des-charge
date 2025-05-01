@@ -3,9 +3,6 @@
  * Generated automatically on 2025-04-20
  */
 
-import { SchemaAgent } from ./SchemaAgentstructure-agent';
+import { SchemaAgent } from './SchemaAgent';
 
-export {
-  SchemaAgent,
-};
-
+export { SchemaAgent };

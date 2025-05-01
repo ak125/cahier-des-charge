@@ -3,8 +3,8 @@
  * Agent export file
  */
 
-import { orchestrator } from ./orchestratorstructure-agent';
-import { OrchestratorAgent } from ../../core/interfacesstructure-agent';
+import { OrchestratorAgent } from '../../core/interfacesstructure-agent';
+import { orchestrator } from './orchestratorstructure-agent';
 
 export { orchestrator };
 export default orchestrator;

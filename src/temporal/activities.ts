@@ -1,6 +1,6 @@
 /**
  * Temporal Activities for MCP
- * 
+ *
  * Ce fichier définit les activités qui sont utilisées par les workflows Temporal
  * Les activités sont des fonctions qui exécutent des tâches spécifiques
  */
@@ -9,7 +9,7 @@
  * Activité d'analyse de code source
  */
 export async function analyzeCode(sourceDir: string): Promise<any> {
-  console.log(`Analyzing code from ${sourceDir}...`);
+  console.log(`Analyzing code from '${sourceDir}...`);
   // Ici, implémentation de l'analyse du code
   return { status: 'completed', sourceDir };
 }
