@@ -1,0 +1,118 @@
+{
+  "totalDirectories": 292,
+  "duplicateGroups": 12,
+  "mergeOperations": [
+    {
+      "sourcePath": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/mysqlanalyzerplusoptimizeragent",
+      "targetPath": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/mysqlanalyzeroptimizeragent",
+      "fileCount": 2,
+      "sourceName": "mysqlanalyzerplusoptimizeragent",
+      "targetName": "mysqlanalyzeroptimizeragent"
+    },
+    {
+      "sourcePath": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/phpanalyzerdotworkeragent",
+      "targetPath": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/phpanalyzerworkeragent",
+      "fileCount": 2,
+      "sourceName": "phpanalyzerdotworkeragent",
+      "targetName": "phpanalyzerworkeragent"
+    },
+    {
+      "sourcePath": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/sqlanalyzerplusprismabuilderagent",
+      "targetPath": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/sqlanalyzerprismabuilderagent",
+      "fileCount": 2,
+      "sourceName": "sqlanalyzerplusprismabuilderagent",
+      "targetName": "sqlanalyzerprismabuilderagent"
+    },
+    {
+      "sourcePath": "/workspaces/cahier-des-charge/packages/mcp-agents/generators/seometadotgeneratoragent",
+      "targetPath": "/workspaces/cahier-des-charge/packages/mcp-agents/generators/seometageneratoragent",
+      "fileCount": 2,
+      "sourceName": "seometadotgeneratoragent",
+      "targetName": "seometageneratoragent"
+    },
+    {
+      "sourcePath": "/workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/mcpverifierworkeragent",
+      "targetPath": "/workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/mcp-verifier-dotworker-agent",
+      "fileCount": 2,
+      "sourceName": "mcpverifierworkeragent",
+      "targetName": "mcp-verifier-dotworker-agent"
+    },
+    {
+      "sourcePath": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/mysql-analyzer-plusoptimizer-agent",
+      "targetPath": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/mysql-analyzer+optimizer-agent",
+      "fileCount": 1,
+      "sourceName": "mysql-analyzer-plusoptimizer-agent",
+      "targetName": "mysql-analyzer+optimizer-agent"
+    },
+    {
+      "sourcePath": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/phpanalyzer/phpanalyzerv2",
+      "targetPath": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/phpanalyzer/php-analyzer-v2",
+      "fileCount": 1,
+      "sourceName": "phpanalyzerv2",
+      "targetName": "php-analyzer-v2"
+    },
+    {
+      "sourcePath": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/php-analyzer/phpanalyzerv2",
+      "targetPath": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/phpanalyzer/php-analyzer-v2",
+      "fileCount": 1,
+      "sourceName": "phpanalyzerv2",
+      "targetName": "php-analyzer-v2"
+    },
+    {
+      "sourcePath": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/php-analyzer-dotworker-agent",
+      "targetPath": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/php-analyzer.worker-agent",
+      "fileCount": 1,
+      "sourceName": "php-analyzer-dotworker-agent",
+      "targetName": "php-analyzer.worker-agent"
+    },
+    {
+      "sourcePath": "/workspaces/cahier-des-charge/packages/mcp-agents/qa-analyzer/qaanalyzer",
+      "targetPath": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/qaanalyzer/qa-analyzer",
+      "fileCount": 1,
+      "sourceName": "qaanalyzer",
+      "targetName": "qa-analyzer"
+    },
+    {
+      "sourcePath": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/qaanalyzer/qaanalyzer",
+      "targetPath": "/workspaces/cahier-des-charge/packages/mcp-agents/analyzers/qaanalyzer/qa-analyzer",
+      "fileCount": 1,
+      "sourceName": "qaanalyzer",
+      "targetName": "qa-analyzer"
+    },
+    {
+      "sourcePath": "/workspaces/cahier-des-charge/packages/mcp-agents/generators/seo-meta-dotgenerator-agent",
+      "targetPath": "/workspaces/cahier-des-charge/packages/mcp-agents/generators/seo-meta.generator-agent",
+      "fileCount": 1,
+      "sourceName": "seo-meta-dotgenerator-agent",
+      "targetName": "seo-meta.generator-agent"
+    },
+    {
+      "sourcePath": "/workspaces/cahier-des-charge/packages/mcp-agents/qa-analyzer/qa-analyzer/examples",
+      "targetPath": "/workspaces/cahier-des-charge/packages/mcp-agents/qa-analyzer/examples",
+      "fileCount": 1,
+      "sourceName": "examples",
+      "targetName": "examples"
+    },
+    {
+      "sourcePath": "/workspaces/cahier-des-charge/packages/mcp-domain/src/types",
+      "targetPath": "/workspaces/cahier-des-charge/packages/mcp-utils/src/types",
+      "fileCount": 1,
+      "sourceName": "types",
+      "targetName": "types"
+    },
+    {
+      "sourcePath": "/workspaces/cahier-des-charge/packages/mcp-agents/src/types",
+      "targetPath": "/workspaces/cahier-des-charge/packages/mcp-utils/src/types",
+      "fileCount": 1,
+      "sourceName": "types",
+      "targetName": "types"
+    },
+    {
+      "sourcePath": "/workspaces/cahier-des-charge/packages/mcp-services/src/types",
+      "targetPath": "/workspaces/cahier-des-charge/packages/mcp-utils/src/types",
+      "fileCount": 1,
+      "sourceName": "types",
+      "targetName": "types"
+    }
+  ]
+}

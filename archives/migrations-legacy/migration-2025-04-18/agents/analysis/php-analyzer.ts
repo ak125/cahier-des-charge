@@ -1,0 +1,1 @@
+../../src/business/analyzers/php-analyzer/php-analyzer.ts

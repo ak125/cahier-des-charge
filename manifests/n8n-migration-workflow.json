@@ -1,0 +1,211 @@
+{
+    "version": "1.0.0",
+    "name": "n8n-migration-workflow",
+    "description": "Workflow de migration de n8n vers Temporal.io et BullMQ",
+    "phases": [
+        {
+            "name": "audit",
+            "description": "Extraction et analyse des workflows n8n existants",
+            "steps": [
+                {
+                    "name": "extract-workflows",
+                    "agent": "n8n-extractor-agent",
+                    "inputs": {
+                        "n8nApiUrl": "{n8nApiUrl}",
+                        "n8nApiToken": "{n8nApiToken}"
+                    },
+                    "outputs": {
+                        "workflowsInventory": "/tmp/n8n-workflows-inventory.json"
+                    }
+                },
+                {
+                    "name": "classify-workflows",
+                    "agent": "n8n-classifier-agent",
+                    "inputs": {
+                        "workflowsInventory": "{extract-workflows.workflowsInventory}"
+                    },
+                    "outputs": {
+                        "classificationReport": "/tmp/n8n-classification-report.json"
+                    }
+                },
+                {
+                    "name": "analyze-dependencies",
+                    "agent": "dependency-analyzer-agent",
+                    "inputs": {
+                        "workflowsInventory": "{extract-workflows.workflowsInventory}"
+                    },
+                    "outputs": {
+                        "dependencyGraph": "/tmp/n8n-dependency-graph.json"
+                    }
+                }
+            ],
+            "outputs": {
+                "auditReport": "/tmp/n8n-audit-report.json",
+                "workflowsInventory": "{extract-workflows.workflowsInventory}",
+                "classificationReport": "{classify-workflows.classificationReport}",
+                "dependencyGraph": "{analyze-dependencies.dependencyGraph}"
+            }
+        },
+        {
+            "name": "prioritization",
+            "description": "Priorisation des workflows à migrer",
+            "steps": [
+                {
+                    "name": "score-workflows",
+                    "agent": "workflow-scorer-agent",
+                    "inputs": {
+                        "classificationReport": "{audit.classificationReport}",
+                        "dependencyGraph": "{audit.dependencyGraph}"
+                    },
+                    "outputs": {
+                        "priorityList": "/tmp/n8n-priority-list.json"
+                    }
+                },
+                {
+                    "name": "create-migration-plan",
+                    "agent": "migration-planner-agent",
+                    "inputs": {
+                        "priorityList": "{score-workflows.priorityList}",
+                        "workflowsInventory": "{audit.workflowsInventory}"
+                    },
+                    "outputs": {
+                        "migrationPlan": "/tmp/n8n-migration-plan.json"
+                    }
+                }
+            ],
+            "outputs": {
+                "priorityList": "{score-workflows.priorityList}",
+                "migrationPlan": "{create-migration-plan.migrationPlan}"
+            }
+        },
+        {
+            "name": "migration",
+            "description": "Migration des workflows n8n vers Temporal.io ou BullMQ",
+            "steps": [
+                {
+                    "name": "migrate-bullmq",
+                    "agent": "bullmq-migration-agent",
+                    "inputs": {
+                        "workflowsInventory": "{audit.workflowsInventory}",
+                        "migrationPlan": "{prioritization.migrationPlan}",
+                        "targetType": "bullmq"
+                    },
+                    "outputs": {
+                        "bullmqJobs": "/tmp/bullmq-jobs-output.json"
+                    }
+                },
+                {
+                    "name": "migrate-temporal",
+                    "agent": "temporal-migration-agent",
+                    "inputs": {
+                        "workflowsInventory": "{audit.workflowsInventory}",
+                        "migrationPlan": "{prioritization.migrationPlan}",
+                        "targetType": "temporal"
+                    },
+                    "outputs": {
+                        "temporalWorkflows": "/tmp/temporal-workflows-output.json"
+                    }
+                },
+                {
+                    "name": "generate-migration-report",
+                    "agent": "migration-reporter-agent",
+                    "inputs": {
+                        "bullmqJobs": "{migrate-bullmq.bullmqJobs}",
+                        "temporalWorkflows": "{migrate-temporal.temporalWorkflows}",
+                        "workflowsInventory": "{audit.workflowsInventory}"
+                    },
+                    "outputs": {
+                        "migrationReport": "/tmp/n8n-migration-report.json"
+                    }
+                }
+            ],
+            "outputs": {
+                "bullmqJobs": "{migrate-bullmq.bullmqJobs}",
+                "temporalWorkflows": "{migrate-temporal.temporalWorkflows}",
+                "migrationReport": "{generate-migration-report.migrationReport}"
+            }
+        },
+        {
+            "name": "validation",
+            "description": "Validation des workflows migrés",
+            "steps": [
+                {
+                    "name": "validate-bullmq",
+                    "agent": "bullmq-validator-agent",
+                    "inputs": {
+                        "bullmqJobs": "{migration.bullmqJobs}",
+                        "originalWorkflows": "{audit.workflowsInventory}"
+                    },
+                    "outputs": {
+                        "bullmqValidationReport": "/tmp/bullmq-validation-report.json"
+                    }
+                },
+                {
+                    "name": "validate-temporal",
+                    "agent": "temporal-validator-agent",
+                    "inputs": {
+                        "temporalWorkflows": "{migration.temporalWorkflows}",
+                        "originalWorkflows": "{audit.workflowsInventory}"
+                    },
+                    "outputs": {
+                        "temporalValidationReport": "/tmp/temporal-validation-report.json"
+                    }
+                },
+                {
+                    "name": "generate-validation-report",
+                    "agent": "validation-reporter-agent",
+                    "inputs": {
+                        "bullmqValidationReport": "{validate-bullmq.bullmqValidationReport}",
+                        "temporalValidationReport": "{validate-temporal.temporalValidationReport}"
+                    },
+                    "outputs": {
+                        "validationReport": "/tmp/n8n-validation-report.json"
+                    }
+                }
+            ],
+            "outputs": {
+                "validationReport": "{generate-validation-report.validationReport}"
+            }
+        },
+        {
+            "name": "decommissioning",
+            "description": "Décommissionnement des workflows n8n",
+            "steps": [
+                {
+                    "name": "prepare-decommission",
+                    "agent": "decommission-planner-agent",
+                    "inputs": {
+                        "validationReport": "{validation.validationReport}",
+                        "originalWorkflows": "{audit.workflowsInventory}"
+                    },
+                    "outputs": {
+                        "decommissionPlan": "/tmp/n8n-decommission-plan.json"
+                    }
+                },
+                {
+                    "name": "decommission-workflows",
+                    "agent": "n8n-decommissioner-agent",
+                    "inputs": {
+                        "decommissionPlan": "{prepare-decommission.decommissionPlan}",
+                        "n8nApiUrl": "{n8nApiUrl}",
+                        "n8nApiToken": "{n8nApiToken}"
+                    },
+                    "outputs": {
+                        "decommissionReport": "/tmp/n8n-decommission-report.json"
+                    }
+                }
+            ],
+            "outputs": {
+                "decommissionPlan": "{prepare-decommission.decommissionPlan}",
+                "decommissionReport": "{decommission-workflows.decommissionReport}"
+            }
+        }
+    ],
+    "outputs": {
+        "auditReport": "{audit.auditReport}",
+        "migrationPlan": "{prioritization.migrationPlan}",
+        "migrationReport": "{migration.migrationReport}",
+        "validationReport": "{validation.validationReport}",
+        "decommissionReport": "{decommissioning.decommissionReport}"
+    }
+}

@@ -1,0 +1,29 @@
+groups:
+  - name: pipeline-alerts
+    rules:
+      - alert: PipelineHighProcessingTime
+        expr: rate(pipeline_processing_time_seconds_sum[5m]) / rate(pipeline_processing_time_seconds_count[5m]) > 60
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Durée de traitement du pipeline élevée"
+          description: "L'étape {{ $labels.pipeline_step }} prend plus de 60 secondes en moyenne."
+      
+      - alert: PipelineHighErrorRate
+        expr: sum(rate(pipeline_tasks_processed_total{status="error"}[10m])) / sum(rate(pipeline_tasks_processed_total[10m])) > 0.1
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Taux d'erreur élevé dans le pipeline"
+          description: "Le taux d'erreur du pipeline est supérieur à 10% sur les 10 dernières minutes."
+      
+      - alert: PipelineQueueOverflow
+        expr: pipeline_queue_size > 100
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "File d'attente trop volumineuse"
+          description: "La file d'attente '{{ $labels.queue_name }}' contient plus de 100 tâches depuis 10 minutes."

@@ -1,0 +1,7 @@
+/workspaces/cahier-des-charge/packages/business/temporal/workflows/ai-migration-consolidated.workflow.ts
+/workspaces/cahier-des-charge/packages/business/temporal/workflows/ai-migration-pipeline.workflow.ts
+/workspaces/cahier-des-charge/packages/business/temporal/workflows/audit/consolidated-audit.workflow.ts
+/workspaces/cahier-des-charge/packages/business/temporal/workflows/migration-plans/generate-migration-plans.workflow.ts
+/workspaces/cahier-des-charge/packages/business/temporal/workflows/php-analysis/consolidated-php-analyzer.workflow.ts
+/workspaces/cahier-des-charge/packages/business/temporal/workflows/php-migration-pipeline/migration-pipeline.workflow.ts
+/workspaces/cahier-des-charge/packages/business/workflows/temporal/php-migration.workflow.ts

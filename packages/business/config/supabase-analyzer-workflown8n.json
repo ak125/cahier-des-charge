@@ -1,0 +1,249 @@
+{
+  "name": "Supabase Analyzer Workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "triggerTimes": {
+          "item": [
+            {
+              "mode": "everyX",
+              "value": 12,
+              "unit": "hours"
+            }
+          ]
+        }
+      },
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "position": [100, 200],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "url": "={{ $env.SUPABASE_URL }}/rest/v1/",
+        "options": {
+          "timeout": 5000,
+          "allowUnauthorizedCerts": false,
+          "queryParameterArrays": "bracket"
+        },
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "={{ $env.SUPABASE_ANON_KEY }}"
+            },
+            {
+              "name": "Authorization",
+              "value": "Bearer {{ $env.SUPABASE_SERVICE_KEY }}"
+            }
+          ]
+        }
+      },
+      "name": "Fetch Supabase Schemas",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [300, 200],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "jsCode": "// Analyser les schémas Supabase et les mapping pour la migration\nconst outputDir = '/workspaces/cahier-des-charge/reports/analysis/supabase';\nconst fs = require('fs');\nconst path = require('path');\n\n// Garantir que le répertoire existe\nif (!fs.existsSync(outputDir)) {\n  fs.mkdirSync(outputDir, { recursive: true });\n}\n\n// Données reçues de Supabase\nconst schemaData = $input.item.json;\nconst timestamp = new Date().toISOString();\n\n// Sauvegarder les données brutes\nconst rawDataPath = path.join(outputDir, `raw-schema-data-${timestamp}.json`);\nfs.writeFileSync(rawDataPath, JSON.stringify(schemaData, null, 2));\n\n// Structure des informations extraites\nconst extractedData = {\n  timestamp,\n  schemas: [],\n  tables: [],\n  relationships: [],\n  functions: []\n};\n\n// Traiter les données (simulation car le format exact de Supabase n'est pas connu)\nif (Array.isArray(schemaData)) {\n  schemaData.forEach(item => {\n    if (item.schema) {\n      extractedData.schemas.push({\n        name: item.schema,\n        owner: item.owner || 'postgres'\n      });\n    }\n    \n    if (item.table) {\n      extractedData.tables.push({\n        schema: item.schema || 'public',\n        name: item.table,\n        columns: item.columns || [],\n        primaryKey: item.primary_key,\n        foreignKeys: item.foreign_keys || []\n      });\n      \n      // Extraire les relations\n      if (item.foreign_keys && Array.isArray(item.foreign_keys)) {\n        item.foreign_keys.forEach(fk => {\n          extractedData.relationships.push({\n            source: { schema: item.schema || 'public', table: item.table, column: fk.column },\n            target: { schema: fk.target_schema || 'public', table: fk.target_table, column: fk.target_column },\n            name: fk.name || `fk_${item.table}_${fk.column}`\n          });\n        });\n      }\n    }\n    \n    if (item.function) {\n      extractedData.functions.push({\n        schema: item.schema || 'public',\n        name: item.function,\n        returns: item.returns || 'void',\n        language: item.language || 'plpgsql',\n        body: item.body || ''\n      });\n    }\n  });\n}\n\n// Sauvegarder les données extraites\nconst extractedDataPath = path.join(outputDir, `extracted-schema-data-${timestamp}.json`);\nfs.writeFileSync(extractedDataPath, JSON.stringify(extractedData, null, 2));\n\nreturn {\n  json: {\n    ...extractedData,\n    rawDataPath,\n    extractedDataPath,\n    outputDir\n  }\n};"
+      },
+      "name": "Process Supabase Data",
+      "type": "n8n-nodes-base.code",
+      "position": [500, 200],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "command": "cd /workspaces/cahier-des-charge && npx ts-node agents/migration/supabase-to-prisma.ts --input-file={{ $json.extractedDataPath }} --output-dir={{ $json.outputDir }}/prisma",
+        "workingDirectory": "/workspaces/cahier-des-charge",
+        "executeTimeout": 180
+      },
+      "name": "Generate Prisma Schema",
+      "type": "n8n-nodes-base.executeCommand",
+      "position": [700, 200],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "command": "cd /workspaces/cahier-des-charge && npx ts-node agents/migration/supabase-to-nest-api.ts --input-file={{ $json.extractedDataPath }} --output-dir={{ $json.outputDir }}/nestjs",
+        "workingDirectory": "/workspaces/cahier-des-charge",
+        "executeTimeout": 180
+      },
+      "name": "Generate NestJS API",
+      "type": "n8n-nodes-base.executeCommand",
+      "position": [700, 350],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "command": "cd /workspaces/cahier-des-charge && npx ts-node agents/migration/supabase-rules-to-casl.ts --input-file={{ $json.extractedDataPath }} --output-dir={{ $json.outputDir }}/casl",
+        "workingDirectory": "/workspaces/cahier-des-charge",
+        "executeTimeout": 120
+      },
+      "name": "Generate CASL Rules",
+      "type": "n8n-nodes-base.executeCommand",
+      "position": [900, 350],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "command": "cd /workspaces/cahier-des-charge && npx ts-node agents/optimization/supabase-migration-recommendations.ts --input-file={{ $json.extractedDataPath }} --output-dir={{ $json.outputDir }}/recommendations",
+        "workingDirectory": "/workspaces/cahier-des-charge",
+        "executeTimeout": 120
+      },
+      "name": "Generate Migration Recommendations",
+      "type": "n8n-nodes-base.executeCommand",
+      "position": [900, 200],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "chatId": "{{ $env.NOTIFICATION_CHAT_ID }}",
+        "text": "📊 *Analyse Supabase complétée*\n\nSchémas analysés: {{ $json.schemas.length }}\nTables analysées: {{ $json.tables.length }}\nRelations identifiées: {{ $json.relationships.length }}\nFonctions traitées: {{ $json.functions.length }}\n\n✅ Schéma Prisma généré\n✅ API NestJS générée\n✅ Règles CASL générées\n✅ Recommandations de migration disponibles\n\n*Timestamp:* {{ $json.timestamp }}\n\n[Voir le rapport d'analyse](file://{{ $json.outputDir }})",
+        "additionalFields": {
+          "parseMode": "Markdown",
+          "disableNotification": false
+        }
+      },
+      "name": "Send Notification",
+      "type": "n8n-nodes-base.telegram",
+      "position": [1100, 275],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "operation": "insert",
+        "schema": "audit",
+        "table": "supabase_analyses",
+        "columns": "timestamp,schemas_count,tables_count,relationships_count,functions_count,report_path",
+        "values": "={{ $json.timestamp }},={{ $json.schemas.length }},={{ $json.tables.length }},={{ $json.relationships.length }},={{ $json.functions.length }},={{ $json.outputDir }}",
+        "additionalFields": {}
+      },
+      "name": "Log to Database",
+      "type": "n8n-nodes-base.postgres",
+      "position": [1300, 275],
+      "typeVersion": 1,
+      "credentials": {
+        "postgres": {
+          "id": "1",
+          "name": "Postgres Account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "# Rapport d'analyse Supabase - {{ $json.timestamp }}\n\n## Vue d'ensemble\n\n- **Date d'analyse:** {{ $json.timestamp }}\n- **Schémas analysés:** {{ $json.schemas.length }}\n- **Tables analysées:** {{ $json.tables.length }}\n- **Relations identifiées:** {{ $json.relationships.length }}\n- **Fonctions traitées:** {{ $json.functions.length }}\n\n## Artefacts générés\n\n- [Schéma Prisma](file://{{ $json.outputDir }}/prisma)\n- [API NestJS](file://{{ $json.outputDir }}/nestjs)\n- [Règles CASL](file://{{ $json.outputDir }}/casl)\n- [Recommandations de migration](file://{{ $json.outputDir }}/recommendations)\n\n## Relations identifiées\n\n{% for relation in $json.relationships %}\n- {{ relation.source.table }}.{{ relation.source.column }} → {{ relation.target.table }}.{{ relation.target.column }}\n{% endfor %}\n\n## Étapes suivantes\n\n1. Vérifier le schéma Prisma généré\n2. Examiner les points d'API NestJS\n3. Réviser les règles d'autorisation CASL\n4. Implémenter les recommandations de migration\n\n> Ce rapport a été généré automatiquement par le pipeline d'analyse Supabase.",
+        "destination": "={{ $json.outputDir }}/analysis-report.md",
+        "options": {}
+      },
+      "name": "Generate Report",
+      "type": "n8n-nodes-base.writeTextFile",
+      "position": [1300, 400],
+      "typeVersion": 1
+    }
+  ],
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Fetch Supabase Schemas",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Supabase Schemas": {
+      "main": [
+        [
+          {
+            "node": "Process Supabase Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Process Supabase Data": {
+      "main": [
+        [
+          {
+            "node": "Generate Prisma Schema",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Generate NestJS API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Prisma Schema": {
+      "main": [
+        [
+          {
+            "node": "Generate Migration Recommendations",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate NestJS API": {
+      "main": [
+        [
+          {
+            "node": "Generate CASL Rules",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate CASL Rules": {
+      "main": [
+        [
+          {
+            "node": "Send Notification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Migration Recommendations": {
+      "main": [
+        [
+          {
+            "node": "Send Notification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Notification": {
+      "main": [
+        [
+          {
+            "node": "Log to Database",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Generate Report",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {},
+  "tags": ["supabase", "analysis", "database", "migration", "prisma"]
+}

@@ -1,0 +1,511 @@
+{
+  "name": "Pipeline Migration Routes PHP vers Remix",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "minutesInterval": 720
+            }
+          ]
+        }
+      },
+      "id": "fc27b05d-87a5-4d14-a215-3a655d261b35",
+      "name": "Déclencheur Planning",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1,
+      "position": [-540, 320]
+    },
+    {
+      "parameters": {
+        "workflowId": "6"
+      },
+      "id": "9a2acb15-0d9b-42bd-bab1-eb3eac517ef6",
+      "name": "Déclencheur Manuel",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [-540, 140]
+    },
+    {
+      "parameters": {
+        "command": "cd /workspaces/cahier-des-charge && node ./migration-toolkit/routing-sync.ts"
+      },
+      "id": "d2cebad0-b7c3-4a4d-b85a-4a5e3f4a23e7",
+      "name": "Exécuter Routing Sync",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [-260, 240]
+    },
+    {
+      "parameters": {
+        "dataType": "string",
+        "value1": "={{ $json.exitCode }}",
+        "rules": {
+          "rules": [
+            {
+              "value2": 0,
+              "type": "equal"
+            }
+          ]
+        }
+      },
+      "id": "7ddc57e5-aa61-4eed-ac93-fc7f15f0de51",
+      "name": "IF (Routing Sync OK)",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [-40, 240]
+    },
+    {
+      "parameters": {
+        "command": "cd /workspaces/cahier-des-charge && node ./migration-toolkit/seo-extractor.ts"
+      },
+      "id": "e4fbbce7-3347-4254-98e6-56fc51acb454",
+      "name": "Exécuter SEO Extractor",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [180, 140]
+    },
+    {
+      "parameters": {
+        "command": "cd /workspaces/cahier-des-charge && node ./migration-toolkit/meta.generator.ts"
+      },
+      "id": "fd2c7e03-a2b8-438a-b2d2-4e1a2dc04dcd",
+      "name": "Générer Meta Remix",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [400, 140]
+    },
+    {
+      "parameters": {
+        "command": "cd /workspaces/cahier-des-charge && node ./migration-toolkit/mcp-integrator.ts"
+      },
+      "id": "8d3e9e5d-fc90-4f71-a0f4-0a1ea9f3ae77",
+      "name": "Intégrer dans GitHub/MCP",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [680, 140]
+    },
+    {
+      "parameters": {
+        "command": "cd /workspaces/cahier-des-charge && echo \"Erreur lors de l'exécution du routing-sync.ts. Consultez les logs pour plus de détails.\" >> ./reports/migration_errors.log"
+      },
+      "id": "f4ea39d1-8e60-4b4e-9efd-47f4989c12d3",
+      "name": "Enregistrer l'erreur",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [180, 360]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.SUPABASE_URL }}/rest/v1/migration_reports",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "status",
+              "value": "error"
+            },
+            {
+              "name": "message",
+              "value": "=Erreur lors de l'exécution du routing-sync.ts: {{ $node[\"Exécuter Routing Sync\"].json.stderr }}"
+            },
+            {
+              "name": "timestamp",
+              "value": "={{ $now.toISOString() }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "add4cbc6-b79d-45e4-b84f-f089fc8dc17e",
+      "name": "Signaler Erreur Supabase",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [400, 360],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "2",
+          "name": "Supabase API Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "channel": "monitor_migrations",
+        "text": "❌ **Erreur de migration des routes PHP** - Une erreur est survenue lors de l'exécution du pipeline de migration. Vérifiez les logs.",
+        "attachments": "=[\n  {\n    \"color\": \"#FF0000\",\n    \"blocks\": [\n      {\n        \"type\": \"section\",\n        \"text\": {\n          \"type\": \"mrkdwn\",\n          \"text\": \"*Détails de l'erreur:*\\n```{{ $node[\"Exécuter Routing Sync\"].json.stderr }}```\"\n        }\n      },\n      {\n        \"type\": \"context\",\n        \"elements\": [\n          {\n            \"type\": \"mrkdwn\",\n            \"text\": \"*Date:* {{ $now.toLocaleString() }}\"\n          }\n        ]\n      }\n    ]\n  }\n]",
+        "otherOptions": {}
+      },
+      "id": "c1a56ac9-c4f3-46cf-b3af-c81c4aab3546",
+      "name": "Notification Slack Erreur",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 1,
+      "position": [620, 360],
+      "credentials": {
+        "slackApi": {
+          "id": "1",
+          "name": "Slack account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $node[\"Exécuter SEO Extractor\"].json.exitCode }}",
+              "operation": "equal",
+              "value2": "0"
+            }
+          ]
+        }
+      },
+      "id": "98dbfd95-9265-4c07-a1bb-8f273da0a1cf",
+      "name": "IF (SEO Extractor OK)",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [180, 240]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $node[\"Générer Meta Remix\"].json.exitCode }}",
+              "operation": "equal",
+              "value2": "0"
+            }
+          ]
+        }
+      },
+      "id": "b6a56e43-27df-46ad-b9d8-90c6fe668dc9",
+      "name": "IF (Meta Generator OK)",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [480, 240]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $node[\"Intégrer dans GitHub/MCP\"].json.exitCode }}",
+              "operation": "equal",
+              "value2": "0"
+            }
+          ]
+        }
+      },
+      "id": "98fe10ae-6d78-4e34-8f59-3db3e0a6dc3f",
+      "name": "IF (Intégration OK)",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [760, 240]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.SUPABASE_URL }}/rest/v1/migration_reports",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "status",
+              "value": "success"
+            },
+            {
+              "name": "message",
+              "value": "=Migration des routes PHP réussie. Pull Request créée: {{ $node[\"Intégrer dans GitHub/MCP\"].json.stdout.match(/PR #(\\d+)/)[1] }}"
+            },
+            {
+              "name": "timestamp",
+              "value": "={{ $now.toISOString() }}"
+            },
+            {
+              "name": "details",
+              "value": "={{ JSON.stringify({routes_analyzed: $node[\"Exécuter Routing Sync\"].json.stdout.match(/(\\d+) routes? à partir des fichiers PHP/)[1], pr_url: $node[\"Intégrer dans GitHub/MCP\"].json.stdout.match(/URL: (https:\\/\\/[^\\s]+)/)[1]}) }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "b2bdeddb-0fa9-4037-877e-ae0c28af3b02",
+      "name": "Enregistrer Succès Supabase",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [940, 120],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "2",
+          "name": "Supabase API Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "channel": "monitor_migrations",
+        "text": "✅ **Migration des routes PHP réussie** - Les nouvelles routes Remix ont été générées et une PR a été créée.",
+        "attachments": "=[\n  {\n    \"color\": \"#00FF00\",\n    \"blocks\": [\n      {\n        \"type\": \"section\",\n        \"text\": {\n          \"type\": \"mrkdwn\",\n          \"text\": \"*Détails de la migration:*\\n• Routes analysées: {{ $node[\"Exécuter Routing Sync\"].json.stdout.match(/(\\d+) routes? à partir des fichiers PHP/)[1] }}\\n• Pull Request: PR #{{ $node[\"Intégrer dans GitHub/MCP\"].json.stdout.match(/PR #(\\d+)/)[1] }}\\n• URL: {{ $node[\"Intégrer dans GitHub/MCP\"].json.stdout.match(/URL: (https:\\/\\/[^\\s]+)/)[1] }}\"\n        }\n      },\n      {\n        \"type\": \"context\",\n        \"elements\": [\n          {\n            \"type\": \"mrkdwn\",\n            \"text\": \"*Date:* {{ $now.toLocaleString() }}\"\n          }\n        ]\n      }\n    ]\n  }\n]",
+        "otherOptions": {}
+      },
+      "id": "cf74ccd8-0eb6-4f64-8cb6-8b98c2d1af1d",
+      "name": "Notification Slack Succès",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 1,
+      "position": [940, 300],
+      "credentials": {
+        "slackApi": {
+          "id": "1",
+          "name": "Slack account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "dataType": "string",
+        "value1": "={{ $json.exitCode }}",
+        "rules": {
+          "rules": [
+            {
+              "value2": 0,
+              "type": "equal"
+            }
+          ]
+        }
+      },
+      "id": "39a51dbc-6eb9-4858-9d7d-adaa28c67fd5",
+      "name": "IF (Erreur MCP Integrator)",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [840, 480]
+    },
+    {
+      "parameters": {
+        "channel": "monitor_migrations",
+        "text": "⚠️ **Migration partiellement réussie** - Les fichiers ont été générés mais la PR n'a pas pu être créée.",
+        "attachments": "=[\n  {\n    \"color\": \"#FFA500\",\n    \"blocks\": [\n      {\n        \"type\": \"section\",\n        \"text\": {\n          \"type\": \"mrkdwn\",\n          \"text\": \"*Détails de l'erreur:*\\n```{{ $node[\"Intégrer dans GitHub/MCP\"].json.stderr }}```\"\n        }\n      },\n      {\n        \"type\": \"context\",\n        \"elements\": [\n          {\n            \"type\": \"mrkdwn\",\n            \"text\": \"*Action requise:* Vérifiez le statut de GitHub et créez manuellement la PR avec les fichiers générés.\"\n          }\n        ]\n      }\n    ]\n  }\n]",
+        "otherOptions": {}
+      },
+      "id": "a881f5ed-1edf-44af-b8a4-e79be6d1c14d",
+      "name": "Notification Erreur PR",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 1,
+      "position": [1060, 480],
+      "credentials": {
+        "slackApi": {
+          "id": "1",
+          "name": "Slack account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Déclencheur Planning": {
+      "main": [
+        [
+          {
+            "node": "Exécuter Routing Sync",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Déclencheur Manuel": {
+      "main": [
+        [
+          {
+            "node": "Exécuter Routing Sync",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Exécuter Routing Sync": {
+      "main": [
+        [
+          {
+            "node": "IF (Routing Sync OK)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF (Routing Sync OK)": {
+      "main": [
+        [
+          {
+            "node": "Exécuter SEO Extractor",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Enregistrer l'erreur",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Exécuter SEO Extractor": {
+      "main": [
+        [
+          {
+            "node": "IF (SEO Extractor OK)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Générer Meta Remix": {
+      "main": [
+        [
+          {
+            "node": "IF (Meta Generator OK)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Intégrer dans GitHub/MCP": {
+      "main": [
+        [
+          {
+            "node": "IF (Intégration OK)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Enregistrer l'erreur": {
+      "main": [
+        [
+          {
+            "node": "Signaler Erreur Supabase",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Signaler Erreur Supabase": {
+      "main": [
+        [
+          {
+            "node": "Notification Slack Erreur",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF (SEO Extractor OK)": {
+      "main": [
+        [
+          {
+            "node": "Générer Meta Remix",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Signaler Erreur Supabase",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF (Meta Generator OK)": {
+      "main": [
+        [
+          {
+            "node": "Intégrer dans GitHub/MCP",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Signaler Erreur Supabase",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF (Intégration OK)": {
+      "main": [
+        [
+          {
+            "node": "Enregistrer Succès Supabase",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "IF (Erreur MCP Integrator)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Enregistrer Succès Supabase": {
+      "main": [
+        [
+          {
+            "node": "Notification Slack Succès",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF (Erreur MCP Integrator)": {
+      "main": [
+        [
+          {
+            "node": "Enregistrer Succès Supabase",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Notification Erreur PR",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": true,
+    "callerPolicy": "any",
+    "errorWorkflow": "6"
+  },
+  "staticData": null,
+  "pinData": {},
+  "versionId": "ecfd62ee-10aa-4faf-a7e2-38dbe2c1cd21",
+  "triggerCount": 2
+}

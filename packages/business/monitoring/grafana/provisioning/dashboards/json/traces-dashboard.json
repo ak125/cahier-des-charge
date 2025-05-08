@@ -1,0 +1,280 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": null,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "datasource": {
+        "type": "jaeger",
+        "uid": "jaeger"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 1,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "title": "Temps de réponse des appels par service",
+      "type": "timeseries",
+      "targets": [
+        {
+          "datasource": {
+            "type": "jaeger",
+            "uid": "jaeger"
+          },
+          "queryType": "search",
+          "service": "$service",
+          "operation": "Agent:$agent:$task",
+          "tags": "",
+          "limit": 20,
+          "maxDuration": "",
+          "minDuration": ""
+        }
+      ]
+    },
+    {
+      "datasource": {
+        "type": "jaeger",
+        "uid": "jaeger"
+      },
+      "description": "Visualisation des traces distribuées",
+      "gridPos": {
+        "h": 16,
+        "w": 24,
+        "x": 0,
+        "y": 8
+      },
+      "id": 2,
+      "targets": [
+        {
+          "datasource": {
+            "type": "jaeger",
+            "uid": "jaeger"
+          },
+          "queryType": "search",
+          "service": "$service",
+          "operation": "$operation",
+          "tags": "",
+          "limit": 20,
+          "maxDuration": "",
+          "minDuration": ""
+        }
+      ],
+      "title": "Traces distribuées",
+      "type": "traces"
+    }
+  ],
+  "refresh": "10s",
+  "schemaVersion": 38,
+  "style": "dark",
+  "tags": [
+    "traces",
+    "opentelemetry",
+    "monitoring"
+  ],
+  "templating": {
+    "list": [
+      {
+        "current": {
+          "selected": false,
+          "text": "agent-mcp-verifier",
+          "value": "agent-mcp-verifier"
+        },
+        "datasource": {
+          "type": "jaeger",
+          "uid": "jaeger"
+        },
+        "definition": "",
+        "hide": 0,
+        "includeAll": false,
+        "label": "Service",
+        "multi": false,
+        "name": "service",
+        "options": [],
+        "query": {
+          "query": "",
+          "queryType": "services"
+        },
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "",
+          "value": ""
+        },
+        "datasource": {
+          "type": "jaeger",
+          "uid": "jaeger"
+        },
+        "definition": "",
+        "hide": 0,
+        "includeAll": false,
+        "label": "Operation",
+        "multi": false,
+        "name": "operation",
+        "options": [],
+        "query": {
+          "query": "",
+          "queryType": "operations",
+          "service": "$service"
+        },
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "mcp-verifier",
+          "value": "mcp-verifier"
+        },
+        "datasource": {
+          "type": "jaeger",
+          "uid": "jaeger"
+        },
+        "definition": "",
+        "hide": 0,
+        "includeAll": false,
+        "label": "Agent",
+        "multi": false,
+        "name": "agent",
+        "options": [],
+        "query": {
+          "query": "Agent:",
+          "queryType": "operations",
+          "service": "$service"
+        },
+        "refresh": 1,
+        "regex": "Agent:([^:]+).*",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "verifyFile",
+          "value": "verifyFile"
+        },
+        "datasource": {
+          "type": "jaeger",
+          "uid": "jaeger"
+        },
+        "definition": "",
+        "hide": 0,
+        "includeAll": false,
+        "label": "Task",
+        "multi": false,
+        "name": "task",
+        "options": [],
+        "query": {
+          "query": "Agent:$agent:",
+          "queryType": "operations",
+          "service": "$service"
+        },
+        "refresh": 1,
+        "regex": "Agent:[^:]+:(.*)",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-30m",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "",
+  "title": "Traces distribuées",
+  "uid": "distributed-traces",
+  "version": 1,
+  "weekStart": ""
+}

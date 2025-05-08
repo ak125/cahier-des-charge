@@ -1,0 +1,22 @@
+{
+    "name": "mcp-sigstore",
+    "version": "1.0.0",
+    "description": "Module de signature des résultats d'agents via SIGSTORE",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "scripts": {
+        "build": "tsc",
+        "test": "jest",
+        "verify": "ts-node src/verification/verify-cli.ts"
+    },
+    "dependencies": {
+        "@sigstore/sign": "^1.0.0",
+        "@sigstore/bundle": "^1.0.0",
+        "@sigstore/verify": "^1.0.0"
+    },
+    "devDependencies": {
+        "@types/node": "^20.10.4",
+        "typescript": "^5.2.2",
+        "ts-node": "^10.9.2"
+    }
+}

@@ -1,0 +1,73 @@
+name: NX Cloud CI
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  workflow_dispatch:
+
+jobs:
+  main:
+    name: Nx Cloud - Main Job
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Initialize NX Cloud
+        run: npx nx-cloud start-ci-run
+
+      - name: Run lint
+        run: npx nx affected --target=lint --parallel=3
+
+      - name: Run typecheck
+        run: npx nx affected --target=typecheck --parallel=3
+
+      - name: Run tests
+        run: npx nx affected --target=test --parallel=3 --ci --code-coverage
+
+      - name: Run build
+        run: npx nx affected --target=build --parallel=3
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+
+      - name: Stop NX Cloud agents
+        if: ${{ always() }}
+        run: npx nx-cloud stop-all-agents
+
+  agents:
+    name: Nx Cloud - Agents
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        agent: [ 1, 2, 3 ]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Start NX Cloud Agents ${{ matrix.agent }}
+        run: npx nx-cloud start-agent
+        env:
+          NX_CLOUD_DISTRIBUTED_EXECUTION: "true"

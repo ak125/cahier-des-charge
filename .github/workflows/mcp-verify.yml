@@ -1,0 +1,53 @@
+name: MCP Code Generator & Verifier
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  workflow_dispatch:
+    inputs:
+      file_prefix:
+        description: 'Préfixe du fichier à vérifier (ex: fiche, login)'
+        required: true
+        default: 'fiche'
+
+jobs:
+  generate-and-verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'pnpm'
+
+      - name: Install pnpm
+        run: npm install -g pnpm
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Generate code
+        run: pnpm generate ${{ github.event.inputs.file_prefix || 'fiche' }}
+
+      - name: Verify generated code
+        run: pnpm mcp-verify ${{ github.event.inputs.file_prefix || 'fiche' }}
+        id: verification
+
+      - name: Upload verification report
+        uses: actions/upload-artifact@v3
+        with:
+          name: verification-report
+          path: ./apps/frontend/app/generated/reports/${{ github.event.inputs.file_prefix || 'fiche' }}.verification_report.json
+          if-no-files-found: warn
+
+      - name: Check verification status
+        run: |
+          if [[ "${{ steps.verification.outcome }}" == "failure" ]]; then
+            echo "::error::La vérification du code généré a échoué. Voir le rapport pour plus de détails."
+            exit 1
+          fi

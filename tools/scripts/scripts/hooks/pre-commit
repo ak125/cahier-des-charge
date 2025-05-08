@@ -1,0 +1,61 @@
+#!/bin/sh
+#
+# Hook de pre-commit pour vérifier les conventions de nommage kebab-case
+#
+# Pour installer ce hook, exécutez :
+# cp scripts/hooks/pre-commit .git/hooks/pre-commit
+# chmod +x .git/hooks/pre-commit
+#
+
+# Couleurs pour une meilleure lisibilité
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[0;33m'
+NC='\033[0m' # Pas de couleur
+
+echo "⚙️ Vérification des conventions de nommage en kebab-case..."
+
+# Obtenir la liste des fichiers modifiés (hors suppressions)
+FILES=$(git diff --cached --name-only --diff-filter=ACMR | grep -E '\.(js|ts|tsx|jsx)$')
+
+if [ -z "$FILES" ]; then
+  echo "${GREEN}✓ Aucun fichier JavaScript/TypeScript à vérifier.${NC}"
+  exit 0
+fi
+
+# Vérifier si le nom du fichier respecte la convention kebab-case
+CHECK_FAILED=0
+INVALID_FILES=""
+
+for FILE in $FILES; do
+  FILENAME=$(basename "$FILE")
+  BASENAME=$(echo "$FILENAME" | sed 's/\.[^.]*$//')
+  
+  # Ignorer les exceptions courantes
+  if [ "$BASENAME" = "index" ] || [ "$BASENAME" = "README" ] || [ "$BASENAME" = "Dockerfile" ] || \
+     [ "$BASENAME" = "package" ] || [ "$BASENAME" = "tsconfig" ] || [ "$BASENAME" = "LICENSE" ]; then
+    continue
+  fi
+  
+  # Ignorer les fichiers commençant par un point
+  if [[ "$BASENAME" == .* ]]; then
+    continue
+  fi
+  
+  # Vérifier si le nom suit la convention kebab-case
+  if ! echo "$BASENAME" | grep -qP "^[a-z][a-z0-9]*(-[a-z0-9]+)*$"; then
+    CHECK_FAILED=1
+    INVALID_FILES="$INVALID_FILES\n  - $FILE (devrait être en kebab-case)"
+  fi
+done
+
+if [ $CHECK_FAILED -eq 1 ]; then
+  echo "${RED}❌ Certains fichiers ne respectent pas la convention kebab-case :${NC}${INVALID_FILES}"
+  echo "${YELLOW}⚠️ Vous devez renommer ces fichiers avant de pouvoir commiter.${NC}"
+  echo "${YELLOW}💡 Utilisez le script pour standardiser les noms : ./scripts/standardize-naming.js${NC}"
+  exit 1
+else
+  echo "${GREEN}✓ Tous les fichiers respectent la convention kebab-case.${NC}"
+fi
+
+exit 0

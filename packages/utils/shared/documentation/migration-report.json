@@ -1,0 +1,1720 @@
+{
+  "date": "2025-04-18T00:11:24.607Z",
+  "totalAgents": 122,
+  "byLayer": {
+    "orchestration": 16,
+    "coordination": 0,
+    "business": 89,
+    "unknown": 17
+  },
+  "agents": [
+    {
+      "id": "status-writer",
+      "name": "StatusWriterAgent",
+      "layer": "orchestration",
+      "agentType": "unknown",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/status-writer.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/orchestration/misc/status-writer/status-writer.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "php-analyzer-agent",
+      "name": "php-analyzer-agent",
+      "layer": "orchestration",
+      "agentType": "unknown",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/php-analyzer-agent.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/orchestration/misc/php-analyzer-agent/php-analyzer-agent.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "orchestrator",
+      "name": "orchestrator",
+      "layer": "orchestration",
+      "agentType": "orchestrator",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/orchestrator.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/orchestration/orchestrators/orchestrator/orchestrator.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "monitoring-check",
+      "name": "monitoring-check",
+      "layer": "orchestration",
+      "agentType": "monitor",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/monitoring-check.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/orchestration/monitors/monitoring-check/monitoring-check.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "migration-orchestrator",
+      "name": "MigrationOrchestrator",
+      "layer": "orchestration",
+      "agentType": "orchestrator",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/migration-orchestrator.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/orchestration/orchestrators/migration-orchestrator/migration-orchestrator.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "bullmq-orchestrator",
+      "name": "BullMqOrchestrator",
+      "layer": "orchestration",
+      "agentType": "orchestrator",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/bullmq-orchestrator.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/orchestration/orchestrators/bullmq-orchestrator/bullmq-orchestrator.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "php-analyzer.worker",
+      "name": "php-analyzer.worker",
+      "layer": "orchestration",
+      "agentType": "unknown",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/workers/php-analyzer.worker.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/orchestration/misc/php-analyzer.worker/php-analyzer.worker.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "mcp-verifier.worker",
+      "name": "mcp-verifier.worker",
+      "layer": "orchestration",
+      "agentType": "unknown",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/workers/mcp-verifier.worker.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/orchestration/misc/mcp-verifier.worker/mcp-verifier.worker.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "agent8-optimizer",
+      "name": "Agent8SqlOptimizer",
+      "layer": "orchestration",
+      "agentType": "unknown",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/optimization/agent8-optimizer.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/orchestration/misc/agent8-optimizer/agent8-optimizer.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "sql-analysis-runner",
+      "name": "sql-analysis-runner",
+      "layer": "orchestration",
+      "agentType": "unknown",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/migration/sql-analysis-runner.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/orchestration/misc/sql-analysis-runner/sql-analysis-runner.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "caddyfile-generator",
+      "name": "CaddyfileGenerator",
+      "layer": "orchestration",
+      "agentType": "unknown",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/migration/caddyfile-generator.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/orchestration/misc/caddyfile-generator/caddyfile-generator.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "caddyfile-generator",
+      "name": "CaddyfileGenerator",
+      "layer": "orchestration",
+      "agentType": "unknown",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/migration/nginx-to-caddy/caddyfile-generator.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/orchestration/misc/caddyfile-generator/caddyfile-generator.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "orchestrator-bridge",
+      "name": "OrchestratorBridge",
+      "layer": "orchestration",
+      "agentType": "orchestrator",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/integration/orchestrator-bridge.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/orchestration/orchestrators/orchestrator-bridge/orchestrator-bridge.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "coordinator-agent",
+      "name": "CoordinatorAgent",
+      "layer": "orchestration",
+      "agentType": "unknown",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/core/coordinator-agent.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/orchestration/misc/coordinator-agent/coordinator-agent.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "agent-orchestrator",
+      "name": "AgentOrchestrator",
+      "layer": "orchestration",
+      "agentType": "orchestrator",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/core/agent-orchestrator.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/orchestration/orchestrators/agent-orchestrator/agent-orchestrator.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "agent-audit",
+      "name": "agent-audit",
+      "layer": "orchestration",
+      "agentType": "unknown",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/analysis/agent-audit.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/orchestration/misc/agent-audit/agent-audit.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "seo-redirect-mapper",
+      "name": "SEORedirectMapper",
+      "layer": "business",
+      "agentType": "unknown",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/seo-redirect-mapper.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/business/misc/seo-redirect-mapper/seo-redirect-mapper.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "seo-mcp-controller",
+      "name": "SEOMCPController",
+      "layer": "business",
+      "agentType": "unknown",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/seo-mcp-controller.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/business/misc/seo-mcp-controller/seo-mcp-controller.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "seo-content-enhancer",
+      "name": "SEOContentEnhancer",
+      "layer": "business",
+      "agentType": "unknown",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/seo-content-enhancer.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/business/misc/seo-content-enhancer/seo-content-enhancer.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "seo-checker-agent",
+      "name": "SEOCheckerAgent",
+      "layer": "business",
+      "agentType": "validator",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/seo-checker-agent.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/business/validators/seo-checker-agent/seo-checker-agent.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "seo-audit-runner",
+      "name": "SEOAuditRunner",
+      "layer": "business",
+      "agentType": "unknown",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/seo-audit-runner.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/business/misc/seo-audit-runner/seo-audit-runner.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "qa-analyzer",
+      "name": "QaAnalyzer",
+      "layer": "business",
+      "agentType": "analyzer",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/qa-analyzer.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/business/analyzers/qa-analyzer/qa-analyzer.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "pr-creator",
+      "name": "PRCreator",
+      "layer": "business",
+      "agentType": "unknown",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/pr-creator.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/business/misc/pr-creator/pr-creator.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "pipeline-strategy-auditor",
+      "name": "pipeline-strategy-auditor",
+      "layer": "business",
+      "agentType": "unknown",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/pipeline-strategy-auditor.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/business/misc/pipeline-strategy-auditor/pipeline-strategy-auditor.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "meta-generator",
+      "name": "MetaGenerator",
+      "layer": "business",
+      "agentType": "generator",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/meta-generator.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/business/generators/meta-generator/meta-generator.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "mcp-verifier",
+      "name": "MCPVerifier",
+      "layer": "business",
+      "agentType": "unknown",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/mcp-verifier.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/business/misc/mcp-verifier/mcp-verifier.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "mcp-manifest-manager",
+      "name": "MCPManifestManager",
+      "layer": "business",
+      "agentType": "unknown",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/mcp-manifest-manager.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/business/misc/mcp-manifest-manager/mcp-manifest-manager.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "index",
+      "name": "QAAnalyzer",
+      "layer": "business",
+      "agentType": "analyzer",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/index.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/business/analyzers/index/index.ts",
+      "implemented": {
+        "baseInterface": true,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "diff-verifier",
+      "name": "diff-verifier",
+      "layer": "business",
+      "agentType": "unknown",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/diff-verifier.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/business/misc/diff-verifier/diff-verifier.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "devops-preview",
+      "name": "devops-preview",
+      "layer": "business",
+      "agentType": "unknown",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/devops-preview.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/business/misc/devops-preview/devops-preview.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "dev-linter",
+      "name": "dev-linter",
+      "layer": "business",
+      "agentType": "unknown",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/dev-linter.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/business/misc/dev-linter/dev-linter.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "dev-integrator",
+      "name": "dev-integrator",
+      "layer": "business",
+      "agentType": "unknown",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/dev-integrator.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/business/misc/dev-integrator/dev-integrator.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "dev-checker",
+      "name": "dev-checker",
+      "layer": "business",
+      "agentType": "validator",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/dev-checker.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/business/validators/dev-checker/dev-checker.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "ci-tester",
+      "name": "ci-tester",
+      "layer": "business",
+      "agentType": "unknown",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/ci-tester.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/business/misc/ci-tester/ci-tester.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "canonical-validator",
+      "name": "CanonicalValidator",
+      "layer": "business",
+      "agentType": "validator",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/canonical-validator.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/business/validators/canonical-validator/canonical-validator.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "auto-pr-agent",
+      "name": "AutoPRAgent",
+      "layer": "business",
+      "agentType": "unknown",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/auto-pr-agent.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/business/misc/auto-pr-agent/auto-pr-agent.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "nginx-config-parser",
+      "name": "NginxConfigParser",
+      "layer": "business",
+      "agentType": "parser",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/utils/nginx-config-parser.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/business/parsers/nginx-config-parser/nginx-config-parser.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "htaccess-parser",
+      "name": "HtaccessParser",
+      "layer": "business",
+      "agentType": "parser",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/utils/htaccess-parser.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/business/parsers/htaccess-parser/htaccess-parser.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "caddy-generator",
+      "name": "CaddyGenerator",
+      "layer": "business",
+      "agentType": "generator",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/utils/caddy-generator.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/business/generators/caddy-generator/caddy-generator.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "agent-version-auditor",
+      "name": "agent-version-auditor",
+      "layer": "business",
+      "agentType": "unknown",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/tools/agent-version-auditor.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/business/misc/agent-version-auditor/agent-version-auditor.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "sql-debt-audit",
+      "name": "sql-debt-audit",
+      "layer": "business",
+      "agentType": "unknown",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/quality/sql-debt-audit.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/business/misc/sql-debt-audit/sql-debt-audit.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "analyze-security-risks",
+      "name": "SecurityRiskAnalyzer",
+      "layer": "business",
+      "agentType": "analyzer",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/quality/analyze-security-risks.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/business/analyzers/analyze-security-risks/analyze-security-risks.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "agent-quality",
+      "name": "QualityAgent",
+      "layer": "business",
+      "agentType": "unknown",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/quality/agent-quality.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/business/misc/agent-quality/agent-quality.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "qualityagent",
+      "name": "QualityAgent",
+      "layer": "business",
+      "agentType": "unknown",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/quality/QualityAgent.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/business/misc/qualityagent/qualityagent.ts",
+      "implemented": {
+        "baseInterface": true,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "type-audit-agent",
+      "name": "type-audit-agent",
+      "layer": "business",
+      "agentType": "unknown",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/migration/type-audit-agent.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/business/misc/type-audit-agent/type-audit-agent.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "sql-prisma-migration-planner",
+      "name": "sql-prisma-migration-planner",
+      "layer": "business",
+      "agentType": "unknown",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/migration/sql-prisma-migration-planner.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/business/misc/sql-prisma-migration-planner/sql-prisma-migration-planner.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "sql-analyzer+prisma-builder",
+      "name": "sql-analyzer+prisma-builder",
+      "layer": "business",
+      "agentType": "analyzer",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/migration/sql-analyzer+prisma-builder.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/business/analyzers/sql-analyzer+prisma-builder/sql-analyzer+prisma-builder.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "remediator",
+      "name": "remediator",
+      "layer": "business",
+      "agentType": "unknown",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/migration/remediator.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/business/misc/remediator/remediator.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "qa-confirmer",
+      "name": "qa-confirmer",
+      "layer": "business",
+      "agentType": "unknown",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/migration/qa-confirmer.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/business/misc/qa-confirmer/qa-confirmer.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "progressive-migration-agent",
+      "name": "ProgressiveMigrationAgent",
+      "layer": "business",
+      "agentType": "unknown",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/migration/progressive-migration-agent.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/business/misc/progressive-migration-agent/progressive-migration-agent.ts",
+      "implemented": {
+        "baseInterface": true,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "prisma-smart-generator",
+      "name": "prisma-smart-generator",
+      "layer": "business",
+      "agentType": "generator",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/migration/prisma-smart-generator.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/business/generators/prisma-smart-generator/prisma-smart-generator.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "prisma-migration-generator",
+      "name": "prisma-migration-generator",
+      "layer": "business",
+      "agentType": "generator",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/migration/prisma-migration-generator.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/business/generators/prisma-migration-generator/prisma-migration-generator.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "postgresql-validator",
+      "name": "postgresql-validator",
+      "layer": "business",
+      "agentType": "validator",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/migration/postgresql-validator.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/business/validators/postgresql-validator/postgresql-validator.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "nginx-config-analyzer",
+      "name": "nginx-config-analyzer",
+      "layer": "business",
+      "agentType": "analyzer",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/migration/nginx-config-analyzer.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/business/analyzers/nginx-config-analyzer/nginx-config-analyzer.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "mysql-to-postgresql",
+      "name": "mysql-to-postgresql",
+      "layer": "business",
+      "agentType": "unknown",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/migration/mysql-to-postgresql.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/business/misc/mysql-to-postgresql/mysql-to-postgresql.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "mysql-to-pg",
+      "name": "mysql-to-pg",
+      "layer": "business",
+      "agentType": "unknown",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/migration/mysql-to-pg.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/business/misc/mysql-to-pg/mysql-to-pg.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "mysql-analyzer",
+      "name": "mysql-analyzer",
+      "layer": "business",
+      "agentType": "analyzer",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/migration/mysql-analyzer.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/business/analyzers/mysql-analyzer/mysql-analyzer.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "mysql-analyzer+optimizer",
+      "name": "mysql-analyzer+optimizer",
+      "layer": "business",
+      "agentType": "analyzer",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/migration/mysql-analyzer+optimizer.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/business/analyzers/mysql-analyzer+optimizer/mysql-analyzer+optimizer.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "htaccess-router-analyzer",
+      "name": "htaccess-router-analyzer",
+      "layer": "business",
+      "agentType": "analyzer",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/migration/htaccess-router-analyzer.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/business/analyzers/htaccess-router-analyzer/htaccess-router-analyzer.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "generate-migration-plan",
+      "name": "generate-migration-plan",
+      "layer": "business",
+      "agentType": "generator",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/migration/generate-migration-plan.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/business/generators/generate-migration-plan/generate-migration-plan.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "data-verifier",
+      "name": "data-verifier",
+      "layer": "business",
+      "agentType": "unknown",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/migration/data-verifier.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/business/misc/data-verifier/data-verifier.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "consolidator",
+      "name": "consolidator",
+      "layer": "business",
+      "agentType": "unknown",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/migration/consolidator.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/business/misc/consolidator/consolidator.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "component-generator",
+      "name": "ComponentGenerator",
+      "layer": "business",
+      "agentType": "generator",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/migration/component-generator.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/business/generators/component-generator/component-generator.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "agent-business",
+      "name": "BusinessAgent",
+      "layer": "business",
+      "agentType": "unknown",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/migration/agent-business.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/business/misc/agent-business/agent-business.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "businessagent",
+      "name": "BusinessAgent",
+      "layer": "business",
+      "agentType": "unknown",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/migration/BusinessAgent.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/business/misc/businessagent/businessagent.ts",
+      "implemented": {
+        "baseInterface": true,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "seo-meta.generator",
+      "name": "SeoMetadataGenerator",
+      "layer": "business",
+      "agentType": "generator",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/migration/php-to-remix/seo-meta.generator.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/business/generators/seo-meta.generator/seo-meta.generator.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "seo-checker-canonical",
+      "name": "SeoChecker",
+      "layer": "business",
+      "agentType": "validator",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/migration/php-to-remix/seo-checker-canonical.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/business/validators/seo-checker-canonical/seo-checker-canonical.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "remix-route-generator",
+      "name": "RemixRouteGenerator",
+      "layer": "business",
+      "agentType": "generator",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/migration/php-to-remix/remix-route-generator.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/business/generators/remix-route-generator/remix-route-generator.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "php-router-audit",
+      "name": "PhpRouterAudit",
+      "layer": "business",
+      "agentType": "unknown",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/migration/php-to-remix/php-router-audit.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/business/misc/php-router-audit/php-router-audit.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "htaccess-route-analyzer",
+      "name": "HtaccessRouteAnalyzer",
+      "layer": "business",
+      "agentType": "analyzer",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/migration/php-to-remix/htaccess-route-analyzer.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/business/analyzers/htaccess-route-analyzer/htaccess-route-analyzer.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "htaccess-parser",
+      "name": "HtaccessParser",
+      "layer": "business",
+      "agentType": "parser",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/migration/php-to-remix/htaccess-parser.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/business/parsers/htaccess-parser/htaccess-parser.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "dev-generator",
+      "name": "DevGenerator",
+      "layer": "business",
+      "agentType": "generator",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/migration/php-to-remix/dev-generator.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/business/generators/dev-generator/dev-generator.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "mysql-analyzer",
+      "name": "mysql-analyzer",
+      "layer": "business",
+      "agentType": "analyzer",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/migration/mysql-analyzer/mysql-analyzer.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/business/analyzers/mysql-analyzer/mysql-analyzer.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "helpers",
+      "name": "helpers",
+      "layer": "business",
+      "agentType": "unknown",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/migration/mysql-analyzer/utils/helpers.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/business/misc/helpers/helpers.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "schema-analyzer",
+      "name": "SchemaAnalyzer",
+      "layer": "business",
+      "agentType": "analyzer",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/migration/mysql-analyzer/core/schema-analyzer.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/business/analyzers/schema-analyzer/schema-analyzer.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "relation-analyzer",
+      "name": "RelationAnalyzer",
+      "layer": "business",
+      "agentType": "analyzer",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/migration/mysql-analyzer/core/relation-analyzer.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/business/analyzers/relation-analyzer/relation-analyzer.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "prisma-generator",
+      "name": "PrismaGenerator",
+      "layer": "business",
+      "agentType": "generator",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/migration/mysql-analyzer/core/prisma-generator.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/business/generators/prisma-generator/prisma-generator.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "parser",
+      "name": "SQLParser",
+      "layer": "business",
+      "agentType": "parser",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/migration/mysql-analyzer/core/parser.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/business/parsers/parser/parser.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "debt-analyzer",
+      "name": "DebtAnalyzer",
+      "layer": "business",
+      "agentType": "analyzer",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/migration/mysql-analyzer/core/debt-analyzer.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/business/analyzers/debt-analyzer/debt-analyzer.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "type-converter",
+      "name": "TypeConverter",
+      "layer": "business",
+      "agentType": "unknown",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/migration/mysql-analyzer/agents/type-converter.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/business/misc/type-converter/type-converter.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "type-auditor",
+      "name": "TypeAuditor",
+      "layer": "business",
+      "agentType": "unknown",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/migration/mysql-analyzer/agents/type-auditor.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/business/misc/type-auditor/type-auditor.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "relational-normalizer",
+      "name": "RelationalNormalizer",
+      "layer": "business",
+      "agentType": "unknown",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/migration/mysql-analyzer/agents/relational-normalizer.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/business/misc/relational-normalizer/relational-normalizer.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "prisma-generator",
+      "name": "PrismaGenerator",
+      "layer": "business",
+      "agentType": "generator",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/migration/mysql-analyzer/agents/prisma-generator.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/business/generators/prisma-generator/prisma-generator.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "migration-strategist",
+      "name": "migration-strategist",
+      "layer": "business",
+      "agentType": "unknown",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/migration/mysql-analyzer/agents/migration-strategist.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/business/misc/migration-strategist/migration-strategist.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "debt-detector",
+      "name": "DebtDetector",
+      "layer": "business",
+      "agentType": "unknown",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/migration/mysql-analyzer/agents/debt-detector.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/business/misc/debt-detector/debt-detector.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "discovery-agent",
+      "name": "discovery-agent",
+      "layer": "business",
+      "agentType": "unknown",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/discovery/discovery-agent.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/business/misc/discovery-agent/discovery-agent.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "baseagent",
+      "name": "BaseAgent",
+      "layer": "business",
+      "agentType": "unknown",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/core/BaseAgent.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/business/misc/baseagent/baseagent.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "type-mapper",
+      "name": "type-mapper",
+      "layer": "business",
+      "agentType": "unknown",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/analysis/type-mapper.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/business/misc/type-mapper/type-mapper.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "table-cartographer",
+      "name": "table-cartographer",
+      "layer": "business",
+      "agentType": "unknown",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/analysis/table-cartographer.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/business/misc/table-cartographer/table-cartographer.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "semantic-table-mapper",
+      "name": "SemanticMapper",
+      "layer": "business",
+      "agentType": "unknown",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/analysis/semantic-table-mapper.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/business/misc/semantic-table-mapper/semantic-table-mapper.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "relation-analyzer",
+      "name": "relation-analyzer",
+      "layer": "business",
+      "agentType": "analyzer",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/analysis/relation-analyzer.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/business/analyzers/relation-analyzer/relation-analyzer.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "php-analyzer",
+      "name": "php-analyzer",
+      "layer": "business",
+      "agentType": "analyzer",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/analysis/php-analyzer.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/business/analyzers/php-analyzer/php-analyzer.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "php-analyzer-v4",
+      "name": "php-analyzer-v4",
+      "layer": "business",
+      "agentType": "analyzer",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/analysis/php-analyzer-v4.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/business/analyzers/php-analyzer-v4/php-analyzer-v4.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "php-analyzer-v3",
+      "name": "php-analyzer-v3",
+      "layer": "business",
+      "agentType": "analyzer",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/analysis/php-analyzer-v3.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/business/analyzers/php-analyzer-v3/php-analyzer-v3.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "php-analyzer-v2",
+      "name": "php-analyzer-v2",
+      "layer": "business",
+      "agentType": "analyzer",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/analysis/php-analyzer-v2.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/business/analyzers/php-analyzer-v2/php-analyzer-v2.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "mysql-analyzer+optimizer",
+      "name": "mysql-analyzer+optimizer",
+      "layer": "business",
+      "agentType": "analyzer",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/analysis/mysql-analyzer+optimizer.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/business/analyzers/mysql-analyzer+optimizer/mysql-analyzer+optimizer.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "htaccess-router-analyzer",
+      "name": "HtaccessRouterAnalyzer",
+      "layer": "business",
+      "agentType": "analyzer",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/analysis/htaccess-router-analyzer.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/business/analyzers/htaccess-router-analyzer/htaccess-router-analyzer.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "generate_prisma_model",
+      "name": "generate_prisma_model",
+      "layer": "business",
+      "agentType": "generator",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/analysis/generate_prisma_model.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/business/generators/generate_prisma_model/generate_prisma_model.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "agent-structure",
+      "name": "StructureAgent",
+      "layer": "business",
+      "agentType": "unknown",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/analysis/agent-structure.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/business/misc/agent-structure/agent-structure.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "agent-donnees",
+      "name": "agent-donnees",
+      "layer": "business",
+      "agentType": "unknown",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/analysis/agent-donnees.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/business/misc/agent-donnees/agent-donnees.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "structureagent",
+      "name": "StructureAgent",
+      "layer": "business",
+      "agentType": "unknown",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/analysis/StructureAgent.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/business/misc/structureagent/structureagent.ts",
+      "implemented": {
+        "baseInterface": true,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "dependencyagent",
+      "name": "DependencyAgent",
+      "layer": "business",
+      "agentType": "unknown",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/analysis/DependencyAgent.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/business/misc/dependencyagent/dependencyagent.ts",
+      "implemented": {
+        "baseInterface": true,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "dataagent",
+      "name": "DataAgent",
+      "layer": "business",
+      "agentType": "unknown",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/analysis/DataAgent.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/business/misc/dataagent/dataagent.ts",
+      "implemented": {
+        "baseInterface": true,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "nginx-config-parser",
+      "name": "NginxConfigParser",
+      "layer": "business",
+      "agentType": "parser",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/analysis/config-parsers/nginx-config-parser.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/business/parsers/nginx-config-parser/nginx-config-parser.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "htaccess-parser",
+      "name": "HtaccessParser",
+      "layer": "business",
+      "agentType": "parser",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/analysis/config-parsers/htaccess-parser.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/business/parsers/htaccess-parser/htaccess-parser.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "notifier",
+      "name": "MCPNotifier",
+      "layer": "unknown",
+      "agentType": "unknown",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/notifier.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/others/misc/notifier/notifier.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "supabaseoptimizationtracker",
+      "name": "SupabaseOptimizationTracker",
+      "layer": "unknown",
+      "agentType": "unknown",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/optimization/SupabaseOptimizationTracker.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/others/misc/supabaseoptimizationtracker/supabaseoptimizationtracker.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "php-sql-sync-mapper",
+      "name": "php-sql-sync-mapper",
+      "layer": "unknown",
+      "agentType": "unknown",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/migration/php-sql-sync-mapper.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/others/misc/php-sql-sync-mapper/php-sql-sync-mapper.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "php-sql-mapper",
+      "name": "php-sql-mapper",
+      "layer": "unknown",
+      "agentType": "unknown",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/migration/php-sql-mapper.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/others/misc/php-sql-mapper/php-sql-mapper.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "inject-to-supabase",
+      "name": "inject-to-supabase",
+      "layer": "unknown",
+      "agentType": "unknown",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/migration/inject-to-supabase.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/others/misc/inject-to-supabase/inject-to-supabase.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "canonical-sync-agent",
+      "name": "CanonicalSyncAgent",
+      "layer": "unknown",
+      "agentType": "unknown",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/migration/php-to-remix/canonical-sync-agent.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/others/misc/canonical-sync-agent/canonical-sync-agent.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "schema",
+      "name": "schema",
+      "layer": "unknown",
+      "agentType": "unknown",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/migration/mysql-analyzer/models/schema.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/others/misc/schema/schema.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "type-converter",
+      "name": "TypeConverter",
+      "layer": "unknown",
+      "agentType": "unknown",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/migration/mysql-analyzer/core/type-converter.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/others/misc/type-converter/type-converter.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "table-classifier",
+      "name": "TableClassifier",
+      "layer": "unknown",
+      "agentType": "unknown",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/migration/mysql-analyzer/core/table-classifier.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/others/misc/table-classifier/table-classifier.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "classifier",
+      "name": "TableClassifier",
+      "layer": "unknown",
+      "agentType": "unknown",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/migration/mysql-analyzer/core/classifier.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/others/misc/classifier/classifier.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "notification-service",
+      "name": "NotificationService",
+      "layer": "unknown",
+      "agentType": "unknown",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/integration/notification-service.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/others/misc/notification-service/notification-service.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "metrics-service",
+      "name": "MetricsService",
+      "layer": "unknown",
+      "agentType": "unknown",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/integration/metrics-service.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/others/misc/metrics-service/metrics-service.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "audit-selector",
+      "name": "audit-selector",
+      "layer": "unknown",
+      "agentType": "unknown",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/discovery/audit-selector.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/others/misc/audit-selector/audit-selector.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "selector-agent",
+      "name": "selector-agent",
+      "layer": "unknown",
+      "agentType": "unknown",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/core/selector-agent.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/others/misc/selector-agent/selector-agent.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "mcp-integrator",
+      "name": "mcp-integrator",
+      "layer": "unknown",
+      "agentType": "unknown",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/core/mcp-integrator.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/others/misc/mcp-integrator/mcp-integrator.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "php-discovery-engine",
+      "name": "php-discovery-engine",
+      "layer": "unknown",
+      "agentType": "unknown",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/analysis/php-discovery-engine.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/others/misc/php-discovery-engine/php-discovery-engine.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    },
+    {
+      "id": "dynamic_sql_extractor",
+      "name": "dynamic_sql_extractor",
+      "layer": "unknown",
+      "agentType": "unknown",
+      "usageCount": 0,
+      "currentPath": "/workspaces/cahier-des-charge/agents/analysis/dynamic_sql_extractor.ts",
+      "migrationPath": "/workspaces/cahier-des-charge/packages/mcp-agents/others/misc/dynamic_sql_extractor/dynamic_sql_extractor.ts",
+      "implemented": {
+        "baseInterface": false,
+        "layerInterface": false,
+        "typeInterface": false
+      }
+    }
+  ]
+}

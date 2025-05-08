@@ -1,0 +1,683 @@
+{
+  "version": "1.2.0",
+  "updated": "2025-04-21",
+  "taxonomySchema": {
+    "layer": {
+      "description": "Couche architecturale dans MCP OS",
+      "values": ["orchestration", "coordination", "business", "shared", "unknown"]
+    },
+    "domain": {
+      "description": "Domaine fonctionnel",
+      "values": [
+        "migration",
+        "seo",
+        "analysis",
+        "quality",
+        "monitoring",
+        "dashboard",
+        "core",
+        "tools",
+        "integration",
+        "documentation",
+        "unknown"
+      ]
+    },
+    "status": {
+      "description": "État du fichier dans le cycle de vie",
+      "values": ["active", "developing", "testing", "stable", "deprecated", "legacy", "unknown"]
+    }
+  },
+  "defaultClassification": {
+    "layer": "unknown",
+    "domain": "unknown",
+    "status": "unknown"
+  },
+  "folderClassifications": [
+    {
+      "pattern": "agents/**",
+      "classification": {
+        "layer": "coordination",
+        "domain": "migration",
+        "status": "active"
+      }
+    },
+    {
+      "pattern": "apps/orchestration/**",
+      "classification": {
+        "layer": "orchestration",
+        "status": "active"
+      }
+    },
+    {
+      "pattern": "apps/dashboard/**",
+      "classification": {
+        "domain": "dashboard",
+        "layer": "business",
+        "status": "active"
+      }
+    },
+    {
+      "pattern": "packages/mcp-agents/**",
+      "classification": {
+        "layer": "coordination",
+        "status": "active"
+      }
+    },
+    {
+      "pattern": "packages/mcp-agents/core/**",
+      "classification": {
+        "layer": "coordination",
+        "domain": "core",
+        "status": "active"
+      }
+    },
+    {
+      "pattern": "packages/mcp-agents/analyzers/**",
+      "classification": {
+        "layer": "coordination",
+        "domain": "analysis",
+        "status": "active"
+      }
+    },
+    {
+      "pattern": "packages/experimental/**",
+      "classification": {
+        "layer": "business",
+        "domain": "migration",
+        "status": "developing"
+      }
+    },
+    {
+      "pattern": "scripts/**",
+      "classification": {
+        "layer": "orchestration",
+        "domain": "tools",
+        "status": "active"
+      }
+    },
+    {
+      "pattern": "scripts/monitoring/**",
+      "classification": {
+        "layer": "orchestration",
+        "domain": "monitoring",
+        "status": "active"
+      }
+    },
+    {
+      "pattern": "tools/**",
+      "classification": {
+        "domain": "tools",
+        "layer": "orchestration",
+        "status": "active"
+      }
+    },
+    {
+      "pattern": "config/**",
+      "classification": {
+        "layer": "orchestration",
+        "domain": "core",
+        "status": "stable"
+      }
+    },
+    {
+      "pattern": "bin/**",
+      "classification": {
+        "layer": "orchestration",
+        "domain": "tools",
+        "status": "active"
+      }
+    },
+    {
+      "pattern": "src/**",
+      "classification": {
+        "layer": "business",
+        "domain": "core",
+        "status": "active"
+      }
+    },
+    {
+      "pattern": "docs/**",
+      "classification": {
+        "domain": "documentation",
+        "status": "stable"
+      }
+    },
+    {
+      "pattern": "**/test/**",
+      "classification": {
+        "status": "testing"
+      }
+    },
+    {
+      "pattern": "**/tests/**",
+      "classification": {
+        "status": "testing"
+      }
+    },
+    {
+      "pattern": "shared/**",
+      "classification": {
+        "layer": "shared",
+        "status": "stable"
+      }
+    },
+    {
+      "pattern": "legacy/**",
+      "classification": {
+        "status": "legacy"
+      }
+    }
+  ],
+  "fileClassifications": [
+    {
+      "pattern": "**/agentRegistry.ts",
+      "classification": {
+        "layer": "coordination",
+        "domain": "core",
+        "status": "active"
+      }
+    },
+    {
+      "pattern": "**/agent-manifest.json",
+      "classification": {
+        "layer": "coordination",
+        "domain": "core",
+        "status": "active"
+      }
+    },
+    {
+      "pattern": "**/agent-interface-validator.ts",
+      "classification": {
+        "layer": "shared",
+        "domain": "quality",
+        "status": "active"
+      }
+    },
+    {
+      "pattern": "**/detect-agent-methods.ts",
+      "classification": {
+        "layer": "coordination",
+        "domain": "analysis",
+        "status": "active"
+      }
+    },
+    {
+      "pattern": "**/agent-import-mapping.json",
+      "classification": {
+        "layer": "coordination",
+        "domain": "migration",
+        "status": "active"
+      }
+    },
+    {
+      "pattern": "**/*migration-report*",
+      "classification": {
+        "domain": "analysis",
+        "status": "active"
+      }
+    },
+    {
+      "pattern": "**/n8n.*.json",
+      "classification": {
+        "layer": "orchestration",
+        "domain": "integration",
+        "status": "active"
+      }
+    },
+    {
+      "pattern": "**/docker-compose*.yml",
+      "classification": {
+        "layer": "orchestration",
+        "domain": "integration",
+        "status": "active"
+      }
+    },
+    {
+      "pattern": "**/Dockerfile*",
+      "classification": {
+        "layer": "orchestration",
+        "domain": "integration",
+        "status": "active"
+      }
+    },
+    {
+      "pattern": "**/dashboard*.tsx",
+      "classification": {
+        "layer": "business",
+        "domain": "dashboard",
+        "status": "active"
+      }
+    },
+    {
+      "pattern": "**/dashboard*.html",
+      "classification": {
+        "layer": "business",
+        "domain": "dashboard",
+        "status": "active"
+      }
+    },
+    {
+      "pattern": "**/fix-*.sh",
+      "classification": {
+        "layer": "orchestration",
+        "domain": "tools",
+        "status": "active"
+      }
+    },
+    {
+      "pattern": "**/implement-*.sh",
+      "classification": {
+        "layer": "orchestration",
+        "domain": "tools",
+        "status": "active"
+      }
+    },
+    {
+      "pattern": "**/implement-*.ts",
+      "classification": {
+        "layer": "coordination",
+        "domain": "migration",
+        "status": "active"
+      }
+    },
+    {
+      "pattern": "**/*.sql",
+      "classification": {
+        "domain": "migration",
+        "layer": "business",
+        "status": "active"
+      }
+    },
+    {
+      "pattern": "**/migration*.json",
+      "classification": {
+        "domain": "migration",
+        "status": "active"
+      }
+    },
+    {
+      "pattern": "**/migration-results*.json",
+      "classification": {
+        "domain": "analysis",
+        "status": "active"
+      }
+    },
+    {
+      "pattern": "**/MCPManifest.json",
+      "classification": {
+        "layer": "coordination",
+        "domain": "core",
+        "status": "active"
+      }
+    },
+    {
+      "pattern": "**/mcp-routes.ts",
+      "classification": {
+        "layer": "business",
+        "domain": "core",
+        "status": "active"
+      }
+    },
+    {
+      "pattern": "**/*.test.ts",
+      "classification": {
+        "status": "testing"
+      }
+    },
+    {
+      "pattern": "**/*.spec.ts",
+      "classification": {
+        "status": "testing"
+      }
+    },
+    {
+      "pattern": "**/test-*.*",
+      "classification": {
+        "status": "testing"
+      }
+    },
+    {
+      "pattern": "**/*-test.*",
+      "classification": {
+        "status": "testing"
+      }
+    },
+    {
+      "pattern": "**/*.md",
+      "classification": {
+        "domain": "documentation",
+        "status": "stable"
+      }
+    },
+    {
+      "pattern": "**/*-agent.ts",
+      "classification": {
+        "layer": "coordination",
+        "domain": "migration",
+        "status": "active"
+      }
+    },
+    {
+      "pattern": "**/*Agent.ts",
+      "classification": {
+        "layer": "coordination",
+        "domain": "migration",
+        "status": "active"
+      }
+    },
+    {
+      "pattern": "**/*-orchestrator.ts",
+      "classification": {
+        "layer": "orchestration",
+        "domain": "core",
+        "status": "active"
+      }
+    },
+    {
+      "pattern": "**/*Orchestrator.ts",
+      "classification": {
+        "layer": "orchestration",
+        "domain": "core",
+        "status": "active"
+      }
+    },
+    {
+      "pattern": "**/*Interface.ts",
+      "classification": {
+        "layer": "shared",
+        "status": "stable"
+      }
+    },
+    {
+      "pattern": "**/*-interface.ts",
+      "classification": {
+        "layer": "shared",
+        "status": "stable"
+      }
+    },
+    {
+      "pattern": "**/*.sh",
+      "classification": {
+        "layer": "orchestration",
+        "domain": "tools",
+        "status": "active"
+      }
+    },
+    {
+      "pattern": "**/*.json",
+      "classification": {
+        "layer": "shared",
+        "status": "stable"
+      }
+    },
+    {
+      "pattern": "**/*config*.json",
+      "classification": {
+        "layer": "orchestration",
+        "domain": "core",
+        "status": "stable"
+      }
+    },
+    {
+      "pattern": "**/*-report*.md",
+      "classification": {
+        "domain": "analysis",
+        "status": "active"
+      }
+    },
+    {
+      "pattern": "**/*-report*.json",
+      "classification": {
+        "domain": "analysis",
+        "status": "active"
+      }
+    },
+    {
+      "pattern": "**/analyze-*.sh",
+      "classification": {
+        "domain": "analysis",
+        "status": "active"
+      }
+    },
+    {
+      "pattern": "**/check-*.sh",
+      "classification": {
+        "domain": "quality",
+        "status": "active"
+      }
+    },
+    {
+      "pattern": "**/validate-*.sh",
+      "classification": {
+        "domain": "quality",
+        "status": "active"
+      }
+    },
+    {
+      "pattern": "**/ci-*.sh",
+      "classification": {
+        "domain": "quality",
+        "status": "active"
+      }
+    },
+    {
+      "pattern": "**/*.tsx",
+      "classification": {
+        "layer": "business",
+        "status": "active"
+      }
+    },
+    {
+      "pattern": "**/*.ts",
+      "classification": {
+        "layer": "business",
+        "status": "active"
+      }
+    },
+    {
+      "pattern": "**/*-statistics*",
+      "classification": {
+        "domain": "analysis",
+        "status": "active"
+      }
+    },
+    {
+      "pattern": "**/*seo*",
+      "classification": {
+        "domain": "seo",
+        "status": "active"
+      }
+    },
+    {
+      "pattern": "**/improve-*",
+      "classification": {
+        "domain": "quality",
+        "status": "active"
+      }
+    },
+    {
+      "pattern": "**/cleanup-*",
+      "classification": {
+        "domain": "quality",
+        "status": "active"
+      }
+    },
+    {
+      "pattern": "**/clean-*",
+      "classification": {
+        "domain": "quality",
+        "status": "active"
+      }
+    },
+    {
+      "pattern": "**/*.backup",
+      "classification": {
+        "status": "deprecated"
+      }
+    },
+    {
+      "pattern": "**/*.bak",
+      "classification": {
+        "status": "deprecated"
+      }
+    },
+    {
+      "pattern": "**/*-backup*",
+      "classification": {
+        "status": "deprecated"
+      }
+    },
+    {
+      "pattern": "**/*-bak*",
+      "classification": {
+        "status": "deprecated"
+      }
+    },
+    {
+      "pattern": "**/*.bak.*",
+      "classification": {
+        "status": "deprecated"
+      }
+    },
+    {
+      "pattern": "**/*backup*",
+      "classification": {
+        "status": "deprecated"
+      }
+    },
+    {
+      "pattern": "**/*legacy*",
+      "classification": {
+        "status": "legacy"
+      }
+    },
+    {
+      "pattern": "**/*.v1.*",
+      "classification": {
+        "status": "legacy"
+      }
+    },
+    {
+      "pattern": "**/generate-*.ts",
+      "classification": {
+        "domain": "tools",
+        "status": "active"
+      }
+    },
+    {
+      "pattern": "**/generate-*.sh",
+      "classification": {
+        "domain": "tools",
+        "status": "active"
+      }
+    },
+    {
+      "pattern": "**/consolidate-*",
+      "classification": {
+        "domain": "migration",
+        "status": "active"
+      }
+    },
+    {
+      "pattern": "**/configure-*",
+      "classification": {
+        "domain": "core",
+        "layer": "orchestration",
+        "status": "active"
+      }
+    },
+    {
+      "pattern": "**/integrate-*",
+      "classification": {
+        "domain": "integration",
+        "status": "active"
+      }
+    },
+    {
+      "pattern": "**/discovery_*.json",
+      "classification": {
+        "domain": "analysis",
+        "status": "active"
+      }
+    },
+    {
+      "pattern": "**/backlog.json",
+      "classification": {
+        "domain": "tools",
+        "status": "active"
+      }
+    },
+    {
+      "pattern": "**/backlog.mcp.json",
+      "classification": {
+        "domain": "tools",
+        "status": "active"
+      }
+    },
+    {
+      "pattern": "**/clickable_*.txt",
+      "classification": {
+        "domain": "tools",
+        "status": "active"
+      }
+    },
+    {
+      "pattern": "**/clean_file_*.txt",
+      "classification": {
+        "domain": "tools",
+        "status": "deprecated"
+      }
+    },
+    {
+      "pattern": "**/ARCHITECTURE.md",
+      "classification": {
+        "domain": "documentation",
+        "status": "stable"
+      }
+    }
+  ],
+  "contentClassifications": [
+    {
+      "pattern": "@deprecated",
+      "classification": {
+        "status": "deprecated"
+      }
+    },
+    {
+      "pattern": "TODO: remove",
+      "classification": {
+        "status": "deprecated"
+      }
+    },
+    {
+      "pattern": "Will be removed in",
+      "classification": {
+        "status": "deprecated"
+      }
+    },
+    {
+      "pattern": "@Agent(",
+      "classification": {
+        "layer": "coordination"
+      }
+    },
+    {
+      "pattern": "extends BaseAgent",
+      "classification": {
+        "layer": "coordination"
+      }
+    },
+    {
+      "pattern": "implements AgentInterface",
+      "classification": {
+        "layer": "coordination"
+      }
+    },
+    {
+      "pattern": "@Orchestration",
+      "classification": {
+        "layer": "orchestration"
+      }
+    }
+  ]
+}

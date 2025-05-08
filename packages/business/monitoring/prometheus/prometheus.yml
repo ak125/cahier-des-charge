@@ -1,0 +1,46 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  scrape_timeout: 10s
+
+# Configuration des alertes
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+          - alertmanager:9093
+
+# Règles d'évaluation et d'alerte chargées ici
+rule_files:
+  - "rules/*.yml"
+
+# Configuration des sources de métriques (endpoints)
+scrape_configs:
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  - job_name: 'node-exporter'
+    static_configs:
+      - targets: ['node-exporter:9100']
+
+  # Métriques pour les agents MCP
+  - job_name: 'mcp-agents'
+    metrics_path: '/metrics'
+    scrape_interval: 5s
+    static_configs:
+      - targets: ['host.docker.internal:3001']
+    
+  # Métriques pour le pipeline de migration
+  - job_name: 'migration-pipeline'
+    metrics_path: '/metrics/pipeline'
+    scrape_interval: 5s
+    static_configs:
+      - targets: ['host.docker.internal:3001']
+
+  # Métriques pour Nx/Earthly/CI
+  - job_name: 'ci-metrics'
+    metrics_path: '/metrics/ci'
+    scrape_interval: 10s
+    static_configs:
+      - targets: ['host.docker.internal:3001']

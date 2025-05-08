@@ -1,0 +1,231 @@
+{
+  "extractionDate": "2025-05-06T13:00:20+00:00",
+  "totalWorkflows": 45,
+  "workflowFiles": [
+    {
+      "name": "Alertes_Complexit_PHP_Avances",
+      "path": "workflows/Alertes_Complexit_PHP_Avances_20250506130018.json",
+      "lastModified": "2025-05-06T13:00:18+00:00"
+    },
+    {
+      "name": "Analyse_htaccess_pour_SEO_et_Migration",
+      "path": "workflows/Analyse_htaccess_pour_SEO_et_Migration_20250506130019.json",
+      "lastModified": "2025-05-06T13:00:19+00:00"
+    },
+    {
+      "name": "AutoRemdiation_des_Divergences",
+      "path": "workflows/AutoRemdiation_des_Divergences_20250506130020.json",
+      "lastModified": "2025-05-06T13:00:20+00:00"
+    },
+    {
+      "name": "BullMQ_Orchestrator_Pipeline",
+      "path": "workflows/BullMQ_Orchestrator_Pipeline_20250506130019.json",
+      "lastModified": "2025-05-06T13:00:19+00:00"
+    },
+    {
+      "name": "CICD_Pipeline_Workflow",
+      "path": "workflows/CICD_Pipeline_Workflow_20250506130020.json",
+      "lastModified": "2025-05-06T13:00:20+00:00"
+    },
+    {
+      "name": "Docker_Cleanup_Workflow",
+      "path": "workflows/Docker_Cleanup_Workflow_20250506130018.json",
+      "lastModified": "2025-05-06T13:00:18+00:00"
+    },
+    {
+      "name": "Generate_Migration_Plans_Workflow",
+      "path": "workflows/Generate_Migration_Plans_Workflow_20250506130020.json",
+      "lastModified": "2025-05-06T13:00:20+00:00"
+    },
+    {
+      "name": "Htaccess_Analyzer_Workflow",
+      "path": "workflows/Htaccess_Analyzer_Workflow_20250506130019.json",
+      "lastModified": "2025-05-06T13:00:19+00:00"
+    },
+    {
+      "name": "MCP_Workflow_Pipeline",
+      "path": "workflows/MCP_Workflow_Pipeline_20250506130020.json",
+      "lastModified": "2025-05-06T13:00:20+00:00"
+    },
+    {
+      "name": "Migration_Data_Validator",
+      "path": "workflows/Migration_Data_Validator_20250506130018.json",
+      "lastModified": "2025-05-06T13:00:18+00:00"
+    },
+    {
+      "name": "Migration_Orchestrator_Pipeline",
+      "path": "workflows/Migration_Orchestrator_Pipeline_20250506130018.json",
+      "lastModified": "2025-05-06T13:00:18+00:00"
+    },
+    {
+      "name": "Migration_SQL_complte__Pipeline",
+      "path": "workflows/Migration_SQL_complte__Pipeline_20250506130019.json",
+      "lastModified": "2025-05-06T13:00:19+00:00"
+    },
+    {
+      "name": "Monorepo_Analyzer_Pipeline",
+      "path": "workflows/Monorepo_Analyzer_Pipeline_20250506130018.json",
+      "lastModified": "2025-05-06T13:00:18+00:00"
+    },
+    {
+      "name": "MySQL_Analyzer_Workflow",
+      "path": "workflows/MySQL_Analyzer_Workflow_20250506130019.json",
+      "lastModified": "2025-05-06T13:00:19+00:00"
+    },
+    {
+      "name": "PHP_Analyzer_Pipeline",
+      "path": "workflows/PHP_Analyzer_Pipeline_20250506130018.json",
+      "lastModified": "2025-05-06T13:00:18+00:00"
+    },
+    {
+      "name": "PHP_Analyzer__Alertes_de_complexit",
+      "path": "workflows/PHP_Analyzer__Alertes_de_complexit_20250506130018.json",
+      "lastModified": "2025-05-06T13:00:18+00:00"
+    },
+    {
+      "name": "PHP_Audit_Pipeline",
+      "path": "workflows/PHP_Audit_Pipeline_20250506130018.json",
+      "lastModified": "2025-05-06T13:00:18+00:00"
+    },
+    {
+      "name": "PHP_Routes_Migration_Manager",
+      "path": "workflows/PHP_Routes_Migration_Manager_20250506130020.json",
+      "lastModified": "2025-05-06T13:00:20+00:00"
+    },
+    {
+      "name": "Pipeline_Migration_Routes_PHP_vers_Remix",
+      "path": "workflows/Pipeline_Migration_Routes_PHP_vers_Remix_20250506130017.json",
+      "lastModified": "2025-05-06T13:00:17+00:00"
+    },
+    {
+      "name": "Pipeline_de_Migration_Automatise_PHP__NestJSRemix",
+      "path": "workflows/Pipeline_de_Migration_Automatise_PHP__NestJSRemix_20250506130020.json",
+      "lastModified": "2025-05-06T13:00:20+00:00"
+    },
+    {
+      "name": "Pipeline_de_Migration_IA",
+      "path": "workflows/Pipeline_de_Migration_IA_20250506130018.json",
+      "lastModified": "2025-05-06T13:00:18+00:00"
+    },
+    {
+      "name": "Pipeline_de_Migration_IA",
+      "path": "workflows/Pipeline_de_Migration_IA_20250506130020.json",
+      "lastModified": "2025-05-06T13:00:20+00:00"
+    },
+    {
+      "name": "PostgreSQL_Analyzer_Workflow",
+      "path": "workflows/PostgreSQL_Analyzer_Workflow_20250506130019.json",
+      "lastModified": "2025-05-06T13:00:19+00:00"
+    },
+    {
+      "name": "Prisma_Analyzer_Workflow",
+      "path": "workflows/Prisma_Analyzer_Workflow_20250506130019.json",
+      "lastModified": "2025-05-06T13:00:19+00:00"
+    },
+    {
+      "name": "QA_Analyzer_Workflow",
+      "path": "workflows/QA_Analyzer_Workflow_20250506130020.json",
+      "lastModified": "2025-05-06T13:00:20+00:00"
+    },
+    {
+      "name": "SEO_Analyzer_Workflow",
+      "path": "workflows/SEO_Analyzer_Workflow_20250506130020.json",
+      "lastModified": "2025-05-06T13:00:20+00:00"
+    },
+    {
+      "name": "SQL_Analyzer_IA_Pipeline",
+      "path": "workflows/SQL_Analyzer_IA_Pipeline_20250506130019.json",
+      "lastModified": "2025-05-06T13:00:19+00:00"
+    },
+    {
+      "name": "SQL_Analyzer__Analyse_Relationnelle__Cohrence_Rfrentielle",
+      "path": "workflows/SQL_Analyzer__Analyse_Relationnelle__Cohrence_Rfrentielle_20250506130019.json",
+      "lastModified": "2025-05-06T13:00:19+00:00"
+    },
+    {
+      "name": "SQL_Analyzer__Cartographe_Smantique_des_Tables",
+      "path": "workflows/SQL_Analyzer__Cartographe_Smantique_des_Tables_20250506130019.json",
+      "lastModified": "2025-05-06T13:00:19+00:00"
+    },
+    {
+      "name": "SQL_Analyzer__Prisma_Builder_Workflow",
+      "path": "workflows/SQL_Analyzer__Prisma_Builder_Workflow_20250506130020.json",
+      "lastModified": "2025-05-06T13:00:20+00:00"
+    },
+    {
+      "name": "Supabase_Analyzer_Workflow",
+      "path": "workflows/Supabase_Analyzer_Workflow_20250506130019.json",
+      "lastModified": "2025-05-06T13:00:19+00:00"
+    },
+    {
+      "name": "Vrification_PHP__NestJSRemix",
+      "path": "workflows/Vrification_PHP__NestJSRemix_20250506130018.json",
+      "lastModified": "2025-05-06T13:00:18+00:00"
+    },
+    {
+      "name": "migrationpipelinen8n",
+      "path": "workflows/migrationpipelinen8n_20250506130017.json",
+      "lastModified": "2025-05-06T13:00:17+00:00"
+    },
+    {
+      "name": "migrationpipelinen8n",
+      "path": "workflows/migrationpipelinen8n_20250506130019.json",
+      "lastModified": "2025-05-06T13:00:19+00:00"
+    },
+    {
+      "name": "migrationworkflown8n",
+      "path": "workflows/migrationworkflown8n_20250506130017.json",
+      "lastModified": "2025-05-06T13:00:17+00:00"
+    },
+    {
+      "name": "migrationworkflown8n",
+      "path": "workflows/migrationworkflown8n_20250506130018.json",
+      "lastModified": "2025-05-06T13:00:18+00:00"
+    },
+    {
+      "name": "n8nauditanalyzerworkflow",
+      "path": "workflows/n8nauditanalyzerworkflow_20250506130017.json",
+      "lastModified": "2025-05-06T13:00:17+00:00"
+    },
+    {
+      "name": "n8nauditanalyzerworkflow",
+      "path": "workflows/n8nauditanalyzerworkflow_20250506130018.json",
+      "lastModified": "2025-05-06T13:00:18+00:00"
+    },
+    {
+      "name": "n8nmysqlanalyzer",
+      "path": "workflows/n8nmysqlanalyzer_20250506130017.json",
+      "lastModified": "2025-05-06T13:00:17+00:00"
+    },
+    {
+      "name": "n8nmysqlanalyzer",
+      "path": "workflows/n8nmysqlanalyzer_20250506130018.json",
+      "lastModified": "2025-05-06T13:00:18+00:00"
+    },
+    {
+      "name": "n8nupdateauditnode",
+      "path": "workflows/n8nupdateauditnode_20250506130017.json",
+      "lastModified": "2025-05-06T13:00:17+00:00"
+    },
+    {
+      "name": "n8nupdateauditnode",
+      "path": "workflows/n8nupdateauditnode_20250506130019.json",
+      "lastModified": "2025-05-06T13:00:19+00:00"
+    },
+    {
+      "name": "unnamedworkflow",
+      "path": "workflows/unnamedworkflow_20250506130018.json",
+      "lastModified": "2025-05-06T13:00:18+00:00"
+    },
+    {
+      "name": "waverunnern8n",
+      "path": "workflows/waverunnern8n_20250506130017.json",
+      "lastModified": "2025-05-06T13:00:17+00:00"
+    },
+    {
+      "name": "waverunnern8n",
+      "path": "workflows/waverunnern8n_20250506130019.json",
+      "lastModified": "2025-05-06T13:00:19+00:00"
+    }
+  ]
+}

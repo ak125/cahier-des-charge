@@ -1,0 +1,32 @@
+Rapport de nettoyage - Thu May  1 23:19:56 UTC 2025
+=================================
+
+## Pattern: **/dist
+Fichiers trouvés: 2
+Exemples:
+/workspaces/cahier-des-charge/packages/mcp-agents/dist
+/workspaces/cahier-des-charge/packages/mcp-cli/dist
+
+## Pattern: **/build
+Fichiers trouvés: 2
+Exemples:
+/workspaces/cahier-des-charge/wasm-agents/build
+/workspaces/cahier-des-charge/packages/mcp-wasm-agents/build
+
+## Pattern: **/.cache
+Fichiers trouvés: 1
+Exemples:
+/workspaces/cahier-des-charge/apps/admin-dashboard/.cache
+
+## Pattern: **/*.log
+Fichiers trouvés: 3
+Exemples:
+/workspaces/cahier-des-charge/logs/standardized-filenames.log
+/workspaces/cahier-des-charge/logs/merge-operations.log
+/workspaces/cahier-des-charge/logs/real-duplicates-merge.log
+
+=================================
+Résumé du nettoyage:
+- Fichiers/dossiers traités: 8
+- Taille initiale: 358M
+- Taille finale: 352M

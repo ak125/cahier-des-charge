@@ -1,0 +1,71 @@
+{
+  "name": "mcp-server-postgres",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/mcp-server-postgres/src",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nx/webpack:webpack",
+      "outputs": [
+        "{options.outputPath}"
+      ],
+      "defaultConfiguration": "production",
+      "options": {
+        "target": "node",
+        "compiler": "tsc",
+        "outputPath": "dist/apps/mcp-server-postgres",
+        "main": "apps/mcp-server-postgres/src/main.ts",
+        "tsConfig": "apps/mcp-server-postgres/tsconfig.app.json",
+        "assets": [
+          "apps/mcp-server-postgres/src/assets"
+        ],
+        "isolatedConfig": true,
+        "webpackConfig": "apps/mcp-server-postgres/webpack.config.js"
+      },
+      "configurations": {
+        "development": {},
+        "production": {}
+      }
+    },
+    "serve": {
+      "executor": "@nx/js:node",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "mcp-server-postgres:build"
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "mcp-server-postgres:build:development"
+        },
+        "production": {
+          "buildTarget": "mcp-server-postgres:build:production"
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": [
+        "{options.outputFile}"
+      ],
+      "options": {
+        "lintFilePatterns": [
+          "apps/mcp-server-postgres/**/*.{ts,tsx,js,jsx}"
+        ]
+      }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": [
+        "{workspaceRoot}/coverage/{projectRoot}"
+      ],
+      "options": {
+        "jestConfig": "apps/mcp-server-postgres/jest.config.ts"
+      }
+    }
+  },
+  "tags": [
+    "backend",
+    "mcp",
+    "postgres"
+  ]
+}

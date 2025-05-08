@@ -1,0 +1,101 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql" // Modifié de MySQL à PostgreSQL pour la migration
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           Int       @id @default(autoincrement())
+  email        String    @unique
+  passwordHash String    @map("password_hash")
+  firstName    String?   @map("first_name")
+  lastName     String?   @map("last_name")
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime? @map("updated_at")
+  lastLogin    DateTime? @map("last_login")
+  isActive     Boolean   @default(true) @map("is_active")
+  
+  // Relations
+  sessions     Session[]
+  orders       Order[]
+
+  @@map("users")
+}
+
+model Session {
+  id         String   @id @map("id")
+  userId     Int      @map("user_id")
+  token      String   @unique
+  ipAddress  String?  @map("ip_address")
+  userAgent  String?  @map("user_agent")
+  expiresAt  DateTime @map("expires_at")
+  createdAt  DateTime @default(now()) @map("created_at")
+  
+  // Relations
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@map("sessions")
+}
+
+model Product {
+  id            Int       @id @default(autoincrement())
+  sku           String    @unique
+  name          String
+  description   String?
+  price         Decimal   @db.Decimal(10, 2)
+  categoryId    Int?      @map("category_id")
+  stockQuantity Int       @default(0) @map("stock_quantity")
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime? @map("updated_at")
+  
+  // Relations
+  category      Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+
+  @@map("products")
+}
+
+model Category {
+  id          Int       @id @default(autoincrement())
+  name        String    @unique
+  parentId    Int?      @map("parent_id")
+  description String?
+  createdAt   DateTime  @default(now()) @map("created_at")
+  
+  // Relations
+  parent      Category? @relation("CategoryHierarchy", fields: [parentId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  children    Category[] @relation("CategoryHierarchy")
+  products    Product[]
+
+  @@map("categories")
+}
+
+model Order {
+  id              Int      @id @default(autoincrement())
+  userId          Int      @map("user_id")
+  orderDate       DateTime @default(now()) @map("order_date")
+  status          OrderStatus @default(PENDING)
+  totalAmount     Decimal  @map("total_amount") @db.Decimal(12, 2)
+  shippingAddress String?  @map("shipping_address")
+  shippingMethod  String?  @map("shipping_method")
+  paymentMethod   String?  @map("payment_method")
+  notes           String?
+  
+  // Relations
+  user            User     @relation(fields: [userId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+
+  @@map("orders")
+}
+
+enum OrderStatus {
+  PENDING
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}

@@ -1,0 +1,311 @@
+{
+    "apps": {
+        "frontend": {
+            "type": "remix",
+            "dependencies": [
+                "shared-ui",
+                "business-logic"
+            ],
+            "outputs": [
+                "dist/apps/frontend"
+            ],
+            "buildTargets": [
+                "build",
+                "test",
+                "lint",
+                "typecheck",
+                "seo-check"
+            ]
+        },
+        "backend": {
+            "type": "nestjs",
+            "dependencies": [
+                "business-logic",
+                "db-layer"
+            ],
+            "outputs": [
+                "dist/apps/backend"
+            ],
+            "buildTargets": [
+                "build",
+                "test",
+                "lint",
+                "typecheck"
+            ]
+        },
+        "mcp-server": {
+            "type": "nestjs",
+            "dependencies": [
+                "agents",
+                "shared-utils"
+            ],
+            "outputs": [
+                "dist/apps/mcp-server"
+            ],
+            "buildTargets": [
+                "build",
+                "test",
+                "lint",
+                "typecheck"
+            ]
+        },
+        "dashboard": {
+            "type": "react",
+            "dependencies": [
+                "monitoring-utils",
+                "shared-ui"
+            ],
+            "outputs": [
+                "dist/apps/dashboard"
+            ],
+            "buildTargets": [
+                "build",
+                "test",
+                "lint",
+                "typecheck"
+            ]
+        },
+        "admin-dashboard": {
+            "type": "react",
+            "dependencies": [
+                "shared-ui",
+                "business-logic"
+            ],
+            "outputs": [
+                "dist/apps/admin-dashboard"
+            ],
+            "buildTargets": [
+                "build",
+                "test",
+                "lint",
+                "typecheck"
+            ]
+        },
+        "redirect-tester": {
+            "type": "node",
+            "dependencies": [
+                "shared-utils"
+            ],
+            "outputs": [
+                "dist/apps/redirect-tester"
+            ],
+            "buildTargets": [
+                "build",
+                "test",
+                "lint",
+                "typecheck"
+            ]
+        }
+    },
+    "packages": {
+        "shared-ui": {
+            "type": "library",
+            "dependencies": [
+                "tailwind-config"
+            ],
+            "outputs": [
+                "dist/packages/shared-ui"
+            ],
+            "buildTargets": [
+                "build",
+                "test",
+                "lint",
+                "typecheck"
+            ]
+        },
+        "business-logic": {
+            "type": "library",
+            "dependencies": [
+                "db-layer"
+            ],
+            "outputs": [
+                "dist/packages/business-logic"
+            ],
+            "buildTargets": [
+                "build",
+                "test",
+                "lint",
+                "typecheck"
+            ]
+        },
+        "db-layer": {
+            "type": "library",
+            "dependencies": [],
+            "outputs": [
+                "dist/packages/db-layer"
+            ],
+            "buildTargets": [
+                "build",
+                "test",
+                "lint",
+                "typecheck"
+            ]
+        },
+        "agents": {
+            "type": "library",
+            "dependencies": [
+                "shared-utils"
+            ],
+            "outputs": [
+                "dist/packages/agents"
+            ],
+            "buildTargets": [
+                "build",
+                "test",
+                "lint",
+                "typecheck"
+            ]
+        },
+        "shared-utils": {
+            "type": "library",
+            "dependencies": [],
+            "outputs": [
+                "dist/packages/shared-utils"
+            ],
+            "buildTargets": [
+                "build",
+                "test",
+                "lint",
+                "typecheck"
+            ]
+        },
+        "monitoring-utils": {
+            "type": "library",
+            "dependencies": [],
+            "outputs": [
+                "dist/packages/monitoring-utils"
+            ],
+            "buildTargets": [
+                "build",
+                "test",
+                "lint",
+                "typecheck"
+            ]
+        },
+        "tailwind-config": {
+            "type": "library",
+            "dependencies": [],
+            "outputs": [
+                "dist/packages/tailwind-config"
+            ],
+            "buildTargets": [
+                "build"
+            ]
+        },
+        "wasm-agents": {
+            "type": "wasm",
+            "dependencies": [],
+            "outputs": [
+                "dist/wasm/wasm-agents"
+            ],
+            "buildTargets": [
+                "build:wasm",
+                "test"
+            ]
+        }
+    },
+    "agents": {
+        "php-analyzer": {
+            "type": "mcp-agent",
+            "executable": "packages/agents/php-analyzer",
+            "wasmModule": "wasm-agents/php-analyzer.wasm",
+            "dependencies": [
+                "shared-utils"
+            ],
+            "manifests": [
+                "manifests/agents/php-analyzer.json"
+            ]
+        },
+        "remix-structure-generator": {
+            "type": "mcp-agent",
+            "executable": "packages/agents/remix-structure-generator",
+            "dependencies": [
+                "shared-utils"
+            ],
+            "manifests": [
+                "manifests/agents/remix-structure-generator.json"
+            ]
+        },
+        "remix-code-generator": {
+            "type": "mcp-agent",
+            "executable": "packages/agents/remix-code-generator",
+            "dependencies": [
+                "shared-utils"
+            ],
+            "manifests": [
+                "manifests/agents/remix-code-generator.json"
+            ]
+        },
+        "seo-migration-agent": {
+            "type": "mcp-agent",
+            "executable": "packages/agents/seo-migration-agent",
+            "dependencies": [
+                "shared-utils"
+            ],
+            "manifests": [
+                "manifests/agents/seo-migration-agent.json"
+            ]
+        },
+        "htaccess-migration-agent": {
+            "type": "mcp-agent",
+            "executable": "packages/agents/htaccess-migration-agent",
+            "dependencies": [
+                "shared-utils"
+            ],
+            "manifests": [
+                "manifests/agents/htaccess-migration-agent.json"
+            ]
+        },
+        "seo-validator": {
+            "type": "mcp-agent",
+            "executable": "packages/agents/seo-validator",
+            "dependencies": [
+                "shared-utils"
+            ],
+            "manifests": [
+                "manifests/agents/seo-validator.json"
+            ]
+        },
+        "performance-validator": {
+            "type": "mcp-agent",
+            "executable": "packages/agents/performance-validator",
+            "dependencies": [
+                "shared-utils"
+            ],
+            "manifests": [
+                "manifests/agents/performance-validator.json"
+            ]
+        },
+        "mcp-verifier": {
+            "type": "mcp-agent",
+            "executable": "packages/agents/mcp-verifier",
+            "dependencies": [
+                "shared-utils"
+            ],
+            "manifests": [
+                "manifests/agents/mcp-verifier.json"
+            ]
+        }
+    },
+    "ci": {
+        "build": {
+            "dependencies": [
+                "lint",
+                "typecheck",
+                "test"
+            ]
+        },
+        "deploy": {
+            "dependencies": [
+                "build",
+                "seo-check"
+            ]
+        },
+        "release": {
+            "dependencies": [
+                "deploy",
+                "e2e"
+            ]
+        }
+    }
+}

@@ -1,0 +1,16 @@
+{
+    "name": "@workspaces/mcp-types",
+    "version": "1.0.0",
+    "description": "Types partagés pour le Model Context Protocol",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "scripts": {
+        "build": "tsc",
+        "test": "jest",
+        "lint": "eslint src --ext .ts"
+    },
+    "devDependencies": {
+        "typescript": "^5.2.2",
+        "eslint": "^8.56.0"
+    }
+}

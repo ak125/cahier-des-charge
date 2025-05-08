@@ -1,0 +1,1515 @@
+{
+  "generatedAt": "2025-05-06T13:03:48.942Z",
+  "totalWorkflows": 45,
+  "sourceInventory": "/workspaces/cahier-des-charge/migrations/n8n-inventory/n8n-workflows-index.json",
+  "summary": {
+    "complexityDistribution": {
+      "Simple": 15,
+      "Modéré": 30,
+      "Complexe": 0
+    },
+    "criticalityDistribution": {
+      "Faible": 6,
+      "Moyenne": 13,
+      "Haute": 26
+    },
+    "strategyDistribution": {
+      "BullMQ": 15,
+      "Temporal": 30,
+      "API": 0,
+      "Suppression": 0,
+      "à déterminer": 0
+    },
+    "priorityDistribution": {
+      "P1": 21,
+      "P2": 18,
+      "P3": 6
+    },
+    "estimatedTotalEffort": 103,
+    "estimatedDuration": {
+      "weeks": 21,
+      "days": 103
+    }
+  },
+  "workflows": [
+    {
+      "name": "Alertes Complexité PHP Avancées",
+      "id": "workflow-1",
+      "filePath": "workflows/Alertes_Complexit_PHP_Avances_20250506130018.json",
+      "complexity": {
+        "level": "Modéré",
+        "score": 11,
+        "factors": [
+          "11 nœuds (+3)",
+          "6 connexions (+1)",
+          "Contient des webhooks (+3)",
+          "Contient des déclencheurs cron (+2)",
+          "Contient des appels API externes (+2)"
+        ]
+      },
+      "criticality": {
+        "level": "Haute",
+        "score": 5,
+        "factors": [
+          "Nom contient \"alert\" (+2)",
+          "Contient des nœuds critiques (+3)"
+        ]
+      },
+      "migrationStrategy": "Temporal",
+      "priority": "P1",
+      "stats": {
+        "nodes": 11,
+        "connections": 6,
+        "hasWebhooks": true,
+        "hasCron": true,
+        "hasExternalCalls": true,
+        "hasLoops": false,
+        "estimatedMigrationEffort": 3
+      }
+    },
+    {
+      "name": "Analyse .htaccess pour SEO et Migration",
+      "id": "workflow-2",
+      "filePath": "workflows/Analyse_htaccess_pour_SEO_et_Migration_20250506130019.json",
+      "complexity": {
+        "level": "Simple",
+        "score": 6,
+        "factors": [
+          "10 nœuds (+2)",
+          "8 connexions (+2)",
+          "Contient des appels API externes (+2)"
+        ]
+      },
+      "criticality": {
+        "level": "Haute",
+        "score": 6,
+        "factors": [
+          "Lié à la migration (+3)",
+          "Contient des nœuds critiques (+3)"
+        ]
+      },
+      "migrationStrategy": "BullMQ",
+      "priority": "P2",
+      "stats": {
+        "nodes": 10,
+        "connections": 8,
+        "hasWebhooks": false,
+        "hasCron": false,
+        "hasExternalCalls": true,
+        "hasLoops": false,
+        "estimatedMigrationEffort": 1.5
+      }
+    },
+    {
+      "name": "Auto-Remédiation des Divergences",
+      "id": "workflow-3",
+      "filePath": "workflows/AutoRemdiation_des_Divergences_20250506130020.json",
+      "complexity": {
+        "level": "Modéré",
+        "score": 8,
+        "factors": [
+          "6 nœuds (+2)",
+          "5 connexions (+1)",
+          "Contient des webhooks (+3)",
+          "Contient des déclencheurs cron (+2)"
+        ]
+      },
+      "criticality": {
+        "level": "Moyenne",
+        "score": 3,
+        "factors": [
+          "Contient des nœuds critiques (+3)"
+        ]
+      },
+      "migrationStrategy": "Temporal",
+      "priority": "P2",
+      "stats": {
+        "nodes": 6,
+        "connections": 5,
+        "hasWebhooks": true,
+        "hasCron": true,
+        "hasExternalCalls": false,
+        "hasLoops": false,
+        "estimatedMigrationEffort": 2.5
+      }
+    },
+    {
+      "name": "BullMQ Orchestrator Pipeline",
+      "id": "workflow-4",
+      "filePath": "workflows/BullMQ_Orchestrator_Pipeline_20250506130019.json",
+      "complexity": {
+        "level": "Modéré",
+        "score": 12,
+        "factors": [
+          "20 nœuds (+4)",
+          "19 connexions (+3)",
+          "Contient des webhooks (+3)",
+          "Contient des déclencheurs cron (+2)"
+        ]
+      },
+      "criticality": {
+        "level": "Haute",
+        "score": 5,
+        "factors": [
+          "Lié à un pipeline (+2)",
+          "Contient des nœuds critiques (+3)"
+        ]
+      },
+      "migrationStrategy": "Temporal",
+      "priority": "P1",
+      "stats": {
+        "nodes": 20,
+        "connections": 19,
+        "hasWebhooks": true,
+        "hasCron": true,
+        "hasExternalCalls": false,
+        "hasLoops": false,
+        "estimatedMigrationEffort": 3
+      }
+    },
+    {
+      "name": "CI/CD Pipeline Workflow",
+      "id": "workflow-5",
+      "filePath": "workflows/CICD_Pipeline_Workflow_20250506130020.json",
+      "complexity": {
+        "level": "Modéré",
+        "score": 10,
+        "factors": [
+          "13 nœuds (+3)",
+          "12 connexions (+2)",
+          "Contient des webhooks (+3)",
+          "Contient des déclencheurs cron (+2)"
+        ]
+      },
+      "criticality": {
+        "level": "Haute",
+        "score": 5,
+        "factors": [
+          "Lié à un pipeline (+2)",
+          "Contient des nœuds critiques (+3)"
+        ]
+      },
+      "migrationStrategy": "Temporal",
+      "priority": "P1",
+      "stats": {
+        "nodes": 13,
+        "connections": 12,
+        "hasWebhooks": true,
+        "hasCron": true,
+        "hasExternalCalls": false,
+        "hasLoops": false,
+        "estimatedMigrationEffort": 3
+      }
+    },
+    {
+      "name": "Docker Cleanup Workflow",
+      "id": "workflow-6",
+      "filePath": "workflows/Docker_Cleanup_Workflow_20250506130018.json",
+      "complexity": {
+        "level": "Modéré",
+        "score": 10,
+        "factors": [
+          "7 nœuds (+2)",
+          "5 connexions (+1)",
+          "Contient des webhooks (+3)",
+          "Contient des déclencheurs cron (+2)",
+          "Contient des appels API externes (+2)"
+        ]
+      },
+      "criticality": {
+        "level": "Moyenne",
+        "score": 3,
+        "factors": [
+          "Contient des nœuds critiques (+3)"
+        ]
+      },
+      "migrationStrategy": "Temporal",
+      "priority": "P2",
+      "stats": {
+        "nodes": 7,
+        "connections": 5,
+        "hasWebhooks": true,
+        "hasCron": true,
+        "hasExternalCalls": true,
+        "hasLoops": false,
+        "estimatedMigrationEffort": 2.5
+      }
+    },
+    {
+      "name": "Generate Migration Plans Workflow",
+      "id": "1000",
+      "filePath": "workflows/Generate_Migration_Plans_Workflow_20250506130020.json",
+      "complexity": {
+        "level": "Modéré",
+        "score": 10,
+        "factors": [
+          "12 nœuds (+3)",
+          "10 connexions (+2)",
+          "Contient des webhooks (+3)",
+          "Contient des déclencheurs cron (+2)"
+        ]
+      },
+      "criticality": {
+        "level": "Haute",
+        "score": 6,
+        "factors": [
+          "Lié à la migration (+3)",
+          "Contient des nœuds critiques (+3)"
+        ]
+      },
+      "migrationStrategy": "Temporal",
+      "priority": "P1",
+      "stats": {
+        "nodes": 12,
+        "connections": 10,
+        "hasWebhooks": true,
+        "hasCron": true,
+        "hasExternalCalls": false,
+        "hasLoops": false,
+        "estimatedMigrationEffort": 3
+      }
+    },
+    {
+      "name": "Htaccess Analyzer Workflow",
+      "id": "workflow-8",
+      "filePath": "workflows/Htaccess_Analyzer_Workflow_20250506130019.json",
+      "complexity": {
+        "level": "Modéré",
+        "score": 9,
+        "factors": [
+          "9 nœuds (+2)",
+          "8 connexions (+2)",
+          "Contient des webhooks (+3)",
+          "Contient des déclencheurs cron (+2)"
+        ]
+      },
+      "criticality": {
+        "level": "Moyenne",
+        "score": 3,
+        "factors": [
+          "Contient des nœuds critiques (+3)"
+        ]
+      },
+      "migrationStrategy": "Temporal",
+      "priority": "P2",
+      "stats": {
+        "nodes": 9,
+        "connections": 8,
+        "hasWebhooks": true,
+        "hasCron": true,
+        "hasExternalCalls": false,
+        "hasLoops": false,
+        "estimatedMigrationEffort": 2.5
+      }
+    },
+    {
+      "name": "MCP Workflow Pipeline",
+      "id": "workflow-9",
+      "filePath": "workflows/MCP_Workflow_Pipeline_20250506130020.json",
+      "complexity": {
+        "level": "Modéré",
+        "score": 10,
+        "factors": [
+          "15 nœuds (+3)",
+          "14 connexions (+2)",
+          "Contient des webhooks (+3)",
+          "Contient des déclencheurs cron (+2)"
+        ]
+      },
+      "criticality": {
+        "level": "Haute",
+        "score": 5,
+        "factors": [
+          "Lié à un pipeline (+2)",
+          "Contient des nœuds critiques (+3)"
+        ]
+      },
+      "migrationStrategy": "Temporal",
+      "priority": "P1",
+      "stats": {
+        "nodes": 15,
+        "connections": 14,
+        "hasWebhooks": true,
+        "hasCron": true,
+        "hasExternalCalls": false,
+        "hasLoops": false,
+        "estimatedMigrationEffort": 3
+      }
+    },
+    {
+      "name": "Migration Data Validator",
+      "id": "migration-data-validator",
+      "filePath": "workflows/Migration_Data_Validator_20250506130018.json",
+      "complexity": {
+        "level": "Modéré",
+        "score": 11,
+        "factors": [
+          "22 nœuds (+5)",
+          "17 connexions (+3)",
+          "Contient des webhooks (+3)"
+        ]
+      },
+      "criticality": {
+        "level": "Haute",
+        "score": 6,
+        "factors": [
+          "Lié à la migration (+3)",
+          "Contient des nœuds critiques (+3)"
+        ]
+      },
+      "migrationStrategy": "Temporal",
+      "priority": "P1",
+      "stats": {
+        "nodes": 22,
+        "connections": 17,
+        "hasWebhooks": true,
+        "hasCron": false,
+        "hasExternalCalls": false,
+        "hasLoops": false,
+        "estimatedMigrationEffort": 3
+      }
+    },
+    {
+      "name": "Migration Orchestrator Pipeline",
+      "id": "workflow-11",
+      "filePath": "workflows/Migration_Orchestrator_Pipeline_20250506130018.json",
+      "complexity": {
+        "level": "Modéré",
+        "score": 10,
+        "factors": [
+          "15 nœuds (+3)",
+          "14 connexions (+2)",
+          "Contient des webhooks (+3)",
+          "Contient des déclencheurs cron (+2)"
+        ]
+      },
+      "criticality": {
+        "level": "Haute",
+        "score": 8,
+        "factors": [
+          "Lié à la migration (+3)",
+          "Lié à un pipeline (+2)",
+          "Contient des nœuds critiques (+3)"
+        ]
+      },
+      "migrationStrategy": "Temporal",
+      "priority": "P1",
+      "stats": {
+        "nodes": 15,
+        "connections": 14,
+        "hasWebhooks": true,
+        "hasCron": true,
+        "hasExternalCalls": false,
+        "hasLoops": false,
+        "estimatedMigrationEffort": 3
+      }
+    },
+    {
+      "name": "Migration SQL complète - Pipeline",
+      "id": "workflow-12",
+      "filePath": "workflows/Migration_SQL_complte__Pipeline_20250506130019.json",
+      "complexity": {
+        "level": "Modéré",
+        "score": 11,
+        "factors": [
+          "16 nœuds (+4)",
+          "14 connexions (+2)",
+          "Contient des webhooks (+3)",
+          "Contient des déclencheurs cron (+2)"
+        ]
+      },
+      "criticality": {
+        "level": "Haute",
+        "score": 11,
+        "factors": [
+          "Lié à la migration (+3)",
+          "Lié à un pipeline (+2)",
+          "Lié à une base de données (+3)",
+          "Contient des nœuds critiques (+3)"
+        ]
+      },
+      "migrationStrategy": "Temporal",
+      "priority": "P1",
+      "stats": {
+        "nodes": 16,
+        "connections": 14,
+        "hasWebhooks": true,
+        "hasCron": true,
+        "hasExternalCalls": false,
+        "hasLoops": false,
+        "estimatedMigrationEffort": 3
+      }
+    },
+    {
+      "name": "Monorepo Analyzer Pipeline",
+      "id": "MONOREPO_ANALYZER_WORKFLOW_ID",
+      "filePath": "workflows/Monorepo_Analyzer_Pipeline_20250506130018.json",
+      "complexity": {
+        "level": "Modéré",
+        "score": 8,
+        "factors": [
+          "9 nœuds (+2)",
+          "7 connexions (+1)",
+          "Contient des webhooks (+3)",
+          "Contient des déclencheurs cron (+2)"
+        ]
+      },
+      "criticality": {
+        "level": "Haute",
+        "score": 5,
+        "factors": [
+          "Lié à un pipeline (+2)",
+          "Contient des nœuds critiques (+3)"
+        ]
+      },
+      "migrationStrategy": "Temporal",
+      "priority": "P1",
+      "stats": {
+        "nodes": 9,
+        "connections": 7,
+        "hasWebhooks": true,
+        "hasCron": true,
+        "hasExternalCalls": false,
+        "hasLoops": false,
+        "estimatedMigrationEffort": 3
+      }
+    },
+    {
+      "name": "MySQL Analyzer Workflow",
+      "id": "workflow-14",
+      "filePath": "workflows/MySQL_Analyzer_Workflow_20250506130019.json",
+      "complexity": {
+        "level": "Modéré",
+        "score": 12,
+        "factors": [
+          "13 nœuds (+3)",
+          "10 connexions (+2)",
+          "Contient des webhooks (+3)",
+          "Contient des déclencheurs cron (+2)",
+          "Contient des appels API externes (+2)"
+        ]
+      },
+      "criticality": {
+        "level": "Haute",
+        "score": 6,
+        "factors": [
+          "Lié à une base de données (+3)",
+          "Contient des nœuds critiques (+3)"
+        ]
+      },
+      "migrationStrategy": "Temporal",
+      "priority": "P1",
+      "stats": {
+        "nodes": 13,
+        "connections": 10,
+        "hasWebhooks": true,
+        "hasCron": true,
+        "hasExternalCalls": true,
+        "hasLoops": false,
+        "estimatedMigrationEffort": 3
+      }
+    },
+    {
+      "name": "PHP Analyzer Pipeline",
+      "id": "workflow-15",
+      "filePath": "workflows/PHP_Analyzer_Pipeline_20250506130018.json",
+      "complexity": {
+        "level": "Modéré",
+        "score": 12,
+        "factors": [
+          "20 nœuds (+4)",
+          "19 connexions (+3)",
+          "Contient des webhooks (+3)",
+          "Contient des déclencheurs cron (+2)"
+        ]
+      },
+      "criticality": {
+        "level": "Haute",
+        "score": 5,
+        "factors": [
+          "Lié à un pipeline (+2)",
+          "Contient des nœuds critiques (+3)"
+        ]
+      },
+      "migrationStrategy": "Temporal",
+      "priority": "P1",
+      "stats": {
+        "nodes": 20,
+        "connections": 19,
+        "hasWebhooks": true,
+        "hasCron": true,
+        "hasExternalCalls": false,
+        "hasLoops": false,
+        "estimatedMigrationEffort": 3
+      }
+    },
+    {
+      "name": "PHP Analyzer - Alertes de complexité",
+      "id": "workflow-16",
+      "filePath": "workflows/PHP_Analyzer__Alertes_de_complexit_20250506130018.json",
+      "complexity": {
+        "level": "Modéré",
+        "score": 12,
+        "factors": [
+          "15 nœuds (+3)",
+          "10 connexions (+2)",
+          "Contient des webhooks (+3)",
+          "Contient des déclencheurs cron (+2)",
+          "Contient des appels API externes (+2)"
+        ]
+      },
+      "criticality": {
+        "level": "Haute",
+        "score": 5,
+        "factors": [
+          "Nom contient \"alert\" (+2)",
+          "Contient des nœuds critiques (+3)"
+        ]
+      },
+      "migrationStrategy": "Temporal",
+      "priority": "P1",
+      "stats": {
+        "nodes": 15,
+        "connections": 10,
+        "hasWebhooks": true,
+        "hasCron": true,
+        "hasExternalCalls": true,
+        "hasLoops": false,
+        "estimatedMigrationEffort": 3
+      }
+    },
+    {
+      "name": "PHP Audit Pipeline",
+      "id": "1",
+      "filePath": "workflows/PHP_Audit_Pipeline_20250506130018.json",
+      "complexity": {
+        "level": "Modéré",
+        "score": 7,
+        "factors": [
+          "14 nœuds (+3)",
+          "12 connexions (+2)",
+          "Contient des appels API externes (+2)"
+        ]
+      },
+      "criticality": {
+        "level": "Haute",
+        "score": 5,
+        "factors": [
+          "Lié à un pipeline (+2)",
+          "Contient des nœuds critiques (+3)"
+        ]
+      },
+      "migrationStrategy": "Temporal",
+      "priority": "P1",
+      "stats": {
+        "nodes": 14,
+        "connections": 12,
+        "hasWebhooks": false,
+        "hasCron": false,
+        "hasExternalCalls": true,
+        "hasLoops": false,
+        "estimatedMigrationEffort": 3
+      }
+    },
+    {
+      "name": "PHP Routes Migration Manager",
+      "id": "workflow-18",
+      "filePath": "workflows/PHP_Routes_Migration_Manager_20250506130020.json",
+      "complexity": {
+        "level": "Modéré",
+        "score": 10,
+        "factors": [
+          "14 nœuds (+3)",
+          "10 connexions (+2)",
+          "Contient des webhooks (+3)",
+          "Contient des déclencheurs cron (+2)"
+        ]
+      },
+      "criticality": {
+        "level": "Haute",
+        "score": 6,
+        "factors": [
+          "Lié à la migration (+3)",
+          "Contient des nœuds critiques (+3)"
+        ]
+      },
+      "migrationStrategy": "Temporal",
+      "priority": "P1",
+      "stats": {
+        "nodes": 14,
+        "connections": 10,
+        "hasWebhooks": true,
+        "hasCron": true,
+        "hasExternalCalls": false,
+        "hasLoops": false,
+        "estimatedMigrationEffort": 3
+      }
+    },
+    {
+      "name": "Pipeline Migration Routes PHP vers Remix",
+      "id": "workflow-19",
+      "filePath": "workflows/Pipeline_Migration_Routes_PHP_vers_Remix_20250506130017.json",
+      "complexity": {
+        "level": "Modéré",
+        "score": 13,
+        "factors": [
+          "17 nœuds (+4)",
+          "14 connexions (+2)",
+          "Contient des webhooks (+3)",
+          "Contient des déclencheurs cron (+2)",
+          "Contient des appels API externes (+2)"
+        ]
+      },
+      "criticality": {
+        "level": "Haute",
+        "score": 8,
+        "factors": [
+          "Lié à la migration (+3)",
+          "Lié à un pipeline (+2)",
+          "Contient des nœuds critiques (+3)"
+        ]
+      },
+      "migrationStrategy": "Temporal",
+      "priority": "P1",
+      "stats": {
+        "nodes": 17,
+        "connections": 14,
+        "hasWebhooks": true,
+        "hasCron": true,
+        "hasExternalCalls": true,
+        "hasLoops": false,
+        "estimatedMigrationEffort": 3
+      }
+    },
+    {
+      "name": "Pipeline de Migration Automatisée PHP → NestJS/Remix",
+      "id": "migration-pipeline",
+      "filePath": "workflows/Pipeline_de_Migration_Automatise_PHP__NestJSRemix_20250506130020.json",
+      "complexity": {
+        "level": "Modéré",
+        "score": 12,
+        "factors": [
+          "18 nœuds (+4)",
+          "16 connexions (+3)",
+          "Contient des webhooks (+3)",
+          "Contient des appels API externes (+2)"
+        ]
+      },
+      "criticality": {
+        "level": "Haute",
+        "score": 8,
+        "factors": [
+          "Lié à la migration (+3)",
+          "Lié à un pipeline (+2)",
+          "Contient des nœuds critiques (+3)"
+        ]
+      },
+      "migrationStrategy": "Temporal",
+      "priority": "P1",
+      "stats": {
+        "nodes": 18,
+        "connections": 16,
+        "hasWebhooks": true,
+        "hasCron": false,
+        "hasExternalCalls": true,
+        "hasLoops": false,
+        "estimatedMigrationEffort": 3
+      }
+    },
+    {
+      "name": "Pipeline de Migration IA",
+      "id": "workflow-21",
+      "filePath": "workflows/Pipeline_de_Migration_IA_20250506130018.json",
+      "complexity": {
+        "level": "Simple",
+        "score": 0,
+        "factors": [
+          "0 nœuds (+0)",
+          "0 connexions (+0)"
+        ]
+      },
+      "criticality": {
+        "level": "Haute",
+        "score": 5,
+        "factors": [
+          "Lié à la migration (+3)",
+          "Lié à un pipeline (+2)"
+        ]
+      },
+      "migrationStrategy": "BullMQ",
+      "priority": "P2",
+      "stats": {
+        "nodes": 0,
+        "connections": 0,
+        "hasWebhooks": false,
+        "hasCron": false,
+        "hasExternalCalls": false,
+        "hasLoops": false,
+        "estimatedMigrationEffort": 1.5
+      }
+    },
+    {
+      "name": "Pipeline de Migration IA",
+      "id": "workflow-22",
+      "filePath": "workflows/Pipeline_de_Migration_IA_20250506130020.json",
+      "complexity": {
+        "level": "Simple",
+        "score": 0,
+        "factors": [
+          "0 nœuds (+0)",
+          "0 connexions (+0)"
+        ]
+      },
+      "criticality": {
+        "level": "Haute",
+        "score": 5,
+        "factors": [
+          "Lié à la migration (+3)",
+          "Lié à un pipeline (+2)"
+        ]
+      },
+      "migrationStrategy": "BullMQ",
+      "priority": "P2",
+      "stats": {
+        "nodes": 0,
+        "connections": 0,
+        "hasWebhooks": false,
+        "hasCron": false,
+        "hasExternalCalls": false,
+        "hasLoops": false,
+        "estimatedMigrationEffort": 1.5
+      }
+    },
+    {
+      "name": "PostgreSQL Analyzer Workflow",
+      "id": "workflow-23",
+      "filePath": "workflows/PostgreSQL_Analyzer_Workflow_20250506130019.json",
+      "complexity": {
+        "level": "Modéré",
+        "score": 8,
+        "factors": [
+          "8 nœuds (+2)",
+          "7 connexions (+1)",
+          "Contient des webhooks (+3)",
+          "Contient des déclencheurs cron (+2)"
+        ]
+      },
+      "criticality": {
+        "level": "Haute",
+        "score": 6,
+        "factors": [
+          "Lié à une base de données (+3)",
+          "Contient des nœuds critiques (+3)"
+        ]
+      },
+      "migrationStrategy": "Temporal",
+      "priority": "P1",
+      "stats": {
+        "nodes": 8,
+        "connections": 7,
+        "hasWebhooks": true,
+        "hasCron": true,
+        "hasExternalCalls": false,
+        "hasLoops": false,
+        "estimatedMigrationEffort": 3
+      }
+    },
+    {
+      "name": "Prisma Analyzer Workflow",
+      "id": "workflow-24",
+      "filePath": "workflows/Prisma_Analyzer_Workflow_20250506130019.json",
+      "complexity": {
+        "level": "Modéré",
+        "score": 10,
+        "factors": [
+          "12 nœuds (+3)",
+          "11 connexions (+2)",
+          "Contient des webhooks (+3)",
+          "Contient des déclencheurs cron (+2)"
+        ]
+      },
+      "criticality": {
+        "level": "Moyenne",
+        "score": 3,
+        "factors": [
+          "Contient des nœuds critiques (+3)"
+        ]
+      },
+      "migrationStrategy": "Temporal",
+      "priority": "P2",
+      "stats": {
+        "nodes": 12,
+        "connections": 11,
+        "hasWebhooks": true,
+        "hasCron": true,
+        "hasExternalCalls": false,
+        "hasLoops": false,
+        "estimatedMigrationEffort": 2.5
+      }
+    },
+    {
+      "name": "QA Analyzer Workflow",
+      "id": "workflow-25",
+      "filePath": "workflows/QA_Analyzer_Workflow_20250506130020.json",
+      "complexity": {
+        "level": "Modéré",
+        "score": 13,
+        "factors": [
+          "19 nœuds (+4)",
+          "12 connexions (+2)",
+          "Contient des webhooks (+3)",
+          "Contient des déclencheurs cron (+2)",
+          "Contient des appels API externes (+2)"
+        ]
+      },
+      "criticality": {
+        "level": "Moyenne",
+        "score": 3,
+        "factors": [
+          "Contient des nœuds critiques (+3)"
+        ]
+      },
+      "migrationStrategy": "Temporal",
+      "priority": "P2",
+      "stats": {
+        "nodes": 19,
+        "connections": 12,
+        "hasWebhooks": true,
+        "hasCron": true,
+        "hasExternalCalls": true,
+        "hasLoops": false,
+        "estimatedMigrationEffort": 2.5
+      }
+    },
+    {
+      "name": "SEO Analyzer Workflow",
+      "id": "workflow-26",
+      "filePath": "workflows/SEO_Analyzer_Workflow_20250506130020.json",
+      "complexity": {
+        "level": "Modéré",
+        "score": 9,
+        "factors": [
+          "10 nœuds (+2)",
+          "9 connexions (+2)",
+          "Contient des webhooks (+3)",
+          "Contient des déclencheurs cron (+2)"
+        ]
+      },
+      "criticality": {
+        "level": "Moyenne",
+        "score": 3,
+        "factors": [
+          "Contient des nœuds critiques (+3)"
+        ]
+      },
+      "migrationStrategy": "Temporal",
+      "priority": "P2",
+      "stats": {
+        "nodes": 10,
+        "connections": 9,
+        "hasWebhooks": true,
+        "hasCron": true,
+        "hasExternalCalls": false,
+        "hasLoops": false,
+        "estimatedMigrationEffort": 2.5
+      }
+    },
+    {
+      "name": "SQL Analyzer IA Pipeline",
+      "id": "sql-analyzer-pipeline",
+      "filePath": "workflows/SQL_Analyzer_IA_Pipeline_20250506130019.json",
+      "complexity": {
+        "level": "Modéré",
+        "score": 8,
+        "factors": [
+          "13 nœuds (+3)",
+          "10 connexions (+2)",
+          "Contient des webhooks (+3)"
+        ]
+      },
+      "criticality": {
+        "level": "Haute",
+        "score": 8,
+        "factors": [
+          "Lié à un pipeline (+2)",
+          "Lié à une base de données (+3)",
+          "Contient des nœuds critiques (+3)"
+        ]
+      },
+      "migrationStrategy": "Temporal",
+      "priority": "P1",
+      "stats": {
+        "nodes": 13,
+        "connections": 10,
+        "hasWebhooks": true,
+        "hasCron": false,
+        "hasExternalCalls": false,
+        "hasLoops": false,
+        "estimatedMigrationEffort": 3
+      }
+    },
+    {
+      "name": "SQL Analyzer - Analyse Relationnelle & Cohérence Référentielle",
+      "id": "workflow-28",
+      "filePath": "workflows/SQL_Analyzer__Analyse_Relationnelle__Cohrence_Rfrentielle_20250506130019.json",
+      "complexity": {
+        "level": "Modéré",
+        "score": 8,
+        "factors": [
+          "15 nœuds (+3)",
+          "12 connexions (+2)",
+          "Contient des webhooks (+3)"
+        ]
+      },
+      "criticality": {
+        "level": "Haute",
+        "score": 6,
+        "factors": [
+          "Lié à une base de données (+3)",
+          "Contient des nœuds critiques (+3)"
+        ]
+      },
+      "migrationStrategy": "Temporal",
+      "priority": "P1",
+      "stats": {
+        "nodes": 15,
+        "connections": 12,
+        "hasWebhooks": true,
+        "hasCron": false,
+        "hasExternalCalls": false,
+        "hasLoops": false,
+        "estimatedMigrationEffort": 3
+      }
+    },
+    {
+      "name": "SQL Analyzer - Cartographe Sémantique des Tables",
+      "id": "workflow-29",
+      "filePath": "workflows/SQL_Analyzer__Cartographe_Smantique_des_Tables_20250506130019.json",
+      "complexity": {
+        "level": "Modéré",
+        "score": 8,
+        "factors": [
+          "13 nœuds (+3)",
+          "11 connexions (+2)",
+          "Contient des webhooks (+3)"
+        ]
+      },
+      "criticality": {
+        "level": "Haute",
+        "score": 6,
+        "factors": [
+          "Lié à une base de données (+3)",
+          "Contient des nœuds critiques (+3)"
+        ]
+      },
+      "migrationStrategy": "Temporal",
+      "priority": "P1",
+      "stats": {
+        "nodes": 13,
+        "connections": 11,
+        "hasWebhooks": true,
+        "hasCron": false,
+        "hasExternalCalls": false,
+        "hasLoops": false,
+        "estimatedMigrationEffort": 3
+      }
+    },
+    {
+      "name": "SQL Analyzer & Prisma Builder Workflow",
+      "id": "workflow-30",
+      "filePath": "workflows/SQL_Analyzer__Prisma_Builder_Workflow_20250506130020.json",
+      "complexity": {
+        "level": "Modéré",
+        "score": 13,
+        "factors": [
+          "21 nœuds (+5)",
+          "19 connexions (+3)",
+          "Contient des webhooks (+3)",
+          "Contient des déclencheurs cron (+2)"
+        ]
+      },
+      "criticality": {
+        "level": "Haute",
+        "score": 6,
+        "factors": [
+          "Lié à une base de données (+3)",
+          "Contient des nœuds critiques (+3)"
+        ]
+      },
+      "migrationStrategy": "Temporal",
+      "priority": "P1",
+      "stats": {
+        "nodes": 21,
+        "connections": 19,
+        "hasWebhooks": true,
+        "hasCron": true,
+        "hasExternalCalls": false,
+        "hasLoops": false,
+        "estimatedMigrationEffort": 3
+      }
+    },
+    {
+      "name": "Supabase Analyzer Workflow",
+      "id": "workflow-31",
+      "filePath": "workflows/Supabase_Analyzer_Workflow_20250506130019.json",
+      "complexity": {
+        "level": "Modéré",
+        "score": 11,
+        "factors": [
+          "10 nœuds (+2)",
+          "8 connexions (+2)",
+          "Contient des webhooks (+3)",
+          "Contient des déclencheurs cron (+2)",
+          "Contient des appels API externes (+2)"
+        ]
+      },
+      "criticality": {
+        "level": "Moyenne",
+        "score": 3,
+        "factors": [
+          "Contient des nœuds critiques (+3)"
+        ]
+      },
+      "migrationStrategy": "Temporal",
+      "priority": "P2",
+      "stats": {
+        "nodes": 10,
+        "connections": 8,
+        "hasWebhooks": true,
+        "hasCron": true,
+        "hasExternalCalls": true,
+        "hasLoops": false,
+        "estimatedMigrationEffort": 2.5
+      }
+    },
+    {
+      "name": "Vérification PHP → NestJS/Remix",
+      "id": "diff-verifier-workflow",
+      "filePath": "workflows/Vrification_PHP__NestJSRemix_20250506130018.json",
+      "complexity": {
+        "level": "Modéré",
+        "score": 11,
+        "factors": [
+          "19 nœuds (+4)",
+          "12 connexions (+2)",
+          "Contient des webhooks (+3)",
+          "Contient des appels API externes (+2)"
+        ]
+      },
+      "criticality": {
+        "level": "Moyenne",
+        "score": 3,
+        "factors": [
+          "Contient des nœuds critiques (+3)"
+        ]
+      },
+      "migrationStrategy": "Temporal",
+      "priority": "P2",
+      "stats": {
+        "nodes": 19,
+        "connections": 12,
+        "hasWebhooks": true,
+        "hasCron": false,
+        "hasExternalCalls": true,
+        "hasLoops": false,
+        "estimatedMigrationEffort": 2.5
+      }
+    },
+    {
+      "name": "migration-pipelinen8n",
+      "id": "workflow-33",
+      "filePath": "workflows/migrationpipelinen8n_20250506130017.json",
+      "complexity": {
+        "level": "Simple",
+        "score": 0,
+        "factors": [
+          "0 nœuds (+0)",
+          "0 connexions (+0)"
+        ]
+      },
+      "criticality": {
+        "level": "Haute",
+        "score": 5,
+        "factors": [
+          "Lié à la migration (+3)",
+          "Lié à un pipeline (+2)"
+        ]
+      },
+      "migrationStrategy": "BullMQ",
+      "priority": "P2",
+      "stats": {
+        "nodes": 0,
+        "connections": 0,
+        "hasWebhooks": false,
+        "hasCron": false,
+        "hasExternalCalls": false,
+        "hasLoops": false,
+        "estimatedMigrationEffort": 1.5
+      }
+    },
+    {
+      "name": "migration-pipelinen8n",
+      "id": "workflow-34",
+      "filePath": "workflows/migrationpipelinen8n_20250506130019.json",
+      "complexity": {
+        "level": "Simple",
+        "score": 0,
+        "factors": [
+          "0 nœuds (+0)",
+          "0 connexions (+0)"
+        ]
+      },
+      "criticality": {
+        "level": "Haute",
+        "score": 5,
+        "factors": [
+          "Lié à la migration (+3)",
+          "Lié à un pipeline (+2)"
+        ]
+      },
+      "migrationStrategy": "BullMQ",
+      "priority": "P2",
+      "stats": {
+        "nodes": 0,
+        "connections": 0,
+        "hasWebhooks": false,
+        "hasCron": false,
+        "hasExternalCalls": false,
+        "hasLoops": false,
+        "estimatedMigrationEffort": 1.5
+      }
+    },
+    {
+      "name": "migration-workflown8n",
+      "id": "workflow-35",
+      "filePath": "workflows/migrationworkflown8n_20250506130017.json",
+      "complexity": {
+        "level": "Simple",
+        "score": 0,
+        "factors": [
+          "0 nœuds (+0)",
+          "0 connexions (+0)"
+        ]
+      },
+      "criticality": {
+        "level": "Moyenne",
+        "score": 3,
+        "factors": [
+          "Lié à la migration (+3)"
+        ]
+      },
+      "migrationStrategy": "BullMQ",
+      "priority": "P2",
+      "stats": {
+        "nodes": 0,
+        "connections": 0,
+        "hasWebhooks": false,
+        "hasCron": false,
+        "hasExternalCalls": false,
+        "hasLoops": false,
+        "estimatedMigrationEffort": 1
+      }
+    },
+    {
+      "name": "migration-workflown8n",
+      "id": "workflow-36",
+      "filePath": "workflows/migrationworkflown8n_20250506130018.json",
+      "complexity": {
+        "level": "Simple",
+        "score": 0,
+        "factors": [
+          "0 nœuds (+0)",
+          "0 connexions (+0)"
+        ]
+      },
+      "criticality": {
+        "level": "Moyenne",
+        "score": 3,
+        "factors": [
+          "Lié à la migration (+3)"
+        ]
+      },
+      "migrationStrategy": "BullMQ",
+      "priority": "P2",
+      "stats": {
+        "nodes": 0,
+        "connections": 0,
+        "hasWebhooks": false,
+        "hasCron": false,
+        "hasExternalCalls": false,
+        "hasLoops": false,
+        "estimatedMigrationEffort": 1
+      }
+    },
+    {
+      "name": "n8n-audit-analyzer-workflow",
+      "id": "workflow-37",
+      "filePath": "workflows/n8nauditanalyzerworkflow_20250506130017.json",
+      "complexity": {
+        "level": "Simple",
+        "score": 0,
+        "factors": [
+          "0 nœuds (+0)",
+          "0 connexions (+0)"
+        ]
+      },
+      "criticality": {
+        "level": "Faible",
+        "score": 0,
+        "factors": []
+      },
+      "migrationStrategy": "BullMQ",
+      "priority": "P3",
+      "stats": {
+        "nodes": 0,
+        "connections": 0,
+        "hasWebhooks": false,
+        "hasCron": false,
+        "hasExternalCalls": false,
+        "hasLoops": false,
+        "estimatedMigrationEffort": 1
+      }
+    },
+    {
+      "name": "n8n-audit-analyzer-workflow",
+      "id": "workflow-38",
+      "filePath": "workflows/n8nauditanalyzerworkflow_20250506130018.json",
+      "complexity": {
+        "level": "Simple",
+        "score": 0,
+        "factors": [
+          "0 nœuds (+0)",
+          "0 connexions (+0)"
+        ]
+      },
+      "criticality": {
+        "level": "Faible",
+        "score": 0,
+        "factors": []
+      },
+      "migrationStrategy": "BullMQ",
+      "priority": "P3",
+      "stats": {
+        "nodes": 0,
+        "connections": 0,
+        "hasWebhooks": false,
+        "hasCron": false,
+        "hasExternalCalls": false,
+        "hasLoops": false,
+        "estimatedMigrationEffort": 1
+      }
+    },
+    {
+      "name": "n8n-mysql-analyzer",
+      "id": "workflow-39",
+      "filePath": "workflows/n8nmysqlanalyzer_20250506130017.json",
+      "complexity": {
+        "level": "Simple",
+        "score": 0,
+        "factors": [
+          "0 nœuds (+0)",
+          "0 connexions (+0)"
+        ]
+      },
+      "criticality": {
+        "level": "Moyenne",
+        "score": 3,
+        "factors": [
+          "Lié à une base de données (+3)"
+        ]
+      },
+      "migrationStrategy": "BullMQ",
+      "priority": "P2",
+      "stats": {
+        "nodes": 0,
+        "connections": 0,
+        "hasWebhooks": false,
+        "hasCron": false,
+        "hasExternalCalls": false,
+        "hasLoops": false,
+        "estimatedMigrationEffort": 1
+      }
+    },
+    {
+      "name": "n8n-mysql-analyzer",
+      "id": "workflow-40",
+      "filePath": "workflows/n8nmysqlanalyzer_20250506130018.json",
+      "complexity": {
+        "level": "Simple",
+        "score": 0,
+        "factors": [
+          "0 nœuds (+0)",
+          "0 connexions (+0)"
+        ]
+      },
+      "criticality": {
+        "level": "Moyenne",
+        "score": 3,
+        "factors": [
+          "Lié à une base de données (+3)"
+        ]
+      },
+      "migrationStrategy": "BullMQ",
+      "priority": "P2",
+      "stats": {
+        "nodes": 0,
+        "connections": 0,
+        "hasWebhooks": false,
+        "hasCron": false,
+        "hasExternalCalls": false,
+        "hasLoops": false,
+        "estimatedMigrationEffort": 1
+      }
+    },
+    {
+      "name": "n8n-update-audit-node",
+      "id": "workflow-41",
+      "filePath": "workflows/n8nupdateauditnode_20250506130017.json",
+      "complexity": {
+        "level": "Simple",
+        "score": 0,
+        "factors": [
+          "0 nœuds (+0)",
+          "0 connexions (+0)"
+        ]
+      },
+      "criticality": {
+        "level": "Faible",
+        "score": 0,
+        "factors": []
+      },
+      "migrationStrategy": "BullMQ",
+      "priority": "P3",
+      "stats": {
+        "nodes": 0,
+        "connections": 0,
+        "hasWebhooks": false,
+        "hasCron": false,
+        "hasExternalCalls": false,
+        "hasLoops": false,
+        "estimatedMigrationEffort": 1
+      }
+    },
+    {
+      "name": "n8n-update-audit-node",
+      "id": "workflow-42",
+      "filePath": "workflows/n8nupdateauditnode_20250506130019.json",
+      "complexity": {
+        "level": "Simple",
+        "score": 0,
+        "factors": [
+          "0 nœuds (+0)",
+          "0 connexions (+0)"
+        ]
+      },
+      "criticality": {
+        "level": "Faible",
+        "score": 0,
+        "factors": []
+      },
+      "migrationStrategy": "BullMQ",
+      "priority": "P3",
+      "stats": {
+        "nodes": 0,
+        "connections": 0,
+        "hasWebhooks": false,
+        "hasCron": false,
+        "hasExternalCalls": false,
+        "hasLoops": false,
+        "estimatedMigrationEffort": 1
+      }
+    },
+    {
+      "name": "unnamedworkflow",
+      "id": "workflow-43",
+      "filePath": "workflows/unnamedworkflow_20250506130018.json",
+      "complexity": {
+        "level": "Modéré",
+        "score": 12,
+        "factors": [
+          "12 nœuds (+3)",
+          "9 connexions (+2)",
+          "Contient des webhooks (+3)",
+          "Contient des déclencheurs cron (+2)",
+          "Contient des appels API externes (+2)"
+        ]
+      },
+      "criticality": {
+        "level": "Moyenne",
+        "score": 3,
+        "factors": [
+          "Contient des nœuds critiques (+3)"
+        ]
+      },
+      "migrationStrategy": "Temporal",
+      "priority": "P2",
+      "stats": {
+        "nodes": 12,
+        "connections": 9,
+        "hasWebhooks": true,
+        "hasCron": true,
+        "hasExternalCalls": true,
+        "hasLoops": false,
+        "estimatedMigrationEffort": 2.5
+      }
+    },
+    {
+      "name": "wave-runnern8n",
+      "id": "workflow-44",
+      "filePath": "workflows/waverunnern8n_20250506130017.json",
+      "complexity": {
+        "level": "Simple",
+        "score": 0,
+        "factors": [
+          "0 nœuds (+0)",
+          "0 connexions (+0)"
+        ]
+      },
+      "criticality": {
+        "level": "Faible",
+        "score": 0,
+        "factors": []
+      },
+      "migrationStrategy": "BullMQ",
+      "priority": "P3",
+      "stats": {
+        "nodes": 0,
+        "connections": 0,
+        "hasWebhooks": false,
+        "hasCron": false,
+        "hasExternalCalls": false,
+        "hasLoops": false,
+        "estimatedMigrationEffort": 1
+      }
+    },
+    {
+      "name": "wave-runnern8n",
+      "id": "workflow-45",
+      "filePath": "workflows/waverunnern8n_20250506130019.json",
+      "complexity": {
+        "level": "Simple",
+        "score": 0,
+        "factors": [
+          "0 nœuds (+0)",
+          "0 connexions (+0)"
+        ]
+      },
+      "criticality": {
+        "level": "Faible",
+        "score": 0,
+        "factors": []
+      },
+      "migrationStrategy": "BullMQ",
+      "priority": "P3",
+      "stats": {
+        "nodes": 0,
+        "connections": 0,
+        "hasWebhooks": false,
+        "hasCron": false,
+        "hasExternalCalls": false,
+        "hasLoops": false,
+        "estimatedMigrationEffort": 1
+      }
+    }
+  ]
+}

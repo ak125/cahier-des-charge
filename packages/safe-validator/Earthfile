@@ -1,0 +1,177 @@
+VERSION 0.7
+
+# Cible de base pour la préparation de l'environnement
+base:
+FROM node:18-alpine
+WORKDIR /app
+
+# Installer les dépendances globales
+RUN apk add --no-cache git curl python3 make g++
+
+# Copier les fichiers de dépendances
+COPY package.json .
+COPY tsconfig.json .
+
+# Installer les dépendances
+RUN npm install
+
+# Définir des variables d'environnement pour les chemins
+ENV PATH="/app/node_modules/.bin:${PATH}"
+
+# Cible pour construire le module
+build:
+FROM +base
+
+# Copier le code source
+COPY src src
+
+# Construire le projet
+RUN npm run build
+
+# Exporter les fichiers nécessaires
+SAVE ARTIFACT dist /dist
+SAVE ARTIFACT package.json /package.json
+SAVE ARTIFACT README.md /README.md
+
+# Cible pour exécuter les tests
+test:
+FROM +build
+
+# Copier les tests
+COPY tests tests
+
+# Exécuter les tests
+RUN npm test
+
+# Générer un rapport de couverture de tests
+SAVE ARTIFACT coverage /coverage
+
+# Cible pour valider et signer du code
+validate-and-sign:
+FROM +build
+
+# Cette cible prend des arguments pour personnaliser la validation
+ARG file_path=""
+ARG file_content=""
+ARG agent_id="automated-ci"
+ARG run_id="run-${EARTHLY_TARGET_TAG_DOCKER}-${EARTHLY_BUILD_SHA}"
+ARG generate_report="true"
+ARG output_dir="/validation-output"
+
+# Créer le répertoire de sortie
+RUN mkdir -p ${output_dir}
+
+# Si un chemin de fichier est fourni, valider ce fichier
+IF [ -n "$file_path" ]
+COPY ${file_path} /tmp/file-to-validate
+RUN node dist/cli/validate-code.js validate-file /tmp/file-to-validate \
+    --agent-id ${agent_id} \
+    --run-id ${run_id} \
+    --report \
+    --sign \
+    --output-dir ${output_dir}
+ELSE IF [ -n "$file_content" ]
+RUN echo "$file_content" > /tmp/content-to-validate && \
+    node dist/cli/validate-code.js validate-file /tmp/content-to-validate \
+    --agent-id ${agent_id} \
+    --run-id ${run_id} \
+    --report \
+    --sign \
+    --output-dir ${output_dir}
+ELSE
+RUN echo "Erreur: Veuillez fournir soit file_path soit file_content" && exit 1
+END
+
+# Exporter les rapports et signatures
+SAVE ARTIFACT ${output_dir} /validation-results
+
+# Cible pour valider et signer un répertoire complet
+validate-directory:
+FROM +build
+
+# Cette cible prend des arguments pour personnaliser la validation
+ARG directory_path
+ARG file_pattern="**/*.{ts,js,json,prisma}"
+ARG agent_id="automated-ci"
+ARG run_id="dir-${EARTHLY_TARGET_TAG_DOCKER}-${EARTHLY_BUILD_SHA}"
+ARG output_dir="/validation-output"
+
+# Créer le répertoire de sortie
+RUN mkdir -p ${output_dir}
+
+# Installer des outils supplémentaires pour la recherche de fichiers
+RUN npm install -g glob
+
+# Copier le répertoire à valider
+COPY ${directory_path} /directory-to-validate
+
+# Créer un script pour valider chaque fichier
+RUN echo '#!/bin/sh\n\
+    find /directory-to-validate -type f -name "*.ts" -o -name "*.js" -o -name "*.json" -o -name "*.prisma" | while read file; do\n\
+    echo "Validation du fichier: $file"\n\
+    node dist/cli/validate-code.js validate-file "$file" --agent-id '${agent_id}' --run-id '${run_id}' --report --sign --output-dir '${output_dir}'\n\
+    if [ $? -ne 0 ]; then\n\
+    echo "ERREUR: La validation a échoué pour $file"\n\
+    exit_code=1\n\
+    fi\n\
+    done\n\
+    exit ${exit_code:-0}' > /validate-all.sh && chmod +x /validate-all.sh
+
+# Exécuter le script de validation
+RUN /validate-all.sh
+
+# Exporter les rapports et signatures
+SAVE ARTIFACT ${output_dir} /validation-results
+
+# Cible pour l'intégration avec le processus MCP
+mcp-integration:
+FROM +build
+
+# Variables pour l'intégration MCP
+ARG mcp_artifacts_dir="/mcp-artifacts"
+ARG agent_output_file=""
+ARG agent_id="mcp-agent"
+ARG run_id="mcp-${EARTHLY_TARGET_TAG_DOCKER}-${EARTHLY_BUILD_SHA}"
+
+# Créer les répertoires nécessaires
+RUN mkdir -p ${mcp_artifacts_dir}
+
+# Si un fichier de sortie d'agent est fourni, le valider
+IF [ -n "$agent_output_file" ]
+COPY ${agent_output_file} /tmp/agent-output
+
+# Valider et signer la sortie de l'agent
+RUN node dist/cli/validate-code.js validate-file /tmp/agent-output \
+    --agent-id ${agent_id} \
+    --run-id ${run_id} \
+    --report \
+    --sign \
+    --output-dir ${mcp_artifacts_dir}
+
+# Sauvegarder la sortie validée
+RUN cp /tmp/agent-output ${mcp_artifacts_dir}/validated-agent-output
+ELSE
+RUN echo "Aucun fichier de sortie d'agent fourni, rien à valider"
+END
+
+# Exporter les artefacts MCP
+SAVE ARTIFACT ${mcp_artifacts_dir} /mcp-artifacts
+
+# Cible pour créer une image Docker avec l'outil de validation
+image:
+FROM +build
+
+# Installer les dépendances de production uniquement
+WORKDIR /app
+COPY +build/dist /app/dist
+COPY +build/package.json /app/package.json
+RUN npm install --production
+
+# Créer un point d'entrée pour l'outil de validation
+RUN echo '#!/bin/sh\nnode /app/dist/cli/validate-code.js "$@"' > /usr/local/bin/validate-code && \
+    chmod +x /usr/local/bin/validate-code
+
+ENTRYPOINT ["validate-code"]
+
+# Construire et sauvegarder l'image
+SAVE IMAGE safe-validator:latest

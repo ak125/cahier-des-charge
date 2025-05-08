@@ -1,0 +1,93 @@
+name: Orchestrator Tests
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+      - 'packages/business/**'
+      - 'packages/orchestration/**'
+      - 'orchestrators/**'
+  pull_request:
+    branches: [ main, develop ]
+    paths:
+      - 'packages/business/**'
+      - 'packages/orchestration/**'
+      - 'orchestrators/**'
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environnement de test'
+        required: true
+        default: 'test'
+        type: choice
+        options:
+          - test
+          - staging
+
+jobs:
+  test:
+    name: Test de l'orchestrateur standardisé
+    runs-on: ubuntu-latest
+    
+    services:
+      # Service Redis pour les tests BullMQ
+      redis:
+        image: redis:6-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+      
+      # Service Temporal pour les tests d'intégration
+      temporal:
+        image: temporalio/auto-setup:1.20.0
+        ports:
+          - 7233:7233
+        options: >-
+          --health-cmd "nc -z localhost 7233"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Configuration de Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'pnpm'
+      
+      - name: Installation de PNPM
+        run: npm install -g pnpm
+      
+      - name: Installation des dépendances
+        run: pnpm install
+      
+      - name: Vérification du format et du lint
+        run: |
+          pnpm run lint:orchestrator
+          pnpm run format:check:orchestrator
+      
+      - name: Tests unitaires
+        run: pnpm run test:unit:orchestrator
+      
+      - name: Tests d'intégration
+        run: pnpm run test:integration:orchestrator
+        env:
+          REDIS_HOST: localhost
+          REDIS_PORT: 6379
+          TEMPORAL_ADDRESS: localhost:7233
+      
+      - name: Génération des rapports de couverture
+        run: pnpm run test:coverage:orchestrator
+      
+      - name: Téléversement des rapports de couverture
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-reports
+          path: packages/business/coverage/
+          retention-days: 14

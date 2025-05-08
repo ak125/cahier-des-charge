@@ -1,0 +1,212 @@
+{
+  "name": "Monorepo Analyzer Pipeline",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 0 * * *"
+            }
+          ]
+        }
+      },
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1,
+      "position": [250, 300]
+    },
+    {
+      "parameters": {
+        "workflowId": "REPO_UPDATED_WORKFLOW_ID"
+      },
+      "name": "Repo Updated Trigger",
+      "type": "n8n-nodes-base.workflowTrigger",
+      "typeVersion": 1,
+      "position": [250, 460]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Déterminer le chemin racine du monorepo\nconst repoBase = '/workspaces/remix-nestjs-monorepo';\n\n// Timestamp pour les rapports\nconst timestamp = new Date().toISOString().replace(/:/g, '-');\n\n// Configuration des chemins de sortie\nconst outputDir = `${repoBase}/audit/monorepo-analyzer/${timestamp}`;\n\n// Retourner les paramètres pour l'analyseur\nreturn {\n  json: {\n    repoBase,\n    outputDir,\n    timestamp\n  }\n};"
+      },
+      "name": "Préparer paramètres",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [460, 380]
+    },
+    {
+      "parameters": {
+        "command": "node packages/mcp-agents/monorepo-analyzer.ts --root={{ $node[\"Préparer paramètres\"].json.repoBase }} --outputDir={{ $node[\"Préparer paramètres\"].json.outputDir }}",
+        "executeTimeout": 300
+      },
+      "name": "Exécuter l'analyseur",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [680, 380]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Récupérer les fichiers générés\nconst { outputDir } = $input.first();\nconst fs = require('fs');\nconst path = require('path');\n\nconst files = [\n  'project_structure.json',\n  'monorepo_dependencies.json',\n  'import_paths_map.json',\n  'remix_component_patterns.json',\n  'nestjs_module_patterns.json',\n  'tailwind_tokens.json',\n  'code_style_profile.json'\n];\n\nconst results = {};\n\n// Lire chaque fichier\nfor (const file of files) {\n  try {\n    const filePath = path.join(outputDir, file);\n    const content = fs.readFileSync(filePath, 'utf8');\n    results[file.replace('.json', '')] = JSON.parse(content);\n  } catch (error) {\n    console.error(`Erreur lors de la lecture de ${file}: ${error.message}`);\n  }\n}\n\n// Ajouter des métadonnées\nresults.metadata = {\n  generatedAt: new Date().toISOString(),\n  version: '1.0.0',\n  repoPath: $input.first().repoBase\n};\n\nreturn { json: results };"
+      },
+      "name": "Préparer données Supabase",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [900, 380]
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "table": "monorepo_analysis",
+        "schema": "public",
+        "additionalFields": {
+          "dataToSend": "allMatching",
+          "valueToCheckAgainst": "={{$json[\"metadata\"][\"generatedAt\"]}}",
+          "columnToMatchOn": "generated_at"
+        }
+      },
+      "name": "Supabase",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [1120, 380],
+      "credentials": {
+        "supabaseApi": {
+          "id": "CREDENTIAL_ID",
+          "name": "Supabase API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "batchSize": 1,
+        "options": {}
+      },
+      "name": "Notification succès",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 1,
+      "position": [1340, 380],
+      "credentials": {
+        "slackApi": {
+          "id": "SLACK_CREDENTIAL_ID",
+          "name": "Slack API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "command": "cd {{ $node[\"Préparer paramètres\"].json.repoBase }} && npx prettier --write \"audit/monorepo-analyzer/**/*.json\"",
+        "executeTimeout": 20
+      },
+      "name": "Formater les fichiers JSON",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [900, 540]
+    },
+    {
+      "parameters": {
+        "command": "cd {{ $node[\"Préparer paramètres\"].json.repoBase }} && git add audit/monorepo-analyzer && git commit -m \"chore: update monorepo analysis [skip ci]\" || true",
+        "executeTimeout": 30
+      },
+      "name": "Commit résultats",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [1120, 540]
+    }
+  ],
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Préparer paramètres",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Repo Updated Trigger": {
+      "main": [
+        [
+          {
+            "node": "Préparer paramètres",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Préparer paramètres": {
+      "main": [
+        [
+          {
+            "node": "Exécuter l'analyseur",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Exécuter l'analyseur": {
+      "main": [
+        [
+          {
+            "node": "Préparer données Supabase",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Formater les fichiers JSON",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Préparer données Supabase": {
+      "main": [
+        [
+          {
+            "node": "Supabase",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase": {
+      "main": [
+        [
+          {
+            "node": "Notification succès",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Formater les fichiers JSON": {
+      "main": [
+        [
+          {
+            "node": "Commit résultats",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "Europe/Paris",
+    "saveManualExecutions": true,
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "id": "MONOREPO_ANALYZER_WORKFLOW_ID",
+  "meta": {
+    "instanceId": "INSTANCE_ID"
+  },
+  "tags": ["automation", "monorepo", "analysis"]
+}

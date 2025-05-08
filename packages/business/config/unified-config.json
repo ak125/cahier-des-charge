@@ -1,0 +1,230 @@
+{
+  "version": "1.0.0",
+  "environment": "development",
+  "traceability": {
+    "enabled": true,
+    "idFormat": "mcp-{timestamp}-{layer}-{random}",
+    "storageStrategy": "hybrid"
+  },
+  "circuitBreaker": {
+    "enabled": true,
+    "resetTimeout": 60000,
+    "failureThreshold": 5,
+    "fallbackStrategies": {
+      "orchestration": "isolateWorkflow",
+      "agents": "disableTemporarily",
+      "business": "isolateDomain"
+    }
+  },
+  "governance": {
+    "enabled": true,
+    "decisionRules": [
+      {
+        "name": "auto-retry-on-network-error",
+        "description": "Réessayer automatiquement en cas d'erreur réseau",
+        "priority": 10,
+        "conditions": ["error.type === 'NETWORK'", "retryCount < 3"],
+        "actions": ["wait(exponentialBackoff(retryCount))", "retry()"]
+      },
+      {
+        "name": "escalate-critical-business-error",
+        "description": "Escalader les erreurs critiques métier",
+        "priority": 5,
+        "conditions": ["error.severity === 'CRITICAL'", "layer === 'business'"],
+        "actions": ["notify('slack', '#alerts')", "logError(error)", "createIncident()"]
+      }
+    ]
+  },
+  "orchestration": {
+    "n8n": {
+      "baseUrl": "http://localhost:5678",
+      "apiKey": "n8n_api_12345678",
+      "webhookPath": "/webhook/",
+      "workflows": {
+        "php-analyzer": {
+          "id": "php-analyzer",
+          "name": "PHP Analyzer Workflow",
+          "active": true,
+          "priority": 8,
+          "retryOnFail": true,
+          "maxRetries": 3
+        },
+        "code-generator": {
+          "id": "code-generator",
+          "name": "Code Generator Workflow",
+          "active": true,
+          "priority": 7,
+          "retryOnFail": true,
+          "maxRetries": 2
+        },
+        "migration-monitor": {
+          "id": "migration-monitor",
+          "name": "Migration Status Monitor",
+          "active": true,
+          "priority": 4,
+          "retryOnFail": true,
+          "maxRetries": 5
+        }
+      }
+    },
+    "bullMQ": {
+      "redis": {
+        "host": "redis",
+        "port": 6379,
+        "password": ""
+      },
+      "queues": {
+        "analysis": {
+          "name": "analysis-queue",
+          "options": {
+            "attempts": 3,
+            "backoff": {
+              "type": "exponential",
+              "delay": 2000
+            },
+            "removeOnComplete": false,
+            "removeOnFail": false
+          }
+        },
+        "generation": {
+          "name": "generation-queue",
+          "options": {
+            "attempts": 2,
+            "backoff": {
+              "type": "fixed",
+              "delay": 5000
+            }
+          }
+        },
+        "verification": {
+          "name": "verification-queue",
+          "options": {
+            "attempts": 3,
+            "backoff": {
+              "type": "exponential",
+              "delay": 1000
+            }
+          }
+        }
+      }
+    },
+    "shellScripts": {
+      "basePath": "/workspaces/cahier-des-charge/scripts",
+      "environment": {
+        "NODE_ENV": "development",
+        "LOG_LEVEL": "debug"
+      },
+      "scripts": {
+        "startPipeline": {
+          "path": "start_pipeline.sh",
+          "description": "Démarre le pipeline de migration complet",
+          "timeout": 600,
+          "autoRetry": true,
+          "maxRetries": 2
+        },
+        "analyzePhpStructure": {
+          "path": "analyze_php.sh",
+          "description": "Analyse la structure des fichiers PHP",
+          "args": ["-r", "--output=json"],
+          "timeout": 300,
+          "autoRetry": true
+        }
+      }
+    }
+  },
+  "agents": {
+    "registry": {
+      "manifestPath": "/workspaces/cahier-des-charge/agent-manifest.json",
+      "autoReloadOnChange": true,
+      "validateDependencies": true,
+      "agents": {
+        "qa-analyzer": {
+          "enabled": true,
+          "priority": 7
+        },
+        "php-analyzer": {
+          "enabled": true,
+          "priority": 10
+        },
+        "diff-verifier": {
+          "enabled": true,
+          "priority": 6,
+          "overrideConfig": {
+            "autoRetryOnFail": true
+          }
+        }
+      }
+    },
+    "manifests": {
+      "validateOnStartup": true,
+      "autoBackup": true,
+      "backupFrequency": 43200,
+      "versionStrategy": "semantic"
+    },
+    "monitoring": {
+      "enabled": true,
+      "interval": 20,
+      "metrics": ["status", "memory", "cpu", "errors", "executionTime", "successRate"],
+      "alertThresholds": {
+        "errorRate": 15,
+        "executionTime": 15000,
+        "memoryUsage": 800
+      },
+      "storageStrategy": "database"
+    }
+  },
+  "business": {
+    "migrations": {
+      "manifestPath": "/workspaces/cahier-des-charge/MCPManifest.json",
+      "autoSync": true,
+      "sourceBasePath": "/apps/backend/src/pages",
+      "targetBasePath": "/apps/frontend/app/routes",
+      "progressTracking": {
+        "enabled": true,
+        "statusUpdateFrequency": 30,
+        "detailedLogs": true
+      },
+      "validation": {
+        "requiredSteps": ["qa-analyzer", "seo-analyzer", "typescript-check"],
+        "minimumScores": {
+          "qa-analyzer": 85,
+          "seo-analyzer": 90
+        }
+      }
+    },
+    "domains": {
+      "discoveryMapPath": "/workspaces/cahier-des-charge/discovery_map.json",
+      "autoDetect": true,
+      "prioritization": {
+        "factors": ["businessValue", "effort", "dependencies"],
+        "customWeights": {
+          "businessValue": 9,
+          "effort": 7,
+          "dependencies": 6,
+          "complexity": 5
+        }
+      }
+    },
+    "rules": {
+      "rulesPath": "/workspaces/cahier-des-charge/rules",
+      "evaluationStrategy": "adaptive",
+      "rulesets": {
+        "migration-quality": {
+          "enabled": true,
+          "priority": 9,
+          "failureAction": "warn"
+        },
+        "seo-compliance": {
+          "enabled": true,
+          "priority": 7,
+          "failureAction": "handleGracefully"
+        },
+        "security": {
+          "enabled": true,
+          "priority": 10,
+          "failureAction": "abort"
+        }
+      }
+    }
+  }
+}

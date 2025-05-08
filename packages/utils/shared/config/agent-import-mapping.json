@@ -1,0 +1,26 @@
+{
+  "importMap": {
+    "MysqlAnalyzer+optimizerAgent": "MysqlAnalyzerPlusOptimizerAgent",
+    "PhpAnalyzer.workerAgent": "PhpAnalyzerDotWorkerAgent",
+    "SqlAnalyzer+prismaBuilderAgent": "SqlAnalyzerPlusPrismaBuilderAgent",
+    "McpVerifier.workerAgent": "McpVerifierDotWorkerAgent",
+    "SeoMeta.generatorAgent": "SeoMetaDotGeneratorAgent",
+    "agent-audit": "AgentAudit",
+    "agent-business": "AgentBusiness",
+    "agent-donnees": "AgentDonnees",
+    "agent-structure": "AgentStructure",
+    "agent-quality": "AgentQuality"
+  },
+  "pathMap": {
+    "MysqlAnalyzerPlusOptimizerAgent": "packages/mcp-agents/analyzers/MysqlAnalyzerPlusOptimizerAgent",
+    "PhpAnalyzerDotWorkerAgent": "packages/mcp-agents/analyzers/PhpAnalyzerDotWorkerAgent",
+    "SqlAnalyzerPlusPrismaBuilderAgent": "packages/mcp-agents/analyzers/SqlAnalyzerPlusPrismaBuilderAgent",
+    "McpVerifierDotWorkerAgent": "packages/mcp-agents/orchestrators/McpVerifierDotWorkerAgent",
+    "SeoMetaDotGeneratorAgent": "packages/mcp-agents/generators/SeoMetaDotGeneratorAgent",
+    "AgentAudit": "agents/analysis/AgentAudit",
+    "AgentBusiness": "agents/migration/AgentBusiness",
+    "AgentDonnees": "agents/analysis/AgentDonnees",
+    "AgentStructure": "agents/analysis/AgentStructure",
+    "AgentQuality": "agents/quality/AgentQuality"
+  }
+}

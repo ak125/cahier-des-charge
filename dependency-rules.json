@@ -1,0 +1,145 @@
+{
+    "description": "Règles de dépendances entre packages",
+    "version": "1.0.0",
+    "lastUpdated": "2025-05-03",
+    "forbidden": {
+        "business": [
+            "mcp-agents"
+        ],
+        "agents": [
+            "business"
+        ],
+        "mcp-server": [
+            "business"
+        ],
+        "mcp-agents": [
+            "agents/integration"
+        ]
+    },
+    "required": {
+        "business": [],
+        "agents": [],
+        "orchestration": [
+            "business"
+        ]
+    },
+    "allowedCycles": [],
+    "layers": [
+        {
+            "name": "infrastructure",
+            "packages": [
+                "orchestration",
+                "mcp-agents"
+            ]
+        },
+        {
+            "name": "domain",
+            "packages": [
+                "business",
+                "agents"
+            ]
+        },
+        {
+            "name": "application",
+            "packages": [
+                "mcp-server"
+            ]
+        },
+        {
+            "name": "presentation",
+            "packages": [
+                "admin-dashboard",
+                "dashboard"
+            ]
+        }
+    ],
+    "guidelines": [
+        "Les packages de couche supérieure peuvent dépendre des packages de couche inférieure",
+        "Les packages de même couche peuvent dépendre les uns des autres, mais éviter les cycles",
+        "Les packages de couche inférieure ne doivent pas dépendre des packages de couche supérieure"
+    ],
+    "version": 2,
+    "rules": [
+        {
+            "sourceTag": "scope:frontend",
+            "onlyDependOnLibsWithTags": [
+                "scope:frontend",
+                "scope:shared"
+            ]
+        },
+        {
+            "sourceTag": "scope:backend",
+            "onlyDependOnLibsWithTags": [
+                "scope:backend",
+                "scope:shared"
+            ]
+        },
+        {
+            "sourceTag": "scope:mcp",
+            "onlyDependOnLibsWithTags": [
+                "scope:mcp",
+                "scope:backend",
+                "scope:shared"
+            ]
+        },
+        {
+            "sourceTag": "type:app",
+            "onlyDependOnLibsWithTags": [
+                "type:feature",
+                "type:ui",
+                "type:util",
+                "type:data-access"
+            ]
+        },
+        {
+            "sourceTag": "type:feature",
+            "onlyDependOnLibsWithTags": [
+                "type:feature",
+                "type:ui",
+                "type:util",
+                "type:data-access"
+            ]
+        },
+        {
+            "sourceTag": "type:ui",
+            "onlyDependOnLibsWithTags": [
+                "type:ui",
+                "type:util"
+            ]
+        },
+        {
+            "sourceTag": "type:util",
+            "onlyDependOnLibsWithTags": [
+                "type:util"
+            ]
+        },
+        {
+            "sourceTag": "type:data-access",
+            "onlyDependOnLibsWithTags": [
+                "type:util",
+                "type:data-access"
+            ]
+        },
+        {
+            "sourceTag": "layer:presentation",
+            "onlyDependOnLibsWithTags": [
+                "layer:domain",
+                "layer:infrastructure",
+                "layer:presentation"
+            ]
+        },
+        {
+            "sourceTag": "layer:domain",
+            "onlyDependOnLibsWithTags": [
+                "layer:domain"
+            ]
+        },
+        {
+            "sourceTag": "layer:infrastructure",
+            "onlyDependOnLibsWithTags": [
+                "layer:domain",
+                "layer:infrastructure"
+            ]
+        }
+    ]
+}

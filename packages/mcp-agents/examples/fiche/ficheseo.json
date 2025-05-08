@@ -1,0 +1,78 @@
+{
+  "url": "/pneus/continental/premiumcontact-6-225-45-r17-91y",
+  "sourceFile": "produits/fiche-produit.php",
+  "targetFile": "app/routes/pneus.$marque.$modele.tsx",
+  "metadata": {
+    "title": "Pneu Continental PremiumContact 6 225/45 R17 91Y - Mon Site",
+    "description": "Achetez le pneu Continental PremiumContact 6 225/45 R17 91Y au meilleur prix. Livraison rapide et montage disponible dans nos centres partenaires.",
+    "canonical": "https://www.mon-site.fr/pneus/continental/premiumcontact-6-225-45-r17-91y",
+    "robots": "index, follow",
+    "keywords": "pneu, Continental, PremiumContact 6, 225/45 R17, 91Y, été, montage",
+    "ogTitle": "Pneu Continental PremiumContact 6 225/45 R17 91Y",
+    "ogDescription": "Achetez le pneu Continental PremiumContact 6 225/45 R17 91Y au meilleur prix. Livraison rapide et montage disponible.",
+    "ogImage": "https://www.mon-site.fr/images/products/continental-premiumcontact-6.jpg",
+    "ogType": "product",
+    "ogUrl": "https://www.mon-site.fr/pneus/continental/premiumcontact-6-225-45-r17-91y",
+    "twitterCard": "summary_large_image",
+    "twitterTitle": "Pneu Continental PremiumContact 6 225/45 R17 91Y",
+    "twitterDescription": "Achetez le pneu Continental PremiumContact 6 225/45 R17 91Y au meilleur prix.",
+    "twitterImage": "https://www.mon-site.fr/images/products/continental-premiumcontact-6.jpg"
+  },
+  "score": 95,
+  "issues": [
+    "L'image Open Graph pourrait être de meilleure résolution (minimum recommandé 1200x630px)"
+  ],
+  "redirects": [
+    {
+      "source": "/produits/continental/premiumcontact6-225-45-r17-91y",
+      "target": "/pneus/continental/premiumcontact-6-225-45-r17-91y",
+      "type": "301"
+    },
+    {
+      "source": "/produits/continental/pc6-225-45r17",
+      "target": "/pneus/continental/premiumcontact-6-225-45-r17-91y",
+      "type": "301"
+    }
+  ],
+  "migrationDate": "2025-04-15T14:30:45.123Z",
+  "status": "migrated",
+  "lighthouseScore": {
+    "performance": 89,
+    "accessibility": 97,
+    "bestPractices": 92,
+    "seo": 98
+  },
+  "structuredData": {
+    "product": {
+      "@context": "https://schema.org/",
+      "@type": "Product",
+      "name": "Pneu Continental PremiumContact 6 225/45 R17 91Y",
+      "image": ["https://www.mon-site.fr/images/products/continental-premiumcontact-6.jpg"],
+      "description": "Le Continental PremiumContact 6 offre une excellente tenue de route sur sol mouillé et sec, ainsi qu'une distance de freinage réduite.",
+      "sku": "CONT-PC6-22545R17-91Y",
+      "brand": {
+        "@type": "Brand",
+        "name": "Continental"
+      },
+      "offers": {
+        "@type": "Offer",
+        "url": "https://www.mon-site.fr/pneus/continental/premiumcontact-6-225-45-r17-91y",
+        "priceCurrency": "EUR",
+        "price": 145.99,
+        "availability": "https://schema.org/InStock"
+      }
+    }
+  },
+  "history": [
+    {
+      "date": "2025-04-15T14:30:45.123Z",
+      "event": "migration",
+      "score": 95
+    },
+    {
+      "date": "2025-04-15T15:10:22.654Z",
+      "event": "lighthouse-audit",
+      "score": 98
+    }
+  ]
+}

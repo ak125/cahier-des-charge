@@ -1,0 +1,33 @@
+{
+    "$schema": "https://typedoc.org/schema.json",
+    "entryPoints": [
+        "../agents/index.ts",
+        "../agents/seo-checker-agent.ts",
+        "../agents/mcp-verifier.ts",
+        "../agents/canonical-validator.ts",
+        "../agents/seo-audit-runner.ts"
+    ],
+    "out": "docs/api",
+    "readme": "../README.md",
+    "name": "Documentation API Projet",
+    "excludePrivate": true,
+    "excludeProtected": false,
+    "excludeExternals": true,
+    "plugin": [
+        "typedoc-plugin-markdown"
+    ],
+    "theme": "markdown",
+    "entryDocument": "index.md",
+    "hideInPageTOC": true,
+    "hideBreadcrumbs": false,
+    "hidePageTitle": false,
+    "categorizeByGroup": true,
+    "categoryOrder": [
+        "Agents",
+        "SEO",
+        "MCP",
+        "Core",
+        "Utils",
+        "*"
+    ]
+}

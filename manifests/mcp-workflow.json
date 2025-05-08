@@ -1,0 +1,156 @@
+{
+    "version": "1.0.0",
+    "name": "php-migration-workflow",
+    "description": "Workflow complet de migration PHP vers Remix/NestJS",
+    "steps": [
+        {
+            "name": "php-analysis",
+            "agent": "php-analyzer-agent",
+            "inputs": {
+                "sourceFile": "{sourceFile}"
+            },
+            "outputs": {
+                "analysis": "/tmp/php-analysis-{fileId}.json"
+            },
+            "validations": [
+                {
+                    "type": "schema",
+                    "path": "/schemas/php-analysis-output.json"
+                }
+            ]
+        },
+        {
+            "name": "structure-generation",
+            "agent": "remix-structure-generator",
+            "inputs": {
+                "phpAnalysis": "{php-analysis.analysis}"
+            },
+            "outputs": {
+                "remixStructure": "/tmp/remix-structure-{fileId}.json"
+            },
+            "validations": [
+                {
+                    "type": "schema",
+                    "path": "/schemas/remix-structure-output.json"
+                }
+            ]
+        },
+        {
+            "name": "code-generation",
+            "agent": "remix-code-generator",
+            "inputs": {
+                "remixStructure": "{structure-generation.remixStructure}"
+            },
+            "outputs": {
+                "generatedCode": "/tmp/generated-code-{fileId}.zip"
+            },
+            "validations": [
+                {
+                    "type": "schema",
+                    "path": "/schemas/generated-code-output.json"
+                }
+            ]
+        },
+        {
+            "name": "seo-migration",
+            "agent": "seo-migration-agent",
+            "inputs": {
+                "sourceFile": "{sourceFile}",
+                "phpAnalysis": "{php-analysis.analysis}",
+                "generatedCode": "{code-generation.generatedCode}"
+            },
+            "outputs": {
+                "seoMeta": "/tmp/seo-meta-{fileId}.json",
+                "redirects": "/tmp/redirects-{fileId}.json"
+            },
+            "validations": [
+                {
+                    "type": "schema",
+                    "path": "/schemas/seo-meta-output.json"
+                }
+            ]
+        },
+        {
+            "name": "htaccess-migration",
+            "agent": "htaccess-migration-agent",
+            "inputs": {
+                "htaccessFile": "{htaccessFile}",
+                "phpAnalysis": "{php-analysis.analysis}"
+            },
+            "outputs": {
+                "caddyfile": "/tmp/caddyfile-{fileId}.json",
+                "nestJsRoutes": "/tmp/nestjs-routes-{fileId}.json"
+            },
+            "validations": [
+                {
+                    "type": "schema",
+                    "path": "/schemas/caddyfile-output.json"
+                }
+            ]
+        },
+        {
+            "name": "seo-validation",
+            "agent": "seo-validator",
+            "inputs": {
+                "generatedCode": "{code-generation.generatedCode}",
+                "seoMeta": "{seo-migration.seoMeta}",
+                "redirects": "{seo-migration.redirects}"
+            },
+            "outputs": {
+                "seoReport": "/tmp/seo-report-{fileId}.json"
+            },
+            "validations": [
+                {
+                    "type": "schema",
+                    "path": "/schemas/seo-report-output.json"
+                }
+            ]
+        },
+        {
+            "name": "performance-validation",
+            "agent": "performance-validator",
+            "inputs": {
+                "generatedCode": "{code-generation.generatedCode}"
+            },
+            "outputs": {
+                "performanceReport": "/tmp/performance-report-{fileId}.json"
+            }
+        },
+        {
+            "name": "final-verification",
+            "agent": "mcp-verifier",
+            "inputs": {
+                "generatedCode": "{code-generation.generatedCode}",
+                "seoReport": "{seo-validation.seoReport}",
+                "performanceReport": "{performance-validation.performanceReport}"
+            },
+            "outputs": {
+                "finalReport": "/tmp/final-report-{fileId}.json"
+            }
+        }
+    ],
+    "errorHandlers": [
+        {
+            "event": "step:failure",
+            "handler": "notification-agent",
+            "action": "notify"
+        },
+        {
+            "event": "workflow:timeout",
+            "handler": "monitoring-check",
+            "action": "diagnose"
+        }
+    ],
+    "monitoring": {
+        "metrics": [
+            "workflow.duration",
+            "step.duration",
+            "agent.memory",
+            "agent.cpu",
+            "errors.count"
+        ],
+        "dashboards": [
+            "mcp-workflow-dashboard"
+        ]
+    }
+}

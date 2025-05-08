@@ -1,0 +1,15 @@
+# Node
+node_modules/
+# Dotgit
+Dotgit/
+# Build
+dist/
+build/
+.cache/
+out/
+# Nx
+nx-cloud/
+nx-report/
+node_modules
+node_modules
+node_modules

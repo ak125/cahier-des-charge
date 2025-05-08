@@ -1,0 +1,362 @@
+{
+  "version": "1.0.0",
+  "name": "SQL-Analyzer-IA",
+  "description": "Configuration pour l'analyse intelligente et la migration de MySQL vers PostgreSQL/Prisma",
+  "baseOutputPath": "./reports",
+  "agents": {
+    "extracteur": {
+      "enabled": true,
+      "priority": 1,
+      "input": {
+        "source": "mysqldump",
+        "options": {
+          "noData": true,
+          "skipTriggers": false,
+          "skipProcedures": false
+        }
+      },
+      "output": {
+        "schema_raw": "./reports/schema_raw.json",
+        "sql_cleaned": "./reports/sql_cleaned.sql"
+      }
+    },
+    "analyseRelationnelle": {
+      "enabled": true,
+      "priority": 2,
+      "dependsOn": ["extracteur"],
+      "options": {
+        "detectImplicitJoins": true,
+        "suggestNormalization": true,
+        "normalizeThreshold": 0.75
+      },
+      "output": {
+        "schema_normalized": "./reports/schema_normalized.json",
+        "sql_relation_graph": "./reports/sql_relation_graph.json"
+      }
+    },
+    "optimiseurType": {
+      "enabled": true,
+      "priority": 3,
+      "dependsOn": ["analyseRelationnelle"],
+      "options": {
+        "convertToPostgres": true,
+        "handleEnums": true,
+        "handleTimestamps": true,
+        "handleUUID": true
+      },
+      "output": {
+        "type_conversion_map": "./reports/type_conversion_map.json",
+        "sql_type_diff": "./reports/sql_type_diff.md"
+      }
+    },
+    "detectionDetteTechnique": {
+      "enabled": true,
+      "priority": 4,
+      "dependsOn": ["optimiseurType"],
+      "options": {
+        "checkNullable": true,
+        "checkVagueTypes": true,
+        "checkUnusedColumns": true,
+        "alertThreshold": 50
+      },
+      "output": {
+        "sql_dette_technique": "./reports/sql_dette_technique.md",
+        "table_risks": "./reports/table_risks.json"
+      }
+    },
+    "generateurPrisma": {
+      "enabled": true,
+      "priority": 5,
+      "dependsOn": ["detectionDetteTechnique"],
+      "options": {
+        "addRelations": true,
+        "addConstraints": true,
+        "generateCustomFields": true
+      },
+      "output": {
+        "prisma_models": "./reports/prisma_models.suggestion.prisma",
+        "prisma_relations_map": "./reports/prisma_relations_map.json"
+      }
+    },
+    "planificateurMigration": {
+      "enabled": true,
+      "priority": 6,
+      "dependsOn": ["generateurPrisma"],
+      "options": {
+        "trackPhpDependencies": true,
+        "safeMigration": true,
+        "validateSchema": true
+      },
+      "output": {
+        "schema_migration_diff": "./reports/schema_migration_diff.json",
+        "migration_plan": "./reports/migration_plan.sql",
+        "sql_migration_warnings": "./reports/sql_migration_warnings.json"
+      }
+    },
+    "semanticMapper": {
+      "enabled": true,
+      "name": "Cartographe Sémantique des Tables",
+      "description": "Analyse et classe les tables selon leur rôle fonctionnel",
+      "inputFiles": ["schema_normalized.json"],
+      "outputFiles": ["table_classification.json", "entity_graph.md"],
+      "parameters": {
+        "detectJunctionTables": true,
+        "identifyDomains": true,
+        "suggestGroupings": true
+      },
+      "skipTables": ["schema_migrations", "migrations", "ar_internal_metadata"],
+      "junctionTablePatterns": [
+        {
+          "pattern": "^(\\w+)_(\\w+)$",
+          "description": "Tables qui relient deux entités"
+        },
+        {
+          "pattern": "^(\\w+)_(to|has|with)_(\\w+)$",
+          "description": "Tables de jointure avec préfixe relationnel"
+        }
+      ],
+      "technicalTablePatterns": [
+        {
+          "pattern": "^(logs?|audit|history|tracking|versions?)_",
+          "category": "LOGS"
+        },
+        {
+          "pattern": "^(cache|sessions?|tokens|auth)_",
+          "category": "SYSTEM"
+        },
+        {
+          "pattern": "^(jobs|queues?|tasks)_",
+          "category": "QUEUE"
+        },
+        {
+          "pattern": "^(configs?|settings|preferences|options)_?",
+          "category": "CONFIG"
+        }
+      ],
+      "orphanTablePatterns": [
+        {
+          "pattern": "^(tmp|temp|old|backup|test|legacy|obsolete|deprecated)_",
+          "description": "Tables temporaires ou obsolètes"
+        },
+        {
+          "pattern": "_(tmp|temp|old|backup|test|draft|v\\d)$",
+          "description": "Tables temporaires ou de tests avec suffixe"
+        }
+      ],
+      "entityPatterns": [
+        {
+          "category": "USER",
+          "patterns": [
+            "users",
+            "user",
+            "accounts",
+            "account",
+            "profiles",
+            "profile",
+            "members",
+            "member",
+            "customers",
+            "customer"
+          ]
+        },
+        {
+          "category": "CONTENT",
+          "patterns": [
+            "posts",
+            "post",
+            "articles",
+            "article",
+            "contents",
+            "content",
+            "pages",
+            "page",
+            "media",
+            "attachments"
+          ]
+        },
+        {
+          "category": "COMMERCE",
+          "patterns": [
+            "products",
+            "product",
+            "orders",
+            "order",
+            "payments",
+            "payment",
+            "invoices",
+            "invoice",
+            "carts",
+            "cart"
+          ]
+        },
+        {
+          "category": "COMMUNICATION",
+          "patterns": [
+            "messages",
+            "message",
+            "comments",
+            "comment",
+            "notifications",
+            "notification",
+            "emails",
+            "email"
+          ]
+        },
+        {
+          "category": "LOCATION",
+          "patterns": [
+            "addresses",
+            "address",
+            "locations",
+            "location",
+            "places",
+            "place",
+            "countries",
+            "cities",
+            "regions"
+          ]
+        },
+        {
+          "category": "METADATA",
+          "patterns": [
+            "tags",
+            "tag",
+            "categories",
+            "category",
+            "labels",
+            "label",
+            "types",
+            "status",
+            "metadata"
+          ]
+        }
+      ],
+      "contextRules": [
+        {
+          "columnPresence": ["email", "password", "username", "login"],
+          "suggests": "AUTH"
+        },
+        {
+          "columnPresence": ["price", "amount", "currency", "total", "subtotal"],
+          "suggests": "PAYMENT"
+        },
+        {
+          "columnPresence": ["title", "body", "content", "description", "text"],
+          "suggests": "CONTENT"
+        },
+        {
+          "columnPresence": ["first_name", "last_name", "name", "phone", "birth_date"],
+          "suggests": "PERSON"
+        },
+        {
+          "columnPresence": ["address", "city", "country", "postal_code", "zip"],
+          "suggests": "ADDRESS"
+        },
+        {
+          "columnPresence": ["status", "state", "is_active", "is_valid", "is_approved"],
+          "suggests": "STATEFUL"
+        }
+      ]
+    }
+  },
+  "pipeline": {
+    "steps": [
+      {
+        "name": "Extraction de la structure SQL",
+        "agent": "syntaxExtractor",
+        "dependsOn": []
+      },
+      {
+        "name": "Analyse des relations entre tables",
+        "agent": "relationAnalyzer",
+        "dependsOn": ["syntaxExtractor"]
+      },
+      {
+        "name": "Optimisation des types de données",
+        "agent": "typeOptimizer",
+        "dependsOn": ["relationAnalyzer"]
+      },
+      {
+        "name": "Cartographie sémantique des tables",
+        "agent": "semanticMapper",
+        "dependsOn": ["relationAnalyzer"]
+      },
+      {
+        "name": "Détection de la dette technique",
+        "agent": "techDebtDetector",
+        "dependsOn": ["relationAnalyzer"]
+      },
+      {
+        "name": "Génération des modèles Prisma",
+        "agent": "prismaGenerator",
+        "dependsOn": ["typeOptimizer", "semanticMapper"]
+      },
+      {
+        "name": "Planification de la migration",
+        "agent": "migrationPlanner",
+        "dependsOn": ["prismaGenerator", "techDebtDetector"]
+      }
+    ]
+  },
+  "integrations": {
+    "n8n": {
+      "enabled": true,
+      "webhookPrefix": "sql_analyzer"
+    },
+    "versionControl": {
+      "enabled": true,
+      "commitResults": true,
+      "notifyOnChanges": true
+    },
+    "notifications": {
+      "email": false,
+      "slack": false,
+      "console": true
+    }
+  },
+  "database": {
+    "mysql": {
+      "host": "localhost",
+      "port": 3306,
+      "user": "root",
+      "password": "",
+      "database": "",
+      "connectionLimit": 10
+    },
+    "postgres": {
+      "host": "localhost",
+      "port": 5432,
+      "user": "postgres",
+      "password": "",
+      "database": "",
+      "ssl": false
+    }
+  },
+  "integration": {
+    "n8nWorkflow": {
+      "enabled": true,
+      "workflowId": "",
+      "webhookEndpoint": ""
+    },
+    "mcp": {
+      "enabled": true,
+      "serverUrl": "http://localhost:3000/api",
+      "apiToken": ""
+    },
+    "versioning": {
+      "enabled": true,
+      "repository": "",
+      "branch": "sql-migration",
+      "commitMessage": "SQL Analyzer: Auto-generated migration [date]"
+    }
+  },
+  "exclusions": {
+    "tables": [],
+    "patterns": ["_bak", "_old", "_temp"]
+  },
+  "logging": {
+    "level": "info",
+    "file": "./logs/sql_analyzer.log",
+    "console": true
+  }
+}

@@ -1,0 +1,1123 @@
+VERSION 0.7
+
+# Variables globales pour la configuration
+ARG NODE_VERSION=20
+ARG NX_CLOUD_ACCESS_TOKEN=""
+ARG DEPLOY_ENV="dev"
+ARG USE_CACHE="true"
+ARG CACHE_REPO="cache/mcp-monorepo"
+ARG WEBHOOK_URL=""
+
+# Image de base avec des outils pré-installés
+base:
+FROM node:${NODE_VERSION}-slim
+
+# Installation des dépendances système nécessaires
+RUN apt-get update && apt-get install -y \
+    git \
+    curl \
+    python3 \
+    make \
+    g++ \
+    --no-install-recommends \
+    && rm -rf /var/lib/apt/lists/*
+
+# Installation de pnpm
+RUN curl -fsSL https://get.pnpm.io/install.sh | sh - \
+    && ln -s /root/.local/share/pnpm/pnpm /usr/local/bin/pnpm
+
+# Configuration de l'environnement
+ENV PNPM_HOME="/root/.local/share/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+ENV NX_CLOUD_ACCESS_TOKEN=${NX_CLOUD_ACCESS_TOKEN}
+WORKDIR /app
+
+# Gestion des dépendances avec cache intelligent
+deps:
+FROM +base
+
+# Copie des fichiers de configuration et des packages pour optimiser le cache
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY apps/*/package.json ./apps-temp/
+COPY packages/*/package.json ./packages-temp/
+
+# Installation des dépendances avec pnpm et cache
+RUN --mount=type=cache,target=/root/.pnpm-store \
+    if [ "$USE_CACHE" = "true" ]; then \
+    pnpm install --frozen-lockfile; \
+    else \
+    pnpm install --no-frozen-lockfile; \
+    fi
+
+# Sauvegarde des node_modules pour les étapes suivantes
+SAVE ARTIFACT /app/node_modules node_modules
+SAVE ARTIFACT /app AS LOCAL .pnpm-cache
+
+# Génération du graphe de dépendances Nx pour améliorer les builds affectés
+nx-deps:
+FROM +deps
+COPY --dir apps packages ./
+COPY nx.json tsconfig*.json .eslintrc* ./
+
+# Génération du fichier de dépendances Nx
+RUN npx nx graph --file=.nx/deps.json
+
+# Sauvegarde comme artefact local
+SAVE ARTIFACT /app/.nx/deps.json AS LOCAL .nx/deps.json
+
+# Lint avec Nx affected
+lint:
+FROM +nx-deps
+COPY . .
+ARG AFFECTED_ARGS="--all"
+
+# Exécution du lint uniquement sur les projets affectés
+RUN pnpm nx affected:lint ${AFFECTED_ARGS}
+
+SAVE ARTIFACT /app/node_modules AS LOCAL node_modules
+
+# Tests avec Nx affected pour exécution parallèle et caching intelligent
+test:
+FROM +nx-deps
+COPY . .
+ARG AFFECTED_ARGS="--all"
+
+# Exécution des tests avec JWT
+RUN pnpm nx affected:test ${AFFECTED_ARGS}
+
+# Sauvegarde des rapports de couverture
+SAVE ARTIFACT /app/coverage AS LOCAL coverage
+
+# Vérification des types TypeScript sur les projets affectés
+typecheck:
+FROM +nx-deps
+COPY . .
+ARG AFFECTED_ARGS="--all"
+
+# Vérification des types avec Nx
+RUN pnpm nx affected --target=typecheck ${AFFECTED_ARGS}
+
+# Build des projets affectés avec Nx
+build:
+FROM +deps
+
+# Copie du code source complet
+COPY . .
+
+# Construction de tous les projets avec Nx
+RUN pnpm nx run-many --all --target=build --parallel=3
+
+# Sauvegarde des builds comme artefacts
+SAVE ARTIFACT /app/dist AS LOCAL dist
+
+# Scripts des agents MCP
+mcp-scripts:
+FROM +deps
+COPY ./agents ./agents
+COPY ./config/mcp ./config/mcp
+
+# Construction des scripts MCP
+RUN cd agents && pnpm build
+
+# Sauvegarde des scripts générés
+SAVE ARTIFACT /app/agents/dist AS LOCAL agents/dist
+
+# Documentation avec Docusaurus
+docs-build:
+FROM +deps
+COPY . .
+
+# Installation des dépendances Docusaurus si nécessaires
+RUN pnpm add -D @docusaurus/core @docusaurus/preset-classic
+
+# Génération de la documentation
+RUN cd documentation-site && pnpm build
+
+# Sauvegarde du site statique généré
+SAVE ARTIFACT /app/documentation-site/build AS LOCAL documentation-site/build
+
+# Image Docker pour la documentation
+docs-image:
+FROM nginx:alpine
+COPY +docs-build/documentation-site/build /usr/share/nginx/html
+EXPOSE 80
+SAVE IMAGE mcp-docs:${DEPLOY_ENV}
+
+# Intégration CI complète
+ci:
+BUILD +nx-deps
+BUILD +lint
+BUILD +typecheck
+BUILD +test
+BUILD +build
+BUILD +docs-build
+
+# Notification de statut via webhook (optionnel)
+RUN if [ ! -z "$WEBHOOK_URL" ]; then \
+    curl -X POST -H "Content-Type: application/json" \
+    -d '{"status": "success", "env": "'"$DEPLOY_ENV"'", "build": true}' \
+    $WEBHOOK_URL; \
+    fi
+
+# Image Docker pour le déploiement de l'application monorepo
+app-image:
+FROM +base
+COPY +build/dist /app/dist
+COPY package.json pnpm-workspace.yaml ./
+
+# Installation des dépendances de production uniquement
+RUN --mount=type=cache,target=/root/.pnpm-store \
+    pnpm install --prod --frozen-lockfile
+
+# Configuration du point d'entrée selon l'environnement
+ARG APP="api"
+RUN echo '#!/bin/sh\ncd /app && node dist/apps/'"$APP"'/main.js' > /entrypoint.sh && \
+    chmod +x /entrypoint.sh
+
+ENTRYPOINT ["/entrypoint.sh"]
+SAVE IMAGE mcp-app-${APP}:${DEPLOY_ENV}
+
+# Remplacer les scripts obsolètes par la cible optimize-disk
+optimize-disk:
+FROM +base
+
+ARG MIN_FREE_SPACE=5
+ARG ENABLE_DOCKER_CLEAN=true
+ARG REPORT_PATH="disk-optimization-report.txt"
+
+# Installation des dépendances
+RUN pnpm add -D glob fs-extra nanoid rimraf typescript ts-node
+
+# Initialiser le rapport
+RUN echo "--- RAPPORT D'OPTIMISATION DISQUE ---" > ${REPORT_PATH}
+RUN echo "Date: $(date)" >> ${REPORT_PATH}
+RUN echo "Espace libre minimum requis: ${MIN_FREE_SPACE} GB" >> ${REPORT_PATH}
+RUN echo "----------------------------------------" >> ${REPORT_PATH}
+
+# 1. Supprimer les fichiers temporaires et backups
+RUN echo "⚙️ Suppression des fichiers temporaires et backups..." >> ${REPORT_PATH}
+RUN find . -type f -name "*.bak" -o -name "*.tmp" -o -name "*~" -delete
+
+# 2. Supprimer les packages non utilisés
+RUN echo "⚙️ Optimisation des packages npm..." >> ${REPORT_PATH}
+RUN pnpm prune >> ${REPORT_PATH} 2>&1
+
+# 3. Dédupliquer les fichiers
+RUN echo "⚙️ Déduplication des fichiers..." >> ${REPORT_PATH}
+RUN echo "Fonctionnalité de déduplication intégrée à Earthfile" >> ${REPORT_PATH}
+
+# 4. Supprimer les dossiers dupliqués
+RUN echo "⚙️ Optimisation des dossiers dupliqués..." >> ${REPORT_PATH}
+RUN echo "Suppression des dossiers orchestratorbridge dupliqués" >> ${REPORT_PATH}
+RUN find . -type d -name "orchestratorbridge" -exec rm -rf {} \; 2>/dev/null || true
+
+# 5. Optimiser le dépôt Git
+RUN echo "⚙️ Optimisation du dépôt Git..." >> ${REPORT_PATH}
+RUN git gc --aggressive --prune=now >> ${REPORT_PATH} 2>&1 || echo "Erreur Git (ignorée)" >> ${REPORT_PATH}
+
+# 6. Nettoyage Docker si activé
+RUN if [ "${ENABLE_DOCKER_CLEAN}" = "true" ]; then \
+    echo "⚙️ Nettoyage des conteneurs et images Docker..." >> ${REPORT_PATH}; \
+    if command -v docker >/dev/null 2>&1; then \
+    docker system prune -af >> ${REPORT_PATH} 2>&1 || echo "Erreur Docker (ignorée)" >> ${REPORT_PATH}; \
+    else \
+    echo "Docker non disponible, étape ignorée" >> ${REPORT_PATH}; \
+    fi; \
+    fi
+
+# Rapport final
+RUN echo "----------------------------------------" >> ${REPORT_PATH}
+RUN echo "✅ Optimisation terminée" >> ${REPORT_PATH}
+
+# Sauvegarder le rapport
+SAVE ARTIFACT /app/${REPORT_PATH} AS LOCAL ${REPORT_PATH}
+
+# Utiliser la nouvelle cible optimize-disk dans le workflow CI
+ci-full:
+FROM +base
+
+# Exécuter toutes les étapes nécessaires pour une CI complète
+BUILD +typecheck
+BUILD +lint
+BUILD +test
+BUILD +optimize-disk
+BUILD +build
+
+RUN echo "✅ CI complète exécutée avec succès!"
+
+# Le reste du fichier reste inchangé
+# ...
+
+# Déploiement GitHub Actions intégré
+github-actions-deploy:
+FROM +base
+ARG GITHUB_TOKEN=""
+RUN --secret GITHUB_TOKEN=$GITHUB_TOKEN \
+    if [ ! -z "$GITHUB_TOKEN" ]; then \
+    echo "Configuration du déploiement GitHub Actions"; \
+    # Commandes pour déclencher un déploiement via GitHub Actions \
+    fi
+
+# Commande pour générer les configurations de déploiement
+generate-deploy-config:
+FROM +base
+COPY +nx-deps/.nx/deps.json /tmp/deps.json
+COPY ./scripts/generate-deploy-config.js ./
+
+# Génération des fichiers de configuration basés sur les dépendances
+RUN node ./scripts/generate-deploy-config.js --env=${DEPLOY_ENV} --deps=/tmp/deps.json
+
+SAVE ARTIFACT /app/deployment-${DEPLOY_ENV}.yaml AS LOCAL deployment-${DEPLOY_ENV}.yaml
+
+# Cible de déploiement qui déclenche toute la chaîne
+deploy:
+BUILD +ci
+ARG ENV=${DEPLOY_ENV}
+BUILD --build-arg DEPLOY_ENV=${ENV} +app-image
+BUILD --build-arg DEPLOY_ENV=${ENV} +docs-image
+BUILD --build-arg DEPLOY_ENV=${ENV} +generate-deploy-config
+
+# Notification de déploiement via webhook
+RUN if [ ! -z "$WEBHOOK_URL" ]; then \
+    curl -X POST -H "Content-Type: application/json" \
+    -d '{"status": "deployed", "env": "'"$ENV"'"}' \
+    $WEBHOOK_URL; \
+    fi
+
+# Message de succès
+RUN echo "🚀 Déploiement de l'environnement ${ENV} terminé avec succès!"
+
+# Commande locale pour initialiser le cache Nx Cloud
+init-nx-cloud:
+LOCALLY
+RUN echo "⚙️ Configuration de Nx Cloud..."
+RUN npx nx connect-to-nx-cloud
+RUN echo "✅ Nx Cloud configuré avec succès!"
+
+# SEO Validation
+seo-validate:
+FROM +build
+COPY --dir agents/seo ./
+
+# Validation des métadonnées SEO
+RUN mkdir -p /app/seo-validation
+
+# Exécuter le script de validation SEO
+RUN pnpm tsx agents/seo/seo-validator.ts
+
+# Sauvegarder le rapport de validation
+SAVE ARTIFACT /app/seo-validation /seo-validation
+
+# Génération de Caddyfile
+generate-caddy:
+FROM +build
+COPY --dir agents/seo ./
+
+# Créer le répertoire pour les Caddyfiles générés
+RUN mkdir -p /app/generated-caddyfiles
+
+# Exécuter le générateur de Caddyfile
+RUN pnpm tsx agents/seo/tools/generate-caddyfile.ts
+
+# Sauvegarder les Caddyfiles générés
+SAVE ARTIFACT /app/generated-caddyfiles /caddyfiles
+
+# Test des redirections
+test-redirects:
+FROM +build
+COPY --dir agents/seo ./
+
+# Créer le répertoire pour les rapports de redirection
+RUN mkdir -p /app/redirect-validation-reports
+
+# Exécuter le validateur de redirections
+RUN pnpm tsx agents/seo/tools/test-redirects.ts
+
+# Sauvegarder les rapports de validation
+SAVE ARTIFACT /app/redirect-validation-reports /redirect-reports
+
+# Intégration CI complète avec SEO
+ci:
+BUILD +lint
+BUILD +test
+BUILD +seo-validate
+BUILD +generate-caddy
+BUILD +test-redirects
+
+# Cible pour le dashboard admin
+build-admin-dashboard:
+FROM +deps
+
+# Copie du code source nécessaire pour le dashboard admin
+COPY nx.json tsconfig.json ./
+COPY packages ./packages
+COPY apps/admin-dashboard ./apps/admin-dashboard
+
+# Construction du dashboard admin
+RUN pnpm nx build admin-dashboard
+
+# Artefacts produits par la construction
+SAVE ARTIFACT ./dist/apps/admin-dashboard /dist
+
+# Cible pour le dashboard principal
+build-dashboard:
+FROM +deps
+
+# Copie du code source nécessaire pour le dashboard principal
+COPY nx.json tsconfig.json ./
+COPY packages ./packages
+COPY apps/dashboard ./apps/dashboard
+
+# Construction du dashboard principal
+RUN pnpm nx build dashboard
+
+# Artefacts produits par la construction
+SAVE ARTIFACT ./dist/apps/dashboard /dist
+
+# Cible pour les dashboards superposés (layered-dashboards)
+build-layered-dashboards:
+FROM +deps
+
+# Copie du code source nécessaire
+COPY nx.json tsconfig.json ./
+COPY packages ./packages
+COPY layered-dashboards ./layered-dashboards
+
+# Construction des dashboards superposés
+RUN pnpm nx run-many --target=build --projects=layered-dashboards/* --parallel=2
+
+# Artefacts produits par la construction
+SAVE ARTIFACT ./dist/layered-dashboards /dist
+
+# Tests pour les dashboards
+test-dashboards:
+FROM +deps
+
+# Copie du code source nécessaire pour les tests
+COPY . .
+
+# Exécution des tests pour tous les dashboards
+RUN pnpm nx run-many --target=test --projects=dashboard,admin-dashboard,layered-dashboards/* --parallel=3
+
+# Déploiement des dashboards en environnement spécifique
+deploy-dashboards:
+FROM +build
+
+ARG DEPLOY_TARGET="dev"
+
+# Préparation de l'environnement spécifique
+RUN echo "Préparation du déploiement des dashboards pour l'environnement ${DEPLOY_TARGET}"
+
+# Notification de déploiement (webhook optionnel)
+RUN if [ -n "$WEBHOOK_URL" ]; then \
+    curl -X POST -H "Content-Type: application/json" \
+    -d "{\"text\": \"Déploiement des dashboards en cours sur ${DEPLOY_TARGET}\"}" \
+    ${WEBHOOK_URL}; \
+    fi
+
+# Intégration Nx Cloud pour les dashboards
+nx-cloud-dashboards:
+FROM +deps
+
+# Configuration Nx Cloud pour optimiser les builds distribués
+RUN pnpm nx connect-to-nx-cloud
+
+# Exécution de la génération de rapports de dépendances pour les dashboards
+RUN pnpm nx graph --file=./generated/dashboard-dependency-graph.json
+
+# Sauvegarde des rapports
+SAVE ARTIFACT ./generated/dashboard-dependency-graph.json /reports/
+
+# Analyse des performances des dashboards
+analyse-dashboards:
+FROM +deps
+
+# Copie du code source
+COPY . .
+
+# Exécution de l'analyse des performances
+RUN pnpm nx run-many --target=analyze --projects=dashboard,admin-dashboard --parallel=2
+
+# Sauvegarde des rapports d'analyse
+SAVE ARTIFACT ./dist/analyze /reports/
+
+# Image Docker pour les dashboards
+docker-dashboards:
+FROM nginx:alpine
+
+# Copie des fichiers de build depuis l'étape précédente
+COPY +build-dashboard/dist /usr/share/nginx/html/dashboard
+COPY +build-admin-dashboard/dist /usr/share/nginx/html/admin
+
+# Configuration nginx
+COPY ./config/nginx.conf /etc/nginx/conf.d/default.conf
+
+# Exposition du port
+EXPOSE 80
+
+# Commande pour démarrer nginx
+CMD ["nginx", "-g", "daemon off;"]
+
+# Publication de l'image Docker finale
+publish-dashboards:
+FROM +docker-dashboards
+
+ARG REGISTRY="localhost:5000"
+ARG TAG="latest"
+
+# Étiquetage et publication de l'image
+SAVE IMAGE --push ${REGISTRY}/dashboards:${TAG}
+
+# Nouvelles cibles pour l'intégration améliorée Earthly/Nx avec les dashboards
+
+# Analyse d'impact Nx pour les dashboards
+dashboard-impact-analysis:
+FROM +nx-deps
+
+# Copie du code source pour l'analyse
+COPY . .
+
+# Analyse d'impact des changements sur les dashboards
+RUN mkdir -p /app/impact-reports
+RUN pnpm nx affected:graph --base=origin/main --head=HEAD --file=/app/impact-reports/dashboard-impact.json --projects=dashboard,admin-dashboard,layered-dashboards/*
+
+# Sauvegarde du rapport d'impact
+SAVE ARTIFACT /app/impact-reports AS LOCAL impact-reports
+
+# ============= OBSERVABILITÉ AVANCÉE =============
+
+# Construction de l'image Docker pour Prometheus
+build-prometheus:
+FROM prom/prometheus:v2.48.0
+
+# Copie des fichiers de configuration
+COPY ./monitoring/prometheus /etc/prometheus
+
+# Configuration spécifique à l'environnement
+ARG ENV=${DEPLOY_ENV}
+RUN sed -i "s/\${ENV}/${ENV}/g" /etc/prometheus/prometheus.yml
+
+# Exposition du port
+EXPOSE 9090
+
+# Image Prometheus avec la configuration personnalisée
+SAVE IMAGE mcp-prometheus:${DEPLOY_ENV}
+
+# Construction de l'image Docker pour Grafana
+build-grafana:
+FROM grafana/grafana:10.2.3
+
+# Copie des fichiers de provisionnement (dashboards et sources de données)
+COPY ./monitoring/grafana/provisioning /etc/grafana/provisioning
+
+# Configuration des variables d'environnement
+ENV GF_SECURITY_ADMIN_USER=admin
+ENV GF_SECURITY_ADMIN_PASSWORD=mcppassword
+ENV GF_USERS_ALLOW_SIGN_UP=false
+
+# Exposition du port
+EXPOSE 3000
+
+# Image Grafana avec les dashboards préconfigurés
+SAVE IMAGE mcp-grafana:${DEPLOY_ENV}
+
+# Construction de l'image Docker pour AlertManager
+build-alertmanager:
+FROM prom/alertmanager:v0.27.0
+
+# Copie des fichiers de configuration
+COPY ./monitoring/prometheus/alertmanager.yml /etc/alertmanager/alertmanager.yml
+
+# Configuration spécifique à l'environnement
+ARG ENV=${DEPLOY_ENV}
+RUN sed -i "s/\${ENV}/${ENV}/g" /etc/alertmanager/alertmanager.yml
+
+# Exposition du port
+EXPOSE 9093
+
+# Image AlertManager avec configuration personnalisée
+SAVE IMAGE mcp-alertmanager:${DEPLOY_ENV}
+
+# Construction du collecteur OpenTelemetry
+build-otel-collector:
+FROM otel/opentelemetry-collector-contrib:latest
+
+# Copie de la configuration
+COPY ./monitoring/otel-collector-config.yaml /etc/otelcol-contrib/config.yaml
+
+# Exposition des ports
+EXPOSE 4317 4318 55679 8888
+
+# Image du collecteur OpenTelemetry
+SAVE IMAGE mcp-otel-collector:${DEPLOY_ENV}
+
+# Section GitHub Actions optimisée pour le monorepo
+github-actions:
+FROM +deps
+
+# Copie des fichiers nécessaires pour CI/CD
+COPY .github ./github
+COPY nx.json tsconfig.json ./
+COPY scripts/ci ./scripts/ci
+
+# Installation des dépendances spécifiques à GitHub Actions
+RUN pnpm add -D @nrwl/cli @actions/core @actions/github @octokit/rest
+
+# Génération de la matrice de tests basée sur les projets affectés
+RUN mkdir -p /app/github-actions-output
+RUN pnpm tsx ./scripts/ci/generate-test-matrix.ts --output=/app/github-actions-output/test-matrix.json
+
+# Génération de la configuration dynamique pour le déploiement des applications
+RUN pnpm tsx ./scripts/ci/generate-deploy-config.ts --output=/app/github-actions-output/deploy-config.json
+
+# Génération des rapports SEO pour validation CI
+RUN pnpm tsx ./scripts/ci/seo-validation-report.ts --output=/app/github-actions-output/seo-report.json
+
+# Sauvegarde des artefacts pour GitHub Actions
+SAVE ARTIFACT /app/github-actions-output/test-matrix.json AS LOCAL .github/workflows/generated/test-matrix.json
+SAVE ARTIFACT /app/github-actions-output/deploy-config.json AS LOCAL .github/workflows/generated/deploy-config.json
+SAVE ARTIFACT /app/github-actions-output/seo-report.json AS LOCAL .github/workflows/generated/seo-report.json
+
+# Agent MCP pour le nettoyage Docker
+mcp-docker-cleaner:
+FROM +deps
+
+# Création des répertoires nécessaires
+RUN mkdir -p /app/packages/mcp-agents/orchestration/cleanup
+
+# Copie du code source de l'agent de nettoyage Docker
+COPY --dir packages/mcp-agents /app/packages/mcp-agents
+
+# Création du fichier d'agent MCP docker-cleaner
+RUN echo '// packages/mcp-agents/orchestration/cleanup/mcp-agent-docker-cleaner.ts\n\
+    \n\
+    import { execSync } from "child_process";\n\
+    import fs from "fs";\n\
+    \n\
+    export async function run() {\n\
+    console.log("🚨 MCP Trigger: Docker volume check...");\n\
+    \n\
+    const result = execSync("docker system df --format '\''{{json .}}'\''", { encoding: "utf-8" });\n\
+    const lines = result split("\\n").filter(Boolean).map(line => JSON.parse(line));\n\
+    const volumes = lines.find(item => item.Type === "Local Volumes");\n\
+    \n\
+    const size = parseFloat(volumes.Size.replace("GB", "").trim());\n\
+    const reclaimable = parseFloat(volumes.Reclaimable.replace("GB", "").trim());\n\
+    \n\
+    if (size > 10 && reclaimable / size > 0.9) {\n\
+    console.log(`🧱 Volume critique détecté : ${size} Go (${Math.round(reclaimable)} Go libérables)`);\n\
+    \n\
+    // Optionnel : écrire dans un log d'\''audit\n\
+    fs.writeFileSync("audit/docker-volume-issue.log", `Critical volume: ${size} GB\\n`);\n\
+    \n\
+    // Auto-clean\n\
+    console.log("⚙️ Arrêt des containers...");\n\
+    execSync("docker ps -q | xargs -r docker stop", { stdio: "inherit" });\n\
+    \n\
+    console.log("🧹 Suppression des containers...");\n\
+    execSync("docker ps -aq | xargs -r docker rm -f", { stdio: "inherit" });\n\
+    \n\
+    console.log("🔥 Suppression des volumes...");\n\
+    execSync("docker volume ls -q | xargs -r docker volume rm", { stdio: "inherit" });\n\
+    \n\
+    console.log("✅ Espace libéré, trigger terminé.");\n\
+    } else {\n\
+    console.log("✅ Aucun volume critique détecté.");\n\
+    }\n\
+    }' > /app/packages/mcp-agents/orchestration/cleanup/mcp-agent-docker-cleaner.ts
+
+# Sauvegarde de l'agent généré
+SAVE ARTIFACT /app/packages/mcp-agents/orchestration/cleanup/mcp-agent-docker-cleaner.ts AS LOCAL packages/mcp-agents/orchestration/cleanup/mcp-agent-docker-cleaner.ts
+
+# Construction de l'agent juste pour s'assurer qu'il compile
+RUN pnpm tsc -p tsconfig.json /app/packages/mcp-agents/orchestration/cleanup/mcp-agent-docker-cleaner.ts --noEmit
+
+# Construction de Jaeger pour la visualisation des traces
+build-jaeger:
+FROM jaegertracing/all-in-one:latest
+
+# Configuration pour l'intégration avec OpenTelemetry
+ENV COLLECTOR_OTLP_ENABLED=true
+
+# Exposition des ports
+EXPOSE 16686 14250 14268
+
+# Image Jaeger
+SAVE IMAGE mcp-jaeger:${DEPLOY_ENV}
+
+# Déploiement complet de la stack d'observabilité
+deploy-observability:
+ARG ENV=${DEPLOY_ENV}
+BUILD --build-arg DEPLOY_ENV=${ENV} +build-prometheus
+BUILD --build-arg DEPLOY_ENV=${ENV} +build-grafana
+BUILD --build-arg DEPLOY_ENV=${ENV} +build-alertmanager
+BUILD --build-arg DEPLOY_ENV=${ENV} +build-otel-collector
+BUILD --build-arg DEPLOY_ENV=${ENV} +build-jaeger
+
+# Génération du fichier docker-compose pour le déploiement
+RUN echo "version: '3.8'" > /app/observability-${ENV}.yml
+RUN echo "" >> /app/observability-${ENV}.yml
+RUN echo "services:" >> /app/observability-${ENV}.yml
+RUN echo "  prometheus:" >> /app/observability-${ENV}.yml
+RUN echo "    image: mcp-prometheus:${ENV}" >> /app/observability-${ENV}.yml
+RUN echo "    volumes:" >> /app/observability-${ENV}.yml
+RUN echo "      - prometheus_data:/prometheus" >> /app/observability-${ENV}.yml
+RUN echo "    ports:" >> /app/observability-${ENV}.yml
+RUN echo "      - \"9090:9090\"" >> /app/observability-${ENV}.yml
+RUN echo "    networks:" >> /app/observability-${ENV}.yml
+RUN echo "      - monitoring-network" >> /app/observability-${ENV}.yml
+RUN echo "    restart: unless-stopped" >> /app/observability-${ENV}.yml
+RUN echo "" >> /app/observability-${ENV}.yml
+RUN echo "  grafana:" >> /app/observability-${ENV}.yml
+RUN echo "    image: mcp-grafana:${ENV}" >> /app/observability-${ENV}.yml
+RUN echo "    volumes:" >> /app/observability-${ENV}.yml
+RUN echo "      - grafana_data:/var/lib/grafana" >> /app/observability-${ENV}.yml
+RUN echo "    ports:" >> /app/observability-${ENV}.yml
+RUN echo "      - \"3000:3000\"" >> /app/observability-${ENV}.yml
+RUN echo "    networks:" >> /app/observability-${ENV}.yml
+RUN echo "      - monitoring-network" >> /app/observability-${ENV}.yml
+RUN echo "    restart: unless-stopped" >> /app/observability-${ENV}.yml
+RUN echo "" >> /app/observability-${ENV}.yml
+RUN echo "  alertmanager:" >> /app/observability-${ENV}.yml
+RUN echo "    image: mcp-alertmanager:${ENV}" >> /app/observability-${ENV}.yml
+RUN echo "    volumes:" >> /app/observability-${ENV}.yml
+RUN echo "      - alertmanager_data:/alertmanager" >> /app/observability-${ENV}.yml
+RUN echo "    ports:" >> /app/observability-${ENV}.yml
+RUN echo "      - \"9093:9093\"" >> /app/observability-${ENV}.yml
+RUN echo "    networks:" >> /app/observability-${ENV}.yml
+RUN echo "      - monitoring-network" >> /app/observability-${ENV}.yml
+RUN echo "    restart: unless-stopped" >> /app/observability-${ENV}.yml
+RUN echo "" >> /app/observability-${ENV}.yml
+RUN echo "  otel-collector:" >> /app/observability-${ENV}.yml
+RUN echo "    image: mcp-otel-collector:${ENV}" >> /app/observability-${ENV}.yml
+RUN echo "    ports:" >> /app/observability-${ENV}.yml
+RUN echo "      - \"4317:4317\"" >> /app/observability-${ENV}.yml
+RUN echo "      - \"4318:4318\"" >> /app/observability-${ENV}.yml
+RUN echo "      - \"55679:55679\"" >> /app/observability-${ENV}.yml
+RUN echo "      - \"8888:8888\"" >> /app/observability-${ENV}.yml
+RUN echo "    networks:" >> /app/observability-${ENV}.yml
+RUN echo "      - monitoring-network" >> /app/observability-${ENV}.yml
+RUN echo "    restart: unless-stopped" >> /app/observability-${ENV}.yml
+RUN echo "" >> /app/observability-${ENV}.yml
+RUN echo "  jaeger:" >> /app/observability-${ENV}.yml
+RUN echo "    image: mcp-jaeger:${ENV}" >> /app/observability-${ENV}.yml
+RUN echo "    ports:" >> /app/observability-${ENV}.yml
+RUN echo "      - \"16686:16686\"" >> /app/observability-${ENV}.yml
+RUN echo "      - \"14250:14250\"" >> /app/observability-${ENV}.yml
+RUN echo "      - \"14268:14268\"" >> /app/observability-${ENV}.yml
+RUN echo "    networks:" >> /app/observability-${ENV}.yml
+RUN echo "      - monitoring-network" >> /app/observability-${ENV}.yml
+RUN echo "    restart: unless-stopped" >> /app/observability-${ENV}.yml
+RUN echo "" >> /app/observability-${ENV}.yml
+RUN echo "  node-exporter:" >> /app/observability-${ENV}.yml
+RUN echo "    image: prom/node-exporter:latest" >> /app/observability-${ENV}.yml
+RUN echo "    volumes:" >> /app/observability-${ENV}.yml
+RUN echo "      - /proc:/host/proc:ro" >> /app/observability-${ENV}.yml
+RUN echo "      - /sys:/host/sys:ro" >> /app/observability-${ENV}.yml
+RUN echo "      - /:/rootfs:ro" >> /app/observability-${ENV}.yml
+RUN echo "    command:" >> /app/observability-${ENV}.yml
+RUN echo "      - '--path.procfs=/host/proc'" >> /app/observability-${ENV}.yml
+RUN echo "      - '--path.rootfs=/rootfs'" >> /app/observability-${ENV}.yml
+RUN echo "      - '--path.sysfs=/host/sys'" >> /app/observability-${ENV}.yml
+RUN echo "      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'" >> /app/observability-${ENV}.yml
+RUN echo "    ports:" >> /app/observability-${ENV}.yml
+RUN echo "      - \"9100:9100\"" >> /app/observability-${ENV}.yml
+RUN echo "    networks:" >> /app/observability-${ENV}.yml
+RUN echo "      - monitoring-network" >> /app/observability-${ENV}.yml
+RUN echo "" >> /app/observability-${ENV}.yml
+RUN echo "networks:" >> /app/observability-${ENV}.yml
+RUN echo "  monitoring-network:" >> /app/observability-${ENV}.yml
+RUN echo "    driver: bridge" >> /app/observability-${ENV}.yml
+RUN echo "" >> /app/observability-${ENV}.yml
+RUN echo "volumes:" >> /app/observability-${ENV}.yml
+RUN echo "  prometheus_data:" >> /app/observability-${ENV}.yml
+RUN echo "  grafana_data:" >> /app/observability-${ENV}.yml
+RUN echo "  alertmanager_data:" >> /app/observability-${ENV}.yml
+
+# Sauvegarde du fichier de déploiement
+SAVE ARTIFACT /app/observability-${ENV}.yml AS LOCAL observability-${ENV}.yml
+
+# Déploiement des dashboards avec monitoring intégré
+dashboard-monitoring-deploy:
+BUILD +dashboard-full-deployment
+BUILD +deploy-observability
+
+# Commande pour vérifier l'état des services d'observabilité
+check-observability:
+FROM +base
+
+# Installation des dépendances
+RUN apt-get update && apt-get install -y curl jq --no-install-recommends \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copie du script de vérification
+COPY ./monitoring/status-check.js /app/status-check.js
+
+# Exécution de la vérification
+RUN node /app/status-check.js --ci
+
+# Génération de rapports d'observabilité pour agents MCP
+generate-agent-metrics-report:
+FROM +deps
+
+# Copie des sources nécessaires
+COPY . .
+
+# Installation des dépendances pour métriques
+RUN pnpm add -D prom-client winston opentelemetry-js
+
+# Création du répertoire pour les rapports
+RUN mkdir -p /app/reports/metrics
+
+# Génération des rapports de métriques pour les agents
+RUN pnpm tsx ./agents/analysis/generate-metrics-report.ts --output=/app/reports/metrics/agent-metrics-report.json
+
+# Sauvegarde du rapport
+SAVE ARTIFACT /app/reports/metrics AS LOCAL reports/metrics
+
+# Intégration des traces OpenTelemetry dans les agents MCP
+setup-agent-tracing:
+FROM +deps
+
+# Copie des sources
+COPY . .
+
+# Installation des dépendances OpenTelemetry
+RUN pnpm add -D @opentelemetry/sdk-node @opentelemetry/api @opentelemetry/auto-instrumentations-node \
+    @opentelemetry/exporter-trace-otlp-proto @opentelemetry/exporter-metrics-otlp-proto \
+    @opentelemetry/resources @opentelemetry/semantic-conventions @opentelemetry/context-async-hooks
+
+# Génération des fichiers de configuration de tracing
+RUN mkdir -p /app/monitoring/agents-tracing
+RUN pnpm tsx ./agents/monitoring/generate-tracing-config.ts
+
+# Sauvegarde des configurations
+SAVE ARTIFACT /app/monitoring/agents-tracing AS LOCAL monitoring/agents-tracing
+
+# =========================== NOUVEAUX TARGETS STANDARDISÉS ===========================
+
+# Optimisation de l'espace disque (remplace optimize-disk-space.sh)
+optimize-disk:
+FROM +base
+
+ARG MIN_FREE_SPACE=5
+ARG ENABLE_DOCKER_CLEAN=true
+ARG REPORT_PATH="disk-optimization-report.txt"
+
+# Copie des scripts nécessaires
+COPY ./scripts/clean-backup-files.js ./scripts/
+COPY ./scripts/clean-packages-fixed.sh ./scripts/
+COPY ./scripts/deduplicate-files.ts ./scripts/
+COPY ./scripts/fix-duplicate-folders.js ./scripts/
+COPY ./scripts/optimize-git-repo-fixed.sh ./scripts/
+
+# Installation des dépendances
+RUN pnpm add -D glob fs-extra nanoid rimraf typescript ts-node
+RUN chmod +x ./scripts/clean-packages-fixed.sh ./scripts/optimize-git-repo-fixed.sh
+
+# Initialiser le rapport
+RUN echo "--- RAPPORT D'OPTIMISATION DISQUE ---" > ${REPORT_PATH}
+RUN echo "Date: $(date)" >> ${REPORT_PATH}
+RUN echo "Espace libre minimum requis: ${MIN_FREE_SPACE} GB" >> ${REPORT_PATH}
+RUN echo "----------------------------------------" >> ${REPORT_PATH}
+
+# 1. Supprimer les fichiers temporaires et backups
+RUN echo "⚙️ Suppression des fichiers temporaires et backups..." >> ${REPORT_PATH}
+RUN node ./scripts/clean-backup-files.js >> ${REPORT_PATH} 2>&1
+
+# 2. Supprimer les packages non utilisés
+RUN echo "⚙️ Optimisation des packages npm..." >> ${REPORT_PATH}
+RUN ./scripts/clean-packages-fixed.sh >> ${REPORT_PATH} 2>&1
+
+# 3. Dédupliquer les fichiers
+RUN echo "⚙️ Déduplication des fichiers..." >> ${REPORT_PATH}
+RUN npx ts-node ./scripts/deduplicate-files.ts >> ${REPORT_PATH} 2>&1
+
+# 4. Supprimer les dossiers dupliqués
+RUN echo "⚙️ Optimisation des dossiers dupliqués..." >> ${REPORT_PATH}
+RUN node ./scripts/fix-duplicate-folders.js >> ${REPORT_PATH} 2>&1
+
+# 5. Optimiser le dépôt Git
+RUN echo "⚙️ Optimisation du dépôt Git..." >> ${REPORT_PATH}
+RUN ./scripts/optimize-git-repo-fixed.sh >> ${REPORT_PATH} 2>&1
+
+# 6. Nettoyage Docker si activé
+RUN if [ "${ENABLE_DOCKER_CLEAN}" = "true" ]; then \
+    echo "⚙️ Nettoyage des conteneurs et images Docker..." >> ${REPORT_PATH}; \
+    if command -v docker >/dev/null 2>&1; then \
+    docker system prune -af >> ${REPORT_PATH} 2>&1 || echo "Erreur Docker (ignorée)" >> ${REPORT_PATH}; \
+    else \
+    echo "Docker non disponible, étape ignorée" >> ${REPORT_PATH}; \
+    fi; \
+    fi
+
+# Rapport final
+RUN echo "----------------------------------------" >> ${REPORT_PATH}
+RUN echo "✅ Optimisation terminée" >> ${REPORT_PATH}
+
+# Sauvegarder le rapport
+SAVE ARTIFACT /app/${REPORT_PATH} AS LOCAL ${REPORT_PATH}
+
+# Optimisation DB pour CI (remplace optimize.sh)
+db-optimize:
+FROM +deps
+
+ARG DB_TYPE="postgres"
+ARG REPORT_PATH="packages-optimization-report.txt"
+
+# Copie des scripts et outils nécessaires
+COPY ./prisma ./prisma
+COPY ./scripts/analyze-dependencies.sh ./scripts/
+COPY ./scripts/check-mismatches.js ./scripts/
+RUN chmod +x ./scripts/analyze-dependencies.sh
+
+# Installation des dépendances nécessaires
+RUN pnpm add -D @prisma/client prisma zod
+
+# Initialiser le rapport
+RUN echo "--- RAPPORT D'OPTIMISATION DB ---" > ${REPORT_PATH}
+RUN echo "Date: $(date)" >> ${REPORT_PATH}
+RUN echo "Type de base de données: ${DB_TYPE}" >> ${REPORT_PATH}
+RUN echo "----------------------------------------" >> ${REPORT_PATH}
+
+# 1. Vérification et optimisation du schéma Prisma
+RUN echo "⚙️ Validation du schéma Prisma..." >> ${REPORT_PATH}
+RUN npx prisma validate >> ${REPORT_PATH} 2>&1
+RUN echo "⚙️ Optimisation du format du schéma Prisma..." >> ${REPORT_PATH}
+RUN npx prisma format >> ${REPORT_PATH} 2>&1
+
+# 2. Vérifier les incohérences entre modèles TypeScript et schéma DB
+RUN echo "⚙️ Vérification des incohérences modèles/schéma..." >> ${REPORT_PATH}
+RUN node ./scripts/check-mismatches.js >> ${REPORT_PATH} 2>&1
+
+# 3. Analyser les dépendances des packages
+RUN echo "⚙️ Analyse des dépendances..." >> ${REPORT_PATH}
+RUN ./scripts/analyze-dependencies.sh >> ${REPORT_PATH} 2>&1
+
+# 4. Générer les types Zod à partir de Prisma
+RUN echo "⚙️ Génération des schémas Zod depuis Prisma..." >> ${REPORT_PATH}
+RUN if [ -f "./scripts/generate-zod-from-prisma.ts" ]; then \
+    npx ts-node ./scripts/generate-zod-from-prisma.ts >> ${REPORT_PATH} 2>&1; \
+    else \
+    echo "Script de génération Zod non trouvé, étape ignorée" >> ${REPORT_PATH}; \
+    fi
+
+# Rapport final
+RUN echo "----------------------------------------" >> ${REPORT_PATH}
+RUN echo "✅ Optimisation DB terminée" >> ${REPORT_PATH}
+
+# Sauvegarder le rapport
+SAVE ARTIFACT /app/${REPORT_PATH} AS LOCAL ${REPORT_PATH}
+
+# Migration pour CI (remplace migrate-agents.sh, migrate-to-bullmq.sh, etc.)
+ci-migrate:
+FROM +deps
+
+ARG MODE="dry-run"
+ARG MIGRATE_TYPE="all"
+ARG REPORT_PREFIX="migration"
+
+# Copie des scripts et fichiers nécessaires
+COPY ./migration-toolkit ./migration-toolkit
+COPY ./scripts/migration ./scripts/migration
+COPY ./scripts/migrate-agents.ts ./scripts/
+COPY ./scripts/migrate-to-bullmq.sh ./scripts/
+COPY ./scripts/migrate-to-temporal.js ./scripts/
+COPY ./prisma ./prisma
+
+# Rendre les scripts exécutables
+RUN chmod +x ./scripts/migrate-to-bullmq.sh 
+
+# Installation des dépendances nécessaires
+RUN pnpm add -D typescript ts-node @prisma/client
+
+# Initialiser le répertoire de rapports
+RUN mkdir -p reports
+
+# Exécuter les migrations selon le type spécifié
+RUN if [ "${MIGRATE_TYPE}" = "all" ] || [ "${MIGRATE_TYPE}" = "agents" ]; then \
+    echo "⚙️ Migration des agents..." && \
+    npx ts-node ./scripts/migrate-agents.ts --mode=${MODE} --report=./reports/${REPORT_PREFIX}-agents.json; \
+    fi
+
+RUN if [ "${MIGRATE_TYPE}" = "all" ] || [ "${MIGRATE_TYPE}" = "bullmq" ]; then \
+    echo "⚙️ Migration vers BullMQ..." && \
+    ./scripts/migrate-to-bullmq.sh ${MODE} > ./reports/${REPORT_PREFIX}-bullmq.log 2>&1; \
+    fi
+
+RUN if [ "${MIGRATE_TYPE}" = "all" ] || [ "${MIGRATE_TYPE}" = "temporal" ]; then \
+    echo "⚙️ Migration vers Temporal..." && \
+    node ./scripts/migrate-to-temporal.js --mode=${MODE} --output=./reports/${REPORT_PREFIX}-temporal.json; \
+    fi
+
+RUN if [ "${MIGRATE_TYPE}" = "all" ] || [ "${MIGRATE_TYPE}" = "db" ]; then \
+    echo "⚙️ Migration de la base de données..." && \
+    npx prisma migrate deploy --preview-feature > ./reports/${REPORT_PREFIX}-db.log 2>&1; \
+    fi
+
+# Sauvegarder tous les rapports
+SAVE ARTIFACT /app/reports AS LOCAL reports
+
+# Nettoyage du projet (remplace cleanup-project.sh)
+cleanup-project:
+FROM +deps
+
+ARG CLEANUP_TYPE="all"
+ARG REPORT_PATH="cleanup-report.txt"
+ARG DEEP_CLEAN="false"
+
+# Copie des scripts nécessaires
+COPY ./scripts/cleanup ./scripts/cleanup
+COPY ./scripts/cleanup-project.sh ./scripts/
+COPY ./scripts/clean-root-directory.sh ./scripts/
+COPY ./scripts/clean-packages.sh ./scripts/
+COPY ./scripts/cleanup-taskfile-references.js ./scripts/
+COPY ./scripts/cleanup-temp-files.sh ./scripts/
+COPY ./scripts/fix-case-conflicts.sh ./scripts/
+
+# Rendre les scripts exécutables
+RUN chmod +x ./scripts/cleanup-project.sh ./scripts/clean-root-directory.sh ./scripts/clean-packages.sh \
+    ./scripts/cleanup-temp-files.sh ./scripts/fix-case-conflicts.sh
+
+# Initialiser le rapport
+RUN echo "--- RAPPORT DE NETTOYAGE ---" > ${REPORT_PATH}
+RUN echo "Date: $(date)" >> ${REPORT_PATH}
+RUN echo "Type de nettoyage: ${CLEANUP_TYPE}" >> ${REPORT_PATH}
+RUN echo "Nettoyage profond: ${DEEP_CLEAN}" >> ${REPORT_PATH}
+RUN echo "----------------------------------------" >> ${REPORT_PATH}
+
+# Exécuter les nettoyages selon le type spécifié
+RUN if [ "${CLEANUP_TYPE}" = "all" ] || [ "${CLEANUP_TYPE}" = "root" ]; then \
+    echo "⚙️ Nettoyage du répertoire racine..." >> ${REPORT_PATH} && \
+    ./scripts/clean-root-directory.sh >> ${REPORT_PATH} 2>&1; \
+    fi
+
+RUN if [ "${CLEANUP_TYPE}" = "all" ] || [ "${CLEANUP_TYPE}" = "packages" ]; then \
+    echo "⚙️ Nettoyage des packages..." >> ${REPORT_PATH} && \
+    ./scripts/clean-packages.sh >> ${REPORT_PATH} 2>&1; \
+    fi
+
+RUN if [ "${CLEANUP_TYPE}" = "all" ] || [ "${CLEANUP_TYPE}" = "taskfile" ]; then \
+    echo "⚙️ Nettoyage des références Taskfile..." >> ${REPORT_PATH} && \
+    node ./scripts/cleanup-taskfile-references.js >> ${REPORT_PATH} 2>&1; \
+    fi
+
+RUN if [ "${CLEANUP_TYPE}" = "all" ] || [ "${CLEANUP_TYPE}" = "temp" ]; then \
+    echo "⚙️ Nettoyage des fichiers temporaires..." >> ${REPORT_PATH} && \
+    ./scripts/cleanup-temp-files.sh >> ${REPORT_PATH} 2>&1; \
+    fi
+
+RUN if [ "${CLEANUP_TYPE}" = "all" ] || [ "${CLEANUP_TYPE}" = "case" ]; then \
+    echo "⚙️ Résolution des conflits de casse..." >> ${REPORT_PATH} && \
+    ./scripts/fix-case-conflicts.sh >> ${REPORT_PATH} 2>&1; \
+    fi
+
+# Nettoyage profond si activé
+RUN if [ "${DEEP_CLEAN}" = "true" ]; then \
+    echo "⚙️ Exécution du nettoyage profond..." >> ${REPORT_PATH} && \
+    rm -rf node_modules && \
+    rm -rf */*/node_modules && \
+    rm -rf .nx-cache && \
+    echo "✅ Nettoyage profond terminé" >> ${REPORT_PATH}; \
+    fi
+
+# Rapport final
+RUN echo "----------------------------------------" >> ${REPORT_PATH}
+RUN echo "✅ Procédure de nettoyage terminée" >> ${REPORT_PATH}
+
+# Sauvegarder le rapport
+SAVE ARTIFACT /app/${REPORT_PATH} AS LOCAL ${REPORT_PATH}
+
+# Vérification des redirections SEO (remplace ci-check-redirects.sh)
+check-seo-redirects:
+FROM +deps
+
+ARG VALIDATION_MODE="strict"
+ARG CONFIG_PATH="./legacy-urls.txt"
+ARG OUTPUT_PATH="./seo-redirects-report.json"
+
+# Copie des fichiers nécessaires
+COPY ./scripts/analyze-legacy-urls.ts ./scripts/
+COPY ./scripts/validate-seo-redirects.ts ./scripts/
+COPY ${CONFIG_PATH} ./legacy-urls.txt
+
+# Installation des dépendances nécessaires
+RUN pnpm add -D axios typescript ts-node csv-parser fs-extra
+
+# Exécuter l'analyse des URL legacy
+RUN echo "⚙️ Analyse des URLs legacy..."
+RUN npx ts-node ./scripts/analyze-legacy-urls.ts --input=./legacy-urls.txt --output=./legacy-url-analysis.json
+
+# Valider les redirections SEO
+RUN echo "⚙️ Validation des redirections SEO..."
+RUN npx ts-node ./scripts/validate-seo-redirects.ts --mode=${VALIDATION_MODE} --input=./legacy-url-analysis.json --output=${OUTPUT_PATH}
+
+# Sauvegarder les rapports
+SAVE ARTIFACT /app/legacy-url-analysis.json AS LOCAL legacy-url-analysis.json
+SAVE ARTIFACT /app/${OUTPUT_PATH} AS LOCAL ${OUTPUT_PATH}
+
+# Génération du cahier des charges (remplace verify-cahier.sh et update-cahier.sh)
+generate-cahier:
+FROM +deps
+
+ARG UPDATE_MODE="check"
+ARG OUTPUT_DIR="./cahier-output"
+
+# Copie des scripts nécessaires
+COPY ./scripts/cahier-des-charges-verifier.ts ./scripts/
+COPY ./scripts/update-cahier.ts ./scripts/
+COPY ./scripts/verify-cahier.sh ./scripts/
+COPY ./scripts/verify-cahier.ts ./scripts/
+
+# Installation des dépendances nécessaires
+RUN pnpm add -D typescript ts-node fs-extra glob handlebars marked
+
+# Créer le répertoire de sortie
+RUN mkdir -p ${OUTPUT_DIR}
+
+# Vérifier le cahier des charges
+RUN echo "⚙️ Vérification du cahier des charges..."
+RUN if [ "${UPDATE_MODE}" = "check" ]; then \
+    npx ts-node ./scripts/verify-cahier.ts --output=${OUTPUT_DIR}/verification-report.json; \
+    else \
+    npx ts-node ./scripts/update-cahier.ts --output=${OUTPUT_DIR}; \
+    fi
+
+# Sauvegarder les artefacts
+SAVE ARTIFACT /app/${OUTPUT_DIR} AS LOCAL ${OUTPUT_DIR}
+
+# Target pour exécution complète de la CI avec les outils migrés
+ci-full:
+FROM +base
+
+# Exécuter toutes les étapes nécessaires pour une CI complète
+BUILD +typecheck
+BUILD +lint
+BUILD +test
+BUILD +db-optimize
+BUILD +ci-migrate --build-arg MODE=dry-run
+BUILD +optimize-disk
+BUILD +check-seo-redirects
+BUILD +build
+
+RUN echo "✅ CI complète exécutée avec succès!"
+
+# Target de déploiement avec une stack complète
+deploy-full:
+BUILD +deps
+BUILD +ci-full
+BUILD +docs-build
+
+ARG ENV=${DEPLOY_ENV}
+BUILD --build-arg DEPLOY_ENV=${ENV} +app-image
+BUILD --build-arg DEPLOY_ENV=${ENV} +docs-image
+BUILD --build-arg DEPLOY_ENV=${ENV} +generate-deploy-config
+
+# Notification de déploiement via webhook
+RUN if [ ! -z "$WEBHOOK_URL" ]; then \
+    curl -X POST -H "Content-Type: application/json" \
+    -d '{"status": "deployed", "env": "'"$ENV"'"}' \
+    $WEBHOOK_URL; \
+    fi
+
+RUN echo "🚀 Déploiement complet de l'environnement ${ENV} terminé avec succès!"

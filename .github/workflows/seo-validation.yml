@@ -1,0 +1,328 @@
+name: Validation SEO & Redirections
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+      - 'apps/*/src/routes/**'
+      - 'apps/*/src/meta/**' 
+      - 'apps/*/public/**'
+      - 'packages/seo-*/**'
+      - 'agents/seo/**'
+      - '**/redirects.json'
+      - '**/sitemap*.xml'
+      - '**/robots.txt'
+      - '**/canonical*.json'
+  pull_request:
+    paths:
+      - 'apps/*/src/routes/**'
+      - 'apps/*/src/meta/**' 
+      - 'apps/*/public/**'
+      - 'packages/seo-*/**'
+      - 'agents/seo/**'
+      - '**/redirects.json'
+      - '**/sitemap*.xml'
+      - '**/robots.txt'
+      - '**/canonical*.json'
+  workflow_dispatch:
+    inputs:
+      validation_level:
+        description: 'Niveau de validation SEO'
+        required: true
+        default: 'normal'
+        type: choice
+        options:
+          - basic
+          - normal
+          - strict
+
+env:
+  VALIDATION_LEVEL: ${{ github.event.inputs.validation_level || 'normal' }}
+
+jobs:
+  # Analyse des changements SEO
+  seo-analyze:
+    name: Analyse SEO
+    runs-on: ubuntu-latest
+    outputs:
+      has_redirect_changes: ${{ steps.analyze-changes.outputs.has_redirect_changes }}
+      has_meta_changes: ${{ steps.analyze-changes.outputs.has_meta_changes }}
+      has_canonical_changes: ${{ steps.analyze-changes.outputs.has_canonical_changes }}
+      affected_routes: ${{ steps.analyze-changes.outputs.affected_routes }}
+      
+    steps:
+      - name: Checkout du code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configuration Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+      
+      - name: Installation de PNPM
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+          run_install: false
+
+      - name: Installation des dépendances
+        run: pnpm install --frozen-lockfile
+
+      - name: Analyse des changements SEO
+        id: analyze-changes
+        run: |
+          # Analyse des changements dans les redirections
+          if git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -q -E 'redirects.json|apps/.*/src/routes'; then
+            echo "has_redirect_changes=true" >> $GITHUB_OUTPUT
+            echo "Des changements dans les redirections ont été détectés"
+          else
+            echo "has_redirect_changes=false" >> $GITHUB_OUTPUT
+          fi
+          
+          # Analyse des changements dans les métadonnées
+          if git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -q -E 'meta|seo|sitemap'; then
+            echo "has_meta_changes=true" >> $GITHUB_OUTPUT
+            echo "Des changements dans les métadonnées ont été détectés"
+          else
+            echo "has_meta_changes=false" >> $GITHUB_OUTPUT
+          fi
+          
+          # Analyse des changements dans les canonicals
+          if git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -q -E 'canonical'; then
+            echo "has_canonical_changes=true" >> $GITHUB_OUTPUT
+            echo "Des changements dans les URLs canoniques ont été détectés"
+          else
+            echo "has_canonical_changes=false" >> $GITHUB_OUTPUT
+          fi
+          
+          # Extraction des routes affectées
+          AFFECTED_ROUTES=$(node ./scripts/ci/extract-affected-routes.js)
+          echo "affected_routes=${AFFECTED_ROUTES}" >> $GITHUB_OUTPUT
+
+  # Validation des métadonnées SEO
+  meta-validation:
+    name: Validation des métadonnées
+    needs: seo-analyze
+    if: ${{ needs.seo-analyze.outputs.has_meta_changes == 'true' || github.event_name == 'workflow_dispatch' }}
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout du code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configuration Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+      
+      - name: Installation de PNPM
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+          run_install: false
+
+      - name: Installation des dépendances
+        run: pnpm install --frozen-lockfile
+
+      - name: Validation des balises meta
+        run: |
+          echo "Validation des balises meta avec niveau : ${{ env.VALIDATION_LEVEL }}"
+          pnpm tsx agents/seo/meta-validator.ts --level=${{ env.VALIDATION_LEVEL }}
+      
+      - name: Validation des données structurées (JSON-LD)
+        run: |
+          echo "Validation des données structurées (JSON-LD)"
+          pnpm tsx agents/seo/jsonld-validator.ts --report
+
+      - name: Upload du rapport de validation meta
+        uses: actions/upload-artifact@v3
+        with:
+          name: seo-meta-validation
+          path: reports/seo/meta-validation/
+          if-no-files-found: warn
+
+  # Validation des redirections
+  redirect-validation:
+    name: Validation des redirections
+    needs: seo-analyze
+    if: ${{ needs.seo-analyze.outputs.has_redirect_changes == 'true' || github.event_name == 'workflow_dispatch' }}
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout du code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configuration Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+      
+      - name: Installation de PNPM
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+          run_install: false
+
+      - name: Installation des dépendances
+        run: pnpm install --frozen-lockfile
+
+      - name: Validation des redirections
+        run: |
+          echo "Validation des redirections"
+          pnpm tsx agents/seo/redirect-validator.ts
+
+      - name: Test des chaînes de redirections
+        run: |
+          echo "Vérification des boucles infinies et chaînes de redirections"
+          pnpm tsx agents/seo/redirect-chain-validator.ts
+
+      - name: Upload du rapport de redirections
+        uses: actions/upload-artifact@v3
+        with:
+          name: redirect-validation
+          path: reports/seo/redirects/
+          if-no-files-found: warn
+
+  # Validation des URLs canoniques
+  canonical-validation:
+    name: Validation des URLs canoniques
+    needs: seo-analyze
+    if: ${{ needs.seo-analyze.outputs.has_canonical_changes == 'true' || github.event_name == 'workflow_dispatch' }}
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout du code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configuration Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+      
+      - name: Installation de PNPM
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+          run_install: false
+
+      - name: Installation des dépendances
+        run: pnpm install --frozen-lockfile
+
+      - name: Validation des URLs canoniques
+        run: |
+          echo "Validation des URLs canoniques"
+          pnpm tsx agents/canonical-validator.ts --level=${{ env.VALIDATION_LEVEL }}
+
+      - name: Upload du rapport de validation des canonicals
+        uses: actions/upload-artifact@v3
+        with:
+          name: canonical-validation
+          path: reports/seo/canonical/
+          if-no-files-found: warn
+
+  # Génération du sitemap et validation
+  sitemap-validation:
+    name: Validation du sitemap
+    needs: [meta-validation, redirect-validation, canonical-validation]
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout du code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configuration Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+      
+      - name: Installation de PNPM
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+          run_install: false
+
+      - name: Installation des dépendances
+        run: pnpm install --frozen-lockfile
+
+      - name: Génération du sitemap (si nécessaire)
+        run: |
+          echo "Génération/mise à jour du sitemap"
+          pnpm tsx agents/seo/sitemap-generator.ts
+
+      - name: Validation du sitemap
+        run: |
+          echo "Validation du sitemap"
+          pnpm tsx agents/seo/sitemap-validator.ts
+
+      - name: Upload du rapport de validation du sitemap
+        uses: actions/upload-artifact@v3
+        with:
+          name: sitemap-validation
+          path: reports/seo/sitemap/
+          if-no-files-found: warn
+
+  # Création de rapports SEO consolidés
+  generate-reports:
+    name: Génération des rapports SEO
+    needs: [sitemap-validation]
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout du code
+        uses: actions/checkout@v4
+
+      - name: Configuration Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+      
+      - name: Installation de PNPM
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+          run_install: false
+
+      - name: Installation des dépendances
+        run: pnpm install --frozen-lockfile
+
+      - name: Téléchargement des rapports de validation
+        uses: actions/download-artifact@v3
+        with:
+          path: ./reports/downloads
+
+      - name: Consolidation des rapports SEO
+        run: |
+          echo "Consolidation des rapports SEO"
+          pnpm tsx agents/seo/tools/generate-consolidated-report.ts --input=./reports/downloads --output=./reports/seo/consolidated
+
+      - name: Upload du rapport consolidé
+        uses: actions/upload-artifact@v3
+        with:
+          name: seo-consolidated-report
+          path: reports/seo/consolidated/
+          if-no-files-found: warn
+
+      - name: Notification Slack du rapport SEO
+        if: success()
+        uses: slackapi/slack-github-action@v1.24.0
+        with:
+          channel-id: 'seo-monitoring'
+          slack-message: "📊 Nouveau rapport SEO disponible! Vérifiez les résultats de la dernière validation ici: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}

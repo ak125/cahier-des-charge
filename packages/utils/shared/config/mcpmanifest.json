@@ -1,0 +1,131 @@
+{
+  "version": "1.0.0",
+  "lastUpdated": "2025-04-14T14:30:00.000Z",
+  "project": "PHP to Remix Migration",
+  "metadata": {
+    "totalPlanned": 3,
+    "totalCompleted": 1,
+    "totalInProgress": 1,
+    "totalFailed": 0
+  },
+  "migrations": [
+    {
+      "id": "MIG-001",
+      "sourceFile": "/apps/backend/src/pages/fiche.php",
+      "targetFiles": {
+        "component": "/apps/frontend/app/routes/fiche.tsx",
+        "loader": "/apps/frontend/app/routes/fiche.loader.ts",
+        "meta": "/apps/frontend/app/routes/fiche.meta.ts",
+        "schema": "/apps/frontend/app/schemas/fiche.schema.ts"
+      },
+      "status": "completed",
+      "route": "/fiche",
+      "qaStatus": "OK",
+      "seoStatus": "OK",
+      "tags": ["high-priority", "core-feature"],
+      "createdAt": "2025-04-10T10:15:00.000Z",
+      "completedAt": "2025-04-12T14:30:00.000Z",
+      "prUrl": "https://github.com/your-organization/monorepo/pull/123",
+      "assignee": "dev-team-lead",
+      "verificationSteps": [
+        {
+          "name": "qa-analyzer",
+          "status": "passed",
+          "score": 95
+        },
+        {
+          "name": "seo-analyzer",
+          "status": "passed",
+          "score": 98
+        },
+        {
+          "name": "typescript-check",
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "id": "MIG-002",
+      "sourceFile": "/apps/backend/src/pages/liste.php",
+      "targetFiles": {
+        "component": "/apps/frontend/app/routes/liste.tsx",
+        "loader": "/apps/frontend/app/routes/liste.loader.ts",
+        "meta": "/apps/frontend/app/routes/liste.meta.ts",
+        "schema": "/apps/frontend/app/schemas/liste.schema.ts"
+      },
+      "status": "in_progress",
+      "route": "/liste",
+      "qaStatus": "Partial",
+      "seoStatus": "OK",
+      "tags": ["high-priority", "list-view"],
+      "createdAt": "2025-04-12T09:30:00.000Z",
+      "verificationSteps": [
+        {
+          "name": "qa-analyzer",
+          "status": "partial",
+          "score": 85,
+          "error": "Manque de gestion des erreurs pour certains cas limites"
+        },
+        {
+          "name": "seo-analyzer",
+          "status": "passed",
+          "score": 92
+        },
+        {
+          "name": "typescript-check",
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "id": "MIG-003",
+      "sourceFile": "/apps/backend/src/pages/contact.php",
+      "targetFiles": {
+        "component": "/apps/frontend/app/routes/contact.tsx",
+        "loader": "/apps/frontend/app/routes/contact.loader.ts",
+        "action": "/apps/frontend/app/routes/contact.action.ts",
+        "meta": "/apps/frontend/app/routes/contact.meta.ts",
+        "schema": "/apps/frontend/app/schemas/contact.schema.ts"
+      },
+      "status": "planned",
+      "route": "/contact",
+      "tags": ["form", "interactive"],
+      "createdAt": "2025-04-13T11:45:00.000Z",
+      "scheduledFor": "2025-04-16T10:00:00.000Z",
+      "priority": "medium"
+    }
+  ],
+  "notifications": {
+    "slack": {
+      "enabled": true,
+      "channel": "#migrations-status",
+      "events": ["migration:completed", "migration:failed", "qa:ok", "qa:failed", "pr:created"]
+    },
+    "email": {
+      "enabled": true,
+      "recipients": ["team@example.com", "dev.team@example.com"],
+      "events": ["migration:failed", "qa:failed"]
+    },
+    "github": {
+      "enabled": true,
+      "repo": "monorepo",
+      "owner": "your-organization",
+      "events": ["migration:completed", "qa:ok"]
+    }
+  },
+  "integrations": {
+    "supabase": {
+      "table": "audit.migrations",
+      "enabled": true
+    },
+    "github": {
+      "autoCreatePR": true,
+      "prTemplate": "/workspaces/cahier-des-charge/templates/pr-template.md",
+      "enabled": true
+    },
+    "n8n": {
+      "workflow": "php-analyzer-trigger",
+      "enabled": true
+    }
+  }
+}

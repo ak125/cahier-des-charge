@@ -1,0 +1,60 @@
+version: "3"
+
+tasks:
+  check:
+    desc: Lance toutes les vérifications CI
+    cmds:
+      - task: lint
+      - task: test
+      - task: build
+      - echo "✅ Vérifications CI terminées"
+
+  lint:
+    desc: Lance le linting du code
+    cmds:
+      - echo "🔍 Linting du code..."
+      - pnpm lint
+      - echo "✅ Linting terminé"
+
+  test:
+    desc: Lance les tests unitaires et d'intégration
+    cmds:
+      - echo "🧪 Exécution des tests..."
+      - pnpm test
+      - echo "✅ Tests terminés"
+
+  build:
+    desc: Vérifie que l'application peut être construite
+    cmds:
+      - echo "🔧 Vérification de la construction..."
+      - pnpm build --dry-run
+      - echo "✅ Construction vérifiée"
+    
+  verify-temporal:
+    desc: Vérifie les workflows Temporal
+    cmds:
+      - node src/temporal/testing/workflow-tests.js
+
+  deploy:staging:
+    desc: Déploie l'application sur l'environnement de staging
+    cmds:
+      - echo "🚀 Déploiement vers staging..."
+      - pnpm build
+      - node scripts/deploy.js --env=staging
+      - echo "✅ Déploiement terminé"
+
+  deploy:production:
+    desc: Déploie l'application en production
+    cmds:
+      - echo "⚠️ Déploiement vers la production..."
+      - pnpm build
+      - node scripts/deploy.js --env=production
+      - echo "✅ Déploiement terminé"
+
+  quality-check:
+    desc: Lance une vérification approfondie de la qualité du code
+    cmds:
+      - echo "🔍 Analyse de la qualité du code..."
+      - pnpm test:coverage
+      - node scripts/code-quality-check.js
+      - echo "✅ Vérification terminée"

@@ -1,0 +1,10 @@
+{
+  "id": "docs-updater",
+  "name": "Documentation Updater",
+  "active": true,
+  "nodes": [],
+  "connections": {},
+  "meta": {
+    "templateCredsSetupCompleted": true
+  }
+}

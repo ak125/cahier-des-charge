@@ -1,0 +1,530 @@
+{
+  "id": "devops-integration-pipeline",
+  "name": "Pipeline d'Intégration DevOps",
+  "active": true,
+  "nodes": [
+    {
+      "parameters": {
+        "triggerTimes": {}
+      },
+      "name": "Déclencheur Manuel",
+      "type": "n8n-nodes-base.manualTrigger",
+      "position": [100, 300],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "authentication": "genericCredentialType",
+        "httpMethod": "POST",
+        "path": "devops-integration-trigger",
+        "options": {
+          "responseMode": "responseNode",
+          "responseData": "firstEntryJson"
+        }
+      },
+      "name": "Webhook GitHub",
+      "type": "n8n-nodes-base.webhook",
+      "position": [100, 450],
+      "webhookId": "devops-integration-webhook",
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 0 * * *"
+            }
+          ]
+        }
+      },
+      "name": "Déclencheur Quotidien",
+      "type": "n8n-nodes-base.cron",
+      "position": [100, 150],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "mode": "mergeByPosition"
+      },
+      "name": "Fusionner Déclencheurs",
+      "type": "n8n-nodes-base.merge",
+      "position": [300, 300],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "jsCode": "// Analyse le type de déclencheur et extraire les informations pertinentes\nconst data = {};\n\n// Valeurs par défaut\ndata.branchName = 'main';\ndata.repositoryName = 'cahier-des-charge';\ndata.commitId = 'HEAD';\ndata.runId = new Date().getTime().toString();\ndata.timestamp = new Date().toISOString();\ndata.triggerType = 'manual';\ndata.outputDir = `/workspaces/cahier-des-charge/reports/devops-integration/${data.timestamp.replace(/:/g, '-')}`;\n\n// Si déclenché par webhook GitHub\nif ($input.item.json.body && $input.item.json.body.repository) {\n  const payload = $input.item.json.body;\n  data.triggerType = 'webhook';\n  data.repositoryName = payload.repository.name;\n  data.branchName = payload.ref ? payload.ref.replace('refs/heads/', '') : data.branchName;\n  data.commitId = payload.after || data.commitId;\n  data.runId = payload.repository.id + '-' + (payload.after ? payload.after.substring(0, 7) : Date.now());\n  \n  // Si Pull Request\n  if (payload.pull_request) {\n    data.isPullRequest = true;\n    data.prNumber = payload.pull_request.number;\n    data.prTitle = payload.pull_request.title;\n    data.prUrl = payload.pull_request.html_url;\n    data.baseBranch = payload.pull_request.base.ref;\n    data.headBranch = payload.pull_request.head.ref;\n  }\n}\n\nreturn { json: data };"
+      },
+      "name": "Préparer Données Pipeline",
+      "type": "n8n-nodes-base.code",
+      "position": [500, 300],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "command": "mkdir -p {{ $json.outputDir }}",
+        "workingDirectory": "/workspaces/cahier-des-charge",
+        "executeTimeout": 10,
+        "explanation": "Création du dossier de sortie pour les résultats d'intégration"
+      },
+      "name": "Créer Dossier Sortie",
+      "type": "n8n-nodes-base.executeCommand",
+      "position": [700, 300],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "command": "cd /workspaces/cahier-des-charge && npx ts-node agents/dev-linter.ts --branch={{ $json.branchName }} --output-dir={{ $json.outputDir }}",
+        "workingDirectory": "/workspaces/cahier-des-charge",
+        "executeTimeout": 180,
+        "explanation": "Exécution du linting de code pour assurer la qualité"
+      },
+      "name": "Exécuter Dev Linter",
+      "type": "n8n-nodes-base.executeCommand",
+      "position": [900, 200],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ $json.exitCode === 0 }}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "name": "Linting Réussi?",
+      "type": "n8n-nodes-base.if",
+      "position": [1100, 200],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "command": "cd /workspaces/cahier-des-charge && npx ts-node agents/dev-integrator.ts --branch={{ $json.branchName }} --commit={{ $json.commitId }} --output-dir={{ $json.outputDir }}",
+        "workingDirectory": "/workspaces/cahier-des-charge",
+        "executeTimeout": 240,
+        "explanation": "Intégration des changements de développement"
+      },
+      "name": "Exécuter Dev Integrator",
+      "type": "n8n-nodes-base.executeCommand",
+      "position": [1300, 120],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "chatId": "{{ $env.NOTIFICATION_CHAT_ID }}",
+        "text": "⚠️ *Erreurs de linting détectées*\n\n**Branche:** {{ $json.branchName }}\n**Commit:** {{ $json.commitId }}\n\nDes problèmes de code doivent être corrigés avant de poursuivre l'intégration.\n\n[Rapport de linting]({{ $json.outputDir }}/linting-report.json)",
+        "additionalFields": {
+          "parseMode": "Markdown",
+          "disableNotification": false
+        }
+      },
+      "name": "Notifier Erreurs Linting",
+      "type": "n8n-nodes-base.telegram",
+      "position": [1300, 280],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "command": "cd /workspaces/cahier-des-charge && npx ts-node agents/devops-preview.ts --branch={{ $json.branchName }} --output-dir={{ $json.outputDir }}",
+        "workingDirectory": "/workspaces/cahier-des-charge",
+        "executeTimeout": 180,
+        "explanation": "Génération des prévisualisations pour le déploiement"
+      },
+      "name": "Exécuter DevOps Preview",
+      "type": "n8n-nodes-base.executeCommand",
+      "position": [1500, 120],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "jsCode": "// Analyser la sortie du preview pour extraire les URLs\nconst stdout = $input.item.json.stdout || '';\nlet previewUrl = '';\nlet metricsUrl = '';\n\n// Rechercher les URLs dans la sortie\nconst previewMatch = stdout.match(/Preview URL:\\s*(https?:\\/\\/[^\\s]+)/);\nif (previewMatch) previewUrl = previewMatch[1];\n\nconst metricsMatch = stdout.match(/Metrics dashboard:\\s*(https?:\\/\\/[^\\s]+)/);\nif (metricsMatch) metricsUrl = metricsMatch[1];\n\nreturn {\n  json: {\n    ...$input.item.json,\n    previewUrl,\n    metricsUrl,\n    previewGenerated: previewUrl !== '',\n    previewTimestamp: new Date().toISOString()\n  }\n};"
+      },
+      "name": "Extraire URLs Preview",
+      "type": "n8n-nodes-base.code",
+      "position": [1700, 120],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "command": "cd /workspaces/cahier-des-charge && npx ts-node agents/ci-tester.ts --branch={{ $json.branchName }} --output-dir={{ $json.outputDir }}",
+        "workingDirectory": "/workspaces/cahier-des-charge",
+        "executeTimeout": 300,
+        "explanation": "Exécution des tests d'intégration continue"
+      },
+      "name": "Exécuter CI Tester",
+      "type": "n8n-nodes-base.executeCommand",
+      "position": [1900, 120],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "jsCode": "// Analyser les résultats des tests\nconst stdout = $input.item.json.stdout || '';\nconst stderr = $input.item.json.stderr || '';\nconst exitCode = $input.item.json.exitCode;\n\n// Extraire les métriques de tests\nlet totalTests = 0;\nlet passedTests = 0;\nlet failedTests = 0;\nlet skippedTests = 0;\nlet testResults = [];\n\n// Extraire le nombre total de tests\nconst totalMatch = stdout.match(/Total test\\(s\\):\\s*(\\d+)/);\nif (totalMatch) totalTests = parseInt(totalMatch[1]);\n\n// Extraire les tests réussis\nconst passedMatch = stdout.match(/Passed:\\s*(\\d+)/);\nif (passedMatch) passedTests = parseInt(passedMatch[1]);\n\n// Extraire les tests échoués\nconst failedMatch = stdout.match(/Failed:\\s*(\\d+)/);\nif (failedMatch) failedTests = parseInt(failedMatch[1]);\n\n// Extraire les tests ignorés\nconst skippedMatch = stdout.match(/Skipped:\\s*(\\d+)/);\nif (skippedMatch) skippedTests = parseInt(skippedMatch[1]);\n\n// Extraire les résultats détaillés des tests\nconst resultsSection = stdout.match(/Test results:\\s*([\\s\\S]*?)(?:\\n\\n|$)/);\nif (resultsSection) {\n  const resultsText = resultsSection[1];\n  const testLines = resultsText.split('\\n').filter(line => line.trim().length > 0);\n  \n  testResults = testLines.map(line => {\n    const match = line.match(/^\\s*([✓✗-])\\s+(.+?)\\s+\\((\\d+\\.?\\d*)ms\\)\\s*(?:\\[([^\\]]+)\\])?/);\n    if (match) {\n      return {\n        status: match[1] === '✓' ? 'passed' : (match[1] === '✗' ? 'failed' : 'skipped'),\n        name: match[2],\n        duration: parseFloat(match[3]),\n        suite: match[4] || 'Default'\n      };\n    }\n    return null;\n  }).filter(result => result !== null);\n}\n\nreturn {\n  json: {\n    ...$input.item.json,\n    testResults: {\n      total: totalTests,\n      passed: passedTests,\n      failed: failedTests,\n      skipped: skippedTests,\n      details: testResults,\n      success: exitCode === 0,\n      timestamp: new Date().toISOString()\n    }\n  }\n};"
+      },
+      "name": "Analyser Résultats Tests",
+      "type": "n8n-nodes-base.code",
+      "position": [2100, 120],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ $json.testResults.success }}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "name": "Tests Réussis?",
+      "type": "n8n-nodes-base.if",
+      "position": [2300, 120],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "jsCode": "// Préparer le résumé complet de l'intégration\nreturn {\n  json: {\n    ...$input.item.json,\n    integrationSummary: {\n      runId: $input.item.json.runId,\n      branch: $input.item.json.branchName,\n      commit: $input.item.json.commitId,\n      timestamp: new Date().toISOString(),\n      linting: { success: true },  // Le linting a réussi puisqu'on est arrivé jusqu'ici\n      integration: {\n        success: $input.item.json.exitCode === 0,\n        timestamp: $input.item.json.timestamp\n      },\n      preview: {\n        generated: $input.item.json.previewGenerated,\n        url: $input.item.json.previewUrl,\n        metricsUrl: $input.item.json.metricsUrl,\n        timestamp: $input.item.json.previewTimestamp\n      },\n      tests: $input.item.json.testResults,\n      result: 'success',\n      reportPath: `${$input.item.json.outputDir}/integration-report.json`\n    }\n  }\n};"
+      },
+      "name": "Préparer Rapport Succès",
+      "type": "n8n-nodes-base.code",
+      "position": [2500, 50],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "jsCode": "// Préparer le résumé avec échec des tests\nreturn {\n  json: {\n    ...$input.item.json,\n    integrationSummary: {\n      runId: $input.item.json.runId,\n      branch: $input.item.json.branchName,\n      commit: $input.item.json.commitId,\n      timestamp: new Date().toISOString(),\n      linting: { success: true },  // Le linting a réussi puisqu'on est arrivé jusqu'ici\n      integration: {\n        success: $input.item.json.exitCode === 0,\n        timestamp: $input.item.json.timestamp\n      },\n      preview: {\n        generated: $input.item.json.previewGenerated || false,\n        url: $input.item.json.previewUrl || '',\n        metricsUrl: $input.item.json.metricsUrl || '',\n        timestamp: $input.item.json.previewTimestamp || new Date().toISOString()\n      },\n      tests: $input.item.json.testResults,\n      result: 'tests_failed',\n      reportPath: `${$input.item.json.outputDir}/integration-report.json`\n    }\n  }\n};"
+      },
+      "name": "Préparer Rapport Échec Tests",
+      "type": "n8n-nodes-base.code",
+      "position": [2500, 200],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "chatId": "{{ $env.NOTIFICATION_CHAT_ID }}",
+        "text": "✅ *Intégration DevOps réussie*\n\n**Branche:** {{ $json.integrationSummary.branch }}\n**Commit:** {{ $json.integrationSummary.commit }}\n\n**Tests:** ✅ {{ $json.integrationSummary.tests.passed }}/{{ $json.integrationSummary.tests.total }} tests réussis\n\n**Preview:** [Voir la prévisualisation]({{ $json.integrationSummary.preview.url }})\n**Métriques:** [Tableau de bord]({{ $json.integrationSummary.preview.metricsUrl }})\n\n**Timestamp:** {{ $json.integrationSummary.timestamp }}\n\n[Rapport complet]({{ $json.integrationSummary.reportPath }})",
+        "additionalFields": {
+          "parseMode": "Markdown",
+          "disableNotification": false
+        }
+      },
+      "name": "Notifier Succès Intégration",
+      "type": "n8n-nodes-base.telegram",
+      "position": [2700, 50],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "chatId": "{{ $env.NOTIFICATION_CHAT_ID }}",
+        "text": "❌ *Échec des tests d'intégration*\n\n**Branche:** {{ $json.integrationSummary.branch }}\n**Commit:** {{ $json.integrationSummary.commit }}\n\n**Tests:** ❌ {{ $json.integrationSummary.tests.failed }} échecs sur {{ $json.integrationSummary.tests.total }} tests\n\n**Tests échoués:**\n{% for test in $json.testResults.details %}{% if test.status === 'failed' %}- {{ test.name }}\n{% endif %}{% endfor %}\n\n**Timestamp:** {{ $json.integrationSummary.timestamp }}\n\n[Rapport détaillé]({{ $json.integrationSummary.reportPath }})",
+        "additionalFields": {
+          "parseMode": "Markdown",
+          "disableNotification": false
+        }
+      },
+      "name": "Notifier Échec Tests",
+      "type": "n8n-nodes-base.telegram",
+      "position": [2700, 200],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "path": "={{ $json.integrationSummary.reportPath }}",
+        "options": {
+          "encoding": "utf8",
+          "createPath": true
+        }
+      },
+      "name": "Sauvegarder Rapport",
+      "type": "n8n-nodes-base.writeBinaryFile",
+      "position": [2900, 120],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ !!$json.isPullRequest }}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "name": "Est Pull Request?",
+      "type": "n8n-nodes-base.if",
+      "position": [3100, 120],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "command": "cd /workspaces/cahier-des-charge && gh pr comment {{ $json.prNumber }} -b \"DevOps Integration Pipeline Report:\\n- Status: {{ $json.integrationSummary.result === 'success' ? '✅ Success' : '❌ Failure' }}\\n- Tests: {{ $json.integrationSummary.tests.passed }}/{{ $json.integrationSummary.tests.total }} passed\\n- Preview: {{ $json.integrationSummary.preview.url || 'Not available' }}\\n\\nSee full report: {{ $env.DASHBOARD_URL }}/reports/devops-integration/{{ $json.timestamp.replace(/:/g, '-') }}\"",
+        "workingDirectory": "/workspaces/cahier-des-charge",
+        "executeTimeout": 60,
+        "explanation": "Ajout d'un commentaire au PR avec les résultats de l'intégration"
+      },
+      "name": "Ajouter Commentaire PR",
+      "type": "n8n-nodes-base.executeCommand",
+      "position": [3300, 120],
+      "typeVersion": 1
+    }
+  ],
+  "connections": {
+    "Déclencheur Manuel": {
+      "main": [
+        [
+          {
+            "node": "Fusionner Déclencheurs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook GitHub": {
+      "main": [
+        [
+          {
+            "node": "Fusionner Déclencheurs",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Déclencheur Quotidien": {
+      "main": [
+        [
+          {
+            "node": "Fusionner Déclencheurs",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "Fusionner Déclencheurs": {
+      "main": [
+        [
+          {
+            "node": "Préparer Données Pipeline",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Préparer Données Pipeline": {
+      "main": [
+        [
+          {
+            "node": "Créer Dossier Sortie",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Créer Dossier Sortie": {
+      "main": [
+        [
+          {
+            "node": "Exécuter Dev Linter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Exécuter Dev Linter": {
+      "main": [
+        [
+          {
+            "node": "Linting Réussi?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Linting Réussi?": {
+      "main": [
+        [
+          {
+            "node": "Exécuter Dev Integrator",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Notifier Erreurs Linting",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Exécuter Dev Integrator": {
+      "main": [
+        [
+          {
+            "node": "Exécuter DevOps Preview",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Exécuter DevOps Preview": {
+      "main": [
+        [
+          {
+            "node": "Extraire URLs Preview",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extraire URLs Preview": {
+      "main": [
+        [
+          {
+            "node": "Exécuter CI Tester",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Exécuter CI Tester": {
+      "main": [
+        [
+          {
+            "node": "Analyser Résultats Tests",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analyser Résultats Tests": {
+      "main": [
+        [
+          {
+            "node": "Tests Réussis?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Tests Réussis?": {
+      "main": [
+        [
+          {
+            "node": "Préparer Rapport Succès",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Préparer Rapport Échec Tests",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Préparer Rapport Succès": {
+      "main": [
+        [
+          {
+            "node": "Notifier Succès Intégration",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Sauvegarder Rapport",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Préparer Rapport Échec Tests": {
+      "main": [
+        [
+          {
+            "node": "Notifier Échec Tests",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Sauvegarder Rapport",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Notifier Succès Intégration": {
+      "main": [
+        [
+          {
+            "node": "Est Pull Request?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Notifier Échec Tests": {
+      "main": [
+        [
+          {
+            "node": "Est Pull Request?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Sauvegarder Rapport": {
+      "main": [
+        [
+          {
+            "node": "Est Pull Request?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Est Pull Request?": {
+      "main": [
+        [
+          {
+            "node": "Ajouter Commentaire PR",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    }
+  },
+  "settings": {
+    "saveExecutionProgress": true,
+    "saveManualExecutions": true,
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "tags": ["devops", "integration", "ci", "dev"]
+}

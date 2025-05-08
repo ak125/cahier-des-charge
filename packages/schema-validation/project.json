@@ -1,0 +1,48 @@
+{
+    "name": "schema-validation",
+    "$schema": "../../node_modules/nx/schemas/project-schema.json",
+    "sourceRoot": "packages/schema-validation/src",
+    "projectType": "library",
+    "targets": {
+        "build": {
+            "executor": "@nx/js:tsc",
+            "outputs": [
+                "{options.outputPath}"
+            ],
+            "options": {
+                "outputPath": "dist/packages/schema-validation",
+                "main": "packages/schema-validation/src/index.ts",
+                "tsConfig": "packages/schema-validation/tsconfig.json",
+                "assets": []
+            }
+        },
+        "lint": {
+            "executor": "@nx/linter:biome",
+            "options": {
+                "lintFilePatterns": [
+                    "packages/schema-validation/**/*.{ts,tsx,js,jsx}"
+                ]
+            }
+        },
+        "test": {
+            "executor": "@nx/jest:jest",
+            "outputs": [
+                "{workspaceRoot}/coverage/packages/schema-validation"
+            ],
+            "options": {
+                "jestConfig": "packages/schema-validation/jest.config.js"
+            }
+        },
+        "typecheck": {
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "tsc --noEmit -p packages/schema-validation/tsconfig.json"
+            }
+        }
+    },
+    "tags": [
+        "validation",
+        "schema",
+        "typebox"
+    ]
+}

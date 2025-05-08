@@ -1,0 +1,252 @@
+// Model Prisma pour la migration MySQL → PostgreSQL
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+generator zod {
+  provider = "prisma-zod-generator"
+  output   = "../generated/zod"
+  modelSuffix = "Schema" // Génère UserSchema au lieu de User
+}
+
+// Modèles extraits de la base MySQL legacy
+model User {
+  id        Int       @id @default(autoincrement())
+  email     String    @unique
+  name      String?
+  password  String
+  role      String    @default("USER")
+  isActive  Boolean   @default(true) @map("is_active")
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  roles     UserRole[]
+  profile   Profile?
+  orders    Order[]
+  reviews   Review[]
+  
+  @@map("users")
+}
+
+model UserRole {
+  id       Int     @id @default(autoincrement())
+  userId   Int     @map("user_id")
+  role     String
+  user     User    @relation(fields: [userId], references: [id])
+  
+  @@map("user_roles")
+}
+
+model Profile {
+  id          Int      @id @default(autoincrement())
+  bio         String?
+  avatar      String?
+  phoneNumber String?  @map("phone_number")
+  address     String?
+  userId      Int      @unique @map("user_id")
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  
+  @@map("profiles")
+}
+
+model Content {
+  id          Int       @id @default(autoincrement())
+  title       String
+  slug        String    @unique
+  content     String    @db.Text
+  metaTitle   String?   @map("meta_title")
+  metaDesc    String?   @map("meta_desc")
+  published   Boolean   @default(false)
+  publishedAt DateTime? @map("published_at")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+  categoryId  Int?      @map("category_id")
+  category    Category? @relation(fields: [categoryId], references: [id])
+  
+  @@map("contents")
+}
+
+model Category {
+  id          Int       @id @default(autoincrement())
+  name        String
+  slug        String    @unique
+  description String?   @db.Text
+  image       String?
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+  contents    Content[]
+  products    Product[]
+  
+  @@map("categories")
+}
+
+model Product {
+  id          Int       @id @default(autoincrement())
+  name        String
+  description String?   @db.Text
+  price       Float
+  stock       Int       @default(0)
+  isActive    Boolean   @default(true) @map("is_active")
+  categoryId  Int       @map("category_id")
+  category    Category  @relation(fields: [categoryId], references: [id])
+  images      String[]
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+  orderItems  OrderItem[]
+  reviews     Review[]
+  
+  @@map("products")
+}
+
+model Order {
+  id          Int         @id @default(autoincrement())
+  userId      Int         @map("user_id")
+  user        User        @relation(fields: [userId], references: [id])
+  status      OrderStatus @default(PENDING)
+  totalAmount Float       @map("total_amount")
+  items       OrderItem[]
+  createdAt   DateTime    @default(now()) @map("created_at")
+  updatedAt   DateTime    @updatedAt @map("updated_at")
+  
+  @@map("orders")
+}
+
+model OrderItem {
+  id        Int     @id @default(autoincrement())
+  orderId   Int     @map("order_id")
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId Int     @map("product_id")
+  product   Product @relation(fields: [productId], references: [id])
+  quantity  Int
+  price     Float
+  
+  @@map("order_items")
+}
+
+model Review {
+  id        Int      @id @default(autoincrement())
+  rating    Int
+  comment   String?  @db.Text
+  userId    Int      @map("user_id")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  productId Int      @map("product_id")
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  
+  @@map("reviews")
+}
+
+model Redirect {
+  id          Int      @id @default(autoincrement())
+  fromPath    String   @unique @map("from_path")
+  toPath      String   @map("to_path")
+  statusCode  Int      @default(301) @map("status_code")
+  createdAt   DateTime @default(now()) @map("created_at") 
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  
+  @@map("redirects")
+}
+
+model McpJob {
+  id        Int       @id @default(autoincrement())
+  jobId     String    @unique @map("job_id")
+  status    String
+  filePath  String?   @map("file_path")
+  result    Json?
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+
+  @@map("mcp_jobs")
+}
+
+model SeoPage {
+  id           Int            @id @default(autoincrement())
+  url          String         @unique
+  title        String?
+  description  String?
+  canonical    String?
+  score        Int            @default(0)
+  status       String         @default("pending") // success, warning, error, pending
+  lastChecked  DateTime       @default(now()) @map("last_checked")
+  createdAt    DateTime       @default(now()) @map("created_at")
+  updatedAt    DateTime       @updatedAt @map("updated_at")
+  issues       SeoIssue[]
+  history      SeoHistory[]
+
+  @@index([url])
+  @@index([status])
+  @@index([score])
+  @@map("seo_pages")
+}
+
+model SeoIssue {
+  id           Int            @id @default(autoincrement())
+  type         String
+  severity     String
+  message      String
+  details      Json?
+  pageId       Int            @map("page_id")
+  createdAt    DateTime       @default(now()) @map("created_at")
+  updatedAt    DateTime       @updatedAt @map("updated_at")
+  fixedAt      DateTime?      @map("fixed_at")
+  fixed        Boolean        @default(false)
+  page         SeoPage        @relation(fields: [pageId], references: [id], onDelete: Cascade)
+
+  @@index([type])
+  @@index([severity])
+  @@index([pageId])
+  @@index([fixed])
+  @@map("seo_issues")
+}
+
+model SeoHistory {
+  id           Int            @id @default(autoincrement())
+  pageId       Int            @map("page_id")
+  score        Int
+  event        String
+  details      Json?
+  date         DateTime       @default(now())
+  page         SeoPage        @relation(fields: [pageId], references: [id], onDelete: Cascade)
+
+  @@index([pageId])
+  @@index([date])
+  @@map("seo_history")
+}
+
+model PagePerformance {
+  id                  Int      @id @default(autoincrement())
+  url                 String
+  loadTime            Float    @map("load_time")
+  firstContentPaint   Float?   @map("first_content_paint")
+  largestContentPaint Float?   @map("largest_content_paint")
+  cumulativeLayoutShift Float?  @map("cumulative_layout_shift")
+  firstInputDelay     Float?   @map("first_input_delay")
+  mobileScore         Float?   @map("mobile_score")
+  desktopScore        Float?   @map("desktop_score")
+  totalResources      Int?     @map("total_resources")
+  htmlSize            Int?     @map("html_size")
+  cssSize             Int?     @map("css_size")
+  jsSize              Int?     @map("js_size")
+  imageSize           Int?     @map("image_size")
+  otherSize           Int?     @map("other_size")
+  dateChecked         DateTime @map("date_checked")
+  createdAt           DateTime @default(now()) @map("created_at")
+  updatedAt           DateTime @updatedAt @map("updated_at")
+
+  @@map("page_performance")
+}
+
+enum OrderStatus {
+  PENDING
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}

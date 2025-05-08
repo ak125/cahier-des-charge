@@ -1,0 +1,50 @@
+# Configuration pour la génération automatique de fichiers d'audit
+
+project:
+  name: "Projet de Migration"
+  repo: "organisation/migration-project"
+  
+extraction:
+  code_patterns:
+    objective:
+      - "// Module:"
+      - "/** @module"
+      - "class .* implements .*"
+      - "@Controller"
+    sql_models:
+      - "@Entity"
+      - "CREATE TABLE"
+      - "prisma.model"
+      - "@PrimaryGeneratedColumn"
+      - "schema.createTable"
+    routes:
+      - "@(Get|Post|Put|Delete|Patch)\\(['\"](.*?)['\"]\\)"
+      - "router\\.(get|post|put|delete|patch)\\(['\"](.*?)['\"]"
+  
+templates:
+  audit: "./templates/audit-template.md"
+  pr_description: "./templates/pr-template.md"
+  
+github:
+  pr_labels: 
+    - "documentation"
+    - "ai-generated"
+    - "audit"
+  default_reviewers:
+    - "tech-lead"
+    - "qa-team"
+  
+validation:
+  checklist:
+    ai:
+      - "Tous les endpoints du module original sont couverts"
+      - "Intégrité référentielle des clés étrangères maintenue"
+      - "Règles de validation des données implémentées"
+      - "Gestion des erreurs conforme aux standards"
+      - "Tests unitaires générés"
+    human:
+      - "Logique métier correctement transposée"
+      - "Performances acceptables sous charge"
+      - "Sécurité des endpoints vérifiée"
+      - "Consistance avec le reste de l'API"
+      - "Documentation complète et exacte"

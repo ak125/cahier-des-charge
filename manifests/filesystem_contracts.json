@@ -1,0 +1,141 @@
+{
+    "agents": {
+        "inputSchema": "schemas/agent-input-schema.json",
+        "outputSchema": "schemas/agent-output-schema.json",
+        "tmpDir": "/tmp/mcp-agents",
+        "httpWebhook": "http://mcp-orchestrator:3002/agent-callback"
+    },
+    "migrations": {
+        "mysqlDumpDir": "migrations/mysql-dumps",
+        "postgresDir": "migrations/postgres-scripts",
+        "schemaMap": "migrations/schema-mapping.json"
+    },
+    "seo": {
+        "redirectsFile": "seo/redirects.json",
+        "canonicalsFile": "seo/canonicals.json",
+        "metaTagsDir": "seo/meta-tags",
+        "sitemapFile": "public/sitemap.xml",
+        "robotsFile": "public/robots.txt"
+    },
+    "build": {
+        "outputDir": "dist",
+        "tempDir": ".nx-cache",
+        "assetsDir": "public/assets"
+    },
+    "wasm": {
+        "modulesDir": "wasm-modules",
+        "sharedMemory": "shared-memory.wasm",
+        "wasmOutputDir": "dist/wasm"
+    },
+    "monitoring": {
+        "logsDir": "logs",
+        "metricsEndpoint": "http://otel-collector:4318/v1/metrics",
+        "tracesEndpoint": "http://otel-collector:4317/v1/traces"
+    },
+    "php": {
+        "legacyDir": "legacy",
+        "htaccessFile": "legacy/.htaccess",
+        "phpFilesPattern": "**/*.php"
+    },
+    "remix": {
+        "routesDir": "apps/frontend/app/routes",
+        "componentsDir": "apps/frontend/app/components",
+        "modelsDir": "apps/frontend/app/models",
+        "stylesDir": "apps/frontend/app/styles"
+    },
+    "nestjs": {
+        "controllersDir": "apps/backend/src/controllers",
+        "servicesDir": "apps/backend/src/services",
+        "modulesDir": "apps/backend/src/modules",
+        "configDir": "apps/backend/src/config"
+    },
+    "dashboard": {
+        "metricsDir": "apps/dashboard/src/metrics",
+        "widgetsDir": "apps/dashboard/src/widgets",
+        "apiDir": "apps/dashboard/src/api"
+    },
+    "documentation": {
+        "docsDir": "docs",
+        "apiDocsDir": "documentation/api",
+        "userManualDir": "documentation/user-manual"
+    },
+    "filesystem_contracts": {
+        "version": "1.0.0",
+        "description": "Contrats d'interface entre les trois couches de l'architecture",
+        "layers": {
+            "orchestration": {
+                "description": "Couche de gestion des workflows et coordination de haut niveau",
+                "inputContracts": {
+                    "workflowDefinition": "schemas/workflow-schema.json",
+                    "configurationParams": "schemas/orchestration-config-schema.json"
+                },
+                "outputContracts": {
+                    "workflowStatus": "schemas/workflow-status-schema.json",
+                    "executionMetrics": "schemas/execution-metrics-schema.json"
+                },
+                "communicationChannels": {
+                    "toCoordination": "redis-channel:orchestration-to-coordination",
+                    "fromCoordination": "redis-channel:coordination-to-orchestration",
+                    "metrics": "prometheus:orchestration-metrics"
+                }
+            },
+            "coordination": {
+                "description": "Couche de communication entre agents et services",
+                "inputContracts": {
+                    "taskDefinition": "schemas/task-definition-schema.json",
+                    "serviceRegistry": "schemas/service-registry-schema.json"
+                },
+                "outputContracts": {
+                    "taskStatus": "schemas/task-status-schema.json",
+                    "integrationEvents": "schemas/integration-events-schema.json"
+                },
+                "communicationChannels": {
+                    "toOrchestration": "redis-channel:coordination-to-orchestration",
+                    "fromOrchestration": "redis-channel:orchestration-to-coordination",
+                    "toBusiness": "redis-channel:coordination-to-business",
+                    "fromBusiness": "redis-channel:business-to-coordination"
+                }
+            },
+            "business": {
+                "description": "Couche de logique métier et traitement de données",
+                "inputContracts": {
+                    "dataRequest": "schemas/data-request-schema.json",
+                    "processingDirectives": "schemas/processing-directives-schema.json"
+                },
+                "outputContracts": {
+                    "processedResult": "schemas/processed-result-schema.json",
+                    "validationReport": "schemas/validation-report-schema.json"
+                },
+                "communicationChannels": {
+                    "toCoordination": "redis-channel:business-to-coordination",
+                    "fromCoordination": "redis-channel:coordination-to-business",
+                    "dataAccess": "prisma:business-data-access"
+                }
+            }
+        },
+        "crossLayerContracts": {
+            "telemetry": {
+                "openTelemetry": {
+                    "tracingEndpoint": "http://jaeger:4318/api/traces",
+                    "metricsEndpoint": "http://prometheus:9090/api/v1/write"
+                },
+                "logging": {
+                    "logFormat": "json",
+                    "logLevel": "info",
+                    "centralRepository": "elastic:logs"
+                }
+            },
+            "errorHandling": {
+                "errorSchema": "schemas/error-schema.json",
+                "retryPolicy": "schemas/retry-policy-schema.json",
+                "fallbackStrategy": "schemas/fallback-strategy-schema.json"
+            }
+        },
+        "fileSystemPaths": {
+            "schemas": "schemas/",
+            "temporaryData": "/tmp/mcp-processing/",
+            "persistentData": "data/",
+            "configurations": "config/"
+        }
+    }
+}

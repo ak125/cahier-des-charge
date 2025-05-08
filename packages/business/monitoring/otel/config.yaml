@@ -1,0 +1,62 @@
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+      http:
+        endpoint: 0.0.0.0:4318
+
+processors:
+  batch:
+    timeout: 1s
+    send_batch_size: 1024
+
+  # Ajout de contexte supplémentaire aux traces
+  attributes:
+    actions:
+      - key: environment
+        value: ${ENVIRONMENT:production}
+        action: insert
+      - key: service.version
+        from_attribute: service.version
+        action: upsert
+
+  # Filtrage des traces non pertinentes
+  filter:
+    spans:
+      # Exclure les health checks
+      - attributes:
+          - key: http.route
+            value: /health
+            match_type: strict
+          - key: http.target
+            value: /health
+            match_type: strict
+        exclude: true
+
+exporters:
+  # Exportation vers Prometheus pour les métriques
+  prometheus:
+    endpoint: ":9464"
+    namespace: "mcp_otel"
+    
+  # Exportation vers Jaeger pour les traces
+  otlp/jaeger:
+    endpoint: jaeger:14250
+    tls:
+      insecure: true
+  
+  # Exportation vers la console pour le débogage
+  logging:
+    verbosity: detailed
+
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [attributes, batch, filter]
+      exporters: [otlp/jaeger, logging]
+    metrics:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [prometheus, logging]

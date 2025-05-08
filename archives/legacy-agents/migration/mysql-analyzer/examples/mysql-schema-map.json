@@ -1,0 +1,684 @@
+{
+  "name": "example_database",
+  "tables": {
+    "users": {
+      "name": "users",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "BIGINT",
+          "nullable": false,
+          "isPrimary": true,
+          "isUnique": true,
+          "autoIncrement": true,
+          "defaultValue": null,
+          "comment": "ID unique de l'utilisateur",
+          "suggestedPostgresType": "BIGINT",
+          "suggestedPrismaType": "BigInt",
+          "originalType": "BIGINT(20) UNSIGNED"
+        },
+        "email": {
+          "name": "email",
+          "type": "VARCHAR",
+          "length": 255,
+          "nullable": false,
+          "isPrimary": false,
+          "isUnique": true,
+          "defaultValue": null,
+          "comment": "Adresse email (unique) de l'utilisateur",
+          "suggestedPostgresType": "VARCHAR(255)",
+          "suggestedPrismaType": "String",
+          "originalType": "VARCHAR(255)"
+        },
+        "password": {
+          "name": "password",
+          "type": "VARCHAR",
+          "length": 255,
+          "nullable": false,
+          "isPrimary": false,
+          "isUnique": false,
+          "defaultValue": null,
+          "comment": "Mot de passe hashé",
+          "suggestedPostgresType": "VARCHAR(255)",
+          "suggestedPrismaType": "String",
+          "originalType": "VARCHAR(255)"
+        },
+        "status": {
+          "name": "status",
+          "type": "ENUM",
+          "nullable": false,
+          "isPrimary": false,
+          "isUnique": false,
+          "defaultValue": "ACTIVE",
+          "comment": "Statut de l'utilisateur",
+          "suggestedPostgresType": "TEXT",
+          "suggestedPrismaType": "UserStatus",
+          "originalType": "ENUM('ACTIVE', 'INACTIVE', 'SUSPENDED', 'DELETED')",
+          "enumValues": ["ACTIVE", "INACTIVE", "SUSPENDED", "DELETED"]
+        },
+        "is_admin": {
+          "name": "is_admin",
+          "type": "TINYINT",
+          "length": 1,
+          "nullable": false,
+          "isPrimary": false,
+          "isUnique": false,
+          "defaultValue": "0",
+          "comment": "Si l'utilisateur est administrateur",
+          "suggestedPostgresType": "BOOLEAN",
+          "suggestedPrismaType": "Boolean",
+          "originalType": "TINYINT(1)"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "TIMESTAMP",
+          "nullable": false,
+          "isPrimary": false,
+          "isUnique": false,
+          "defaultValue": "CURRENT_TIMESTAMP",
+          "comment": "Date de création",
+          "suggestedPostgresType": "TIMESTAMP",
+          "suggestedPrismaType": "DateTime",
+          "originalType": "TIMESTAMP"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "TIMESTAMP",
+          "nullable": true,
+          "isPrimary": false,
+          "isUnique": false,
+          "defaultValue": null,
+          "comment": "Date de dernière modification",
+          "suggestedPostgresType": "TIMESTAMP",
+          "suggestedPrismaType": "DateTime",
+          "originalType": "TIMESTAMP"
+        }
+      },
+      "primaryKey": ["id"],
+      "indexes": [
+        {
+          "name": "PRIMARY",
+          "columns": ["id"],
+          "isUnique": true,
+          "type": "BTREE"
+        },
+        {
+          "name": "users_email_unique",
+          "columns": ["email"],
+          "isUnique": true,
+          "type": "BTREE"
+        }
+      ],
+      "foreignKeys": [],
+      "constraints": [],
+      "tableType": "BUSINESS_CORE",
+      "classificationReason": "Table principale d'entités utilisateurs",
+      "relations": []
+    },
+    "profiles": {
+      "name": "profiles",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "BIGINT",
+          "nullable": false,
+          "isPrimary": true,
+          "isUnique": true,
+          "autoIncrement": true,
+          "defaultValue": null,
+          "comment": "ID unique du profil",
+          "suggestedPostgresType": "BIGINT",
+          "suggestedPrismaType": "BigInt",
+          "originalType": "BIGINT(20) UNSIGNED"
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "BIGINT",
+          "nullable": false,
+          "isPrimary": false,
+          "isUnique": true,
+          "defaultValue": null,
+          "comment": "ID de l'utilisateur associé",
+          "suggestedPostgresType": "BIGINT",
+          "suggestedPrismaType": "BigInt",
+          "originalType": "BIGINT(20) UNSIGNED",
+          "references": {
+            "table": "users",
+            "column": "id"
+          }
+        },
+        "full_name": {
+          "name": "full_name",
+          "type": "VARCHAR",
+          "length": 255,
+          "nullable": true,
+          "isPrimary": false,
+          "isUnique": false,
+          "defaultValue": null,
+          "comment": "Nom complet de l'utilisateur",
+          "suggestedPostgresType": "VARCHAR(255)",
+          "suggestedPrismaType": "String",
+          "originalType": "VARCHAR(255)"
+        },
+        "phone": {
+          "name": "phone",
+          "type": "VARCHAR",
+          "length": 20,
+          "nullable": true,
+          "isPrimary": false,
+          "isUnique": false,
+          "defaultValue": null,
+          "comment": "Numéro de téléphone",
+          "suggestedPostgresType": "VARCHAR(20)",
+          "suggestedPrismaType": "String",
+          "originalType": "VARCHAR(20)"
+        },
+        "avatar_url": {
+          "name": "avatar_url",
+          "type": "VARCHAR",
+          "length": 255,
+          "nullable": true,
+          "isPrimary": false,
+          "isUnique": false,
+          "defaultValue": null,
+          "comment": "URL de l'avatar",
+          "suggestedPostgresType": "VARCHAR(255)",
+          "suggestedPrismaType": "String",
+          "originalType": "VARCHAR(255)"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "TIMESTAMP",
+          "nullable": false,
+          "isPrimary": false,
+          "isUnique": false,
+          "defaultValue": "CURRENT_TIMESTAMP",
+          "comment": "Date de création",
+          "suggestedPostgresType": "TIMESTAMP",
+          "suggestedPrismaType": "DateTime",
+          "originalType": "TIMESTAMP"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "TIMESTAMP",
+          "nullable": true,
+          "isPrimary": false,
+          "isUnique": false,
+          "defaultValue": null,
+          "comment": "Date de dernière modification",
+          "suggestedPostgresType": "TIMESTAMP",
+          "suggestedPrismaType": "DateTime",
+          "originalType": "TIMESTAMP"
+        }
+      },
+      "primaryKey": ["id"],
+      "indexes": [
+        {
+          "name": "PRIMARY",
+          "columns": ["id"],
+          "isUnique": true,
+          "type": "BTREE"
+        },
+        {
+          "name": "profiles_user_id_unique",
+          "columns": ["user_id"],
+          "isUnique": true,
+          "type": "BTREE"
+        }
+      ],
+      "foreignKeys": [
+        {
+          "name": "profiles_user_id_foreign",
+          "columns": ["user_id"],
+          "referencedTable": "users",
+          "referencedColumns": ["id"],
+          "onDelete": "CASCADE",
+          "onUpdate": "CASCADE"
+        }
+      ],
+      "constraints": [
+        {
+          "name": "profiles_user_id_foreign",
+          "type": "FOREIGN",
+          "definition": "CONSTRAINT `profiles_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE"
+        }
+      ],
+      "tableType": "BUSINESS_DETAIL",
+      "classificationReason": "Table de détails associée à une entité principale",
+      "relations": [
+        {
+          "sourceTable": "profiles",
+          "sourceColumn": "user_id",
+          "targetTable": "users",
+          "targetColumn": "id",
+          "type": "ONE_TO_ONE",
+          "isImplicit": false
+        }
+      ]
+    },
+    "orders": {
+      "name": "orders",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "BIGINT",
+          "nullable": false,
+          "isPrimary": true,
+          "isUnique": true,
+          "autoIncrement": true,
+          "defaultValue": null,
+          "comment": "ID unique de la commande",
+          "suggestedPostgresType": "BIGINT",
+          "suggestedPrismaType": "BigInt",
+          "originalType": "BIGINT(20) UNSIGNED"
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "BIGINT",
+          "nullable": false,
+          "isPrimary": false,
+          "isUnique": false,
+          "defaultValue": null,
+          "comment": "ID de l'utilisateur ayant passé la commande",
+          "suggestedPostgresType": "BIGINT",
+          "suggestedPrismaType": "BigInt",
+          "originalType": "BIGINT(20) UNSIGNED",
+          "references": {
+            "table": "users",
+            "column": "id"
+          }
+        },
+        "status": {
+          "name": "status",
+          "type": "VARCHAR",
+          "length": 50,
+          "nullable": false,
+          "isPrimary": false,
+          "isUnique": false,
+          "defaultValue": "PENDING",
+          "comment": "Statut de la commande",
+          "suggestedPostgresType": "TEXT",
+          "suggestedPrismaType": "OrderStatus",
+          "originalType": "VARCHAR(50)",
+          "enumValues": ["PENDING", "PROCESSING", "SHIPPED", "DELIVERED", "CANCELLED"]
+        },
+        "total_amount": {
+          "name": "total_amount",
+          "type": "DECIMAL",
+          "precision": 10,
+          "scale": 2,
+          "nullable": false,
+          "isPrimary": false,
+          "isUnique": false,
+          "defaultValue": "0.00",
+          "comment": "Montant total de la commande",
+          "suggestedPostgresType": "DECIMAL(10,2)",
+          "suggestedPrismaType": "Decimal",
+          "originalType": "DECIMAL(10,2)"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "TIMESTAMP",
+          "nullable": false,
+          "isPrimary": false,
+          "isUnique": false,
+          "defaultValue": "CURRENT_TIMESTAMP",
+          "comment": "Date de création",
+          "suggestedPostgresType": "TIMESTAMP",
+          "suggestedPrismaType": "DateTime",
+          "originalType": "TIMESTAMP"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "TIMESTAMP",
+          "nullable": true,
+          "isPrimary": false,
+          "isUnique": false,
+          "defaultValue": null,
+          "comment": "Date de dernière modification",
+          "suggestedPostgresType": "TIMESTAMP",
+          "suggestedPrismaType": "DateTime",
+          "originalType": "TIMESTAMP"
+        }
+      },
+      "primaryKey": ["id"],
+      "indexes": [
+        {
+          "name": "PRIMARY",
+          "columns": ["id"],
+          "isUnique": true,
+          "type": "BTREE"
+        },
+        {
+          "name": "orders_user_id_index",
+          "columns": ["user_id"],
+          "isUnique": false,
+          "type": "BTREE"
+        }
+      ],
+      "foreignKeys": [
+        {
+          "name": "orders_user_id_foreign",
+          "columns": ["user_id"],
+          "referencedTable": "users",
+          "referencedColumns": ["id"],
+          "onDelete": "CASCADE",
+          "onUpdate": "CASCADE"
+        }
+      ],
+      "constraints": [
+        {
+          "name": "orders_user_id_foreign",
+          "type": "FOREIGN",
+          "definition": "CONSTRAINT `orders_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE"
+        }
+      ],
+      "tableType": "BUSINESS_CORE",
+      "classificationReason": "Table principale d'entités de commandes",
+      "relations": [
+        {
+          "sourceTable": "orders",
+          "sourceColumn": "user_id",
+          "targetTable": "users",
+          "targetColumn": "id",
+          "type": "MANY_TO_ONE",
+          "isImplicit": false
+        }
+      ]
+    },
+    "order_items": {
+      "name": "order_items",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "BIGINT",
+          "nullable": false,
+          "isPrimary": true,
+          "isUnique": true,
+          "autoIncrement": true,
+          "defaultValue": null,
+          "comment": "ID unique de l'article de commande",
+          "suggestedPostgresType": "BIGINT",
+          "suggestedPrismaType": "BigInt",
+          "originalType": "BIGINT(20) UNSIGNED"
+        },
+        "order_id": {
+          "name": "order_id",
+          "type": "BIGINT",
+          "nullable": false,
+          "isPrimary": false,
+          "isUnique": false,
+          "defaultValue": null,
+          "comment": "ID de la commande associée",
+          "suggestedPostgresType": "BIGINT",
+          "suggestedPrismaType": "BigInt",
+          "originalType": "BIGINT(20) UNSIGNED",
+          "references": {
+            "table": "orders",
+            "column": "id"
+          }
+        },
+        "product_id": {
+          "name": "product_id",
+          "type": "BIGINT",
+          "nullable": false,
+          "isPrimary": false,
+          "isUnique": false,
+          "defaultValue": null,
+          "comment": "ID du produit associé",
+          "suggestedPostgresType": "BIGINT",
+          "suggestedPrismaType": "BigInt",
+          "originalType": "BIGINT(20) UNSIGNED"
+        },
+        "quantity": {
+          "name": "quantity",
+          "type": "INT",
+          "nullable": false,
+          "isPrimary": false,
+          "isUnique": false,
+          "defaultValue": "1",
+          "comment": "Quantité du produit",
+          "suggestedPostgresType": "INTEGER",
+          "suggestedPrismaType": "Int",
+          "originalType": "INT(11)"
+        },
+        "unit_price": {
+          "name": "unit_price",
+          "type": "DECIMAL",
+          "precision": 10,
+          "scale": 2,
+          "nullable": false,
+          "isPrimary": false,
+          "isUnique": false,
+          "defaultValue": "0.00",
+          "comment": "Prix unitaire au moment de l'achat",
+          "suggestedPostgresType": "DECIMAL(10,2)",
+          "suggestedPrismaType": "Decimal",
+          "originalType": "DECIMAL(10,2)"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "TIMESTAMP",
+          "nullable": false,
+          "isPrimary": false,
+          "isUnique": false,
+          "defaultValue": "CURRENT_TIMESTAMP",
+          "comment": "Date de création",
+          "suggestedPostgresType": "TIMESTAMP",
+          "suggestedPrismaType": "DateTime",
+          "originalType": "TIMESTAMP"
+        }
+      },
+      "primaryKey": ["id"],
+      "indexes": [
+        {
+          "name": "PRIMARY",
+          "columns": ["id"],
+          "isUnique": true,
+          "type": "BTREE"
+        },
+        {
+          "name": "order_items_order_id_index",
+          "columns": ["order_id"],
+          "isUnique": false,
+          "type": "BTREE"
+        },
+        {
+          "name": "order_items_product_id_index",
+          "columns": ["product_id"],
+          "isUnique": false,
+          "type": "BTREE"
+        }
+      ],
+      "foreignKeys": [
+        {
+          "name": "order_items_order_id_foreign",
+          "columns": ["order_id"],
+          "referencedTable": "orders",
+          "referencedColumns": ["id"],
+          "onDelete": "CASCADE",
+          "onUpdate": "CASCADE"
+        }
+      ],
+      "constraints": [
+        {
+          "name": "order_items_order_id_foreign",
+          "type": "FOREIGN",
+          "definition": "CONSTRAINT `order_items_order_id_foreign` FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`) ON DELETE CASCADE ON UPDATE CASCADE"
+        }
+      ],
+      "tableType": "BUSINESS_DETAIL",
+      "classificationReason": "Table de détails associée à une entité principale",
+      "relations": [
+        {
+          "sourceTable": "order_items",
+          "sourceColumn": "order_id",
+          "targetTable": "orders",
+          "targetColumn": "id",
+          "type": "MANY_TO_ONE",
+          "isImplicit": false
+        },
+        {
+          "sourceTable": "order_items",
+          "sourceColumn": "product_id",
+          "targetTable": "products",
+          "targetColumn": "id",
+          "type": "MANY_TO_ONE",
+          "isImplicit": true
+        }
+      ]
+    },
+    "sessions": {
+      "name": "sessions",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "VARCHAR",
+          "length": 40,
+          "nullable": false,
+          "isPrimary": true,
+          "isUnique": true,
+          "defaultValue": null,
+          "comment": "ID de session unique",
+          "suggestedPostgresType": "VARCHAR(40)",
+          "suggestedPrismaType": "String",
+          "originalType": "VARCHAR(40)"
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "BIGINT",
+          "nullable": true,
+          "isPrimary": false,
+          "isUnique": false,
+          "defaultValue": null,
+          "comment": "ID de l'utilisateur associé",
+          "suggestedPostgresType": "BIGINT",
+          "suggestedPrismaType": "BigInt",
+          "originalType": "BIGINT(20) UNSIGNED",
+          "references": {
+            "table": "users",
+            "column": "id"
+          }
+        },
+        "ip_address": {
+          "name": "ip_address",
+          "type": "VARCHAR",
+          "length": 45,
+          "nullable": true,
+          "isPrimary": false,
+          "isUnique": false,
+          "defaultValue": null,
+          "comment": "Adresse IP",
+          "suggestedPostgresType": "VARCHAR(45)",
+          "suggestedPrismaType": "String",
+          "originalType": "VARCHAR(45)"
+        },
+        "user_agent": {
+          "name": "user_agent",
+          "type": "TEXT",
+          "nullable": true,
+          "isPrimary": false,
+          "isUnique": false,
+          "defaultValue": null,
+          "comment": "User agent du navigateur",
+          "suggestedPostgresType": "TEXT",
+          "suggestedPrismaType": "String",
+          "originalType": "TEXT"
+        },
+        "payload": {
+          "name": "payload",
+          "type": "TEXT",
+          "nullable": false,
+          "isPrimary": false,
+          "isUnique": false,
+          "defaultValue": null,
+          "comment": "Données de session sérialisées",
+          "suggestedPostgresType": "TEXT",
+          "suggestedPrismaType": "String",
+          "originalType": "TEXT"
+        },
+        "last_activity": {
+          "name": "last_activity",
+          "type": "INT",
+          "nullable": false,
+          "isPrimary": false,
+          "isUnique": false,
+          "defaultValue": null,
+          "comment": "Timestamp de dernière activité",
+          "suggestedPostgresType": "INTEGER",
+          "suggestedPrismaType": "Int",
+          "originalType": "INT(11)"
+        }
+      },
+      "primaryKey": ["id"],
+      "indexes": [
+        {
+          "name": "PRIMARY",
+          "columns": ["id"],
+          "isUnique": true,
+          "type": "BTREE"
+        },
+        {
+          "name": "sessions_user_id_index",
+          "columns": ["user_id"],
+          "isUnique": false,
+          "type": "BTREE"
+        },
+        {
+          "name": "sessions_last_activity_index",
+          "columns": ["last_activity"],
+          "isUnique": false,
+          "type": "BTREE"
+        }
+      ],
+      "foreignKeys": [
+        {
+          "name": "sessions_user_id_foreign",
+          "columns": ["user_id"],
+          "referencedTable": "users",
+          "referencedColumns": ["id"],
+          "onDelete": "CASCADE",
+          "onUpdate": "CASCADE"
+        }
+      ],
+      "constraints": [
+        {
+          "name": "sessions_user_id_foreign",
+          "type": "FOREIGN",
+          "definition": "CONSTRAINT `sessions_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE"
+        }
+      ],
+      "tableType": "TECHNICAL",
+      "classificationReason": "Table technique de gestion de sessions",
+      "relations": [
+        {
+          "sourceTable": "sessions",
+          "sourceColumn": "user_id",
+          "targetTable": "users",
+          "targetColumn": "id",
+          "type": "MANY_TO_ONE",
+          "isImplicit": false
+        }
+      ]
+    }
+  },
+  "version": "5.7",
+  "characterSet": "utf8mb4",
+  "collation": "utf8mb4_unicode_ci",
+  "metadata": {
+    "extractionDate": "2025-04-11T10:15:00Z",
+    "totalTables": 5,
+    "totalColumns": 33,
+    "totalIndexes": 12,
+    "totalForeignKeys": 5
+  },
+  "classificationStats": {
+    "BUSINESS_CORE": 2,
+    "BUSINESS_DETAIL": 2,
+    "TECHNICAL": 1,
+    "JUNCTION": 0,
+    "METADATA": 0,
+    "CONFIGURATION": 0,
+    "UNKNOWN": 0
+  }
+}

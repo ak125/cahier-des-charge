@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# Alias de commande 'task' qui redirige vers le script de compatibilité task-to-nx-bridge.js
+# Ce script permet d'utiliser la commande 'task' habituelle qui sera automatiquement
+# convertie en commande NX correspondante
+
+SCRIPT_PATH="$(dirname "$(readlink -f "$0")")/task-to-nx-bridge.js"
+
+# Ajouter un avertissement de dépréciation
+echo -e "\033[33m⚠️  Utilisation de la commande 'task' dépréciée. Transition vers NX en cours...\033[0m"
+
+# Passer tous les arguments à notre script de compatibilité
+node "$SCRIPT_PATH" "$@"

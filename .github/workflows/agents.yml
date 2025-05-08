@@ -1,0 +1,241 @@
+name: Agents IA CI/CD
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+      - 'packages/agents/**'
+      - 'packages/mcp-agents/**'
+  pull_request:
+    paths:
+      - 'packages/agents/**'
+      - 'packages/mcp-agents/**'
+  workflow_dispatch:
+    inputs:
+      agent_name:
+        description: 'Nom de l'agent à déployer (laisser vide pour tous)'
+        required: false
+        type: string
+
+env:
+  NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
+
+jobs:
+  # Détection des agents affectés
+  detect-agents:
+    name: Détection des agents
+    runs-on: ubuntu-latest
+    outputs:
+      affected_agents: ${{ steps.set-agents.outputs.affected_agents }}
+      agent_matrix: ${{ steps.set-matrix.outputs.agent_matrix }}
+    
+    steps:
+      - name: Checkout du code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configuration Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+      
+      - name: Installation de PNPM
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+          run_install: false
+
+      - name: Installation des dépendances
+        run: pnpm install --frozen-lockfile
+
+      - name: Détection des agents affectés
+        id: set-agents
+        run: |
+          if [ -n "${{ github.event.inputs.agent_name }}" ]; then
+            # Si un agent spécifique est demandé
+            AFFECTED_AGENTS="${{ github.event.inputs.agent_name }}"
+          else
+            # Sinon, détecter les agents affectés par les changements
+            AFFECTED_AGENTS=$(node ./tools/scripts/ci/detect-affected-agents.js)
+          fi
+          echo "affected_agents=${AFFECTED_AGENTS}" >> $GITHUB_OUTPUT
+          echo "Agents affectés: ${AFFECTED_AGENTS}"
+
+      - name: Génération de la matrice d'agents
+        id: set-matrix
+        run: |
+          if [ -n "${{ github.event.inputs.agent_name }}" ]; then
+            # Si un agent spécifique est demandé, créer une matrice avec un seul élément
+            echo "agent_matrix=[\"${{ github.event.inputs.agent_name }}\"]" >> $GITHUB_OUTPUT
+          else
+            # Générer la matrice à partir des agents affectés
+            AGENT_MATRIX=$(node ./tools/scripts/ci/generate-agent-matrix.js)
+            echo "agent_matrix=${AGENT_MATRIX}" >> $GITHUB_OUTPUT
+          fi
+
+  # Lint spécifique pour les agents
+  agent-lint:
+    name: Lint des agents
+    needs: detect-agents
+    if: ${{ needs.detect-agents.outputs.affected_agents != '' }}
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout du code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configuration Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+      
+      - name: Installation de PNPM
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+          run_install: false
+
+      - name: Installation des dépendances
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint des agents
+        run: pnpm nx run agents:lint
+
+      # Ajout d'une vérification spécifique pour les agents à base d'IA
+      - name: Validation du modèle et des prompts
+        run: pnpm tsx packages/agents/tools/validate-prompts.ts
+
+  # Test des agents avec une matrice parallèle
+  agent-test:
+    name: Test de l'agent ${{ matrix.agent }}
+    needs: [detect-agents, agent-lint]
+    if: ${{ needs.detect-agents.outputs.agent_matrix != '[]' && needs.detect-agents.outputs.agent_matrix != '' }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        agent: ${{ fromJson(needs.detect-agents.outputs.agent_matrix) }}
+    
+    steps:
+      - name: Checkout du code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configuration Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+      
+      - name: Installation de PNPM
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+          run_install: false
+
+      - name: Installation des dépendances
+        run: pnpm install --frozen-lockfile
+
+      - name: Test de l'agent ${{ matrix.agent }}
+        run: pnpm tsx packages/agents/utils/test-runner.ts --agent=${{ matrix.agent }} --ci
+
+      - name: Upload des résultats de test
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-results-${{ matrix.agent }}
+          path: test-results/${{ matrix.agent }}
+          if-no-files-found: warn
+
+  # Build et packaging des agents
+  agent-build:
+    name: Build des agents
+    needs: [agent-test]
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout du code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configuration Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+      
+      - name: Installation de PNPM
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+          run_install: false
+
+      - name: Installation des dépendances
+        run: pnpm install --frozen-lockfile
+
+      - name: Build des agents
+        run: pnpm nx build agents
+
+      - name: Upload des agents compilés
+        uses: actions/upload-artifact@v3
+        with:
+          name: agent-build
+          path: dist/packages/agents
+          if-no-files-found: warn
+
+  # Déploiement des agents
+  agent-deploy:
+    name: Déploiement des agents
+    needs: [agent-build]
+    if: github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    environment:
+      name: agent-production
+      url: https://agents.example.com/status
+    
+    steps:
+      - name: Checkout du code
+        uses: actions/checkout@v4
+
+      - name: Configuration Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Téléchargement des artefacts de build
+        uses: actions/download-artifact@v3
+        with:
+          name: agent-build
+          path: dist/packages/agents
+
+      - name: Préparation du déploiement
+        run: |
+          echo "Préparation du déploiement des agents"
+          pnpm tsx tools/scripts/ci/prepare-agent-deployment.js
+
+      - name: Déploiement des agents
+        run: |
+          echo "Déploiement des agents..."
+          pnpm tsx tools/scripts/ci/deploy-agents.js
+          echo "Agents déployés avec succès !"
+
+      - name: Vérification du déploiement
+        run: |
+          echo "Vérification du déploiement des agents"
+          pnpm tsx packages/agents/monitoring/verify-agent-deployment.ts
+
+      - name: Notification du déploiement
+        if: success()
+        uses: slackapi/slack-github-action@v1.24.0
+        with:
+          channel-id: 'agent-deployments'
+          slack-message: "🤖 Agents IA déployés avec succès ! Vérifier le tableau de bord : https://agents.example.com/status"
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}

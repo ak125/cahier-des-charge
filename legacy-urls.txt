@@ -1,0 +1,30 @@
+# URLs de produits
+/produit.php?id=123&nom=montre-connectee
+/produit.php?id=456&nom=smartphone-5g
+/fiche.php?ref=ABC123&lang=fr
+/product.php?id=789&category=16
+
+# URLs de catégories
+/categorie.php?id=10&page=1
+/category.php?id=12&sort=price
+/categorie.php?id=15&filter=nouveautes
+/category.php?slug=ordinateurs-portables
+
+# URLs de marques
+/marque.php?id=5
+/brand.php?id=8&name=samsung
+
+# URLs de recherche
+/recherche.php?q=ordinateur+portable
+/search.php?q=smartphone&filter=promo
+
+# URLs d'articles et blog
+/article.php?id=45&slug=guide-achat-smartphone
+/blog.php?id=67
+/news.php?slug=nouveautes-2025
+
+# Pages génériques
+/contact.php
+/a-propos.php
+/mentions-legales.php
+/conditions-generales.php

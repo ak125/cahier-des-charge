@@ -1,0 +1,15 @@
+{
+  "success": false,
+  "n8nExecutionTime": 121,
+  "temporalExecutionTime": 10099,
+  "n8nOutputDir": "",
+  "temporalOutputDir": "",
+  "fileComparison": {
+    "onlyInN8n": [],
+    "onlyInTemporal": [],
+    "inBoth": [],
+    "contentDifferences": []
+  },
+  "summary": "Des différences ont été détectées entre les résultats des workflows",
+  "executedAt": "2025-05-05T00:21:09.704Z"
+}

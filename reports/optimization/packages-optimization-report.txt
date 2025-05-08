@@ -1,0 +1,5 @@
+
+Rapport d'optimisation des packages Thu May  1 23:34:42 UTC 2025
+Espace initial: 15.59KiB
+Espace final: 15.59KiB
+Économie: 0.00B (0%)

@@ -1,0 +1,291 @@
+name: Observabilité & Monitoring
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+      - 'monitoring/**'
+      - 'docker-compose.monitoring.yml'
+      - 'agents/monitoring/**'
+  schedule:
+    - cron: '0 0 * * 0'  # Exécution hebdomadaire (chaque dimanche à minuit)
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environnement cible'
+        required: true
+        default: 'dev'
+        type: choice
+        options:
+          - dev
+          - staging
+          - prod
+      restart_services:
+        description: 'Redémarrer tous les services de monitoring'
+        default: false
+        type: boolean
+
+env:
+  ENVIRONMENT: ${{ github.event.inputs.environment || 'dev' }}
+  RESTART_SERVICES: ${{ github.event.inputs.restart_services || 'false' }}
+
+jobs:
+  # Préparation de l'infrastructure d'observabilité
+  prepare-observability:
+    name: Préparation de l'infrastructure
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout du code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configuration de Docker
+        uses: docker/setup-buildx-action@v2
+      
+      - name: Génération du fichier docker-compose pour l'observabilité
+        run: |
+          echo "Génération de la configuration pour l'environnement ${{ env.ENVIRONMENT }}"
+          cp docker-compose.monitoring.yml docker-compose.monitoring.${{ env.ENVIRONMENT }}.yml
+          
+          # Personnalisation de la configuration en fonction de l'environnement
+          if [ "${{ env.ENVIRONMENT }}" = "prod" ]; then
+            sed -i 's/grafana_user=admin/grafana_user=prod-admin/' docker-compose.monitoring.${{ env.ENVIRONMENT }}.yml
+            sed -i 's/prometheus_retention=7d/prometheus_retention=30d/' docker-compose.monitoring.${{ env.ENVIRONMENT }}.yml
+          fi
+          
+          if [ "${{ env.ENVIRONMENT }}" = "staging" ]; then
+            sed -i 's/prometheus_retention=7d/prometheus_retention=15d/' docker-compose.monitoring.${{ env.ENVIRONMENT }}.yml
+          fi
+      
+      - name: Upload de la configuration docker-compose
+        uses: actions/upload-artifact@v3
+        with:
+          name: monitoring-config-${{ env.ENVIRONMENT }}
+          path: docker-compose.monitoring.${{ env.ENVIRONMENT }}.yml
+
+  # Construction des images Docker pour le monitoring
+  build-monitoring-images:
+    name: Construction des images Docker
+    needs: prepare-observability
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout du code
+        uses: actions/checkout@v4
+
+      - name: Configuration de Docker
+        uses: docker/setup-buildx-action@v2
+        
+      - name: Login au registre Docker
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ secrets.DOCKER_REGISTRY }}
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          
+      - name: Construction et push de l'image Prometheus
+        uses: docker/build-push-action@v4
+        with:
+          context: ./monitoring/prometheus
+          push: true
+          tags: ${{ secrets.DOCKER_REGISTRY }}/mcp-prometheus:${{ env.ENVIRONMENT }}-${{ github.sha }},${{ secrets.DOCKER_REGISTRY }}/mcp-prometheus:${{ env.ENVIRONMENT }}-latest
+          cache-from: type=registry,ref=${{ secrets.DOCKER_REGISTRY }}/mcp-prometheus:${{ env.ENVIRONMENT }}-cache
+          cache-to: type=registry,ref=${{ secrets.DOCKER_REGISTRY }}/mcp-prometheus:${{ env.ENVIRONMENT }}-cache,mode=max
+      
+      - name: Construction et push de l'image Grafana
+        uses: docker/build-push-action@v4
+        with:
+          context: ./monitoring/grafana
+          push: true
+          tags: ${{ secrets.DOCKER_REGISTRY }}/mcp-grafana:${{ env.ENVIRONMENT }}-${{ github.sha }},${{ secrets.DOCKER_REGISTRY }}/mcp-grafana:${{ env.ENVIRONMENT }}-latest
+          cache-from: type=registry,ref=${{ secrets.DOCKER_REGISTRY }}/mcp-grafana:${{ env.ENVIRONMENT }}-cache
+          cache-to: type=registry,ref=${{ secrets.DOCKER_REGISTRY }}/mcp-grafana:${{ env.ENVIRONMENT }}-cache,mode=max
+          
+      - name: Construction et push de l'image OpenTelemetry Collector
+        uses: docker/build-push-action@v4
+        with:
+          context: ./monitoring/otel-collector
+          push: true
+          tags: ${{ secrets.DOCKER_REGISTRY }}/mcp-otel-collector:${{ env.ENVIRONMENT }}-${{ github.sha }},${{ secrets.DOCKER_REGISTRY }}/mcp-otel-collector:${{ env.ENVIRONMENT }}-latest
+          cache-from: type=registry,ref=${{ secrets.DOCKER_REGISTRY }}/mcp-otel-collector:${{ env.ENVIRONMENT }}-cache
+          cache-to: type=registry,ref=${{ secrets.DOCKER_REGISTRY }}/mcp-otel-collector:${{ env.ENVIRONMENT }}-cache,mode=max
+
+  # Déploiement des services de monitoring
+  deploy-monitoring:
+    name: Déploiement des services
+    needs: build-monitoring-images
+    runs-on: ubuntu-latest
+    environment:
+      name: monitoring-${{ env.ENVIRONMENT }}
+      url: https://grafana-${{ env.ENVIRONMENT }}.exemple.com
+    
+    steps:
+      - name: Checkout du code
+        uses: actions/checkout@v4
+
+      - name: Téléchargement de la configuration docker-compose
+        uses: actions/download-artifact@v3
+        with:
+          name: monitoring-config-${{ env.ENVIRONMENT }}
+          
+      - name: Déploiement des services de monitoring
+        run: |
+          echo "Déploiement des services de monitoring pour l'environnement ${{ env.ENVIRONMENT }}"
+          
+          # Mise à jour des références d'images dans docker-compose
+          sed -i 's|mcp-prometheus:.*|mcp-prometheus:${{ env.ENVIRONMENT }}-${{ github.sha }}|g' docker-compose.monitoring.${{ env.ENVIRONMENT }}.yml
+          sed -i 's|mcp-grafana:.*|mcp-grafana:${{ env.ENVIRONMENT }}-${{ github.sha }}|g' docker-compose.monitoring.${{ env.ENVIRONMENT }}.yml
+          sed -i 's|mcp-otel-collector:.*|mcp-otel-collector:${{ env.ENVIRONMENT }}-${{ github.sha }}|g' docker-compose.monitoring.${{ env.ENVIRONMENT }}.yml
+          
+          # Déploiement des services (commandes dépendantes de votre infrastructure)
+          echo "Simulation du déploiement des services de monitoring"
+          # docker-compose -f docker-compose.monitoring.${{ env.ENVIRONMENT }}.yml up -d
+
+      - name: Redémarrage des services (si demandé)
+        if: env.RESTART_SERVICES == 'true'
+        run: |
+          echo "Redémarrage des services de monitoring"
+          # docker-compose -f docker-compose.monitoring.${{ env.ENVIRONMENT }}.yml restart
+
+      - name: Vérification des services
+        run: |
+          echo "Vérification de la santé des services de monitoring"
+          # Remplacer par des requêtes HTTP aux endpoints /health des services
+          
+  # Configuration des alertes et des dashboards
+  configure-monitoring:
+    name: Configuration du monitoring
+    needs: deploy-monitoring
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout du code
+        uses: actions/checkout@v4
+
+      - name: Configuration Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+      
+      - name: Installation de PNPM
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+          run_install: false
+
+      - name: Installation des dépendances
+        run: pnpm install --frozen-lockfile
+
+      - name: Configuration des alertes
+        run: |
+          echo "Configuration des alertes pour l'environnement ${{ env.ENVIRONMENT }}"
+          # Utilisation de l'agent de monitoring pour configurer les alertes
+          pnpm tsx agents/monitoring/configure-alerts.ts --env=${{ env.ENVIRONMENT }}
+
+      - name: Synchronisation des dashboards
+        run: |
+          echo "Synchronisation des dashboards Grafana"
+          pnpm tsx agents/monitoring/sync-dashboards.ts --env=${{ env.ENVIRONMENT }}
+      
+      - name: Vérification de la configuration
+        run: |
+          echo "Vérification de la configuration de monitoring"
+          pnpm tsx agents/monitoring/verify-monitoring.ts --env=${{ env.ENVIRONMENT }}
+
+  # Gestion de la rotation des logs
+  logs-rotation:
+    name: Rotation des logs
+    needs: configure-monitoring
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout du code
+        uses: actions/checkout@v4
+
+      - name: Configuration Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+      
+      - name: Installation de PNPM
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+          run_install: false
+
+      - name: Installation des dépendances
+        run: pnpm install --frozen-lockfile
+
+      - name: Rotation et archive des logs
+        run: |
+          echo "Rotation et archivage des logs de monitoring"
+          pnpm tsx agents/monitoring/logs-rotation.ts --env=${{ env.ENVIRONMENT }}
+
+      - name: Nettoyage des métriques anciennes
+        run: |
+          echo "Nettoyage des métriques anciennes"
+          pnpm tsx agents/monitoring/cleanup-metrics.ts --env=${{ env.ENVIRONMENT }} --age=60d
+
+      - name: Enregistrement des métriques de performance
+        run: |
+          echo "Génération des rapports de performance historiques"
+          pnpm tsx agents/monitoring/generate-performance-report.ts --env=${{ env.ENVIRONMENT }} --output=./reports/monitoring
+
+      - name: Upload du rapport de performance
+        uses: actions/upload-artifact@v3
+        with:
+          name: performance-report-${{ env.ENVIRONMENT }}
+          path: reports/monitoring/
+          if-no-files-found: warn
+
+  # Surveillance des performances du monorepo avec Nx
+  nx-performance:
+    name: Analyse des performances Nx
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout du code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configuration Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+      
+      - name: Installation de PNPM
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+          run_install: false
+
+      - name: Installation des dépendances
+        run: pnpm install --frozen-lockfile
+
+      - name: Analyse des performances du cache Nx
+        run: |
+          echo "Analyse des performances du cache Nx"
+          pnpm nx report
+          
+      - name: Calcul du temps de build par projet
+        run: |
+          echo "Calcul des temps de build moyens par projet"
+          pnpm tsx scripts/ci/nx-performance-report.js --output=./reports/nx-performance.json
+          
+      - name: Upload du rapport de performances Nx
+        uses: actions/upload-artifact@v3
+        with:
+          name: nx-performance-report
+          path: reports/nx-performance.json
+          if-no-files-found: warn
+
+      - name: Optimisation du graphe de dépendances Nx
+        run: |
+          echo "Analyse pour optimisation du graphe de dépendances Nx"
+          pnpm tsx scripts/ci/optimize-nx-dependencies.js

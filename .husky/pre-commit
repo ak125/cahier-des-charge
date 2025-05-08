@@ -1,0 +1,5 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+# Exécution de lint-staged pour valider les fichiers modifiés
+npx lint-staged

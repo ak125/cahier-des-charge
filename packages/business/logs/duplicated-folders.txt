@@ -1,0 +1,3048 @@
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/StructureAnalyzer
+  ./packages/mcp-agents/analyzers/structure-analyzer
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/StructureAnalyzer/structure-agent
+  ./packages/mcp-agents/analyzers/structureagent
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/StructureAnalyzer/structure-agent
+  ./packages/mcp-agents/business/misc/structureagent
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/htaccess-router
+  ./packages/mcp-agents/analyzers/HtaccessRouter
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/abstract-analyzer
+  ./packages/mcp-agents/analyzers/AbstractAnalyzer
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/AgentCommunication
+  ./packages/mcp-agents/analyzers/agent-communication
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/monitoring-check
+  ./packages/mcp-agents/analyzers/MonitoringCheck
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/AgentController
+  ./packages/mcp-agents/analyzers/agent-controller
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/AgentRegistry
+  ./packages/mcp-agents/analyzers/agent-registry
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/agent-business
+  ./packages/mcp-agents/analyzers/AgentBusiness
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/status-writer
+  ./packages/mcp-agents/analyzers/StatusWriter
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/agent-structure
+  ./packages/mcp-agents/analyzers/AgentStructure
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/table-cartographer
+  ./packages/mcp-agents/analyzers/TableCartographer
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/nginx-config-parser
+  ./packages/mcp-agents/analyzers/NginxConfigParser
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/php-analyzer-dotworker
+  ./packages/mcp-agents/analyzers/Php-AnalyzerDotworker
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/devops-preview
+  ./packages/mcp-agents/analyzers/DevopsPreview
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/FileManager
+  ./packages/mcp-agents/analyzers/file-manager
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/business-agent
+  ./packages/mcp-agents/analyzers/businessagent
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/businessagent
+  ./packages/mcp-agents/analyzers/business-agent
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/businessagent
+  ./packages/mcp-agents/business/misc/business-agent
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/data-analyzer
+  ./packages/mcp-agents/analyzers/DataAnalyzer
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/data-analyzer/data-agent
+  ./packages/mcp-agents/analyzers/dataagent
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/data-analyzer/data-agent
+  ./packages/mcp-agents/business/misc/dataagent
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/mysql-to-postgresql
+  ./packages/mcp-agents/analyzers/MysqlToPostgresql
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/php-router-audit
+  ./packages/mcp-agents/analyzers/PhpRouterAudit
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/TypeMapper
+  ./packages/mcp-agents/analyzers/type-mapper
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/TypeMapper
+  ./packages/mcp-agents/business/misc/type-mapper
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/agent-communication
+  ./packages/mcp-agents/analyzers/AgentCommunication
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/DataVerifier
+  ./packages/mcp-agents/analyzers/data-verifier
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/DataVerifier
+  ./packages/mcp-agents/business/misc/data-verifier
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/pipeline-strategy-auditor
+  ./packages/mcp-agents/analyzers/PipelineStrategyAuditor
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/ImageOptimizer
+  ./packages/mcp-agents/analyzers/image-optimizer
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/QaConfirmer
+  ./packages/mcp-agents/analyzers/qa-confirmer
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/QaConfirmer
+  ./packages/mcp-agents/business/misc/qa-confirmer
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/base-agent
+  ./packages/mcp-agents/analyzers/baseagent
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/base-agent
+  ./packages/mcp-agents/business/misc/baseagent
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/SeoMetadataSchema
+  ./packages/mcp-agents/analyzers/seo-metadata-schema
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/sql-analyzer-plusprisma-builder
+  ./packages/mcp-agents/analyzers/Sql-AnalyzerPlusprisma-Builder
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/sql-analyzer-plusprisma-builder
+  ./packages/mcp-agents/business/analyzers/Sql-AnalyzerPlusprisma-Builder
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/DiffVerifier
+  ./packages/mcp-agents/analyzers/diff-verifier
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/DiffVerifier
+  ./packages/mcp-agents/business/misc/diff-verifier
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/MigrationStrategist
+  ./packages/mcp-agents/analyzers/migration-strategist
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/MigrationStrategist
+  ./packages/mcp-agents/business/misc/migration-strategist
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/AgentVersionAuditor
+  ./packages/mcp-agents/analyzers/agent-version-auditor
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/AgentVersionAuditor
+  ./packages/mcp-agents/business/misc/agent-version-auditor
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/adapt-agents
+  ./packages/mcp-agents/analyzers/AdaptAgents
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/nginx-config
+  ./packages/mcp-agents/analyzers/NginxConfig
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/agent-controller
+  ./packages/mcp-agents/analyzers/AgentController
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/SemanticTableMapper
+  ./packages/mcp-agents/analyzers/semantic-table-mapper
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/SemanticTableMapper
+  ./packages/mcp-agents/business/misc/semantic-table-mapper
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/SystemIntegrationBridge
+  ./packages/mcp-agents/analyzers/system-integration-bridge
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/SystemIntegrationBridge
+  ./packages/mcp-agents/coordination/bridges/system-integration-bridge
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/Agent-Abstract-MigrationDottest
+  ./packages/mcp-agents/analyzers/agent-abstract-migration-dottest
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/type-auditor
+  ./packages/mcp-agents/analyzers/TypeAuditor
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/AbstractAnalyzer
+  ./packages/mcp-agents/analyzers/abstract-analyzer
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/TypeAuditor
+  ./packages/mcp-agents/analyzers/type-auditor
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/TypeAuditor
+  ./packages/mcp-agents/business/misc/type-auditor
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/pr-creator
+  ./packages/mcp-agents/analyzers/PrCreator
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/data-agent
+  ./packages/mcp-agents/analyzers/dataagent
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/data-agent
+  ./packages/mcp-agents/business/misc/dataagent
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/seo-mcp-controller
+  ./packages/mcp-agents/analyzers/SeoMcpController
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/dependencyagent
+  ./packages/mcp-agents/analyzers/dependency-analyzer/dependency-agent
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/dependencyagent
+  ./packages/mcp-agents/analyzers/DependencyAnalyzer/dependency-agent
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/dependencyagent
+  ./packages/mcp-agents/analyzers/dependency-agent
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/dependencyagent
+  ./packages/mcp-agents/misc/dependency-agent
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/dev-integrator
+  ./packages/mcp-agents/analyzers/DevIntegrator
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/AgentAbstractMigration.test
+  ./packages/mcp-agents/analyzers/agent-abstract-migration.test
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/htaccess-route
+  ./packages/mcp-agents/analyzers/HtaccessRoute
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/NginxConfigParser
+  ./packages/mcp-agents/analyzers/nginx-config-parser
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/NginxConfigParser
+  ./packages/mcp-agents/business/parsers/nginx-config-parser
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/McpManifestManager
+  ./packages/mcp-agents/analyzers/mcp-manifest-manager
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/McpManifestManager
+  ./packages/mcp-agents/business/misc/mcp-manifest-manager
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/prisma-to-zod
+  ./packages/mcp-agents/analyzers/PrismaToZod
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/seo-metadata-schema
+  ./packages/mcp-agents/analyzers/SeoMetadataSchema
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/AgentAudit
+  ./packages/mcp-agents/analyzers/agent-audit
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/AgentAudit
+  ./packages/mcp-agents/orchestration/misc/agent-audit
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/Sql-AnalyzerPlusprisma-Builder
+  ./packages/mcp-agents/analyzers/sql-analyzer-plusprisma-builder
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/Sql-AnalyzerPlusprisma-Builder
+  ./packages/mcp-agents/business/analyzers/sql-analyzer-plusprisma-builder
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/quality-agent
+  ./packages/mcp-agents/analyzers/qualityagent
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/dependency-analyzer
+  ./packages/mcp-agents/analyzers/DependencyAnalyzer
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/dependency-analyzer/dependency-agent
+  ./packages/mcp-agents/analyzers/dependencyagent
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/dependency-analyzer/dependency-agent
+  ./packages/mcp-agents/business/misc/dependencyagent
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/McpVerifier
+  ./packages/mcp-agents/analyzers/mcp-verifier
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/McpVerifier
+  ./packages/mcp-agents/business/misc/mcp-verifier
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/abstract-processor
+  ./packages/mcp-agents/analyzers/AbstractProcessor
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/McpVerifier.worker
+  ./packages/mcp-agents/analyzers/mcp-verifier.worker
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/McpVerifier.worker
+  ./packages/mcp-agents/orchestration/misc/mcp-verifier.worker
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/DevIntegrator
+  ./packages/mcp-agents/analyzers/dev-integrator
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/DevIntegrator
+  ./packages/mcp-agents/business/misc/dev-integrator
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/TestWriter
+  ./packages/mcp-agents/analyzers/test-writer
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/mysql-analyzer-plusoptimizer
+  ./packages/mcp-agents/analyzers/Mysql-AnalyzerPlusoptimizer
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/mysql-analyzer-plusoptimizer
+  ./packages/mcp-agents/business/analyzers/Mysql-AnalyzerPlusoptimizer
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/sql-prisma-migration-planner
+  ./packages/mcp-agents/analyzers/SqlPrismaMigrationPlanner
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/AutoPr
+  ./packages/mcp-agents/analyzers/auto-pr
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/file-manager
+  ./packages/mcp-agents/analyzers/FileManager
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/PrCreator
+  ./packages/mcp-agents/analyzers/pr-creator
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/PrCreator
+  ./packages/mcp-agents/business/misc/pr-creator
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/mcp-verifier
+  ./packages/mcp-agents/analyzers/McpVerifier
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/HtaccessRouter
+  ./packages/mcp-agents/analyzers/htaccess-router
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/SeoCiTester
+  ./packages/mcp-agents/analyzers/seo-ci-tester
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/SeoRedirectMapper
+  ./packages/mcp-agents/analyzers/seo-redirect-mapper
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/SeoRedirectMapper
+  ./packages/mcp-agents/business/misc/seo-redirect-mapper
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/LayeredAgentAuditor
+  ./packages/mcp-agents/analyzers/layered-agent-auditor
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/LayeredAgentAuditor
+  ./packages/mcp-agents/tools/layered-agent-auditor
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/mysql-to-pg
+  ./packages/mcp-agents/analyzers/MysqlToPg
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/agent-registry
+  ./packages/mcp-agents/analyzers/AgentRegistry
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/SeoMcpController
+  ./packages/mcp-agents/analyzers/seo-mcp-controller
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/SeoMcpController
+  ./packages/mcp-agents/business/misc/seo-mcp-controller
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/layered-agent-auditor
+  ./packages/mcp-agents/analyzers/LayeredAgentAuditor
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/sql-debt-audit
+  ./packages/mcp-agents/analyzers/SqlDebtAudit
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/agent8-optimizer
+  ./packages/mcp-agents/analyzers/Agent8Optimizer
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/dev-linter
+  ./packages/mcp-agents/analyzers/DevLinter
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/AnalyzeSecurityRisks
+  ./packages/mcp-agents/analyzers/analyze-security-risks
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/AnalyzeSecurityRisks
+  ./packages/mcp-agents/business/analyzers/analyze-security-risks
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/DevLinter
+  ./packages/mcp-agents/analyzers/dev-linter
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/DevLinter
+  ./packages/mcp-agents/business/misc/dev-linter
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/type-mapper
+  ./packages/mcp-agents/analyzers/TypeMapper
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/test-writer
+  ./packages/mcp-agents/analyzers/TestWriter
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/SqlDebtAudit
+  ./packages/mcp-agents/analyzers/sql-debt-audit
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/SqlDebtAudit
+  ./packages/mcp-agents/business/misc/sql-debt-audit
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/CiTester
+  ./packages/mcp-agents/analyzers/ci-tester
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/CiTester
+  ./packages/mcp-agents/business/misc/ci-tester
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/auto-pr
+  ./packages/mcp-agents/analyzers/AutoPr
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/SeoAuditRunner
+  ./packages/mcp-agents/analyzers/seo-audit-runner
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/SeoAuditRunner
+  ./packages/mcp-agents/business/misc/seo-audit-runner
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/agent-version-auditor
+  ./packages/mcp-agents/analyzers/AgentVersionAuditor
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/ci-tester
+  ./packages/mcp-agents/analyzers/CiTester
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/AgentBusiness
+  ./packages/mcp-agents/analyzers/agent-business
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/AgentBusiness
+  ./packages/mcp-agents/business/misc/agent-business
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/AgentStructure
+  ./packages/mcp-agents/analyzers/agent-structure
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/AgentStructure
+  ./packages/mcp-agents/business/misc/agent-structure
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/mcp-verifier-dotworker
+  ./packages/mcp-agents/analyzers/Mcp-VerifierDotworker
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/DependencyAnalyzer
+  ./packages/mcp-agents/analyzers/dependency-analyzer
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/DependencyAnalyzer/dependency-agent
+  ./packages/mcp-agents/analyzers/dependencyagent
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/DependencyAnalyzer/dependency-agent
+  ./packages/mcp-agents/business/misc/dependencyagent
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/agent-abstract-migration.test
+  ./packages/mcp-agents/analyzers/AgentAbstractMigration.test
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/Agent8Optimizer
+  ./packages/mcp-agents/analyzers/agent8-optimizer
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/Agent8Optimizer
+  ./packages/mcp-agents/orchestration/misc/agent8-optimizer
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/baseagent
+  ./packages/mcp-agents/analyzers/base-agent
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/baseagent
+  ./packages/mcp-agents/business/core/base-agent
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/SqlAnalysisRunner
+  ./packages/mcp-agents/analyzers/sql-analysis-runner
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/SqlAnalysisRunner
+  ./packages/mcp-agents/orchestration/misc/sql-analysis-runner
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/dataagent
+  ./packages/mcp-agents/analyzers/data-analyzer/data-agent
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/dataagent
+  ./packages/mcp-agents/analyzers/data-agent
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/dataagent
+  ./packages/mcp-agents/analyzers/DataAnalyzer/data-agent
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/dataagent
+  ./packages/mcp-agents/misc/data-agent
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/debt-detector
+  ./packages/mcp-agents/analyzers/DebtDetector
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/DataAnalyzer
+  ./packages/mcp-agents/analyzers/data-analyzer
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/DataAnalyzer/data-agent
+  ./packages/mcp-agents/analyzers/dataagent
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/DataAnalyzer/data-agent
+  ./packages/mcp-agents/business/misc/dataagent
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/QaAnalyzer
+  ./packages/mcp-agents/analyzers/QaAnalyzer/qa-analyzer
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/QaAnalyzer
+  ./packages/mcp-agents/analyzers/qa-analyzer
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/QaAnalyzer
+  ./packages/mcp-agents/analyzers/qa-analyzer/qa-analyzer
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/QaAnalyzer
+  ./packages/mcp-agents/business/analyzers/qa-analyzer
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/QaAnalyzer
+  ./packages/mcp-agents/qa-analyzer
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/QaAnalyzer/QaAnalyzer
+  ./packages/mcp-agents/analyzers/QaAnalyzer/qa-analyzer
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/QaAnalyzer/QaAnalyzer
+  ./packages/mcp-agents/analyzers/qa-analyzer
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/QaAnalyzer/QaAnalyzer
+  ./packages/mcp-agents/analyzers/qa-analyzer/qa-analyzer
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/QaAnalyzer/QaAnalyzer
+  ./packages/mcp-agents/business/analyzers/qa-analyzer
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/QaAnalyzer/QaAnalyzer
+  ./packages/mcp-agents/qa-analyzer
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/QaAnalyzer/qa-analyzer
+  ./packages/mcp-agents/analyzers/QaAnalyzer
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/QaAnalyzer/qa-analyzer
+  ./packages/mcp-agents/analyzers/QaAnalyzer/QaAnalyzer
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/QaAnalyzer/qa-analyzer
+  ./packages/mcp-agents/analyzers/qa-analyzer/QaAnalyzer
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/QaAnalyzer/qa-analyzer
+  ./packages/mcp-agents/business/analyzers/QaAnalyzer
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/php-analyzer
+  ./packages/mcp-agents/analyzers/PhpAnalyzer
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/php-analyzer
+  ./packages/mcp-agents/business/analyzers/PhpAnalyzer
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/php-analyzer/PhpAnalyzerV2
+  ./packages/mcp-agents/analyzers/php-analyzer/php-analyzer-v2
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/php-analyzer/PhpAnalyzerV2
+  ./packages/mcp-agents/analyzers/PhpAnalyzer/php-analyzer-v2
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/php-analyzer/PhpAnalyzerV2
+  ./packages/mcp-agents/business/analyzers/php-analyzer-v2
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/php-analyzer/php-analyzer-v2
+  ./packages/mcp-agents/analyzers/php-analyzer/PhpAnalyzerV2
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/php-analyzer/php-analyzer-v2
+  ./packages/mcp-agents/analyzers/PhpAnalyzer/PhpAnalyzerV2
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/php-analyzer/php-analyzer-v2
+  ./packages/mcp-agents/business/analyzers/PhpAnalyzerV2
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/mysql-analyzer+optimizer
+  ./packages/mcp-agents/analyzers/MysqlAnalyzer+optimizer
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/mysql-analyzer+optimizer
+  ./packages/mcp-agents/business/analyzers/MysqlAnalyzer+optimizer
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/prisma-to-dto
+  ./packages/mcp-agents/analyzers/PrismaToDto
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/qa-confirmer
+  ./packages/mcp-agents/analyzers/QaConfirmer
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/TableCartographer
+  ./packages/mcp-agents/analyzers/table-cartographer
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/TableCartographer
+  ./packages/mcp-agents/business/misc/table-cartographer
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/sql-analysis-runner
+  ./packages/mcp-agents/analyzers/SqlAnalysisRunner
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/TypeAudit
+  ./packages/mcp-agents/analyzers/type-audit
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/data-verifier
+  ./packages/mcp-agents/analyzers/DataVerifier
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/AgentDonnees
+  ./packages/mcp-agents/analyzers/agent-donnees
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/AgentDonnees
+  ./packages/mcp-agents/business/misc/agent-donnees
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/seo-ci-tester
+  ./packages/mcp-agents/analyzers/SeoCiTester
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/RelationalNormalizer
+  ./packages/mcp-agents/analyzers/relational-normalizer
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/RelationalNormalizer
+  ./packages/mcp-agents/business/misc/relational-normalizer
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/structure-analyzer
+  ./packages/mcp-agents/analyzers/StructureAnalyzer
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/structure-analyzer/structure-agent
+  ./packages/mcp-agents/analyzers/structureagent
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/structure-analyzer/structure-agent
+  ./packages/mcp-agents/business/misc/structureagent
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/BaseAnalyzer
+  ./packages/mcp-agents/analyzers/base-analyzer
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/image-optimizer
+  ./packages/mcp-agents/analyzers/ImageOptimizer
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/sql-analyzer+prisma-builder
+  ./packages/mcp-agents/analyzers/SqlAnalyzer+prismaBuilder
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/sql-analyzer+prisma-builder
+  ./packages/mcp-agents/business/analyzers/SqlAnalyzer+prismaBuilder
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/Mcp-VerifierDotworker
+  ./packages/mcp-agents/analyzers/mcp-verifier-dotworker
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/Mcp-VerifierDotworker
+  ./packages/mcp-agents/orchestration/misc/mcp-verifier-dotworker
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/StatusWriter
+  ./packages/mcp-agents/analyzers/status-writer
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/StatusWriter
+  ./packages/mcp-agents/orchestration/misc/status-writer
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/Mysql-AnalyzerPlusoptimizer
+  ./packages/mcp-agents/analyzers/mysql-analyzer-plusoptimizer
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/Mysql-AnalyzerPlusoptimizer
+  ./packages/mcp-agents/business/analyzers/mysql-analyzer-plusoptimizer
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/agent-quality
+  ./packages/mcp-agents/analyzers/AgentQuality
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/register-agents
+  ./packages/mcp-agents/analyzers/RegisterAgents
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/Php-AnalyzerDotworker
+  ./packages/mcp-agents/analyzers/php-analyzer-dotworker
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/Php-AnalyzerDotworker
+  ./packages/mcp-agents/orchestration/misc/php-analyzer-dotworker
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/DevopsPreview
+  ./packages/mcp-agents/analyzers/devops-preview
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/DevopsPreview
+  ./packages/mcp-agents/business/misc/devops-preview
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/TypeConverter
+  ./packages/mcp-agents/analyzers/type-converter
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/TypeConverter
+  ./packages/mcp-agents/business/misc/type-converter
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/PhpAnalyzer
+  ./packages/mcp-agents/analyzers/php-analyzer
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/PhpAnalyzer
+  ./packages/mcp-agents/business/analyzers/php-analyzer
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/PhpAnalyzer
+  ./packages/mcp-agents/php-analyzer
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/PhpAnalyzer/PhpAnalyzerV2
+  ./packages/mcp-agents/analyzers/php-analyzer/php-analyzer-v2
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/PhpAnalyzer/PhpAnalyzerV2
+  ./packages/mcp-agents/analyzers/PhpAnalyzer/php-analyzer-v2
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/PhpAnalyzer/PhpAnalyzerV2
+  ./packages/mcp-agents/business/analyzers/php-analyzer-v2
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/PhpAnalyzer/php-analyzer-v2
+  ./packages/mcp-agents/analyzers/php-analyzer/PhpAnalyzerV2
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/PhpAnalyzer/php-analyzer-v2
+  ./packages/mcp-agents/analyzers/PhpAnalyzer/PhpAnalyzerV2
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/PhpAnalyzer/php-analyzer-v2
+  ./packages/mcp-agents/business/analyzers/PhpAnalyzerV2
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/HtaccessParser
+  ./packages/mcp-agents/analyzers/htaccess-parser
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/HtaccessParser
+  ./packages/mcp-agents/business/parsers/htaccess-parser
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/metrics-collector
+  ./packages/mcp-agents/analyzers/MetricsCollector
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/AbstractProcessor
+  ./packages/mcp-agents/analyzers/abstract-processor
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/seo-redirect-mapper
+  ./packages/mcp-agents/analyzers/SeoRedirectMapper
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/PhpRouterAudit
+  ./packages/mcp-agents/analyzers/php-router-audit
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/PhpRouterAudit
+  ./packages/mcp-agents/business/misc/php-router-audit
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/DbConnector
+  ./packages/mcp-agents/analyzers/db-connector
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/diff-verifier
+  ./packages/mcp-agents/analyzers/DiffVerifier
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/PrismaToDto
+  ./packages/mcp-agents/analyzers/prisma-to-dto
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/validate-agents
+  ./packages/mcp-agents/analyzers/ValidateAgents
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/semantic-table-mapper
+  ./packages/mcp-agents/analyzers/SemanticTableMapper
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/PhpAnalyzer.worker
+  ./packages/mcp-agents/analyzers/php-analyzer.worker
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/PhpAnalyzer.worker
+  ./packages/mcp-agents/orchestration/misc/php-analyzer.worker
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/MysqlToPg
+  ./packages/mcp-agents/analyzers/mysql-to-pg
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/MysqlToPg
+  ./packages/mcp-agents/business/misc/mysql-to-pg
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/ProgressiveMigration
+  ./packages/mcp-agents/analyzers/progressive-migration
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/MonitoringCheck
+  ./packages/mcp-agents/analyzers/monitoring-check
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/MonitoringCheck
+  ./packages/mcp-agents/orchestration/monitors/monitoring-check
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/qa-analyzer
+  ./packages/mcp-agents/analyzers/QaAnalyzer
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/qa-analyzer
+  ./packages/mcp-agents/analyzers/QaAnalyzer/QaAnalyzer
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/qa-analyzer
+  ./packages/mcp-agents/analyzers/qa-analyzer/QaAnalyzer
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/qa-analyzer
+  ./packages/mcp-agents/business/analyzers/QaAnalyzer
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/qa-analyzer/QaAnalyzer
+  ./packages/mcp-agents/analyzers/QaAnalyzer/qa-analyzer
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/qa-analyzer/QaAnalyzer
+  ./packages/mcp-agents/analyzers/qa-analyzer
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/qa-analyzer/QaAnalyzer
+  ./packages/mcp-agents/analyzers/qa-analyzer/qa-analyzer
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/qa-analyzer/QaAnalyzer
+  ./packages/mcp-agents/business/analyzers/qa-analyzer
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/qa-analyzer/QaAnalyzer
+  ./packages/mcp-agents/qa-analyzer
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/qa-analyzer/qa-analyzer
+  ./packages/mcp-agents/analyzers/QaAnalyzer
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/qa-analyzer/qa-analyzer
+  ./packages/mcp-agents/analyzers/QaAnalyzer/QaAnalyzer
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/qa-analyzer/qa-analyzer
+  ./packages/mcp-agents/analyzers/qa-analyzer/QaAnalyzer
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/qa-analyzer/qa-analyzer
+  ./packages/mcp-agents/business/analyzers/QaAnalyzer
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/PipelineStrategyAuditor
+  ./packages/mcp-agents/analyzers/pipeline-strategy-auditor
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/PipelineStrategyAuditor
+  ./packages/mcp-agents/business/misc/pipeline-strategy-auditor
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/agent-audit
+  ./packages/mcp-agents/analyzers/AgentAudit
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/RegisterAgents
+  ./packages/mcp-agents/analyzers/register-agents
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/php-analyzer.worker
+  ./packages/mcp-agents/analyzers/PhpAnalyzer.worker
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/MysqlToPostgresql
+  ./packages/mcp-agents/analyzers/mysql-to-postgresql
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/MysqlToPostgresql
+  ./packages/mcp-agents/business/misc/mysql-to-postgresql
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/PrismaToZod
+  ./packages/mcp-agents/analyzers/prisma-to-zod
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/AdaptAgents
+  ./packages/mcp-agents/analyzers/adapt-agents
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/qualityagent
+  ./packages/mcp-agents/analyzers/quality-agent
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/qualityagent
+  ./packages/mcp-agents/business/misc/quality-agent
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/mcp-verifier.worker
+  ./packages/mcp-agents/analyzers/McpVerifier.worker
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/relational-normalizer
+  ./packages/mcp-agents/analyzers/RelationalNormalizer
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/progressive-migration
+  ./packages/mcp-agents/analyzers/ProgressiveMigration
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/dependency-agent
+  ./packages/mcp-agents/analyzers/dependencyagent
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/dependency-agent
+  ./packages/mcp-agents/business/misc/dependencyagent
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/DebtDetector
+  ./packages/mcp-agents/analyzers/debt-detector
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/DebtDetector
+  ./packages/mcp-agents/business/misc/debt-detector
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/type-converter
+  ./packages/mcp-agents/analyzers/TypeConverter
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/migration-strategist
+  ./packages/mcp-agents/analyzers/MigrationStrategist
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/system-integration-bridge
+  ./packages/mcp-agents/analyzers/SystemIntegrationBridge
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/agent-abstract-migration-dottest
+  ./packages/mcp-agents/analyzers/Agent-Abstract-MigrationDottest
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/db-connector
+  ./packages/mcp-agents/analyzers/DbConnector
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/MetricsCollector
+  ./packages/mcp-agents/analyzers/metrics-collector
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/seo-audit-runner
+  ./packages/mcp-agents/analyzers/SeoAuditRunner
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/SqlAnalyzer+prismaBuilder
+  ./packages/mcp-agents/analyzers/sql-analyzer+prisma-builder
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/SqlAnalyzer+prismaBuilder
+  ./packages/mcp-agents/business/analyzers/sql-analyzer+prisma-builder
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/type-audit
+  ./packages/mcp-agents/analyzers/TypeAudit
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/structureagent
+  ./packages/mcp-agents/analyzers/StructureAnalyzer/structure-agent
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/structureagent
+  ./packages/mcp-agents/analyzers/structure-analyzer/structure-agent
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/structureagent
+  ./packages/mcp-agents/analyzers/structure-agent
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/structureagent
+  ./packages/mcp-agents/misc/structure-agent
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/analyze-security-risks
+  ./packages/mcp-agents/analyzers/AnalyzeSecurityRisks
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/analyze-security-risks
+  ./packages/mcp-agents/business/analyzers/AnalyzeSecurityRisks
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/structure-agent
+  ./packages/mcp-agents/analyzers/structureagent
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/structure-agent
+  ./packages/mcp-agents/business/misc/structureagent
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/base-analyzer
+  ./packages/mcp-agents/analyzers/BaseAnalyzer
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/AgentQuality
+  ./packages/mcp-agents/analyzers/agent-quality
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/AgentQuality
+  ./packages/mcp-agents/business/misc/agent-quality
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/NginxConfig
+  ./packages/mcp-agents/analyzers/nginx-config
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/SqlPrismaMigrationPlanner
+  ./packages/mcp-agents/analyzers/sql-prisma-migration-planner
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/SqlPrismaMigrationPlanner
+  ./packages/mcp-agents/business/misc/sql-prisma-migration-planner
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/mcp-manifest-manager
+  ./packages/mcp-agents/analyzers/McpManifestManager
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/ValidateAgents
+  ./packages/mcp-agents/analyzers/validate-agents
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/htaccess-parser
+  ./packages/mcp-agents/analyzers/HtaccessParser
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/MysqlAnalyzer+optimizer
+  ./packages/mcp-agents/analyzers/mysql-analyzer+optimizer
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/MysqlAnalyzer+optimizer
+  ./packages/mcp-agents/business/analyzers/mysql-analyzer+optimizer
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/HtaccessRoute
+  ./packages/mcp-agents/analyzers/htaccess-route
+
+Duplication détectée:
+  ./packages/mcp-agents/analyzers/agent-donnees
+  ./packages/mcp-agents/analyzers/AgentDonnees
+
+Duplication détectée:
+  ./packages/mcp-agents/orchestration/monitors/monitoring-check
+  ./packages/mcp-agents/analyzers/MonitoringCheck
+
+Duplication détectée:
+  ./packages/mcp-agents/orchestration/misc/status-writer
+  ./packages/mcp-agents/analyzers/StatusWriter
+
+Duplication détectée:
+  ./packages/mcp-agents/orchestration/misc/php-analyzer-dotworker
+  ./packages/mcp-agents/analyzers/Php-AnalyzerDotworker
+
+Duplication détectée:
+  ./packages/mcp-agents/orchestration/misc/coordinator-agent
+  ./packages/mcp-agents/business/orchestrators/CoordinatorAgent
+
+Duplication détectée:
+  ./packages/mcp-agents/orchestration/misc/caddyfile-generator
+  ./packages/mcp-agents/generators/caddyfile-generator/CaddyfileGenerator
+
+Duplication détectée:
+  ./packages/mcp-agents/orchestration/misc/caddyfile-generator
+  ./packages/mcp-agents/generators/CaddyfileGenerator
+
+Duplication détectée:
+  ./packages/mcp-agents/orchestration/misc/caddyfile-generator
+  ./packages/mcp-agents/generators/CaddyfileGenerator/CaddyfileGenerator
+
+Duplication détectée:
+  ./packages/mcp-agents/orchestration/misc/agent8-optimizer
+  ./packages/mcp-agents/analyzers/Agent8Optimizer
+
+Duplication détectée:
+  ./packages/mcp-agents/orchestration/misc/mcp-verifier-dotworker
+  ./packages/mcp-agents/analyzers/Mcp-VerifierDotworker
+
+Duplication détectée:
+  ./packages/mcp-agents/orchestration/misc/sql-analysis-runner
+  ./packages/mcp-agents/analyzers/SqlAnalysisRunner
+
+Duplication détectée:
+  ./packages/mcp-agents/orchestration/misc/agent-audit
+  ./packages/mcp-agents/analyzers/AgentAudit
+
+Duplication détectée:
+  ./packages/mcp-agents/orchestration/misc/php-analyzer.worker
+  ./packages/mcp-agents/analyzers/PhpAnalyzer.worker
+
+Duplication détectée:
+  ./packages/mcp-agents/orchestration/misc/mcp-verifier.worker
+  ./packages/mcp-agents/analyzers/McpVerifier.worker
+
+Duplication détectée:
+  ./packages/mcp-agents/orchestration/orchestrators/BullmqOrchestrator
+  ./packages/mcp-agents/orchestration/orchestrators/bullmq-orchestrator
+
+Duplication détectée:
+  ./packages/mcp-agents/orchestration/orchestrators/BullmqOrchestrator
+  ./packages/mcp-agents/business/orchestrators/bullmq-orchestrator
+
+Duplication détectée:
+  ./packages/mcp-agents/orchestration/orchestrators/migration-orchestrator
+  ./packages/mcp-agents/orchestration/orchestrators/MigrationOrchestrator
+
+Duplication détectée:
+  ./packages/mcp-agents/orchestration/orchestrators/bullmq-orchestrator
+  ./packages/mcp-agents/orchestration/orchestrators/BullmqOrchestrator
+
+Duplication détectée:
+  ./packages/mcp-agents/orchestration/orchestrators/bullmq-orchestrator
+  ./packages/mcp-agents/business/orchestrators/BullmqOrchestrator
+
+Duplication détectée:
+  ./packages/mcp-agents/orchestration/orchestrators/orchestrator-bridge
+  ./packages/mcp-agents/orchestration/orchestrators/OrchestratorBridge
+
+Duplication détectée:
+  ./packages/mcp-agents/orchestration/orchestrators/orchestrator-bridge
+  ./packages/mcp-agents/orchestrators/bridges/OrchestratorBridge
+
+Duplication détectée:
+  ./packages/mcp-agents/orchestration/orchestrators/orchestrator-bridge
+  ./packages/mcp-agents/orchestrators/OrchestratorBridge
+
+Duplication détectée:
+  ./packages/mcp-agents/orchestration/orchestrators/agent-orchestrator
+  ./packages/mcp-agents/orchestration/orchestrators/AgentOrchestrator
+
+Duplication détectée:
+  ./packages/mcp-agents/orchestration/orchestrators/OrchestratorBridge
+  ./packages/mcp-agents/orchestration/orchestrators/orchestrator-bridge
+
+Duplication détectée:
+  ./packages/mcp-agents/orchestration/orchestrators/OrchestratorBridge
+  ./packages/mcp-agents/orchestrators/bridges/orchestrator-bridge
+
+Duplication détectée:
+  ./packages/mcp-agents/orchestration/orchestrators/OrchestratorBridge
+  ./packages/mcp-agents/orchestrators/orchestrator-bridge
+
+Duplication détectée:
+  ./packages/mcp-agents/orchestration/orchestrators/AgentOrchestrator
+  ./packages/mcp-agents/orchestration/orchestrators/agent-orchestrator
+
+Duplication détectée:
+  ./packages/mcp-agents/orchestration/orchestrators/MigrationOrchestrator
+  ./packages/mcp-agents/orchestration/orchestrators/migration-orchestrator
+
+Duplication détectée:
+  ./packages/mcp-agents/orchestration/orchestrators/MigrationOrchestrator
+  ./packages/mcp-agents/migration-orchestrator
+
+Duplication détectée:
+  ./packages/mcp-agents/validators/SeoChecker
+  ./packages/mcp-agents/validators/seo-checker
+
+Duplication détectée:
+  ./packages/mcp-agents/validators/SeoChecker
+  ./packages/mcp-agents/business/validators/seo-checker
+
+Duplication détectée:
+  ./packages/mcp-agents/validators/SeoChecker
+  ./packages/mcp-agents/seo-checker
+
+Duplication détectée:
+  ./packages/mcp-agents/validators/SeoChecker/SeoCheckerAgent
+  ./packages/mcp-agents/validators/SeoChecker/seo-checker-agent
+
+Duplication détectée:
+  ./packages/mcp-agents/validators/SeoChecker/SeoCheckerAgent
+  ./packages/mcp-agents/validators/seo-checker/seo-checker-agent
+
+Duplication détectée:
+  ./packages/mcp-agents/validators/SeoChecker/SeoCheckerAgent
+  ./packages/mcp-agents/business/validators/seo-checker-agent
+
+Duplication détectée:
+  ./packages/mcp-agents/validators/SeoChecker/SeoCheckerAgent
+  ./packages/mcp-agents/misc/seo-checker-agent
+
+Duplication détectée:
+  ./packages/mcp-agents/validators/SeoChecker/seo-checker-agent
+  ./packages/mcp-agents/validators/SeoChecker/SeoCheckerAgent
+
+Duplication détectée:
+  ./packages/mcp-agents/validators/SeoChecker/seo-checker-agent
+  ./packages/mcp-agents/validators/seo-checker/SeoCheckerAgent
+
+Duplication détectée:
+  ./packages/mcp-agents/validators/SeoChecker/seo-checker-agent
+  ./packages/mcp-agents/business/validators/SeoCheckerAgent
+
+Duplication détectée:
+  ./packages/mcp-agents/validators/abstract-validator
+  ./packages/mcp-agents/validators/AbstractValidator
+
+Duplication détectée:
+  ./packages/mcp-agents/validators/dev-checker
+  ./packages/mcp-agents/validators/dev-checker/DevChecker
+
+Duplication détectée:
+  ./packages/mcp-agents/validators/dev-checker
+  ./packages/mcp-agents/validators/DevChecker
+
+Duplication détectée:
+  ./packages/mcp-agents/validators/dev-checker
+  ./packages/mcp-agents/validators/DevChecker/DevChecker
+
+Duplication détectée:
+  ./packages/mcp-agents/validators/dev-checker
+  ./packages/mcp-agents/business/validators/DevChecker
+
+Duplication détectée:
+  ./packages/mcp-agents/validators/dev-checker/dev-checker
+  ./packages/mcp-agents/validators/dev-checker/DevChecker
+
+Duplication détectée:
+  ./packages/mcp-agents/validators/dev-checker/dev-checker
+  ./packages/mcp-agents/validators/DevChecker
+
+Duplication détectée:
+  ./packages/mcp-agents/validators/dev-checker/dev-checker
+  ./packages/mcp-agents/validators/DevChecker/DevChecker
+
+Duplication détectée:
+  ./packages/mcp-agents/validators/dev-checker/dev-checker
+  ./packages/mcp-agents/business/validators/DevChecker
+
+Duplication détectée:
+  ./packages/mcp-agents/validators/dev-checker/DevChecker
+  ./packages/mcp-agents/validators/dev-checker
+
+Duplication détectée:
+  ./packages/mcp-agents/validators/dev-checker/DevChecker
+  ./packages/mcp-agents/validators/dev-checker/dev-checker
+
+Duplication détectée:
+  ./packages/mcp-agents/validators/dev-checker/DevChecker
+  ./packages/mcp-agents/validators/DevChecker/dev-checker
+
+Duplication détectée:
+  ./packages/mcp-agents/validators/dev-checker/DevChecker
+  ./packages/mcp-agents/business/validators/dev-checker
+
+Duplication détectée:
+  ./packages/mcp-agents/validators/seo-checker-canonical
+  ./packages/mcp-agents/validators/SeoCheckerCanonical
+
+Duplication détectée:
+  ./packages/mcp-agents/validators/seo-checker-canonical
+  ./packages/mcp-agents/business/validators/SeoCheckerCanonical
+
+Duplication détectée:
+  ./packages/mcp-agents/validators/CanonicalValidator
+  ./packages/mcp-agents/validators/CanonicalValidator/canonical-validator
+
+Duplication détectée:
+  ./packages/mcp-agents/validators/CanonicalValidator
+  ./packages/mcp-agents/validators/canonical-validator
+
+Duplication détectée:
+  ./packages/mcp-agents/validators/CanonicalValidator
+  ./packages/mcp-agents/validators/canonical-validator/canonical-validator
+
+Duplication détectée:
+  ./packages/mcp-agents/validators/CanonicalValidator
+  ./packages/mcp-agents/business/validators/canonical-validator
+
+Duplication détectée:
+  ./packages/mcp-agents/validators/CanonicalValidator/CanonicalValidator
+  ./packages/mcp-agents/validators/CanonicalValidator/canonical-validator
+
+Duplication détectée:
+  ./packages/mcp-agents/validators/CanonicalValidator/CanonicalValidator
+  ./packages/mcp-agents/validators/canonical-validator
+
+Duplication détectée:
+  ./packages/mcp-agents/validators/CanonicalValidator/CanonicalValidator
+  ./packages/mcp-agents/validators/canonical-validator/canonical-validator
+
+Duplication détectée:
+  ./packages/mcp-agents/validators/CanonicalValidator/CanonicalValidator
+  ./packages/mcp-agents/business/validators/canonical-validator
+
+Duplication détectée:
+  ./packages/mcp-agents/validators/CanonicalValidator/canonical-validator
+  ./packages/mcp-agents/validators/CanonicalValidator
+
+Duplication détectée:
+  ./packages/mcp-agents/validators/CanonicalValidator/canonical-validator
+  ./packages/mcp-agents/validators/CanonicalValidator/CanonicalValidator
+
+Duplication détectée:
+  ./packages/mcp-agents/validators/CanonicalValidator/canonical-validator
+  ./packages/mcp-agents/validators/canonical-validator/CanonicalValidator
+
+Duplication détectée:
+  ./packages/mcp-agents/validators/CanonicalValidator/canonical-validator
+  ./packages/mcp-agents/business/validators/CanonicalValidator
+
+Duplication détectée:
+  ./packages/mcp-agents/validators/typescript-structure
+  ./packages/mcp-agents/validators/TypescriptStructure
+
+Duplication détectée:
+  ./packages/mcp-agents/validators/BaseValidator
+  ./packages/mcp-agents/validators/base-validator
+
+Duplication détectée:
+  ./packages/mcp-agents/validators/AbstractValidator
+  ./packages/mcp-agents/validators/abstract-validator
+
+Duplication détectée:
+  ./packages/mcp-agents/validators/DevChecker
+  ./packages/mcp-agents/validators/dev-checker
+
+Duplication détectée:
+  ./packages/mcp-agents/validators/DevChecker
+  ./packages/mcp-agents/validators/dev-checker/dev-checker
+
+Duplication détectée:
+  ./packages/mcp-agents/validators/DevChecker
+  ./packages/mcp-agents/validators/DevChecker/dev-checker
+
+Duplication détectée:
+  ./packages/mcp-agents/validators/DevChecker
+  ./packages/mcp-agents/business/validators/dev-checker
+
+Duplication détectée:
+  ./packages/mcp-agents/validators/DevChecker/dev-checker
+  ./packages/mcp-agents/validators/dev-checker/DevChecker
+
+Duplication détectée:
+  ./packages/mcp-agents/validators/DevChecker/dev-checker
+  ./packages/mcp-agents/validators/DevChecker
+
+Duplication détectée:
+  ./packages/mcp-agents/validators/DevChecker/dev-checker
+  ./packages/mcp-agents/validators/DevChecker/DevChecker
+
+Duplication détectée:
+  ./packages/mcp-agents/validators/DevChecker/dev-checker
+  ./packages/mcp-agents/business/validators/DevChecker
+
+Duplication détectée:
+  ./packages/mcp-agents/validators/DevChecker/DevChecker
+  ./packages/mcp-agents/validators/dev-checker
+
+Duplication détectée:
+  ./packages/mcp-agents/validators/DevChecker/DevChecker
+  ./packages/mcp-agents/validators/dev-checker/dev-checker
+
+Duplication détectée:
+  ./packages/mcp-agents/validators/DevChecker/DevChecker
+  ./packages/mcp-agents/validators/DevChecker/dev-checker
+
+Duplication détectée:
+  ./packages/mcp-agents/validators/DevChecker/DevChecker
+  ./packages/mcp-agents/business/validators/dev-checker
+
+Duplication détectée:
+  ./packages/mcp-agents/validators/canonical-validator
+  ./packages/mcp-agents/validators/CanonicalValidator
+
+Duplication détectée:
+  ./packages/mcp-agents/validators/canonical-validator
+  ./packages/mcp-agents/validators/CanonicalValidator/CanonicalValidator
+
+Duplication détectée:
+  ./packages/mcp-agents/validators/canonical-validator
+  ./packages/mcp-agents/validators/canonical-validator/CanonicalValidator
+
+Duplication détectée:
+  ./packages/mcp-agents/validators/canonical-validator
+  ./packages/mcp-agents/business/validators/CanonicalValidator
+
+Duplication détectée:
+  ./packages/mcp-agents/validators/canonical-validator/CanonicalValidator
+  ./packages/mcp-agents/validators/CanonicalValidator/canonical-validator
+
+Duplication détectée:
+  ./packages/mcp-agents/validators/canonical-validator/CanonicalValidator
+  ./packages/mcp-agents/validators/canonical-validator
+
+Duplication détectée:
+  ./packages/mcp-agents/validators/canonical-validator/CanonicalValidator
+  ./packages/mcp-agents/validators/canonical-validator/canonical-validator
+
+Duplication détectée:
+  ./packages/mcp-agents/validators/canonical-validator/CanonicalValidator
+  ./packages/mcp-agents/business/validators/canonical-validator
+
+Duplication détectée:
+  ./packages/mcp-agents/validators/canonical-validator/canonical-validator
+  ./packages/mcp-agents/validators/CanonicalValidator
+
+Duplication détectée:
+  ./packages/mcp-agents/validators/canonical-validator/canonical-validator
+  ./packages/mcp-agents/validators/CanonicalValidator/CanonicalValidator
+
+Duplication détectée:
+  ./packages/mcp-agents/validators/canonical-validator/canonical-validator
+  ./packages/mcp-agents/validators/canonical-validator/CanonicalValidator
+
+Duplication détectée:
+  ./packages/mcp-agents/validators/canonical-validator/canonical-validator
+  ./packages/mcp-agents/business/validators/CanonicalValidator
+
+Duplication détectée:
+  ./packages/mcp-agents/validators/seo-checker
+  ./packages/mcp-agents/validators/SeoChecker
+
+Duplication détectée:
+  ./packages/mcp-agents/validators/seo-checker
+  ./packages/mcp-agents/business/validators/SeoChecker
+
+Duplication détectée:
+  ./packages/mcp-agents/validators/seo-checker/SeoCheckerAgent
+  ./packages/mcp-agents/validators/SeoChecker/seo-checker-agent
+
+Duplication détectée:
+  ./packages/mcp-agents/validators/seo-checker/SeoCheckerAgent
+  ./packages/mcp-agents/validators/seo-checker/seo-checker-agent
+
+Duplication détectée:
+  ./packages/mcp-agents/validators/seo-checker/SeoCheckerAgent
+  ./packages/mcp-agents/business/validators/seo-checker-agent
+
+Duplication détectée:
+  ./packages/mcp-agents/validators/seo-checker/SeoCheckerAgent
+  ./packages/mcp-agents/misc/seo-checker-agent
+
+Duplication détectée:
+  ./packages/mcp-agents/validators/seo-checker/seo-checker-agent
+  ./packages/mcp-agents/validators/SeoChecker/SeoCheckerAgent
+
+Duplication détectée:
+  ./packages/mcp-agents/validators/seo-checker/seo-checker-agent
+  ./packages/mcp-agents/validators/seo-checker/SeoCheckerAgent
+
+Duplication détectée:
+  ./packages/mcp-agents/validators/seo-checker/seo-checker-agent
+  ./packages/mcp-agents/business/validators/SeoCheckerAgent
+
+Duplication détectée:
+  ./packages/mcp-agents/validators/SeoCheckerCanonical
+  ./packages/mcp-agents/validators/seo-checker-canonical
+
+Duplication détectée:
+  ./packages/mcp-agents/validators/SeoCheckerCanonical
+  ./packages/mcp-agents/business/validators/seo-checker-canonical
+
+Duplication détectée:
+  ./packages/mcp-agents/validators/TypescriptStructure
+  ./packages/mcp-agents/validators/typescript-structure
+
+Duplication détectée:
+  ./packages/mcp-agents/validators/base-validator
+  ./packages/mcp-agents/validators/BaseValidator
+
+Duplication détectée:
+  ./packages/mcp-agents/migration-orchestrator
+  ./packages/mcp-agents/orchestration/orchestrators/MigrationOrchestrator
+
+Duplication détectée:
+  ./packages/mcp-agents/business/analyzers/php-analyzer-v3
+  ./packages/mcp-agents/business/analyzers/PhpAnalyzerV3
+
+Duplication détectée:
+  ./packages/mcp-agents/business/analyzers/HtaccessRouterAnalyzer
+  ./packages/mcp-agents/business/analyzers/htaccess-router-analyzer
+
+Duplication détectée:
+  ./packages/mcp-agents/business/analyzers/RelationAnalyzer
+  ./packages/mcp-agents/business/analyzers/relation-analyzer
+
+Duplication détectée:
+  ./packages/mcp-agents/business/analyzers/php-analyzer-v4
+  ./packages/mcp-agents/business/analyzers/PhpAnalyzerV4
+
+Duplication détectée:
+  ./packages/mcp-agents/business/analyzers/PhpAnalyzerV4
+  ./packages/mcp-agents/business/analyzers/php-analyzer-v4
+
+Duplication détectée:
+  ./packages/mcp-agents/business/analyzers/PhpDiscoveryEngine
+  ./packages/mcp-agents/business/analyzers/php-discovery-engine
+
+Duplication détectée:
+  ./packages/mcp-agents/business/analyzers/PhpDiscoveryEngine
+  ./packages/mcp-agents/business/misc/php-discovery-engine
+
+Duplication détectée:
+  ./packages/mcp-agents/business/analyzers/sql-analyzer-plusprisma-builder
+  ./packages/mcp-agents/analyzers/Sql-AnalyzerPlusprisma-Builder
+
+Duplication détectée:
+  ./packages/mcp-agents/business/analyzers/sql-analyzer-plusprisma-builder
+  ./packages/mcp-agents/business/analyzers/Sql-AnalyzerPlusprisma-Builder
+
+Duplication détectée:
+  ./packages/mcp-agents/business/analyzers/sql-analyzer
+  ./packages/mcp-agents/business/analyzers/SqlAnalyzer
+
+Duplication détectée:
+  ./packages/mcp-agents/business/analyzers/Sql-AnalyzerPlusprisma-Builder
+  ./packages/mcp-agents/analyzers/sql-analyzer-plusprisma-builder
+
+Duplication détectée:
+  ./packages/mcp-agents/business/analyzers/Sql-AnalyzerPlusprisma-Builder
+  ./packages/mcp-agents/business/analyzers/sql-analyzer-plusprisma-builder
+
+Duplication détectée:
+  ./packages/mcp-agents/business/analyzers/mysql-analyzer-plusoptimizer
+  ./packages/mcp-agents/analyzers/Mysql-AnalyzerPlusoptimizer
+
+Duplication détectée:
+  ./packages/mcp-agents/business/analyzers/mysql-analyzer-plusoptimizer
+  ./packages/mcp-agents/business/analyzers/Mysql-AnalyzerPlusoptimizer
+
+Duplication détectée:
+  ./packages/mcp-agents/business/analyzers/nginx-config-analyzer
+  ./packages/mcp-agents/business/analyzers/NginxConfigAnalyzer
+
+Duplication détectée:
+  ./packages/mcp-agents/business/analyzers/HtaccessRouteAnalyzer
+  ./packages/mcp-agents/business/analyzers/htaccess-route-analyzer
+
+Duplication détectée:
+  ./packages/mcp-agents/business/analyzers/AnalyzeSecurityRisks
+  ./packages/mcp-agents/analyzers/analyze-security-risks
+
+Duplication détectée:
+  ./packages/mcp-agents/business/analyzers/AnalyzeSecurityRisks
+  ./packages/mcp-agents/business/analyzers/analyze-security-risks
+
+Duplication détectée:
+  ./packages/mcp-agents/business/analyzers/SqlAnalyzer
+  ./packages/mcp-agents/business/analyzers/sql-analyzer
+
+Duplication détectée:
+  ./packages/mcp-agents/business/analyzers/htaccess-route-analyzer
+  ./packages/mcp-agents/business/analyzers/HtaccessRouteAnalyzer
+
+Duplication détectée:
+  ./packages/mcp-agents/business/analyzers/QaAnalyzer
+  ./packages/mcp-agents/analyzers/QaAnalyzer/qa-analyzer
+
+Duplication détectée:
+  ./packages/mcp-agents/business/analyzers/QaAnalyzer
+  ./packages/mcp-agents/analyzers/qa-analyzer
+
+Duplication détectée:
+  ./packages/mcp-agents/business/analyzers/QaAnalyzer
+  ./packages/mcp-agents/analyzers/qa-analyzer/qa-analyzer
+
+Duplication détectée:
+  ./packages/mcp-agents/business/analyzers/QaAnalyzer
+  ./packages/mcp-agents/business/analyzers/qa-analyzer
+
+Duplication détectée:
+  ./packages/mcp-agents/business/analyzers/QaAnalyzer
+  ./packages/mcp-agents/qa-analyzer
+
+Duplication détectée:
+  ./packages/mcp-agents/business/analyzers/php-analyzer
+  ./packages/mcp-agents/analyzers/PhpAnalyzer
+
+Duplication détectée:
+  ./packages/mcp-agents/business/analyzers/php-analyzer
+  ./packages/mcp-agents/business/analyzers/PhpAnalyzer
+
+Duplication détectée:
+  ./packages/mcp-agents/business/analyzers/debt-analyzer
+  ./packages/mcp-agents/business/analyzers/DebtAnalyzer
+
+Duplication détectée:
+  ./packages/mcp-agents/business/analyzers/mysql-analyzer+optimizer
+  ./packages/mcp-agents/analyzers/MysqlAnalyzer+optimizer
+
+Duplication détectée:
+  ./packages/mcp-agents/business/analyzers/mysql-analyzer+optimizer
+  ./packages/mcp-agents/business/analyzers/MysqlAnalyzer+optimizer
+
+Duplication détectée:
+  ./packages/mcp-agents/business/analyzers/htaccess-router-analyzer
+  ./packages/mcp-agents/business/analyzers/HtaccessRouterAnalyzer
+
+Duplication détectée:
+  ./packages/mcp-agents/business/analyzers/sql-analyzer+prisma-builder
+  ./packages/mcp-agents/analyzers/SqlAnalyzer+prismaBuilder
+
+Duplication détectée:
+  ./packages/mcp-agents/business/analyzers/sql-analyzer+prisma-builder
+  ./packages/mcp-agents/business/analyzers/SqlAnalyzer+prismaBuilder
+
+Duplication détectée:
+  ./packages/mcp-agents/business/analyzers/Mysql-AnalyzerPlusoptimizer
+  ./packages/mcp-agents/analyzers/mysql-analyzer-plusoptimizer
+
+Duplication détectée:
+  ./packages/mcp-agents/business/analyzers/Mysql-AnalyzerPlusoptimizer
+  ./packages/mcp-agents/business/analyzers/mysql-analyzer-plusoptimizer
+
+Duplication détectée:
+  ./packages/mcp-agents/business/analyzers/PhpAnalyzerV2
+  ./packages/mcp-agents/analyzers/php-analyzer/php-analyzer-v2
+
+Duplication détectée:
+  ./packages/mcp-agents/business/analyzers/PhpAnalyzerV2
+  ./packages/mcp-agents/analyzers/PhpAnalyzer/php-analyzer-v2
+
+Duplication détectée:
+  ./packages/mcp-agents/business/analyzers/PhpAnalyzerV2
+  ./packages/mcp-agents/business/analyzers/php-analyzer-v2
+
+Duplication détectée:
+  ./packages/mcp-agents/business/analyzers/mysql-analyzer
+  ./packages/mcp-agents/business/analyzers/MysqlAnalyzer
+
+Duplication détectée:
+  ./packages/mcp-agents/business/analyzers/PhpAnalyzer
+  ./packages/mcp-agents/analyzers/php-analyzer
+
+Duplication détectée:
+  ./packages/mcp-agents/business/analyzers/PhpAnalyzer
+  ./packages/mcp-agents/business/analyzers/php-analyzer
+
+Duplication détectée:
+  ./packages/mcp-agents/business/analyzers/PhpAnalyzer
+  ./packages/mcp-agents/php-analyzer
+
+Duplication détectée:
+  ./packages/mcp-agents/business/analyzers/SchemaAnalyzer
+  ./packages/mcp-agents/business/analyzers/schema-analyzer
+
+Duplication détectée:
+  ./packages/mcp-agents/business/analyzers/php-discovery-engine
+  ./packages/mcp-agents/business/analyzers/PhpDiscoveryEngine
+
+Duplication détectée:
+  ./packages/mcp-agents/business/analyzers/schema-analyzer
+  ./packages/mcp-agents/business/analyzers/SchemaAnalyzer
+
+Duplication détectée:
+  ./packages/mcp-agents/business/analyzers/qa-analyzer
+  ./packages/mcp-agents/analyzers/QaAnalyzer
+
+Duplication détectée:
+  ./packages/mcp-agents/business/analyzers/qa-analyzer
+  ./packages/mcp-agents/analyzers/QaAnalyzer/QaAnalyzer
+
+Duplication détectée:
+  ./packages/mcp-agents/business/analyzers/qa-analyzer
+  ./packages/mcp-agents/analyzers/qa-analyzer/QaAnalyzer
+
+Duplication détectée:
+  ./packages/mcp-agents/business/analyzers/qa-analyzer
+  ./packages/mcp-agents/business/analyzers/QaAnalyzer
+
+Duplication détectée:
+  ./packages/mcp-agents/business/analyzers/php-analyzer-v2
+  ./packages/mcp-agents/analyzers/php-analyzer/PhpAnalyzerV2
+
+Duplication détectée:
+  ./packages/mcp-agents/business/analyzers/php-analyzer-v2
+  ./packages/mcp-agents/analyzers/PhpAnalyzer/PhpAnalyzerV2
+
+Duplication détectée:
+  ./packages/mcp-agents/business/analyzers/php-analyzer-v2
+  ./packages/mcp-agents/business/analyzers/PhpAnalyzerV2
+
+Duplication détectée:
+  ./packages/mcp-agents/business/analyzers/MysqlAnalyzer
+  ./packages/mcp-agents/business/analyzers/mysql-analyzer
+
+Duplication détectée:
+  ./packages/mcp-agents/business/analyzers/NginxConfigAnalyzer
+  ./packages/mcp-agents/business/analyzers/nginx-config-analyzer
+
+Duplication détectée:
+  ./packages/mcp-agents/business/analyzers/relation-analyzer
+  ./packages/mcp-agents/business/analyzers/RelationAnalyzer
+
+Duplication détectée:
+  ./packages/mcp-agents/business/analyzers/PhpAnalyzerV3
+  ./packages/mcp-agents/business/analyzers/php-analyzer-v3
+
+Duplication détectée:
+  ./packages/mcp-agents/business/analyzers/SqlAnalyzer+prismaBuilder
+  ./packages/mcp-agents/analyzers/sql-analyzer+prisma-builder
+
+Duplication détectée:
+  ./packages/mcp-agents/business/analyzers/SqlAnalyzer+prismaBuilder
+  ./packages/mcp-agents/business/analyzers/sql-analyzer+prisma-builder
+
+Duplication détectée:
+  ./packages/mcp-agents/business/analyzers/analyze-security-risks
+  ./packages/mcp-agents/analyzers/AnalyzeSecurityRisks
+
+Duplication détectée:
+  ./packages/mcp-agents/business/analyzers/analyze-security-risks
+  ./packages/mcp-agents/business/analyzers/AnalyzeSecurityRisks
+
+Duplication détectée:
+  ./packages/mcp-agents/business/analyzers/DebtAnalyzer
+  ./packages/mcp-agents/business/analyzers/debt-analyzer
+
+Duplication détectée:
+  ./packages/mcp-agents/business/analyzers/MysqlAnalyzer+optimizer
+  ./packages/mcp-agents/analyzers/mysql-analyzer+optimizer
+
+Duplication détectée:
+  ./packages/mcp-agents/business/analyzers/MysqlAnalyzer+optimizer
+  ./packages/mcp-agents/business/analyzers/mysql-analyzer+optimizer
+
+Duplication détectée:
+  ./packages/mcp-agents/business/parsers/nginx-config-parser
+  ./packages/mcp-agents/analyzers/NginxConfigParser
+
+Duplication détectée:
+  ./packages/mcp-agents/business/parsers/htaccess-parser
+  ./packages/mcp-agents/analyzers/HtaccessParser
+
+Duplication détectée:
+  ./packages/mcp-agents/business/validators/SeoChecker
+  ./packages/mcp-agents/validators/seo-checker
+
+Duplication détectée:
+  ./packages/mcp-agents/business/validators/SeoChecker
+  ./packages/mcp-agents/business/validators/seo-checker
+
+Duplication détectée:
+  ./packages/mcp-agents/business/validators/SeoChecker
+  ./packages/mcp-agents/seo-checker
+
+Duplication détectée:
+  ./packages/mcp-agents/business/validators/postgresql-validator
+  ./packages/mcp-agents/business/validators/PostgresqlValidator
+
+Duplication détectée:
+  ./packages/mcp-agents/business/validators/PostgresqlValidator
+  ./packages/mcp-agents/business/validators/postgresql-validator
+
+Duplication détectée:
+  ./packages/mcp-agents/business/validators/dev-checker
+  ./packages/mcp-agents/validators/dev-checker/DevChecker
+
+Duplication détectée:
+  ./packages/mcp-agents/business/validators/dev-checker
+  ./packages/mcp-agents/validators/DevChecker
+
+Duplication détectée:
+  ./packages/mcp-agents/business/validators/dev-checker
+  ./packages/mcp-agents/validators/DevChecker/DevChecker
+
+Duplication détectée:
+  ./packages/mcp-agents/business/validators/dev-checker
+  ./packages/mcp-agents/business/validators/DevChecker
+
+Duplication détectée:
+  ./packages/mcp-agents/business/validators/seo-checker-canonical
+  ./packages/mcp-agents/validators/SeoCheckerCanonical
+
+Duplication détectée:
+  ./packages/mcp-agents/business/validators/seo-checker-canonical
+  ./packages/mcp-agents/business/validators/SeoCheckerCanonical
+
+Duplication détectée:
+  ./packages/mcp-agents/business/validators/CanonicalValidator
+  ./packages/mcp-agents/validators/CanonicalValidator/canonical-validator
+
+Duplication détectée:
+  ./packages/mcp-agents/business/validators/CanonicalValidator
+  ./packages/mcp-agents/validators/canonical-validator
+
+Duplication détectée:
+  ./packages/mcp-agents/business/validators/CanonicalValidator
+  ./packages/mcp-agents/validators/canonical-validator/canonical-validator
+
+Duplication détectée:
+  ./packages/mcp-agents/business/validators/CanonicalValidator
+  ./packages/mcp-agents/business/validators/canonical-validator
+
+Duplication détectée:
+  ./packages/mcp-agents/business/validators/DevChecker
+  ./packages/mcp-agents/validators/dev-checker
+
+Duplication détectée:
+  ./packages/mcp-agents/business/validators/DevChecker
+  ./packages/mcp-agents/validators/dev-checker/dev-checker
+
+Duplication détectée:
+  ./packages/mcp-agents/business/validators/DevChecker
+  ./packages/mcp-agents/validators/DevChecker/dev-checker
+
+Duplication détectée:
+  ./packages/mcp-agents/business/validators/DevChecker
+  ./packages/mcp-agents/business/validators/dev-checker
+
+Duplication détectée:
+  ./packages/mcp-agents/business/validators/canonical-validator
+  ./packages/mcp-agents/validators/CanonicalValidator
+
+Duplication détectée:
+  ./packages/mcp-agents/business/validators/canonical-validator
+  ./packages/mcp-agents/validators/CanonicalValidator/CanonicalValidator
+
+Duplication détectée:
+  ./packages/mcp-agents/business/validators/canonical-validator
+  ./packages/mcp-agents/validators/canonical-validator/CanonicalValidator
+
+Duplication détectée:
+  ./packages/mcp-agents/business/validators/canonical-validator
+  ./packages/mcp-agents/business/validators/CanonicalValidator
+
+Duplication détectée:
+  ./packages/mcp-agents/business/validators/seo-checker
+  ./packages/mcp-agents/validators/SeoChecker
+
+Duplication détectée:
+  ./packages/mcp-agents/business/validators/seo-checker
+  ./packages/mcp-agents/business/validators/SeoChecker
+
+Duplication détectée:
+  ./packages/mcp-agents/business/validators/SeoCheckerAgent
+  ./packages/mcp-agents/validators/SeoChecker/seo-checker-agent
+
+Duplication détectée:
+  ./packages/mcp-agents/business/validators/SeoCheckerAgent
+  ./packages/mcp-agents/validators/seo-checker/seo-checker-agent
+
+Duplication détectée:
+  ./packages/mcp-agents/business/validators/SeoCheckerAgent
+  ./packages/mcp-agents/business/validators/seo-checker-agent
+
+Duplication détectée:
+  ./packages/mcp-agents/business/validators/SeoCheckerAgent
+  ./packages/mcp-agents/misc/seo-checker-agent
+
+Duplication détectée:
+  ./packages/mcp-agents/business/validators/seo-checker-agent
+  ./packages/mcp-agents/validators/SeoChecker/SeoCheckerAgent
+
+Duplication détectée:
+  ./packages/mcp-agents/business/validators/seo-checker-agent
+  ./packages/mcp-agents/validators/seo-checker/SeoCheckerAgent
+
+Duplication détectée:
+  ./packages/mcp-agents/business/validators/seo-checker-agent
+  ./packages/mcp-agents/business/validators/SeoCheckerAgent
+
+Duplication détectée:
+  ./packages/mcp-agents/business/validators/SeoCheckerCanonical
+  ./packages/mcp-agents/validators/seo-checker-canonical
+
+Duplication détectée:
+  ./packages/mcp-agents/business/validators/SeoCheckerCanonical
+  ./packages/mcp-agents/business/validators/seo-checker-canonical
+
+Duplication détectée:
+  ./packages/mcp-agents/business/core/base-agent
+  ./packages/mcp-agents/analyzers/baseagent
+
+Duplication détectée:
+  ./packages/mcp-agents/business/core/base-agent
+  ./packages/mcp-agents/business/misc/baseagent
+
+Duplication détectée:
+  ./packages/mcp-agents/business/misc/agent-business
+  ./packages/mcp-agents/analyzers/AgentBusiness
+
+Duplication détectée:
+  ./packages/mcp-agents/business/misc/agent-structure
+  ./packages/mcp-agents/analyzers/AgentStructure
+
+Duplication détectée:
+  ./packages/mcp-agents/business/misc/table-cartographer
+  ./packages/mcp-agents/analyzers/TableCartographer
+
+Duplication détectée:
+  ./packages/mcp-agents/business/misc/devops-preview
+  ./packages/mcp-agents/analyzers/DevopsPreview
+
+Duplication détectée:
+  ./packages/mcp-agents/business/misc/business-agent
+  ./packages/mcp-agents/analyzers/businessagent
+
+Duplication détectée:
+  ./packages/mcp-agents/business/misc/mysql-to-postgresql
+  ./packages/mcp-agents/analyzers/MysqlToPostgresql
+
+Duplication détectée:
+  ./packages/mcp-agents/business/misc/php-router-audit
+  ./packages/mcp-agents/analyzers/PhpRouterAudit
+
+Duplication détectée:
+  ./packages/mcp-agents/business/misc/pipeline-strategy-auditor
+  ./packages/mcp-agents/analyzers/PipelineStrategyAuditor
+
+Duplication détectée:
+  ./packages/mcp-agents/business/misc/type-auditor
+  ./packages/mcp-agents/analyzers/TypeAuditor
+
+Duplication détectée:
+  ./packages/mcp-agents/business/misc/pr-creator
+  ./packages/mcp-agents/analyzers/PrCreator
+
+Duplication détectée:
+  ./packages/mcp-agents/business/misc/seo-mcp-controller
+  ./packages/mcp-agents/analyzers/SeoMcpController
+
+Duplication détectée:
+  ./packages/mcp-agents/business/misc/dependencyagent
+  ./packages/mcp-agents/analyzers/dependency-analyzer/dependency-agent
+
+Duplication détectée:
+  ./packages/mcp-agents/business/misc/dependencyagent
+  ./packages/mcp-agents/analyzers/DependencyAnalyzer/dependency-agent
+
+Duplication détectée:
+  ./packages/mcp-agents/business/misc/dependencyagent
+  ./packages/mcp-agents/analyzers/dependency-agent
+
+Duplication détectée:
+  ./packages/mcp-agents/business/misc/dependencyagent
+  ./packages/mcp-agents/misc/dependency-agent
+
+Duplication détectée:
+  ./packages/mcp-agents/business/misc/dev-integrator
+  ./packages/mcp-agents/analyzers/DevIntegrator
+
+Duplication détectée:
+  ./packages/mcp-agents/business/misc/quality-agent
+  ./packages/mcp-agents/analyzers/qualityagent
+
+Duplication détectée:
+  ./packages/mcp-agents/business/misc/sql-prisma-migration-planner
+  ./packages/mcp-agents/analyzers/SqlPrismaMigrationPlanner
+
+Duplication détectée:
+  ./packages/mcp-agents/business/misc/mcp-verifier
+  ./packages/mcp-agents/analyzers/McpVerifier
+
+Duplication détectée:
+  ./packages/mcp-agents/business/misc/mysql-to-pg
+  ./packages/mcp-agents/analyzers/MysqlToPg
+
+Duplication détectée:
+  ./packages/mcp-agents/business/misc/sql-debt-audit
+  ./packages/mcp-agents/analyzers/SqlDebtAudit
+
+Duplication détectée:
+  ./packages/mcp-agents/business/misc/dev-linter
+  ./packages/mcp-agents/analyzers/DevLinter
+
+Duplication détectée:
+  ./packages/mcp-agents/business/misc/type-mapper
+  ./packages/mcp-agents/analyzers/TypeMapper
+
+Duplication détectée:
+  ./packages/mcp-agents/business/misc/agent-version-auditor
+  ./packages/mcp-agents/analyzers/AgentVersionAuditor
+
+Duplication détectée:
+  ./packages/mcp-agents/business/misc/ci-tester
+  ./packages/mcp-agents/analyzers/CiTester
+
+Duplication détectée:
+  ./packages/mcp-agents/business/misc/baseagent
+  ./packages/mcp-agents/analyzers/base-agent
+
+Duplication détectée:
+  ./packages/mcp-agents/business/misc/baseagent
+  ./packages/mcp-agents/business/core/base-agent
+
+Duplication détectée:
+  ./packages/mcp-agents/business/misc/dataagent
+  ./packages/mcp-agents/analyzers/data-analyzer/data-agent
+
+Duplication détectée:
+  ./packages/mcp-agents/business/misc/dataagent
+  ./packages/mcp-agents/analyzers/data-agent
+
+Duplication détectée:
+  ./packages/mcp-agents/business/misc/dataagent
+  ./packages/mcp-agents/analyzers/DataAnalyzer/data-agent
+
+Duplication détectée:
+  ./packages/mcp-agents/business/misc/dataagent
+  ./packages/mcp-agents/misc/data-agent
+
+Duplication détectée:
+  ./packages/mcp-agents/business/misc/debt-detector
+  ./packages/mcp-agents/analyzers/DebtDetector
+
+Duplication détectée:
+  ./packages/mcp-agents/business/misc/qa-confirmer
+  ./packages/mcp-agents/analyzers/QaConfirmer
+
+Duplication détectée:
+  ./packages/mcp-agents/business/misc/data-verifier
+  ./packages/mcp-agents/analyzers/DataVerifier
+
+Duplication détectée:
+  ./packages/mcp-agents/business/misc/seo-content-enhancer
+  ./packages/mcp-agents/generators/content-generator/SeoContentEnhancer
+
+Duplication détectée:
+  ./packages/mcp-agents/business/misc/seo-content-enhancer
+  ./packages/mcp-agents/generators/ContentGenerator/SeoContentEnhancer
+
+Duplication détectée:
+  ./packages/mcp-agents/business/misc/seo-content-enhancer
+  ./packages/mcp-agents/generators/SeoContentEnhancer
+
+Duplication détectée:
+  ./packages/mcp-agents/business/misc/agent-quality
+  ./packages/mcp-agents/analyzers/AgentQuality
+
+Duplication détectée:
+  ./packages/mcp-agents/business/misc/php-discovery-engine
+  ./packages/mcp-agents/business/analyzers/PhpDiscoveryEngine
+
+Duplication détectée:
+  ./packages/mcp-agents/business/misc/seo-redirect-mapper
+  ./packages/mcp-agents/analyzers/SeoRedirectMapper
+
+Duplication détectée:
+  ./packages/mcp-agents/business/misc/diff-verifier
+  ./packages/mcp-agents/analyzers/DiffVerifier
+
+Duplication détectée:
+  ./packages/mcp-agents/business/misc/semantic-table-mapper
+  ./packages/mcp-agents/analyzers/SemanticTableMapper
+
+Duplication détectée:
+  ./packages/mcp-agents/business/misc/relational-normalizer
+  ./packages/mcp-agents/analyzers/RelationalNormalizer
+
+Duplication détectée:
+  ./packages/mcp-agents/business/misc/type-converter
+  ./packages/mcp-agents/analyzers/TypeConverter
+
+Duplication détectée:
+  ./packages/mcp-agents/business/misc/migration-strategist
+  ./packages/mcp-agents/analyzers/MigrationStrategist
+
+Duplication détectée:
+  ./packages/mcp-agents/business/misc/seo-audit-runner
+  ./packages/mcp-agents/analyzers/SeoAuditRunner
+
+Duplication détectée:
+  ./packages/mcp-agents/business/misc/structureagent
+  ./packages/mcp-agents/analyzers/StructureAnalyzer/structure-agent
+
+Duplication détectée:
+  ./packages/mcp-agents/business/misc/structureagent
+  ./packages/mcp-agents/analyzers/structure-analyzer/structure-agent
+
+Duplication détectée:
+  ./packages/mcp-agents/business/misc/structureagent
+  ./packages/mcp-agents/analyzers/structure-agent
+
+Duplication détectée:
+  ./packages/mcp-agents/business/misc/structureagent
+  ./packages/mcp-agents/misc/structure-agent
+
+Duplication détectée:
+  ./packages/mcp-agents/business/misc/mcp-manifest-manager
+  ./packages/mcp-agents/analyzers/McpManifestManager
+
+Duplication détectée:
+  ./packages/mcp-agents/business/misc/agent-donnees
+  ./packages/mcp-agents/analyzers/AgentDonnees
+
+Duplication détectée:
+  ./packages/mcp-agents/business/generators/seo-meta.generator
+  ./packages/mcp-agents/business/generators/SeoMeta.generator
+
+Duplication détectée:
+  ./packages/mcp-agents/business/generators/seo-meta.generator
+  ./packages/mcp-agents/generators/SeoMeta.generator
+
+Duplication détectée:
+  ./packages/mcp-agents/business/generators/prisma-generator
+  ./packages/mcp-agents/business/generators/PrismaGenerator
+
+Duplication détectée:
+  ./packages/mcp-agents/business/generators/ComponentGenerator
+  ./packages/mcp-agents/business/generators/component-generator
+
+Duplication détectée:
+  ./packages/mcp-agents/business/generators/Seo-MetaDotgenerator
+  ./packages/mcp-agents/business/generators/seo-meta-dotgenerator
+
+Duplication détectée:
+  ./packages/mcp-agents/business/generators/Seo-MetaDotgenerator
+  ./packages/mcp-agents/generators/seo-meta-dotgenerator
+
+Duplication détectée:
+  ./packages/mcp-agents/business/generators/caddy-generator
+  ./packages/mcp-agents/business/generators/CaddyGenerator
+
+Duplication détectée:
+  ./packages/mcp-agents/business/generators/DevGenerator
+  ./packages/mcp-agents/business/generators/dev-generator
+
+Duplication détectée:
+  ./packages/mcp-agents/business/generators/SeoMeta.generator
+  ./packages/mcp-agents/business/generators/seo-meta.generator
+
+Duplication détectée:
+  ./packages/mcp-agents/business/generators/SeoMeta.generator
+  ./packages/mcp-agents/generators/seo-meta.generator
+
+Duplication détectée:
+  ./packages/mcp-agents/business/generators/RemixRouteGenerator
+  ./packages/mcp-agents/business/generators/remix-route-generator
+
+Duplication détectée:
+  ./packages/mcp-agents/business/generators/nestjs-generator
+  ./packages/mcp-agents/business/generators/NestjsGenerator
+
+Duplication détectée:
+  ./packages/mcp-agents/business/generators/PrismaSmartGenerator
+  ./packages/mcp-agents/business/generators/prisma-smart-generator
+
+Duplication détectée:
+  ./packages/mcp-agents/business/generators/GenerateMigrationPlan
+  ./packages/mcp-agents/business/generators/generate-migration-plan
+
+Duplication détectée:
+  ./packages/mcp-agents/business/generators/GenerateMigrationPlan
+  ./packages/mcp-agents/generators/generate-migration-plan
+
+Duplication détectée:
+  ./packages/mcp-agents/business/generators/NestjsGenerator
+  ./packages/mcp-agents/business/generators/nestjs-generator
+
+Duplication détectée:
+  ./packages/mcp-agents/business/generators/remix-route-generator
+  ./packages/mcp-agents/business/generators/RemixRouteGenerator
+
+Duplication détectée:
+  ./packages/mcp-agents/business/generators/prisma-migration-generator
+  ./packages/mcp-agents/business/generators/PrismaMigrationGenerator
+
+Duplication détectée:
+  ./packages/mcp-agents/business/generators/prisma-smart-generator
+  ./packages/mcp-agents/business/generators/PrismaSmartGenerator
+
+Duplication détectée:
+  ./packages/mcp-agents/business/generators/PrismaMigrationGenerator
+  ./packages/mcp-agents/business/generators/prisma-migration-generator
+
+Duplication détectée:
+  ./packages/mcp-agents/business/generators/remix-generator
+  ./packages/mcp-agents/business/generators/RemixGenerator
+
+Duplication détectée:
+  ./packages/mcp-agents/business/generators/RemixGenerator
+  ./packages/mcp-agents/business/generators/remix-generator
+
+Duplication détectée:
+  ./packages/mcp-agents/business/generators/RemixGenerator
+  ./packages/mcp-agents/remix-generator
+
+Duplication détectée:
+  ./packages/mcp-agents/business/generators/generate-migration-plan
+  ./packages/mcp-agents/business/generators/GenerateMigrationPlan
+
+Duplication détectée:
+  ./packages/mcp-agents/business/generators/generate-migration-plan
+  ./packages/mcp-agents/generators/GenerateMigrationPlan
+
+Duplication détectée:
+  ./packages/mcp-agents/business/generators/CaddyGenerator
+  ./packages/mcp-agents/business/generators/caddy-generator
+
+Duplication détectée:
+  ./packages/mcp-agents/business/generators/PrismaGenerator
+  ./packages/mcp-agents/business/generators/prisma-generator
+
+Duplication détectée:
+  ./packages/mcp-agents/business/generators/MetaGenerator
+  ./packages/mcp-agents/business/generators/meta-generator
+
+Duplication détectée:
+  ./packages/mcp-agents/business/generators/meta-generator
+  ./packages/mcp-agents/business/generators/MetaGenerator
+
+Duplication détectée:
+  ./packages/mcp-agents/business/generators/component-generator
+  ./packages/mcp-agents/business/generators/ComponentGenerator
+
+Duplication détectée:
+  ./packages/mcp-agents/business/generators/seo-meta-dotgenerator
+  ./packages/mcp-agents/business/generators/Seo-MetaDotgenerator
+
+Duplication détectée:
+  ./packages/mcp-agents/business/generators/seo-meta-dotgenerator
+  ./packages/mcp-agents/generators/Seo-MetaDotgenerator
+
+Duplication détectée:
+  ./packages/mcp-agents/business/generators/dev-generator
+  ./packages/mcp-agents/business/generators/DevGenerator
+
+Duplication détectée:
+  ./packages/mcp-agents/business/orchestrators/BullmqOrchestrator
+  ./packages/mcp-agents/orchestration/orchestrators/bullmq-orchestrator
+
+Duplication détectée:
+  ./packages/mcp-agents/business/orchestrators/BullmqOrchestrator
+  ./packages/mcp-agents/business/orchestrators/bullmq-orchestrator
+
+Duplication détectée:
+  ./packages/mcp-agents/business/orchestrators/selector-agent
+  ./packages/mcp-agents/business/orchestrators/SelectorAgent
+
+Duplication détectée:
+  ./packages/mcp-agents/business/orchestrators/coordinator-agent
+  ./packages/mcp-agents/business/orchestrators/CoordinatorAgent
+
+Duplication détectée:
+  ./packages/mcp-agents/business/orchestrators/bullmq-orchestrator
+  ./packages/mcp-agents/orchestration/orchestrators/BullmqOrchestrator
+
+Duplication détectée:
+  ./packages/mcp-agents/business/orchestrators/bullmq-orchestrator
+  ./packages/mcp-agents/business/orchestrators/BullmqOrchestrator
+
+Duplication détectée:
+  ./packages/mcp-agents/business/orchestrators/CoordinatorAgent
+  ./packages/mcp-agents/orchestration/misc/coordinator-agent
+
+Duplication détectée:
+  ./packages/mcp-agents/business/orchestrators/CoordinatorAgent
+  ./packages/mcp-agents/business/orchestrators/coordinator-agent
+
+Duplication détectée:
+  ./packages/mcp-agents/business/orchestrators/CoordinatorAgent
+  ./packages/mcp-agents/misc/coordinator-agent
+
+Duplication détectée:
+  ./packages/mcp-agents/business/orchestrators/McpIntegrator
+  ./packages/mcp-agents/business/orchestrators/mcp-integrator
+
+Duplication détectée:
+  ./packages/mcp-agents/business/orchestrators/SelectorAgent
+  ./packages/mcp-agents/business/orchestrators/selector-agent
+
+Duplication détectée:
+  ./packages/mcp-agents/business/orchestrators/SelectorAgent
+  ./packages/mcp-agents/misc/selector-agent
+
+Duplication détectée:
+  ./packages/mcp-agents/business/orchestrators/mcp-integrator
+  ./packages/mcp-agents/business/orchestrators/McpIntegrator
+
+Duplication détectée:
+  ./packages/mcp-agents/misc/selector-agent
+  ./packages/mcp-agents/business/orchestrators/SelectorAgent
+
+Duplication détectée:
+  ./packages/mcp-agents/misc/data-agent
+  ./packages/mcp-agents/analyzers/dataagent
+
+Duplication détectée:
+  ./packages/mcp-agents/misc/data-agent
+  ./packages/mcp-agents/business/misc/dataagent
+
+Duplication détectée:
+  ./packages/mcp-agents/misc/coordinator-agent
+  ./packages/mcp-agents/business/orchestrators/CoordinatorAgent
+
+Duplication détectée:
+  ./packages/mcp-agents/misc/seo-checker-agent
+  ./packages/mcp-agents/validators/SeoChecker/SeoCheckerAgent
+
+Duplication détectée:
+  ./packages/mcp-agents/misc/seo-checker-agent
+  ./packages/mcp-agents/validators/seo-checker/SeoCheckerAgent
+
+Duplication détectée:
+  ./packages/mcp-agents/misc/seo-checker-agent
+  ./packages/mcp-agents/business/validators/SeoCheckerAgent
+
+Duplication détectée:
+  ./packages/mcp-agents/misc/dependency-agent
+  ./packages/mcp-agents/analyzers/dependencyagent
+
+Duplication détectée:
+  ./packages/mcp-agents/misc/dependency-agent
+  ./packages/mcp-agents/business/misc/dependencyagent
+
+Duplication détectée:
+  ./packages/mcp-agents/misc/structure-agent
+  ./packages/mcp-agents/analyzers/structureagent
+
+Duplication détectée:
+  ./packages/mcp-agents/misc/structure-agent
+  ./packages/mcp-agents/business/misc/structureagent
+
+Duplication détectée:
+  ./packages/mcp-agents/php-analyzer
+  ./packages/mcp-agents/analyzers/PhpAnalyzer
+
+Duplication détectée:
+  ./packages/mcp-agents/php-analyzer
+  ./packages/mcp-agents/business/analyzers/PhpAnalyzer
+
+Duplication détectée:
+  ./packages/mcp-agents/tools/layered-agent-auditor
+  ./packages/mcp-agents/analyzers/LayeredAgentAuditor
+
+Duplication détectée:
+  ./packages/mcp-agents/seo-checker
+  ./packages/mcp-agents/validators/SeoChecker
+
+Duplication détectée:
+  ./packages/mcp-agents/seo-checker
+  ./packages/mcp-agents/business/validators/SeoChecker
+
+Duplication détectée:
+  ./packages/mcp-agents/remix-generator
+  ./packages/mcp-agents/business/generators/RemixGenerator
+
+Duplication détectée:
+  ./packages/mcp-agents/generators/seo-meta.generator
+  ./packages/mcp-agents/business/generators/SeoMeta.generator
+
+Duplication détectée:
+  ./packages/mcp-agents/generators/seo-meta.generator
+  ./packages/mcp-agents/generators/SeoMeta.generator
+
+Duplication détectée:
+  ./packages/mcp-agents/generators/MigrationReport
+  ./packages/mcp-agents/generators/migration-report
+
+Duplication détectée:
+  ./packages/mcp-agents/generators/Seo-MetaDotgenerator
+  ./packages/mcp-agents/business/generators/seo-meta-dotgenerator
+
+Duplication détectée:
+  ./packages/mcp-agents/generators/Seo-MetaDotgenerator
+  ./packages/mcp-agents/generators/seo-meta-dotgenerator
+
+Duplication détectée:
+  ./packages/mcp-agents/generators/content-generator
+  ./packages/mcp-agents/generators/ContentGenerator
+
+Duplication détectée:
+  ./packages/mcp-agents/generators/content-generator/seo-content-enhancer
+  ./packages/mcp-agents/generators/content-generator/SeoContentEnhancer
+
+Duplication détectée:
+  ./packages/mcp-agents/generators/content-generator/seo-content-enhancer
+  ./packages/mcp-agents/generators/ContentGenerator/SeoContentEnhancer
+
+Duplication détectée:
+  ./packages/mcp-agents/generators/content-generator/seo-content-enhancer
+  ./packages/mcp-agents/generators/SeoContentEnhancer
+
+Duplication détectée:
+  ./packages/mcp-agents/generators/content-generator/SeoContentEnhancer
+  ./packages/mcp-agents/business/misc/seo-content-enhancer
+
+Duplication détectée:
+  ./packages/mcp-agents/generators/content-generator/SeoContentEnhancer
+  ./packages/mcp-agents/generators/content-generator/seo-content-enhancer
+
+Duplication détectée:
+  ./packages/mcp-agents/generators/content-generator/SeoContentEnhancer
+  ./packages/mcp-agents/generators/ContentGenerator/seo-content-enhancer
+
+Duplication détectée:
+  ./packages/mcp-agents/generators/content-generator/SeoContentEnhancer
+  ./packages/mcp-agents/generators/seo-content-enhancer
+
+Duplication détectée:
+  ./packages/mcp-agents/generators/RemixRoute
+  ./packages/mcp-agents/generators/remix-route
+
+Duplication détectée:
+  ./packages/mcp-agents/generators/remix-route
+  ./packages/mcp-agents/generators/RemixRoute
+
+Duplication détectée:
+  ./packages/mcp-agents/generators/prisma-migration
+  ./packages/mcp-agents/generators/PrismaMigration
+
+Duplication détectée:
+  ./packages/mcp-agents/generators/react-component
+  ./packages/mcp-agents/generators/ReactComponent
+
+Duplication détectée:
+  ./packages/mcp-agents/generators/abstract-generator
+  ./packages/mcp-agents/generators/AbstractGenerator
+
+Duplication détectée:
+  ./packages/mcp-agents/generators/SeoMeta.generator
+  ./packages/mcp-agents/business/generators/seo-meta.generator
+
+Duplication détectée:
+  ./packages/mcp-agents/generators/SeoMeta.generator
+  ./packages/mcp-agents/generators/seo-meta.generator
+
+Duplication détectée:
+  ./packages/mcp-agents/generators/AbstractGenerator
+  ./packages/mcp-agents/generators/abstract-generator
+
+Duplication détectée:
+  ./packages/mcp-agents/generators/GenerateMigrationPlan
+  ./packages/mcp-agents/business/generators/generate-migration-plan
+
+Duplication détectée:
+  ./packages/mcp-agents/generators/GenerateMigrationPlan
+  ./packages/mcp-agents/generators/generate-migration-plan
+
+Duplication détectée:
+  ./packages/mcp-agents/generators/migration-report
+  ./packages/mcp-agents/generators/MigrationReport
+
+Duplication détectée:
+  ./packages/mcp-agents/generators/caddyfile-generator
+  ./packages/mcp-agents/generators/caddyfile-generator/CaddyfileGenerator
+
+Duplication détectée:
+  ./packages/mcp-agents/generators/caddyfile-generator
+  ./packages/mcp-agents/generators/CaddyfileGenerator
+
+Duplication détectée:
+  ./packages/mcp-agents/generators/caddyfile-generator
+  ./packages/mcp-agents/generators/CaddyfileGenerator/CaddyfileGenerator
+
+Duplication détectée:
+  ./packages/mcp-agents/generators/caddyfile-generator/caddyfile-generator
+  ./packages/mcp-agents/generators/caddyfile-generator/CaddyfileGenerator
+
+Duplication détectée:
+  ./packages/mcp-agents/generators/caddyfile-generator/caddyfile-generator
+  ./packages/mcp-agents/generators/CaddyfileGenerator
+
+Duplication détectée:
+  ./packages/mcp-agents/generators/caddyfile-generator/caddyfile-generator
+  ./packages/mcp-agents/generators/CaddyfileGenerator/CaddyfileGenerator
+
+Duplication détectée:
+  ./packages/mcp-agents/generators/caddyfile-generator/CaddyfileGenerator
+  ./packages/mcp-agents/orchestration/misc/caddyfile-generator
+
+Duplication détectée:
+  ./packages/mcp-agents/generators/caddyfile-generator/CaddyfileGenerator
+  ./packages/mcp-agents/generators/caddyfile-generator
+
+Duplication détectée:
+  ./packages/mcp-agents/generators/caddyfile-generator/CaddyfileGenerator
+  ./packages/mcp-agents/generators/caddyfile-generator/caddyfile-generator
+
+Duplication détectée:
+  ./packages/mcp-agents/generators/caddyfile-generator/CaddyfileGenerator
+  ./packages/mcp-agents/generators/CaddyfileGenerator/caddyfile-generator
+
+Duplication détectée:
+  ./packages/mcp-agents/generators/PrismaMigration
+  ./packages/mcp-agents/generators/prisma-migration
+
+Duplication détectée:
+  ./packages/mcp-agents/generators/ReactComponent
+  ./packages/mcp-agents/generators/react-component
+
+Duplication détectée:
+  ./packages/mcp-agents/generators/ContentGenerator
+  ./packages/mcp-agents/generators/content-generator
+
+Duplication détectée:
+  ./packages/mcp-agents/generators/ContentGenerator/seo-content-enhancer
+  ./packages/mcp-agents/generators/content-generator/SeoContentEnhancer
+
+Duplication détectée:
+  ./packages/mcp-agents/generators/ContentGenerator/seo-content-enhancer
+  ./packages/mcp-agents/generators/ContentGenerator/SeoContentEnhancer
+
+Duplication détectée:
+  ./packages/mcp-agents/generators/ContentGenerator/seo-content-enhancer
+  ./packages/mcp-agents/generators/SeoContentEnhancer
+
+Duplication détectée:
+  ./packages/mcp-agents/generators/ContentGenerator/SeoContentEnhancer
+  ./packages/mcp-agents/business/misc/seo-content-enhancer
+
+Duplication détectée:
+  ./packages/mcp-agents/generators/ContentGenerator/SeoContentEnhancer
+  ./packages/mcp-agents/generators/content-generator/seo-content-enhancer
+
+Duplication détectée:
+  ./packages/mcp-agents/generators/ContentGenerator/SeoContentEnhancer
+  ./packages/mcp-agents/generators/ContentGenerator/seo-content-enhancer
+
+Duplication détectée:
+  ./packages/mcp-agents/generators/ContentGenerator/SeoContentEnhancer
+  ./packages/mcp-agents/generators/seo-content-enhancer
+
+Duplication détectée:
+  ./packages/mcp-agents/generators/BaseGenerator
+  ./packages/mcp-agents/generators/base-generator
+
+Duplication détectée:
+  ./packages/mcp-agents/generators/seo-content-enhancer
+  ./packages/mcp-agents/generators/content-generator/SeoContentEnhancer
+
+Duplication détectée:
+  ./packages/mcp-agents/generators/seo-content-enhancer
+  ./packages/mcp-agents/generators/ContentGenerator/SeoContentEnhancer
+
+Duplication détectée:
+  ./packages/mcp-agents/generators/seo-content-enhancer
+  ./packages/mcp-agents/generators/SeoContentEnhancer
+
+Duplication détectée:
+  ./packages/mcp-agents/generators/CaddyfileGenerator
+  ./packages/mcp-agents/orchestration/misc/caddyfile-generator
+
+Duplication détectée:
+  ./packages/mcp-agents/generators/CaddyfileGenerator
+  ./packages/mcp-agents/generators/caddyfile-generator
+
+Duplication détectée:
+  ./packages/mcp-agents/generators/CaddyfileGenerator
+  ./packages/mcp-agents/generators/caddyfile-generator/caddyfile-generator
+
+Duplication détectée:
+  ./packages/mcp-agents/generators/CaddyfileGenerator
+  ./packages/mcp-agents/generators/CaddyfileGenerator/caddyfile-generator
+
+Duplication détectée:
+  ./packages/mcp-agents/generators/CaddyfileGenerator/caddyfile-generator
+  ./packages/mcp-agents/generators/caddyfile-generator/CaddyfileGenerator
+
+Duplication détectée:
+  ./packages/mcp-agents/generators/CaddyfileGenerator/caddyfile-generator
+  ./packages/mcp-agents/generators/CaddyfileGenerator
+
+Duplication détectée:
+  ./packages/mcp-agents/generators/CaddyfileGenerator/caddyfile-generator
+  ./packages/mcp-agents/generators/CaddyfileGenerator/CaddyfileGenerator
+
+Duplication détectée:
+  ./packages/mcp-agents/generators/CaddyfileGenerator/CaddyfileGenerator
+  ./packages/mcp-agents/orchestration/misc/caddyfile-generator
+
+Duplication détectée:
+  ./packages/mcp-agents/generators/CaddyfileGenerator/CaddyfileGenerator
+  ./packages/mcp-agents/generators/caddyfile-generator
+
+Duplication détectée:
+  ./packages/mcp-agents/generators/CaddyfileGenerator/CaddyfileGenerator
+  ./packages/mcp-agents/generators/caddyfile-generator/caddyfile-generator
+
+Duplication détectée:
+  ./packages/mcp-agents/generators/CaddyfileGenerator/CaddyfileGenerator
+  ./packages/mcp-agents/generators/CaddyfileGenerator/caddyfile-generator
+
+Duplication détectée:
+  ./packages/mcp-agents/generators/PrismaSmart
+  ./packages/mcp-agents/generators/prisma-smart
+
+Duplication détectée:
+  ./packages/mcp-agents/generators/base-generator
+  ./packages/mcp-agents/generators/BaseGenerator
+
+Duplication détectée:
+  ./packages/mcp-agents/generators/prisma-smart
+  ./packages/mcp-agents/generators/PrismaSmart
+
+Duplication détectée:
+  ./packages/mcp-agents/generators/SeoContentEnhancer
+  ./packages/mcp-agents/business/misc/seo-content-enhancer
+
+Duplication détectée:
+  ./packages/mcp-agents/generators/SeoContentEnhancer
+  ./packages/mcp-agents/generators/content-generator/seo-content-enhancer
+
+Duplication détectée:
+  ./packages/mcp-agents/generators/SeoContentEnhancer
+  ./packages/mcp-agents/generators/ContentGenerator/seo-content-enhancer
+
+Duplication détectée:
+  ./packages/mcp-agents/generators/SeoContentEnhancer
+  ./packages/mcp-agents/generators/seo-content-enhancer
+
+Duplication détectée:
+  ./packages/mcp-agents/generators/generate-migration-plan
+  ./packages/mcp-agents/business/generators/GenerateMigrationPlan
+
+Duplication détectée:
+  ./packages/mcp-agents/generators/generate-migration-plan
+  ./packages/mcp-agents/generators/GenerateMigrationPlan
+
+Duplication détectée:
+  ./packages/mcp-agents/generators/seo-meta-dotgenerator
+  ./packages/mcp-agents/business/generators/Seo-MetaDotgenerator
+
+Duplication détectée:
+  ./packages/mcp-agents/generators/seo-meta-dotgenerator
+  ./packages/mcp-agents/generators/Seo-MetaDotgenerator
+
+Duplication détectée:
+  ./packages/mcp-agents/qa-analyzer
+  ./packages/mcp-agents/analyzers/QaAnalyzer
+
+Duplication détectée:
+  ./packages/mcp-agents/qa-analyzer
+  ./packages/mcp-agents/analyzers/QaAnalyzer/QaAnalyzer
+
+Duplication détectée:
+  ./packages/mcp-agents/qa-analyzer
+  ./packages/mcp-agents/analyzers/qa-analyzer/QaAnalyzer
+
+Duplication détectée:
+  ./packages/mcp-agents/qa-analyzer
+  ./packages/mcp-agents/business/analyzers/QaAnalyzer
+
+Duplication détectée:
+  ./packages/mcp-agents/coordination/bridges/system-integration-bridge
+  ./packages/mcp-agents/analyzers/SystemIntegrationBridge
+
+Duplication détectée:
+  ./packages/mcp-agents/orchestrators/base-orchestrator
+  ./packages/mcp-agents/orchestrators/BaseOrchestrator
+
+Duplication détectée:
+  ./packages/mcp-agents/orchestrators/three-layer
+  ./packages/mcp-agents/orchestrators/ThreeLayer
+
+Duplication détectée:
+  ./packages/mcp-agents/orchestrators/TemporalOrchestration
+  ./packages/mcp-agents/orchestrators/temporal-orchestration
+
+Duplication détectée:
+  ./packages/mcp-agents/orchestrators/PriorityScheduler
+  ./packages/mcp-agents/orchestrators/priority-scheduler
+
+Duplication détectée:
+  ./packages/mcp-agents/orchestrators/n8n-connector
+  ./packages/mcp-agents/orchestrators/N8nConnector
+
+Duplication détectée:
+  ./packages/mcp-agents/orchestrators/DatabaseService
+  ./packages/mcp-agents/orchestrators/database-service
+
+Duplication détectée:
+  ./packages/mcp-agents/orchestrators/temporal-adapter
+  ./packages/mcp-agents/orchestrators/TemporalAdapter
+
+Duplication détectée:
+  ./packages/mcp-agents/orchestrators/temporal-retry-adapter
+  ./packages/mcp-agents/orchestrators/TemporalRetryAdapter
+
+Duplication détectée:
+  ./packages/mcp-agents/orchestrators/prometheus-exporter
+  ./packages/mcp-agents/orchestrators/PrometheusExporter
+
+Duplication détectée:
+  ./packages/mcp-agents/orchestrators/abstraction-layer
+  ./packages/mcp-agents/orchestrators/AbstractionLayer
+
+Duplication détectée:
+  ./packages/mcp-agents/orchestrators/AbstractOrchestrator
+  ./packages/mcp-agents/orchestrators/abstract-orchestrator
+
+Duplication détectée:
+  ./packages/mcp-agents/orchestrators/workflow-recovery-dotservice
+  ./packages/mcp-agents/orchestrators/Workflow-RecoveryDotservice
+
+Duplication détectée:
+  ./packages/mcp-agents/orchestrators/system-monitor
+  ./packages/mcp-agents/orchestrators/SystemMonitor
+
+Duplication détectée:
+  ./packages/mcp-agents/orchestrators/TemporalConnector
+  ./packages/mcp-agents/orchestrators/temporal-connector
+
+Duplication détectée:
+  ./packages/mcp-agents/orchestrators/TemporalRecoveryAdapter
+  ./packages/mcp-agents/orchestrators/temporal-recovery-adapter
+
+Duplication détectée:
+  ./packages/mcp-agents/orchestrators/bridges/orchestrator-bridge
+  ./packages/mcp-agents/orchestration/orchestrators/OrchestratorBridge
+
+Duplication détectée:
+  ./packages/mcp-agents/orchestrators/bridges/orchestrator-bridge
+  ./packages/mcp-agents/orchestrators/bridges/OrchestratorBridge
+
+Duplication détectée:
+  ./packages/mcp-agents/orchestrators/bridges/orchestrator-bridge
+  ./packages/mcp-agents/orchestrators/OrchestratorBridge
+
+Duplication détectée:
+  ./packages/mcp-agents/orchestrators/bridges/OrchestratorBridge
+  ./packages/mcp-agents/orchestration/orchestrators/orchestrator-bridge
+
+Duplication détectée:
+  ./packages/mcp-agents/orchestrators/bridges/OrchestratorBridge
+  ./packages/mcp-agents/orchestrators/bridges/orchestrator-bridge
+
+Duplication détectée:
+  ./packages/mcp-agents/orchestrators/bridges/OrchestratorBridge
+  ./packages/mcp-agents/orchestrators/orchestrator-bridge
+
+Duplication détectée:
+  ./packages/mcp-agents/orchestrators/TemporalAdapter
+  ./packages/mcp-agents/orchestrators/temporal-adapter
+
+Duplication détectée:
+  ./packages/mcp-agents/orchestrators/orchestrator-bridge
+  ./packages/mcp-agents/orchestration/orchestrators/OrchestratorBridge
+
+Duplication détectée:
+  ./packages/mcp-agents/orchestrators/orchestrator-bridge
+  ./packages/mcp-agents/orchestrators/bridges/OrchestratorBridge
+
+Duplication détectée:
+  ./packages/mcp-agents/orchestrators/orchestrator-bridge
+  ./packages/mcp-agents/orchestrators/OrchestratorBridge
+
+Duplication détectée:
+  ./packages/mcp-agents/orchestrators/bullmq-connector
+  ./packages/mcp-agents/orchestrators/BullmqConnector
+
+Duplication détectée:
+  ./packages/mcp-agents/orchestrators/BullmqConnector
+  ./packages/mcp-agents/orchestrators/bullmq-connector
+
+Duplication détectée:
+  ./packages/mcp-agents/orchestrators/database-service
+  ./packages/mcp-agents/orchestrators/DatabaseService
+
+Duplication détectée:
+  ./packages/mcp-agents/orchestrators/SystemMonitor
+  ./packages/mcp-agents/orchestrators/system-monitor
+
+Duplication détectée:
+  ./packages/mcp-agents/orchestrators/coordination-layer
+  ./packages/mcp-agents/orchestrators/CoordinationLayer
+
+Duplication détectée:
+  ./packages/mcp-agents/orchestrators/WorkflowRecoveryService
+  ./packages/mcp-agents/orchestrators/workflow-recovery-service
+
+Duplication détectée:
+  ./packages/mcp-agents/orchestrators/orchestration-connector
+  ./packages/mcp-agents/orchestrators/OrchestrationConnector
+
+Duplication détectée:
+  ./packages/mcp-agents/orchestrators/BusinessLayer
+  ./packages/mcp-agents/orchestrators/business-layer
+
+Duplication détectée:
+  ./packages/mcp-agents/orchestrators/temporal-connector
+  ./packages/mcp-agents/orchestrators/TemporalConnector
+
+Duplication détectée:
+  ./packages/mcp-agents/orchestrators/TemporalRetryAdapter
+  ./packages/mcp-agents/orchestrators/temporal-retry-adapter
+
+Duplication détectée:
+  ./packages/mcp-agents/orchestrators/EnhancedTemporalAdapter
+  ./packages/mcp-agents/orchestrators/enhanced-temporal-adapter
+
+Duplication détectée:
+  ./packages/mcp-agents/orchestrators/PrometheusExporter
+  ./packages/mcp-agents/orchestrators/prometheus-exporter
+
+Duplication détectée:
+  ./packages/mcp-agents/orchestrators/WorkflowRecovery.service
+  ./packages/mcp-agents/orchestrators/workflow-recovery.service
+
+Duplication détectée:
+  ./packages/mcp-agents/orchestrators/priority-scheduler
+  ./packages/mcp-agents/orchestrators/PriorityScheduler
+
+Duplication détectée:
+  ./packages/mcp-agents/orchestrators/migration-coordinator
+  ./packages/mcp-agents/orchestrators/MigrationCoordinator
+
+Duplication détectée:
+  ./packages/mcp-agents/orchestrators/adapter-layer
+  ./packages/mcp-agents/orchestrators/AdapterLayer
+
+Duplication détectée:
+  ./packages/mcp-agents/orchestrators/temporal-recovery-adapter
+  ./packages/mcp-agents/orchestrators/TemporalRecoveryAdapter
+
+Duplication détectée:
+  ./packages/mcp-agents/orchestrators/AdvancedRetryStrategy
+  ./packages/mcp-agents/orchestrators/advanced-retry-strategy
+
+Duplication détectée:
+  ./packages/mcp-agents/orchestrators/enhanced-temporal-adapter
+  ./packages/mcp-agents/orchestrators/EnhancedTemporalAdapter
+
+Duplication détectée:
+  ./packages/mcp-agents/orchestrators/CheckpointManager
+  ./packages/mcp-agents/orchestrators/checkpoint-manager
+
+Duplication détectée:
+  ./packages/mcp-agents/orchestrators/abstract-orchestrator
+  ./packages/mcp-agents/orchestrators/AbstractOrchestrator
+
+Duplication détectée:
+  ./packages/mcp-agents/orchestrators/ThreeLayerArchitecture
+  ./packages/mcp-agents/orchestrators/three-layer-architecture
+
+Duplication détectée:
+  ./packages/mcp-agents/orchestrators/AbstractionLayer
+  ./packages/mcp-agents/orchestrators/abstraction-layer
+
+Duplication détectée:
+  ./packages/mcp-agents/orchestrators/OrchestratorBridge
+  ./packages/mcp-agents/orchestration/orchestrators/orchestrator-bridge
+
+Duplication détectée:
+  ./packages/mcp-agents/orchestrators/OrchestratorBridge
+  ./packages/mcp-agents/orchestrators/bridges/orchestrator-bridge
+
+Duplication détectée:
+  ./packages/mcp-agents/orchestrators/OrchestratorBridge
+  ./packages/mcp-agents/orchestrators/orchestrator-bridge
+
+Duplication détectée:
+  ./packages/mcp-agents/orchestrators/workflow-recovery.service
+  ./packages/mcp-agents/orchestrators/WorkflowRecovery.service
+
+Duplication détectée:
+  ./packages/mcp-agents/orchestrators/OrchestrationConnector
+  ./packages/mcp-agents/orchestrators/orchestration-connector
+
+Duplication détectée:
+  ./packages/mcp-agents/orchestrators/Workflow-RecoveryDotservice
+  ./packages/mcp-agents/orchestrators/workflow-recovery-dotservice
+
+Duplication détectée:
+  ./packages/mcp-agents/orchestrators/business-layer
+  ./packages/mcp-agents/orchestrators/BusinessLayer
+
+Duplication détectée:
+  ./packages/mcp-agents/orchestrators/temporal-orchestration
+  ./packages/mcp-agents/orchestrators/TemporalOrchestration
+
+Duplication détectée:
+  ./packages/mcp-agents/orchestrators/checkpoint-manager
+  ./packages/mcp-agents/orchestrators/CheckpointManager
+
+Duplication détectée:
+  ./packages/mcp-agents/orchestrators/BaseOrchestrator
+  ./packages/mcp-agents/orchestrators/base-orchestrator
+
+Duplication détectée:
+  ./packages/mcp-agents/orchestrators/workflow-recovery-service
+  ./packages/mcp-agents/orchestrators/WorkflowRecoveryService
+
+Duplication détectée:
+  ./packages/mcp-agents/orchestrators/N8nConnector
+  ./packages/mcp-agents/orchestrators/n8n-connector
+
+Duplication détectée:
+  ./packages/mcp-agents/orchestrators/advanced-retry-strategy
+  ./packages/mcp-agents/orchestrators/AdvancedRetryStrategy
+
+Duplication détectée:
+  ./packages/mcp-agents/orchestrators/three-layer-architecture
+  ./packages/mcp-agents/orchestrators/ThreeLayerArchitecture
+
+Duplication détectée:
+  ./packages/mcp-agents/orchestrators/alert-notifier
+  ./packages/mcp-agents/orchestrators/AlertNotifier
+
+Duplication détectée:
+  ./packages/mcp-agents/orchestrators/AdapterLayer
+  ./packages/mcp-agents/orchestrators/adapter-layer
+
+Duplication détectée:
+  ./packages/mcp-agents/orchestrators/MigrationCoordinator
+  ./packages/mcp-agents/orchestrators/migration-coordinator
+
+Duplication détectée:
+  ./packages/mcp-agents/orchestrators/CoordinationLayer
+  ./packages/mcp-agents/orchestrators/coordination-layer
+
+Duplication détectée:
+  ./packages/mcp-agents/orchestrators/AlertNotifier
+  ./packages/mcp-agents/orchestrators/alert-notifier
+
+Duplication détectée:
+  ./packages/mcp-agents/orchestrators/ThreeLayer
+  ./packages/mcp-agents/orchestrators/three-layer
+

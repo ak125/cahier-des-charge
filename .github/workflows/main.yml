@@ -1,0 +1,408 @@
+name: CI/CD Monorepo Principal
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  workflow_dispatch:
+    inputs:
+      deploy_env:
+        description: 'Environnement de déploiement'
+        required: true
+        default: 'dev'
+        type: choice
+        options:
+          - dev
+          - staging
+          - prod
+
+env:
+  NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
+  DEPLOY_ENV: ${{ github.event.inputs.deploy_env || 'dev' }}
+
+jobs:
+  # Génération de la matrice de test dynamique basée sur les projets affectés
+  prepare:
+    name: Préparation et Analyse
+    runs-on: ubuntu-latest
+    outputs:
+      test_matrix: ${{ steps.set-matrix.outputs.test_matrix }}
+      affected_apps: ${{ steps.set-affected.outputs.affected_apps }}
+      has_seo_changes: ${{ steps.check-seo.outputs.has_seo_changes }}
+    
+    steps:
+      - name: Checkout du code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configuration Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+      
+      - name: Installation de PNPM
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+          run_install: false
+
+      - name: Installation des dépendances
+        run: pnpm install --frozen-lockfile
+
+      - name: Calcul des projets affectés (Nx affected)
+        id: affected
+        run: |
+          AFFECTED_PROJECTS=$(pnpm nx affected:projects --base=origin/main --head=HEAD)
+          echo "Liste des projets affectés : $AFFECTED_PROJECTS"
+          echo "affected_projects=$AFFECTED_PROJECTS" >> $GITHUB_OUTPUT
+
+      - name: Génération de la matrice de tests
+        id: set-matrix
+        run: |
+          echo "Génération de la matrice de tests basée sur les projets affectés"
+          node ./tools/scripts/ci/generate-test-matrix.js
+          TEST_MATRIX=$(cat .github/workflows/generated/test-matrix.json)
+          echo "test_matrix=$TEST_MATRIX" >> $GITHUB_OUTPUT
+
+      - name: Détection des applications affectées
+        id: set-affected
+        run: |
+          AFFECTED_APPS=$(pnpm nx affected:apps --base=origin/main --head=HEAD)
+          echo "affected_apps=$AFFECTED_APPS" >> $GITHUB_OUTPUT
+
+      - name: Vérification des changements SEO
+        id: check-seo
+        run: |
+          # Vérifier les fichiers contenant des éléments SEO (meta tags, routes, etc.)
+          if git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -q -E 'packages/agents/seo|packages/ui/components/meta|apps/frontend/src/routes|sitemap|robots.txt|canonical|redirect'; then
+            echo "has_seo_changes=true" >> $GITHUB_OUTPUT
+            echo "Des changements affectant le SEO ont été détectés"
+          else
+            echo "has_seo_changes=false" >> $GITHUB_OUTPUT
+            echo "Aucun changement SEO détecté"
+          fi
+
+  # Lint des projets affectés en parallèle
+  lint:
+    name: Lint
+    needs: prepare
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout du code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configuration Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+      
+      - name: Installation de PNPM
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+          run_install: false
+
+      - name: Installation des dépendances
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint des projets affectés avec Nx
+        run: pnpm nx affected --target=lint --parallel=3 --base=origin/main --head=HEAD
+
+      - name: Vérification des formats avec Biome
+        run: pnpm biome check ./
+
+  # Typecheck des projets affectés en parallèle
+  typecheck:
+    name: Vérification des types TypeScript
+    needs: prepare
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout du code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configuration Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+      
+      - name: Installation de PNPM
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+          run_install: false
+
+      - name: Installation des dépendances
+        run: pnpm install --frozen-lockfile
+
+      - name: Vérification des types TypeScript des projets affectés
+        run: pnpm nx affected --target=typecheck --parallel=3 --base=origin/main --head=HEAD
+
+  # Tests exécutés en parallèle grâce à la matrice dynamique
+  test:
+    name: Test ${{ matrix.project }}
+    needs: [prepare, lint, typecheck]
+    if: ${{ needs.prepare.outputs.test_matrix != '[]' && needs.prepare.outputs.test_matrix != '' }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        project: ${{ fromJson(needs.prepare.outputs.test_matrix) }}
+    
+    steps:
+      - name: Checkout du code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configuration Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+      
+      - name: Installation de PNPM
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+          run_install: false
+
+      - name: Installation des dépendances
+        run: pnpm install --frozen-lockfile
+
+      - name: Test ${{ matrix.project }}
+        run: pnpm nx test ${{ matrix.project }} --ci --code-coverage
+
+      - name: Upload des rapports de couverture
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-${{ matrix.project }}
+          path: coverage/${{ matrix.project }}
+          if-no-files-found: ignore
+
+  # Build des projets affectés
+  build:
+    name: Build
+    needs: [prepare, test]
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout du code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configuration Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+      
+      - name: Installation de PNPM
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+          run_install: false
+
+      - name: Installation des dépendances
+        run: pnpm install --frozen-lockfile
+
+      - name: Build des projets affectés avec Nx
+        run: pnpm nx affected --target=build --parallel=3 --base=origin/main --head=HEAD
+
+      - name: Upload des artefacts de build
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-output
+          path: |
+            dist/apps
+            dist/packages
+          if-no-files-found: warn
+
+  # Validation SEO si des changements SEO sont détectés
+  seo-validation:
+    name: Validation SEO
+    needs: [prepare]
+    if: needs.prepare.outputs.has_seo_changes == 'true'
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout du code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configuration Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+      
+      - name: Installation de PNPM
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+          run_install: false
+
+      - name: Installation des dépendances
+        run: pnpm install --frozen-lockfile
+
+      - name: Exécution de l'agent SEO pour validation
+        run: |
+          pnpm tsx packages/agents/seo/seo-checker-agent.ts --validate
+          pnpm tsx packages/agents/seo/seo-audit-runner.ts --report
+
+      - name: Upload du rapport SEO
+        uses: actions/upload-artifact@v3
+        with:
+          name: seo-validation-report
+          path: reports/seo
+          if-no-files-found: warn
+
+  # Déploiement canary pour les environnements non-prod
+  deploy-canary:
+    name: Déploiement Canary
+    needs: [build]
+    if: github.ref == 'refs/heads/develop' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    environment:
+      name: canary-${{ env.DEPLOY_ENV }}
+      url: https://canary-${{ env.DEPLOY_ENV }}.exemple.com
+    
+    steps:
+      - name: Checkout du code
+        uses: actions/checkout@v4
+
+      - name: Configuration Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Téléchargement des artefacts de build
+        uses: actions/download-artifact@v3
+        with:
+          name: build-output
+          path: dist
+
+      - name: Configuration de l'environnement Canary
+        run: |
+          echo "Configuration du déploiement canary pour l'environnement ${{ env.DEPLOY_ENV }}"
+          node ./tools/scripts/ci/prepare-canary-deployment.js --env=${{ env.DEPLOY_ENV }}
+
+      - name: Déploiement Canary
+        run: |
+          echo "Déploiement de la version canary vers ${{ env.DEPLOY_ENV }}"
+          # Commandes de déploiement spécifiques à votre infrastructure
+
+      - name: Vérification du déploiement Canary
+        run: |
+          echo "Vérification du déploiement canary"
+          pnpm tsx packages/agents/monitoring/monitoring-check.ts --url=https://canary-${{ env.DEPLOY_ENV }}.exemple.com --wait=30
+
+  # Déploiement complet si tous les tests passent
+  deploy:
+    name: Déploiement ${{ env.DEPLOY_ENV }}
+    needs: [deploy-canary]
+    runs-on: ubuntu-latest
+    environment:
+      name: ${{ env.DEPLOY_ENV }}
+      url: https://app-${{ env.DEPLOY_ENV }}.exemple.com
+    
+    steps:
+      - name: Checkout du code
+        uses: actions/checkout@v4
+
+      - name: Configuration Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Téléchargement des artefacts de build
+        uses: actions/download-artifact@v3
+        with:
+          name: build-output
+          path: dist
+
+      - name: Déploiement de l'application
+        run: |
+          echo "Déploiement complet vers ${{ env.DEPLOY_ENV }}"
+          # Commandes de déploiement spécifiques à votre infrastructure
+
+      - name: Configuration de la surveillance post-déploiement
+        run: |
+          echo "Configuration de la surveillance post-déploiement"
+          node ./tools/scripts/ci/setup-post-deploy-monitoring.js --env=${{ env.DEPLOY_ENV }}
+
+      - name: Notification de déploiement
+        if: success()
+        uses: slackapi/slack-github-action@v1.24.0
+        with:
+          channel-id: 'deployments'
+          slack-message: "🚀 Application déployée avec succès en environnement ${{ env.DEPLOY_ENV }} !"
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+
+  build-and-test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '20'
+        cache: 'pnpm'
+
+    - name: Install dependencies
+      run: |
+        npm install -g pnpm
+        pnpm install
+
+    - name: Lint affected projects
+      run: npx nx affected --target=lint
+
+    - name: Typecheck affected projects
+      run: npx nx affected --target=typecheck
+
+    - name: Test affected projects
+      run: npx nx affected --target=test
+
+    - name: Build affected projects
+      run: npx nx affected --target=build
+
+  docker-build:
+    runs-on: ubuntu-latest
+    needs: build-and-test
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+    
+    - name: Login to DockerHub
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+    
+    - name: Build and push Docker images
+      run: |
+        docker-compose build
+        docker-compose push

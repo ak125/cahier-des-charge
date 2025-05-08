@@ -1,0 +1,41 @@
+import { Agent, AgentConfig } from '../../core/types';
+import { Logger } from '../../utils/logger';
+
+interface <%= classify(name) %>Config extends AgentConfig {
+  // Ajoutez ici les configurations spécifiques à cet agent
+}
+
+export class <%= classify(name) %>Agent implements Agent {
+  private logger: Logger;
+  private config: <%= classify(name) %>Config;
+
+  constructor(config: <%= classify(name) %>Config) {
+    this.config = config;
+    this.logger = new Logger(`<%= type %>:<%= name %>`);
+  }
+
+  async initialize(): Promise<void> {
+    this.logger.info('Initializing <%= name %> agent');
+    // Code d'initialisation
+  }
+
+  async execute(input: any): Promise<any> {
+    this.logger.info('Executing <%= name %> agent');
+    
+    // Logique principale de l'agent
+    
+    return {
+      success: true,
+      result: {
+        // Résultats de l'exécution
+      }
+    };
+  }
+
+  async cleanup(): Promise<void> {
+    this.logger.info('Cleaning up resources for <%= name %> agent');
+    // Nettoyage des ressources
+  }
+}
+
+export default <%= classify(name) %>Agent;

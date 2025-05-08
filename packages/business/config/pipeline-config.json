@@ -1,0 +1,110 @@
+{
+  "version": "1.1.0",
+  "globalConfig": {
+    "defaults": {
+      "retrySettings": {
+        "maxTries": 3,
+        "waitBetweenTries": 5000
+      },
+      "timeouts": {
+        "short": 60,
+        "medium": 180,
+        "long": 300
+      },
+      "paths": {
+        "workspace": "/workspaces/cahier-des-charge",
+        "reports": "/workspaces/cahier-des-charge/reports",
+        "agents": "/workspaces/cahier-des-charge/agents"
+      },
+      "notification": {
+        "enabled": true,
+        "retryOnFailure": true
+      },
+      "webhooks": {
+        "enabled": true,
+        "security": {
+          "validateHeaders": true
+        }
+      },
+      "parallelExecution": {
+        "enabled": true,
+        "maxConcurrency": 3
+      }
+    },
+    "environments": {
+      "development": {
+        "dashboardUrl": "http://localhost:3000",
+        "webhookBaseUrl": "http://localhost:5678/webhook/"
+      },
+      "production": {
+        "dashboardUrl": "https://dashboard.example.com",
+        "webhookBaseUrl": "https://n8n.example.com/webhook/"
+      }
+    },
+    "connections": {
+      "serviceGraph": {
+        "php-analyzer": ["code-generator", "docs-updater"],
+        "mysql-analyzer": ["postgres-analyzer", "prisma-analyzer"],
+        "postgres-analyzer": ["supabase-analyzer"],
+        "audit-validator": ["audit-quality-metrics"],
+        "intelligent-php-selector": ["multi-agent-audit-pipeline"]
+      }
+    }
+  },
+  "agentsConfig": {
+    "php-analyzer-agent": {
+      "fileTypes": ["php"],
+      "excludeFolders": ["vendor", "node_modules", "tests"],
+      "options": {
+        "recursiveAnalysis": true,
+        "cacheResults": true
+      }
+    },
+    "dev-checker": {
+      "checkTypes": ["syntax", "lint", "security", "best-practices"],
+      "autoFix": true,
+      "reportLevel": "detailed"
+    },
+    "mcp-verifier": {
+      "strictMode": true,
+      "components": ["all"],
+      "outputFormat": "json"
+    },
+    "auto-pr-agent": {
+      "branchNaming": "feature/auto-{timestamp}",
+      "createDraft": false,
+      "addLabels": ["auto-generated", "needs-review"]
+    },
+    "monitoring-check": {
+      "metricTypes": ["performance", "errors", "availability"],
+      "checkInterval": "30m",
+      "alertThreshold": {
+        "errors": 5,
+        "responseTime": 2000
+      }
+    }
+  },
+  "pipelineOptimizations": {
+    "caching": {
+      "enabled": true,
+      "ttl": 3600,
+      "strategy": "memory+disk"
+    },
+    "scheduling": {
+      "priorityQueues": true,
+      "throttling": {
+        "enabled": true,
+        "maxRequestsPerMinute": 60
+      }
+    },
+    "resources": {
+      "memoryManagement": "optimized",
+      "cpuUsage": "balanced"
+    },
+    "errorHandling": {
+      "retryStrategy": "exponential-backoff",
+      "failFast": false,
+      "gracefulDegradation": true
+    }
+  }
+}

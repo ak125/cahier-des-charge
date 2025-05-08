@@ -1,0 +1,405 @@
+name: SEO Agents Validation
+
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - 'agents/seo/**'
+      - 'agents/seo-*.ts'
+      - 'agents/canonical-validator.ts'
+      - 'packages/seo-*/**'
+      - 'apps/*/src/routes/**'
+      - 'apps/*/src/meta/**'
+      - 'apps/*/public/robots.txt'
+      - 'apps/*/public/sitemap*.xml'
+  pull_request:
+    paths:
+      - 'agents/seo/**'
+      - 'agents/seo-*.ts'
+      - 'agents/canonical-validator.ts'
+      - 'packages/seo-*/**'
+      - 'apps/*/src/routes/**'
+      - 'apps/*/src/meta/**'
+      - 'apps/*/public/robots.txt'
+      - 'apps/*/public/sitemap*.xml'
+  workflow_dispatch:
+    inputs:
+      aggressive:
+        description: 'Mode validation SEO agressive'
+        required: false
+        default: false
+        type: boolean
+      target_app:
+        description: 'Application cible (vide = toutes)'
+        required: false
+        type: string
+
+env:
+  NX_CLOUD_DISTRIBUTED_EXECUTION: true
+  NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
+  PNPM_VERSION: 8.6.0
+
+jobs:
+  analyze-changes:
+    name: Analyser modifications SEO
+    runs-on: ubuntu-latest
+    outputs:
+      affected_apps: ${{ steps.detect-affected.outputs.affected_apps }}
+      affected_urls: ${{ steps.detect-affected.outputs.affected_urls }}
+      affected_redirects: ${{ steps.detect-affected.outputs.affected_redirects }}
+      has_sitemap_changes: ${{ steps.detect-affected.outputs.has_sitemap_changes }}
+      has_meta_changes: ${{ steps.detect-affected.outputs.has_meta_changes }}
+      
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'pnpm'
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: ${{ env.PNPM_VERSION }}
+          run_install: false
+
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
+
+      - name: Setup pnpm cache
+        uses: actions/cache@v3
+        with:
+          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Analyse des modifications SEO
+        id: detect-affected
+        run: |
+          # Déterminer les applications affectées
+          if [ -n "${{ github.event.inputs.target_app }}" ]; then
+            AFFECTED_APPS="${{ github.event.inputs.target_app }}"
+          else
+            AFFECTED_APPS=$(pnpm nx affected:apps --base=origin/main --head=HEAD --plain)
+          fi
+          echo "affected_apps=${AFFECTED_APPS}" >> $GITHUB_OUTPUT
+          
+          # Détecter les URLs affectées
+          AFFECTED_URLS=$(node scripts/ci/detect-affected-urls.js)
+          echo "affected_urls=${AFFECTED_URLS}" >> $GITHUB_OUTPUT
+          
+          # Détecter si des redirections sont affectées
+          if git diff --name-only ${{ github.event.before || 'HEAD~1' }} ${{ github.sha }} | grep -q -E 'redirects|routes'; then
+            echo "affected_redirects=true" >> $GITHUB_OUTPUT
+          else
+            echo "affected_redirects=false" >> $GITHUB_OUTPUT
+          fi
+          
+          # Vérifier si le sitemap est affecté
+          if git diff --name-only ${{ github.event.before || 'HEAD~1' }} ${{ github.sha }} | grep -q -E 'sitemap'; then
+            echo "has_sitemap_changes=true" >> $GITHUB_OUTPUT
+          else
+            echo "has_sitemap_changes=false" >> $GITHUB_OUTPUT
+          fi
+          
+          # Vérifier si les meta tags sont affectés
+          if git diff --name-only ${{ github.event.before || 'HEAD~1' }} ${{ github.sha }} | grep -q -E 'meta|head|title|description|seo'; then
+            echo "has_meta_changes=true" >> $GITHUB_OUTPUT
+          else
+            echo "has_meta_changes=false" >> $GITHUB_OUTPUT
+          fi
+
+  test-seo-agents:
+    name: Tester les agents SEO
+    needs: analyze-changes
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'pnpm'
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: ${{ env.PNPM_VERSION }}
+          run_install: false
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Exécuter tests agents SEO
+        run: |
+          mkdir -p test-results/seo-agents
+          
+          # Tester l'agent seo-checker
+          echo "Test de l'agent SEO Checker..."
+          pnpm tsx scripts/ci/test-seo-checker.ts --ci --output=test-results/seo-agents
+          
+          # Tester l'agent canonical-validator
+          echo "Test de l'agent Canonical Validator..."
+          pnpm tsx scripts/ci/test-canonical-validator.ts --ci --output=test-results/seo-agents
+          
+          # Tester l'agent seo-content-enhancer
+          echo "Test de l'agent SEO Content Enhancer..."
+          pnpm tsx scripts/ci/test-seo-content-enhancer.ts --ci --output=test-results/seo-agents
+          
+          # Autres agents SEO selon besoin
+          
+      - name: Upload test results
+        uses: actions/upload-artifact@v3
+        with:
+          name: seo-agents-test-results
+          path: test-results/seo-agents
+          if-no-files-found: warn
+
+  validate-meta:
+    name: Valider métadonnées
+    needs: [analyze-changes]
+    if: ${{ needs.analyze-changes.outputs.has_meta_changes == 'true' || github.event_name == 'workflow_dispatch' }}
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'pnpm'
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: ${{ env.PNPM_VERSION }}
+          run_install: false
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Validate meta tags
+        run: |
+          VALIDATION_MODE=${{ github.event.inputs.aggressive == 'true' && 'aggressive' || 'normal' }}
+          echo "Mode de validation: $VALIDATION_MODE"
+          
+          mkdir -p reports/seo/meta
+          
+          # Exécution de l'agent de validation meta
+          pnpm tsx agents/seo-checker-agent.ts --validate-meta --mode=$VALIDATION_MODE --output=reports/seo/meta
+          
+      - name: Upload meta validation results
+        uses: actions/upload-artifact@v3
+        with:
+          name: meta-validation-report
+          path: reports/seo/meta
+          if-no-files-found: warn
+
+  validate-redirects:
+    name: Valider redirections
+    needs: [analyze-changes]
+    if: ${{ needs.analyze-changes.outputs.affected_redirects == 'true' || github.event_name == 'workflow_dispatch' }}
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'pnpm'
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: ${{ env.PNPM_VERSION }}
+          run_install: false
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Validate redirects
+        run: |
+          mkdir -p reports/seo/redirects
+          
+          # Exécuter l'agent de validation de redirections
+          pnpm tsx agents/seo-redirect-mapper.ts --validate --output=reports/seo/redirects
+          
+          # Vérifier les chaînes de redirection pour éviter les boucles
+          pnpm tsx agents/seo/tools/check-redirect-chains.ts --output=reports/seo/redirects/chains.json
+          
+      - name: Upload redirect validation results
+        uses: actions/upload-artifact@v3
+        with:
+          name: redirect-validation-report
+          path: reports/seo/redirects
+          if-no-files-found: warn
+
+  validate-sitemap:
+    name: Valider sitemap
+    needs: [analyze-changes]
+    if: ${{ needs.analyze-changes.outputs.has_sitemap_changes == 'true' || github.event_name == 'workflow_dispatch' }}
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'pnpm'
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: ${{ env.PNPM_VERSION }}
+          run_install: false
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Validate sitemap
+        run: |
+          mkdir -p reports/seo/sitemap
+          
+          # Validation du sitemap
+          pnpm tsx agents/seo/tools/validate-sitemap.ts --output=reports/seo/sitemap
+          
+      - name: Upload sitemap validation results
+        uses: actions/upload-artifact@v3
+        with:
+          name: sitemap-validation-report
+          path: reports/seo/sitemap
+          if-no-files-found: warn
+
+  generate-consolidated-report:
+    name: Rapport SEO consolidé
+    needs: [validate-meta, validate-redirects, validate-sitemap]
+    if: always() && (github.event_name == 'workflow_dispatch' || github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'pnpm'
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: ${{ env.PNPM_VERSION }}
+          run_install: false
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@v3
+        with:
+          path: ./download-artifacts
+
+      - name: Generate consolidated SEO report
+        run: |
+          mkdir -p reports/seo/consolidated
+          
+          # Générer rapport consolidé
+          pnpm tsx agents/seo-audit-runner.ts --input=./download-artifacts --output=reports/seo/consolidated
+          
+          # Créer une version exploitable par GitHub Pages
+          pnpm tsx agents/seo/tools/generate-html-report.ts --input=reports/seo/consolidated --output=reports/seo/html
+          
+      - name: Upload consolidated report
+        uses: actions/upload-artifact@v3
+        with:
+          name: seo-consolidated-report
+          path: reports/seo/consolidated
+          if-no-files-found: warn
+          
+      - name: Upload HTML report
+        uses: actions/upload-artifact@v3
+        with:
+          name: seo-html-report
+          path: reports/seo/html
+          if-no-files-found: warn
+          
+      - name: Deploy report to GitHub Pages
+        if: github.ref == 'refs/heads/main'
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./reports/seo/html
+          destination_dir: seo-reports
+          full_commit_message: "Mise à jour du rapport SEO [skip ci]"
+
+  notify-results:
+    name: Notification des résultats
+    needs: [generate-consolidated-report]
+    if: always() && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Download consolidated report
+        uses: actions/download-artifact@v3
+        with:
+          name: seo-consolidated-report
+          path: ./seo-report
+          
+      - name: Send report summary
+        if: success() || failure()
+        run: |
+          echo "Envoi du résumé du rapport SEO..."
+          REPORT_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          PAGES_URL="https://${{ github.repository_owner }}.github.io/${{ github.repository }}/seo-reports/"
+          
+          # Lecture du rapport pour extraire les métriques clés
+          ERRORS=$(jq '.summary.errors' ./seo-report/consolidated-report.json)
+          WARNINGS=$(jq '.summary.warnings' ./seo-report/consolidated-report.json)
+          
+          if [ $ERRORS -gt 0 ]; then
+            ICON="⚠️"
+            COLOR="#FFA500"
+          else
+            ICON="✅"
+            COLOR="#36a64f"
+          fi
+          
+          # Notification (exemple avec curl vers un webhook, à adapter selon votre système)
+          curl -X POST -H "Content-Type: application/json" -d "{
+            \"attachments\": [
+              {
+                \"color\": \"${COLOR}\",
+                \"title\": \"${ICON} Rapport SEO - ${{ github.workflow }}\",
+                \"title_link\": \"${REPORT_URL}\",
+                \"text\": \"Rapport SEO généré pour ${{ github.repository }}\nErreurs: ${ERRORS} | Avertissements: ${WARNINGS}\n\n<${PAGES_URL}|Voir le rapport détaillé>\",
+                \"footer\": \"GitHub Actions\",
+                \"ts\": $(date +%s)
+              }
+            ]
+          }" ${{ secrets.WEBHOOK_URL }}

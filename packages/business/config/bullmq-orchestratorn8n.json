@@ -1,0 +1,510 @@
+{
+  "name": "BullMQ Orchestrator Pipeline",
+  "nodes": [
+    {
+      "parameters": {
+        "triggerTimes": {
+          "item": [
+            {
+              "mode": "everyX",
+              "value": 5,
+              "unit": "minutes"
+            }
+          ]
+        }
+      },
+      "name": "Queue Monitor Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "position": [100, 300],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "authentication": "genericCredentialType",
+        "httpMethod": "POST",
+        "path": "task-webhook",
+        "responseMode": "responseNode",
+        "options": {
+          "allowUnauthorizedCerts": true
+        }
+      },
+      "name": "Task Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "position": [100, 500],
+      "webhookId": "task-webhook",
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "command": "cd /workspaces/cahier-des-charge && docker-compose -f docker-compose.bullmq.yml ps --format json",
+        "workingDirectory": "/workspaces/cahier-des-charge",
+        "executeTimeout": 30
+      },
+      "name": "Check BullMQ Status",
+      "type": "n8n-nodes-base.executeCommand",
+      "position": [300, 100],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.stdout }}",
+              "operation": "contains",
+              "value2": "bullmq-server"
+            }
+          ]
+        }
+      },
+      "name": "Is BullMQ Running?",
+      "type": "n8n-nodes-base.if",
+      "position": [500, 100],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "command": "cd /workspaces/cahier-des-charge && docker-compose -f docker-compose.bullmq.yml up -d",
+        "workingDirectory": "/workspaces/cahier-des-charge",
+        "executeTimeout": 60
+      },
+      "name": "Start BullMQ",
+      "type": "n8n-nodes-base.executeCommand",
+      "position": [700, 200],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "mode": "mergeByPosition"
+      },
+      "name": "Merge Paths",
+      "type": "n8n-nodes-base.merge",
+      "position": [900, 100],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "mode": "mergeByPosition"
+      },
+      "name": "Merge Triggers",
+      "type": "n8n-nodes-base.merge",
+      "position": [300, 400],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "jsCode": "// Déterminer le type d'action et extraire les données pertinentes\nlet actionType = 'monitor';\nlet queueName = 'migration';\nlet taskData = {};\n\n// Détecter si nous avons des données de webhook\nif ($json.body && typeof $json.body === 'object') {\n  actionType = $json.body.action || 'add';\n  queueName = $json.body.queue || 'migration';\n  taskData = $json.body.data || {};\n}\n\n// Valider les données\nconst validQueues = ['migration', 'analysis', 'codegen', 'validation', 'deployment'];\nif (!validQueues.includes(queueName)) {\n  queueName = 'migration';\n}\n\nreturn {\n  json: {\n    actionType,\n    queueName,\n    taskData,\n    timestamp: new Date().toISOString()\n  }\n};"
+      },
+      "name": "Process Request",
+      "type": "n8n-nodes-base.code",
+      "position": [500, 400],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.actionType }}",
+              "operation": "equal",
+              "value2": "monitor"
+            }
+          ]
+        }
+      },
+      "name": "Is Monitor Action?",
+      "type": "n8n-nodes-base.if",
+      "position": [700, 400],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "command": "cd /workspaces/cahier-des-charge && npx ts-node agents/bullmq-orchestrator.ts --action=monitor --json",
+        "workingDirectory": "/workspaces/cahier-des-charge",
+        "executeTimeout": 30
+      },
+      "name": "Monitor Queues",
+      "type": "n8n-nodes-base.executeCommand",
+      "position": [900, 300],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "command": "cd /workspaces/cahier-des-charge && npx ts-node agents/bullmq-orchestrator.ts --action={{ $json.actionType }} --queue={{ $json.queueName }} --data='{{ JSON.stringify($json.taskData) }}'",
+        "workingDirectory": "/workspaces/cahier-des-charge",
+        "executeTimeout": 30
+      },
+      "name": "Process Queue Action",
+      "type": "n8n-nodes-base.executeCommand",
+      "position": [900, 500],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "mode": "mergeByPosition"
+      },
+      "name": "Merge Results",
+      "type": "n8n-nodes-base.merge",
+      "position": [1100, 400],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "jsCode": "// Analyser les résultats de la surveillance ou de l'action\nlet queueStatus = {};\nlet actionResult = {};\nlet summaryMessage = '';\n\n// Extraire les résultats de surveillance\ntry {\n  if ($node['Monitor Queues']) {\n    const monitorOutput = $node['Monitor Queues'].json.stdout || '';\n    const jsonMatch = monitorOutput.match(/\\{[\\s\\S]*?\\}/);\n    if (jsonMatch) {\n      queueStatus = JSON.parse(jsonMatch[0]);\n    }\n  }\n} catch (error) {\n  queueStatus = { error: `Error parsing monitor output: ${error.message}` };\n}\n\n// Extraire les résultats d'action\ntry {\n  if ($node['Process Queue Action']) {\n    const actionOutput = $node['Process Queue Action'].json.stdout || '';\n    const jsonMatch = actionOutput.match(/\\{[\\s\\S]*?\\}/);\n    if (jsonMatch) {\n      actionResult = JSON.parse(jsonMatch[0]);\n    }\n  }\n} catch (error) {\n  actionResult = { error: `Error parsing action output: ${error.message}` };\n}\n\n// Créer le résumé\nif (Object.keys(queueStatus).length > 0) {\n  // Mode surveillance\n  let totalActive = 0;\n  let totalWaiting = 0;\n  let totalCompleted = 0;\n  let totalFailed = 0;\n  \n  for (const queue in queueStatus) {\n    if (queueStatus[queue]) {\n      totalActive += queueStatus[queue].active || 0;\n      totalWaiting += queueStatus[queue].waiting || 0;\n      totalCompleted += queueStatus[queue].completed || 0;\n      totalFailed += queueStatus[queue].failed || 0;\n    }\n  }\n  \n  summaryMessage = `Statut des files: ${totalActive} tâches actives, ${totalWaiting} en attente, ${totalCompleted} terminées, ${totalFailed} échouées`;\n} else if (Object.keys(actionResult).length > 0) {\n  // Mode action\n  const actionType = $json.actionType || 'unknown';\n  const queueName = $json.queueName || 'unknown';\n  \n  if (actionResult.success) {\n    summaryMessage = `Action '${actionType}' sur la file '${queueName}' réussie: ${actionResult.message || 'Opération complétée'}`;\n  } else {\n    summaryMessage = `Action '${actionType}' sur la file '${queueName}' échouée: ${actionResult.error || 'Erreur inconnue'}`;\n  }\n}\n\nreturn {\n  json: {\n    timestamp: new Date().toISOString(),\n    actionType: $json.actionType,\n    queueName: $json.queueName,\n    queueStatus,\n    actionResult,\n    summaryMessage\n  }\n};"
+      },
+      "name": "Process Response",
+      "type": "n8n-nodes-base.code",
+      "position": [1300, 400],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.actionType }}",
+              "operation": "equal",
+              "value2": "monitor"
+            }
+          ]
+        }
+      },
+      "name": "Is Report Needed?",
+      "type": "n8n-nodes-base.if",
+      "position": [1500, 400],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ Object.values($json.queueStatus).reduce((sum, queue) => sum + (queue.active || 0) + (queue.waiting || 0), 0) }}",
+              "operation": "larger",
+              "value2": 0
+            }
+          ]
+        }
+      },
+      "name": "Has Active Tasks?",
+      "type": "n8n-nodes-base.if",
+      "position": [1700, 300],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ Object.values($json.queueStatus).reduce((sum, queue) => sum + (queue.failed || 0), 0) }}",
+              "operation": "larger",
+              "value2": 0
+            }
+          ]
+        }
+      },
+      "name": "Has Failed Tasks?",
+      "type": "n8n-nodes-base.if",
+      "position": [1700, 500],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "# Rapport des files de tâches BullMQ - {{ $json.timestamp }}\n\n## Résumé\n\n{{ $json.summaryMessage }}\n\n## Détail par file\n\n{% for queueName, queueData in $json.queueStatus %}\n### File: {{ queueName }}\n\n- Tâches actives: {{ queueData.active || 0 }}\n- Tâches en attente: {{ queueData.waiting || 0 }}\n- Tâches terminées: {{ queueData.completed || 0 }}\n- Tâches échouées: {{ queueData.failed || 0 }}\n\n{% if queueData.failed > 0 %}\n#### Erreurs récentes:\n{% for error in queueData.failedJobs %}\n- Job #{{ error.id }}: {{ error.failedReason || 'Raison inconnue' }}\n{% endfor %}\n{% endif %}\n\n{% endfor %}\n\n> Ce rapport a été généré automatiquement par le pipeline d'orchestration BullMQ le {{ $json.timestamp }}.",
+        "destination": "=/workspaces/cahier-des-charge/reports/bullmq-status-{{ $json.timestamp.replace(/:/g, '-') }}.md",
+        "options": {}
+      },
+      "name": "Generate Queue Report",
+      "type": "n8n-nodes-base.writeTextFile",
+      "position": [1900, 300],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "chatId": "{{ $env.NOTIFICATION_CHAT_ID }}",
+        "text": "⚠️ *Tâches échouées dans les files BullMQ*\n\n{{ $json.summaryMessage }}\n\n{% for queueName, queueData in $json.queueStatus %}\n{% if queueData.failed > 0 %}\n*File {{ queueName }}:* {{ queueData.failed }} tâche(s) échouée(s)\n{% for error in queueData.failedJobs.slice(0, 3) %}\n- Job #{{ error.id }}: {{ error.failedReason || 'Raison inconnue' }}\n{% endfor %}\n{% if queueData.failedJobs.length > 3 %}...et {{ queueData.failedJobs.length - 3 }} autre(s){% endif %}\n{% endif %}\n{% endfor %}\n\n*Timestamp:* {{ $json.timestamp }}",
+        "additionalFields": {
+          "parseMode": "Markdown",
+          "disableNotification": false
+        }
+      },
+      "name": "Send Failure Notification",
+      "type": "n8n-nodes-base.telegram",
+      "position": [1900, 500],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "chatId": "{{ $env.NOTIFICATION_CHAT_ID }}",
+        "text": "✅ *Action BullMQ réussie*\n\n{{ $json.summaryMessage }}\n\n*File:* {{ $json.queueName }}\n*Action:* {{ $json.actionType }}\n*ID:* {% if $json.actionResult.id %}{{ $json.actionResult.id }}{% else %}N/A{% endif %}\n\n*Timestamp:* {{ $json.timestamp }}",
+        "additionalFields": {
+          "parseMode": "Markdown",
+          "disableNotification": true
+        }
+      },
+      "name": "Send Action Success",
+      "type": "n8n-nodes-base.telegram",
+      "position": [1700, 700],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "operation": "insert",
+        "schema": "audit",
+        "table": "bullmq_operations",
+        "columns": "timestamp,action_type,queue_name,success,message",
+        "values": "={{ $json.timestamp }},={{ $json.actionType }},={{ $json.queueName }},={{ ($json.actionResult && $json.actionResult.success) ? true : ($json.actionType === 'monitor' ? true : false) }},={{ $json.summaryMessage }}",
+        "additionalFields": {}
+      },
+      "name": "Log to Database",
+      "type": "n8n-nodes-base.postgres",
+      "position": [2100, 400],
+      "typeVersion": 1,
+      "credentials": {
+        "postgres": {
+          "id": "1",
+          "name": "Postgres Account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Queue Monitor Trigger": {
+      "main": [
+        [
+          {
+            "node": "Check BullMQ Status",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge Triggers",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check BullMQ Status": {
+      "main": [
+        [
+          {
+            "node": "Is BullMQ Running?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is BullMQ Running?": {
+      "main": [
+        [
+          {
+            "node": "Merge Paths",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Start BullMQ",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Start BullMQ": {
+      "main": [
+        [
+          {
+            "node": "Merge Paths",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Task Webhook": {
+      "main": [
+        [
+          {
+            "node": "Merge Triggers",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge Triggers": {
+      "main": [
+        [
+          {
+            "node": "Process Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Process Request": {
+      "main": [
+        [
+          {
+            "node": "Is Monitor Action?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is Monitor Action?": {
+      "main": [
+        [
+          {
+            "node": "Monitor Queues",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Process Queue Action",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Monitor Queues": {
+      "main": [
+        [
+          {
+            "node": "Merge Results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Process Queue Action": {
+      "main": [
+        [
+          {
+            "node": "Merge Results",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge Results": {
+      "main": [
+        [
+          {
+            "node": "Process Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Process Response": {
+      "main": [
+        [
+          {
+            "node": "Is Report Needed?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is Report Needed?": {
+      "main": [
+        [
+          {
+            "node": "Has Active Tasks?",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Has Failed Tasks?",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send Action Success",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Has Active Tasks?": {
+      "main": [
+        [
+          {
+            "node": "Generate Queue Report",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Has Failed Tasks?": {
+      "main": [
+        [
+          {
+            "node": "Send Failure Notification",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Generate Queue Report": {
+      "main": [
+        [
+          {
+            "node": "Log to Database",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Failure Notification": {
+      "main": [
+        [
+          {
+            "node": "Log to Database",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Action Success": {
+      "main": [
+        [
+          {
+            "node": "Log to Database",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge Paths": {
+      "main": [[]]
+    }
+  },
+  "active": true,
+  "settings": {},
+  "tags": ["bullmq", "queue", "orchestration", "tasks", "automation"]
+}

@@ -1,0 +1,31 @@
+import { Logger } from '../../../utils/logger';
+import type { <%= className %>Input } from './workflow';
+
+/**
+ * Activité principale pour le workflow <%= className %>
+ * 
+ * Cette activité réalise le traitement principal associé au workflow de <%= category %> <%= name %>.
+ */
+export async function <%= fileName %>Activity(input: <%= className %>Input): Promise<any> {
+  const logger = new Logger('<%= category %>:<%= fileName %>');
+  
+  logger.info(`Démarrage de l'activité avec les données: ${JSON.stringify(input)}`);
+  
+  try {
+    // Implémentez ici la logique métier de l'activité
+    // ...
+    
+    // Exemple de résultat
+    const result = {
+      processedId: input.id,
+      timestamp: new Date().toISOString(),
+      status: 'completed',
+    };
+    
+    logger.info(`Activité terminée avec succès: ${JSON.stringify(result)}`);
+    return result;
+  } catch (error) {
+    logger.error(`Erreur lors de l'exécution de l'activité:`, error);
+    throw error;
+  }
+}

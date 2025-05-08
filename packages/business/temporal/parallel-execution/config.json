@@ -1,0 +1,16 @@
+{
+    "connectionString": "mysql://user:password@localhost:3306/application_db",
+    "databaseName": "application_db",
+    "dialect": "mysql",
+    "outputBaseDir": "/workspaces/cahier-des-charge/reports/parallel-comparison",
+    "n8nUrl": "http://localhost:5678",
+    "n8nApiKey": "",
+    "excludeTables": [
+        "migrations",
+        "schema_migrations",
+        "ar_internal_metadata"
+    ],
+    "generatePrisma": true,
+    "analyzePerformance": true,
+    "validateSchema": false
+}

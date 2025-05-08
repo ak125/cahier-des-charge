@@ -1,0 +1,4 @@
+{
+  "name": "mcp-server-mysql",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json"
+}

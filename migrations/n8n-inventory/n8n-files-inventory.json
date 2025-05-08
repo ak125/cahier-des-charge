@@ -1,0 +1,443 @@
+[
+  {
+    "path": "/workspaces/cahier-des-charge/manifests/n8n-migration-workflow.json",
+    "relativePath": "manifests/n8n-migration-workflow.json",
+    "fileType": "unknown",
+    "description": "",
+    "category": "migration",
+    "lastModified": "2025-05-05T14:21:46.611Z",
+    "size": 8774
+  },
+  {
+    "path": "/workspaces/cahier-des-charge/migrations/migration-toolkit/php-to-remix-migrationn8n.json",
+    "relativePath": "migrations/migration-toolkit/php-to-remix-migrationn8n.json",
+    "fileType": "workflow",
+    "description": "Pipeline Migration Routes PHP vers Remix",
+    "category": "php-analysis",
+    "lastModified": "2025-05-01T21:43:08.700Z",
+    "size": 14819
+  },
+  {
+    "path": "/workspaces/cahier-des-charge/migrations/n8n-migration-status.json",
+    "relativePath": "migrations/n8n-migration-status.json",
+    "fileType": "unknown",
+    "description": "",
+    "category": "migration",
+    "lastModified": "2025-05-05T14:35:37.833Z",
+    "size": 28896
+  },
+  {
+    "path": "/workspaces/cahier-des-charge/backup/obsolete-files-20250505/packages/business/config/n8n-audit-analyzer-workflow.json",
+    "relativePath": "backup/obsolete-files-20250505/packages/business/config/n8n-audit-analyzer-workflow.json",
+    "fileType": "workflow",
+    "description": "n8n-audit-analyzer-workflow",
+    "category": "audit",
+    "lastModified": "2025-05-05T06:55:47.054Z",
+    "size": 132
+  },
+  {
+    "path": "/workspaces/cahier-des-charge/backup/obsolete-files-20250505/packages/business/config/n8n-php-analyzer-webhook.json",
+    "relativePath": "backup/obsolete-files-20250505/packages/business/config/n8n-php-analyzer-webhook.json",
+    "fileType": "workflow",
+    "description": "PHP Analyzer - Alertes de complexité",
+    "category": "php-analysis",
+    "lastModified": "2025-05-05T06:55:47.001Z",
+    "size": 27372
+  },
+  {
+    "path": "/workspaces/cahier-des-charge/backup/obsolete-files-20250505/packages/business/config/php-analyzer-pipelinen8n.json",
+    "relativePath": "backup/obsolete-files-20250505/packages/business/config/php-analyzer-pipelinen8n.json",
+    "fileType": "workflow",
+    "description": "PHP Analyzer Pipeline",
+    "category": "php-analysis",
+    "lastModified": "2025-05-05T06:55:47.014Z",
+    "size": 21982
+  },
+  {
+    "path": "/workspaces/cahier-des-charge/backup/obsolete-files-20250505/packages/business/config/n8n-php-complexity-alerts.json",
+    "relativePath": "backup/obsolete-files-20250505/packages/business/config/n8n-php-complexity-alerts.json",
+    "fileType": "workflow",
+    "description": "Alertes Complexité PHP Avancées",
+    "category": "php-analysis",
+    "lastModified": "2025-05-05T06:55:47.007Z",
+    "size": 26534
+  },
+  {
+    "path": "/workspaces/cahier-des-charge/backup/obsolete-files-20250505/packages/business/templates/n8n-audit-workflow.json",
+    "relativePath": "backup/obsolete-files-20250505/packages/business/templates/n8n-audit-workflow.json",
+    "fileType": "workflow",
+    "description": "PHP Audit Pipeline",
+    "category": "audit",
+    "lastModified": "2025-05-05T06:55:47.048Z",
+    "size": 8055
+  },
+  {
+    "path": "/workspaces/cahier-des-charge/packages/orchestration/orchestration/workflows/n8nmigration-orchestrator.json",
+    "relativePath": "packages/orchestration/orchestration/workflows/n8nmigration-orchestrator.json",
+    "fileType": "workflow",
+    "description": "Migration Orchestrator Pipeline",
+    "category": "migration",
+    "lastModified": "2025-05-01T21:43:08.741Z",
+    "size": 12622
+  },
+  {
+    "path": "/workspaces/cahier-des-charge/packages/orchestration/orchestration/workflows/n8nmigration.json",
+    "relativePath": "packages/orchestration/orchestration/workflows/n8nmigration.json",
+    "fileType": "workflow",
+    "description": "Migration Data Validator",
+    "category": "migration",
+    "lastModified": "2025-05-01T21:43:08.746Z",
+    "size": 20794
+  },
+  {
+    "path": "/workspaces/cahier-des-charge/packages/orchestration/orchestration/workflows/n8nmonorepo-analyzer.json",
+    "relativePath": "packages/orchestration/orchestration/workflows/n8nmonorepo-analyzer.json",
+    "fileType": "workflow",
+    "description": "Monorepo Analyzer Pipeline",
+    "category": "unknown",
+    "lastModified": "2025-05-01T21:43:08.756Z",
+    "size": 6363
+  },
+  {
+    "path": "/workspaces/cahier-des-charge/packages/orchestration/orchestration/workflows/n8ndiff-verifier.json",
+    "relativePath": "packages/orchestration/orchestration/workflows/n8ndiff-verifier.json",
+    "fileType": "workflow",
+    "description": "Vérification PHP → NestJS/Remix",
+    "category": "unknown",
+    "lastModified": "2025-05-01T21:43:08.734Z",
+    "size": 14630
+  },
+  {
+    "path": "/workspaces/cahier-des-charge/packages/orchestration/orchestration/workflows/n8npipelineclean.json",
+    "relativePath": "packages/orchestration/orchestration/workflows/n8npipelineclean.json",
+    "fileType": "workflow",
+    "description": "Pipeline de Migration IA",
+    "category": "pipeline",
+    "lastModified": "2025-05-01T21:43:08.757Z",
+    "size": 2691
+  },
+  {
+    "path": "/workspaces/cahier-des-charge/packages/orchestration/orchestration/workflows/n8nmonitoring.json",
+    "relativePath": "packages/orchestration/orchestration/workflows/n8nmonitoring.json",
+    "fileType": "workflow",
+    "description": "",
+    "category": "monitoring",
+    "lastModified": "2025-05-01T21:43:08.750Z",
+    "size": 11068
+  },
+  {
+    "path": "/workspaces/cahier-des-charge/packages/mcp-agents/orchestration/cleanup/n8n.json",
+    "relativePath": "packages/mcp-agents/orchestration/cleanup/n8n.json",
+    "fileType": "workflow",
+    "description": "Docker Cleanup Workflow",
+    "category": "unknown",
+    "lastModified": "2025-05-02T21:43:21.814Z",
+    "size": 5297
+  },
+  {
+    "path": "/workspaces/cahier-des-charge/packages/business/config/n8n-mysql-analyzer.json",
+    "relativePath": "packages/business/config/n8n-mysql-analyzer.json",
+    "fileType": "workflow",
+    "description": "n8n-mysql-analyzer",
+    "category": "database",
+    "lastModified": "2025-05-04T23:45:09.040Z",
+    "size": 123
+  },
+  {
+    "path": "/workspaces/cahier-des-charge/packages/business/config/migration-workflown8n.json",
+    "relativePath": "packages/business/config/migration-workflown8n.json",
+    "fileType": "workflow",
+    "description": "migration-workflown8n",
+    "category": "migration",
+    "lastModified": "2025-05-04T23:45:09.042Z",
+    "size": 126
+  },
+  {
+    "path": "/workspaces/cahier-des-charge/packages/business/config/supabase-analyzer-workflown8n.json",
+    "relativePath": "packages/business/config/supabase-analyzer-workflown8n.json",
+    "fileType": "workflow",
+    "description": "Supabase Analyzer Workflow",
+    "category": "unknown",
+    "lastModified": "2025-05-01T21:43:08.534Z",
+    "size": 10654
+  },
+  {
+    "path": "/workspaces/cahier-des-charge/packages/business/config/postgres-analyzer-workflown8n.json",
+    "relativePath": "packages/business/config/postgres-analyzer-workflown8n.json",
+    "fileType": "workflow",
+    "description": "PostgreSQL Analyzer Workflow",
+    "category": "database",
+    "lastModified": "2025-05-01T21:43:08.527Z",
+    "size": 6441
+  },
+  {
+    "path": "/workspaces/cahier-des-charge/packages/business/config/n8n-update-audit-node.json",
+    "relativePath": "packages/business/config/n8n-update-audit-node.json",
+    "fileType": "workflow",
+    "description": "n8n-update-audit-node",
+    "category": "audit",
+    "lastModified": "2025-05-04T23:45:09.049Z",
+    "size": 126
+  },
+  {
+    "path": "/workspaces/cahier-des-charge/packages/business/config/n8n-table-cartographer-workflow.json",
+    "relativePath": "packages/business/config/n8n-table-cartographer-workflow.json",
+    "fileType": "workflow",
+    "description": "SQL Analyzer - Cartographe Sémantique des Tables",
+    "category": "unknown",
+    "lastModified": "2025-04-30T09:08:39.377Z",
+    "size": 7534
+  },
+  {
+    "path": "/workspaces/cahier-des-charge/packages/business/config/bullmq-orchestratorn8n.json",
+    "relativePath": "packages/business/config/bullmq-orchestratorn8n.json",
+    "fileType": "workflow",
+    "description": "BullMQ Orchestrator Pipeline",
+    "category": "unknown",
+    "lastModified": "2025-05-01T21:43:08.501Z",
+    "size": 16203
+  },
+  {
+    "path": "/workspaces/cahier-des-charge/packages/business/config/prisma-analyzer-workflown8n.json",
+    "relativePath": "packages/business/config/prisma-analyzer-workflown8n.json",
+    "fileType": "workflow",
+    "description": "Prisma Analyzer Workflow",
+    "category": "unknown",
+    "lastModified": "2025-05-01T21:43:08.528Z",
+    "size": 17281
+  },
+  {
+    "path": "/workspaces/cahier-des-charge/packages/business/config/mysql-analyzer-workflown8n.json",
+    "relativePath": "packages/business/config/mysql-analyzer-workflown8n.json",
+    "fileType": "workflow",
+    "description": "MySQL Analyzer Workflow",
+    "category": "database",
+    "lastModified": "2025-05-01T21:43:08.518Z",
+    "size": 12101
+  },
+  {
+    "path": "/workspaces/cahier-des-charge/packages/business/config/migration/n8n-mysql-migration.json",
+    "relativePath": "packages/business/config/migration/n8n-mysql-migration.json",
+    "fileType": "workflow",
+    "description": "Migration SQL complète - Pipeline",
+    "category": "migration",
+    "lastModified": "2025-04-30T09:08:39.267Z",
+    "size": 32990
+  },
+  {
+    "path": "/workspaces/cahier-des-charge/packages/business/config/migration/sql-analyzer-pipelinen8n.json",
+    "relativePath": "packages/business/config/migration/sql-analyzer-pipelinen8n.json",
+    "fileType": "workflow",
+    "description": "SQL Analyzer IA Pipeline",
+    "category": "migration",
+    "lastModified": "2025-05-01T21:43:08.545Z",
+    "size": 19442
+  },
+  {
+    "path": "/workspaces/cahier-des-charge/packages/business/config/migration/migration-pipelinen8n.json",
+    "relativePath": "packages/business/config/migration/migration-pipelinen8n.json",
+    "fileType": "workflow",
+    "description": "migration-pipelinen8n",
+    "category": "migration",
+    "lastModified": "2025-05-04T23:45:09.058Z",
+    "size": 126
+  },
+  {
+    "path": "/workspaces/cahier-des-charge/packages/business/config/n8n-htaccess-analyzer.json",
+    "relativePath": "packages/business/config/n8n-htaccess-analyzer.json",
+    "fileType": "workflow",
+    "description": "Analyse .htaccess pour SEO et Migration",
+    "category": "unknown",
+    "lastModified": "2025-04-30T09:08:39.251Z",
+    "size": 11033
+  },
+  {
+    "path": "/workspaces/cahier-des-charge/packages/business/config/wave-runnern8n.json",
+    "relativePath": "packages/business/config/wave-runnern8n.json",
+    "fileType": "workflow",
+    "description": "wave-runnern8n",
+    "category": "unknown",
+    "lastModified": "2025-05-04T23:45:09.061Z",
+    "size": 119
+  },
+  {
+    "path": "/workspaces/cahier-des-charge/packages/business/config/n8n-relation-analyzer-workflow.json",
+    "relativePath": "packages/business/config/n8n-relation-analyzer-workflow.json",
+    "fileType": "workflow",
+    "description": "SQL Analyzer - Analyse Relationnelle & Cohérence Référentielle",
+    "category": "unknown",
+    "lastModified": "2025-04-30T09:08:39.236Z",
+    "size": 10581
+  },
+  {
+    "path": "/workspaces/cahier-des-charge/packages/business/config/htaccess-analyzer-workflown8n.json",
+    "relativePath": "packages/business/config/htaccess-analyzer-workflown8n.json",
+    "fileType": "workflow",
+    "description": "Htaccess Analyzer Workflow",
+    "category": "unknown",
+    "lastModified": "2025-05-01T21:43:08.508Z",
+    "size": 12635
+  },
+  {
+    "path": "/workspaces/cahier-des-charge/packages/business/config/migration-pipelinen8n.json",
+    "relativePath": "packages/business/config/migration-pipelinen8n.json",
+    "fileType": "workflow",
+    "description": "migration-pipelinen8n",
+    "category": "migration",
+    "lastModified": "2025-05-04T23:45:09.065Z",
+    "size": 126
+  },
+  {
+    "path": "/workspaces/cahier-des-charge/packages/business/config/seo-analyzer-workflown8n.json",
+    "relativePath": "packages/business/config/seo-analyzer-workflown8n.json",
+    "fileType": "workflow",
+    "description": "SEO Analyzer Workflow",
+    "category": "seo",
+    "lastModified": "2025-05-01T21:43:08.531Z",
+    "size": 17256
+  },
+  {
+    "path": "/workspaces/cahier-des-charge/packages/business/config/n8nremediator.json",
+    "relativePath": "packages/business/config/n8nremediator.json",
+    "fileType": "workflow",
+    "description": "Auto-Remédiation des Divergences",
+    "category": "unknown",
+    "lastModified": "2025-05-01T21:43:08.522Z",
+    "size": 4218
+  },
+  {
+    "path": "/workspaces/cahier-des-charge/packages/business/config/n8nqa-analyzer.json",
+    "relativePath": "packages/business/config/n8nqa-analyzer.json",
+    "fileType": "workflow",
+    "description": "QA Analyzer Workflow",
+    "category": "unknown",
+    "lastModified": "2025-05-01T21:43:08.520Z",
+    "size": 13992
+  },
+  {
+    "path": "/workspaces/cahier-des-charge/packages/business/config/mcp-workflown8n.json",
+    "relativePath": "packages/business/config/mcp-workflown8n.json",
+    "fileType": "workflow",
+    "description": "MCP Workflow Pipeline",
+    "category": "unknown",
+    "lastModified": "2025-05-01T21:43:08.514Z",
+    "size": 14071
+  },
+  {
+    "path": "/workspaces/cahier-des-charge/packages/business/config/n8n-php-routes-manager.json",
+    "relativePath": "packages/business/config/n8n-php-routes-manager.json",
+    "fileType": "workflow",
+    "description": "PHP Routes Migration Manager",
+    "category": "php-analysis",
+    "lastModified": "2025-04-30T09:08:39.145Z",
+    "size": 16903
+  },
+  {
+    "path": "/workspaces/cahier-des-charge/packages/business/config/cicd-pipeline-workflown8n.json",
+    "relativePath": "packages/business/config/cicd-pipeline-workflown8n.json",
+    "fileType": "workflow",
+    "description": "CI/CD Pipeline Workflow",
+    "category": "pipeline",
+    "lastModified": "2025-05-01T21:43:08.507Z",
+    "size": 11806
+  },
+  {
+    "path": "/workspaces/cahier-des-charge/packages/business/workflows/migration/migration-plans-generatorn8n.json",
+    "relativePath": "packages/business/workflows/migration/migration-plans-generatorn8n.json",
+    "fileType": "workflow",
+    "description": "Generate Migration Plans Workflow",
+    "category": "migration",
+    "lastModified": "2025-05-01T21:43:09.891Z",
+    "size": 9759
+  },
+  {
+    "path": "/workspaces/cahier-des-charge/packages/business/workflows/migration/migration-pipelinen8n.json",
+    "relativePath": "packages/business/workflows/migration/migration-pipelinen8n.json",
+    "fileType": "workflow",
+    "description": "Pipeline de Migration Automatisée PHP → NestJS/Remix",
+    "category": "migration",
+    "lastModified": "2025-05-01T21:43:09.892Z",
+    "size": 37592
+  },
+  {
+    "path": "/workspaces/cahier-des-charge/packages/business/workflows/migration/n8npipeline.json",
+    "relativePath": "packages/business/workflows/migration/n8npipeline.json",
+    "fileType": "workflow",
+    "description": "Pipeline de Migration IA",
+    "category": "migration",
+    "lastModified": "2025-05-01T21:43:09.895Z",
+    "size": 2691
+  },
+  {
+    "path": "/workspaces/cahier-des-charge/packages/business/workflows/migration/sql-analyzer-prisma-buildern8n.json",
+    "relativePath": "packages/business/workflows/migration/sql-analyzer-prisma-buildern8n.json",
+    "fileType": "workflow",
+    "description": "SQL Analyzer & Prisma Builder Workflow",
+    "category": "migration",
+    "lastModified": "2025-05-01T21:43:09.897Z",
+    "size": 18574
+  },
+  {
+    "path": "/workspaces/cahier-des-charge/tools/scripts/n8n-migration/inventory-n8n-files.js",
+    "relativePath": "tools/scripts/n8n-migration/inventory-n8n-files.js",
+    "fileType": "workflow",
+    "description": "",
+    "category": "migration",
+    "lastModified": "2025-05-06T12:43:54.338Z",
+    "size": 7982
+  },
+  {
+    "path": "/workspaces/cahier-des-charge/tools/scripts/scripts/import-n8n-workflows.js",
+    "relativePath": "tools/scripts/scripts/import-n8n-workflows.js",
+    "fileType": "script",
+    "description": "",
+    "category": "unknown",
+    "lastModified": "2025-04-30T09:08:43.796Z",
+    "size": 3062
+  },
+  {
+    "path": "/workspaces/cahier-des-charge/tools/scripts/scripts/migration/import-n8n-workflows.js",
+    "relativePath": "tools/scripts/scripts/migration/import-n8n-workflows.js",
+    "fileType": "script",
+    "description": "",
+    "category": "migration",
+    "lastModified": "2025-04-30T10:24:36.748Z",
+    "size": 6717
+  },
+  {
+    "path": "/workspaces/cahier-des-charge/tools/scripts/scripts/automation/optimize-n8n-pipeline.js",
+    "relativePath": "tools/scripts/scripts/automation/optimize-n8n-pipeline.js",
+    "fileType": "script",
+    "description": "",
+    "category": "pipeline",
+    "lastModified": "2025-04-30T10:24:36.114Z",
+    "size": 5629
+  },
+  {
+    "path": "/workspaces/cahier-des-charge/packages/orchestration/legacy-orchestrators/n8n.ts",
+    "relativePath": "packages/orchestration/legacy-orchestrators/n8n.ts",
+    "fileType": "unknown",
+    "description": "",
+    "category": "unknown",
+    "lastModified": "2025-05-03T12:57:31.305Z",
+    "size": 4747
+  },
+  {
+    "path": "/workspaces/cahier-des-charge/packages/business/n8n-deprecated/n8n-orchestrator.ts",
+    "relativePath": "packages/business/n8n-deprecated/n8n-orchestrator.ts",
+    "fileType": "unknown",
+    "description": "",
+    "category": "unknown",
+    "lastModified": "2025-05-04T20:22:53.476Z",
+    "size": 5134
+  },
+  {
+    "path": "/workspaces/cahier-des-charge/packages/business/src/orchestration/n8n-client.ts",
+    "relativePath": "packages/business/src/orchestration/n8n-client.ts",
+    "fileType": "unknown",
+    "description": "",
+    "category": "unknown",
+    "lastModified": "2025-05-04T21:50:13.864Z",
+    "size": 4249
+  }
+]

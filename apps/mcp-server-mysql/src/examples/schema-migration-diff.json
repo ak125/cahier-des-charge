@@ -1,0 +1,104 @@
+{
+  "missingTables": [],
+  "missingColumns": [
+    {
+      "table": "users",
+      "column": "avatar_url"
+    },
+    {
+      "table": "products",
+      "column": "is_featured"
+    }
+  ],
+  "typeMismatches": [
+    {
+      "table": "users",
+      "column": "is_active",
+      "mysqlType": "TINYINT(1)",
+      "prismaType": "Boolean"
+    },
+    {
+      "table": "sessions",
+      "column": "id",
+      "mysqlType": "CHAR(36)",
+      "prismaType": "String"
+    },
+    {
+      "table": "products",
+      "column": "price",
+      "mysqlType": "DECIMAL(10,2)",
+      "prismaType": "Float"
+    }
+  ],
+  "relationMismatches": [
+    {
+      "sourceTable": "orders",
+      "targetTable": "users",
+      "mysqlType": "n:1",
+      "prismaType": "1:n",
+      "field": "user_id"
+    }
+  ],
+  "extraColumns": [
+    {
+      "table": "users",
+      "column": "profile_picture",
+      "type": "String",
+      "nullable": true
+    }
+  ],
+  "extraTables": [
+    {
+      "name": "order_items",
+      "comment": "Table présente dans Prisma mais absente de MySQL"
+    }
+  ],
+  "indexDifferences": [
+    {
+      "table": "products",
+      "missing": [
+        {
+          "name": "name_idx",
+          "columns": ["name"],
+          "unique": false
+        }
+      ],
+      "extra": [
+        {
+          "name": "price_idx",
+          "columns": ["price"],
+          "unique": false
+        }
+      ]
+    }
+  ],
+  "enumDifferences": [
+    {
+      "table": "orders",
+      "column": "status",
+      "mysqlValues": ["pending", "processing", "shipped", "delivered", "cancelled"],
+      "prismaValues": ["PENDING", "PROCESSING", "SHIPPED", "DELIVERED", "CANCELLED", "REFUNDED"]
+    }
+  ],
+  "recommendations": [
+    {
+      "type": "typeConversion",
+      "description": "Convertir TINYINT(1) en Boolean dans Prisma pour une meilleure lisibilité",
+      "affectedColumns": ["users.is_active"]
+    },
+    {
+      "type": "dataLoss",
+      "description": "Risque de perte de précision en utilisant Float pour des valeurs monétaires",
+      "affectedColumns": ["products.price", "orders.total_amount"],
+      "recommendation": "Utiliser Decimal dans Prisma au lieu de Float"
+    },
+    {
+      "type": "missingData",
+      "description": "Colonnes présentes dans Prisma mais absentes de MySQL",
+      "affectedColumns": ["users.profile_picture"],
+      "recommendation": "Ajouter ces colonnes à MySQL ou les supprimer de Prisma"
+    }
+  ],
+  "migrationComplexity": "medium",
+  "analysisDate": "2025-04-12T10:35:22.456Z"
+}

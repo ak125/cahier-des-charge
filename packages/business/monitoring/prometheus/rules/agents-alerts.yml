@@ -1,0 +1,29 @@
+groups:
+  - name: agents-alerts
+    rules:
+      - alert: AgentExecutionError
+        expr: increase(agent_errors_total[5m]) > 0
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Agent execution error"
+          description: "L'agent {{ $labels.agent_name }} a rencontré des erreurs durant les 5 dernières minutes."
+      
+      - alert: AgentHighExecutionTime
+        expr: rate(agent_execution_time_seconds_sum[5m]) / rate(agent_execution_time_seconds_count[5m]) > 30
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Agent execution time too high"
+          description: "L'agent {{ $labels.agent_name }} met plus de 30 secondes en moyenne pour s'exécuter."
+      
+      - alert: AgentNotActive
+        expr: (time() - max_over_time(agent_last_execution_timestamp{status="success"}[1h])) / 60 > 60
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Agent inactif"
+          description: "L'agent {{ $labels.agent_name }} n'a pas été exécuté avec succès depuis plus de 60 minutes."

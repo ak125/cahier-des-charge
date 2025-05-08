@@ -1,0 +1,15 @@
+https://example.com/core/seo/blog.php
+https://example.com/core/seo/article.php?id=123
+https://example.com/core/seo/article.php?id=456&category=dev
+https://example.com/core/products/view.php?product=42
+https://example.com/services/detail.php?service=consulting
+https://example.com/ancienne-page
+https://example.com/page-supprimee.php
+https://example.com/page-conditionnelle.php
+https://example.com/regex/produit/chaussure-sport.html
+https://example.com/regex/produit/montre-connectee.html
+https://example.com/old/category/electronique/page/2
+/core/seo/blog.php?tag=seo
+/core/seo/blog.php?tag=migration
+/services/detail.php?id=10
+/page-inconnue.php

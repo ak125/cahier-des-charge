@@ -1,0 +1,78 @@
+name: Security Risk Analysis
+
+on:
+  pull_request:
+    branches: [ main, develop ]
+    paths:
+      - 'cahier-des-charges/**'
+      - '**/*.php'
+      - '**/*.audit.md'
+
+jobs:
+  analyze-risks:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Run security analysis
+        run: |
+          mkdir -p reports
+          RISK_SCORE_TOTAL=0
+          FILE_COUNT=0
+          LOW_SCORE_FILES=""
+          
+          # Analyser tous les fichiers PHP
+          for file in $(find . -name "*.php" -not -path "*/node_modules/*" -not -path "*/vendor/*"); do
+            echo "Analyzing $file..."
+            node agents/analyze-security-risks.ts "$file"
+            
+            # Extraire le score du fichier généré
+            SCORE_FILE="${file%.php}.risk_score.json"
+            if [ -f "$SCORE_FILE" ]; then
+              SCORE=$(jq '.scores.overall' "$SCORE_FILE")
+              RISK_SCORE_TOTAL=$(echo "$RISK_SCORE_TOTAL + $SCORE" | bc)
+              FILE_COUNT=$((FILE_COUNT + 1))
+              
+              # Vérifier si le score est inférieur à 5
+              if (( $(echo "$SCORE < 5.0" | bc -l) )); then
+                LOW_SCORE_FILES="$LOW_SCORE_FILES\n- $file (Score: $SCORE)"
+              fi
+            fi
+          done
+          
+          # Calculer le score moyen
+          if [ "$FILE_COUNT" -gt 0 ]; then
+            AVG_SCORE=$(echo "scale=2; $RISK_SCORE_TOTAL / $FILE_COUNT" | bc)
+            echo "Average Risk Score: $AVG_SCORE"
+            echo "average_score=$AVG_SCORE" >> $GITHUB_ENV
+            
+            # Vérifier si des fichiers ont un score bas
+            if [ ! -z "$LOW_SCORE_FILES" ]; then
+              echo -e "Files with low security scores:$LOW_SCORE_FILES"
+              echo "low_score_files<<EOF" >> $GITHUB_ENV
+              echo -e "$LOW_SCORE_FILES" >> $GITHUB_ENV
+              echo "EOF" >> $GITHUB_ENV
+            fi
+          fi
+      
+      - name: Check security threshold
+        if: ${{ env.average_score < 5.0 }}
+        run: |
+          echo "⚠️ Security risk score is below threshold: ${{ env.average_score }}/10"
+          echo "Please address the security issues in the following files:"
+          echo "${{ env.low_score_files }}"
+          exit 1
+      
+      - name: Security check passed
+        if: ${{ env.average_score >= 5.0 }}
+        run: echo "✅ Security risk score is acceptable: ${{ env.average_score }}/10"

@@ -1,0 +1,41 @@
+graph TD
+    subgraph "Interface Utilisateur"
+        UI[Interface Web/CLI]
+        UI --> RequestValidator[Validateur de Requêtes]
+    end
+    
+    subgraph "Couche Sécurité"
+        RequestValidator --> SignatureVerifier[Vérificateur de Signatures]
+        SignatureVerifier --> WasmValidators[Agents de Validation WASM]
+    end
+    
+    subgraph "Orchestration MCP 2.0"
+        WasmValidators --> Orchestrator[Orchestrateur]
+        Orchestrator --> AgentRegistry[Registre des Agents]
+        AgentRegistry --> Agents[Agents Spécialisés]
+    end
+    
+    subgraph "Exécution"
+        Agents --> TaskQueue[File d'Attente des Tâches]
+        TaskQueue --> Workers[Workers]
+        Workers --> |Résultat| ResultValidator[Validateur de Résultats]
+    end
+    
+    subgraph "Persistance & Audit"
+        ResultValidator --> |Valide| DataLayer[Couche de Données]
+        ResultValidator --> |Journal| AuditLog[Journal d'Audit]
+        DataLayer --> |Indexation| SearchEngine[Moteur de Recherche]
+    end
+    
+    AuditLog --> |Notification| AlertSystem[Système d'Alertes]
+    ResultValidator --> |Réponse| UI
+    
+    classDef security fill:#f9f,stroke:#333,stroke-width:2px
+    classDef execution fill:#bbf,stroke:#333,stroke-width:1px
+    classDef data fill:#bfb,stroke:#333,stroke-width:1px
+    classDef interface fill:#fbb,stroke:#333,stroke-width:1px
+    
+    class SignatureVerifier,WasmValidators,RequestValidator security
+    class Orchestrator,Agents,TaskQueue,Workers execution
+    class DataLayer,AuditLog,SearchEngine data
+    class UI,AlertSystem interface

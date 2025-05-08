@@ -1,0 +1,182 @@
+{
+  "index.php": {
+    "priority": 100,
+    "status": "done",
+    "path": "legacy/index.php",
+    "dependencies": [],
+    "metadata": {
+      "routeType": "homepage",
+      "isCritical": true,
+      "hasDatabase": true,
+      "hasAuthentication": false
+    }
+  },
+  "user.model.php": {
+    "priority": 90,
+    "status": "done",
+    "path": "legacy/models/user.model.php",
+    "dependencies": [],
+    "metadata": {
+      "routeType": "model",
+      "isCritical": true,
+      "hasDatabase": true,
+      "hasAuthentication": true
+    }
+  },
+  "product.model.php": {
+    "priority": 85,
+    "status": "in-progress",
+    "path": "legacy/models/product.model.php",
+    "dependencies": [],
+    "metadata": {
+      "routeType": "model",
+      "isCritical": true,
+      "hasDatabase": true,
+      "hasAuthentication": false
+    }
+  },
+  "cart.model.php": {
+    "priority": 80,
+    "status": "pending",
+    "path": "legacy/models/cart.model.php",
+    "dependencies": ["product.model.php", "user.model.php"],
+    "metadata": {
+      "routeType": "model",
+      "isCritical": true,
+      "hasDatabase": true,
+      "hasAuthentication": true
+    }
+  },
+  "login.php": {
+    "priority": 95,
+    "status": "done",
+    "path": "legacy/login.php",
+    "dependencies": ["user.model.php"],
+    "metadata": {
+      "routeType": "auth",
+      "isCritical": true,
+      "hasDatabase": true,
+      "hasAuthentication": true
+    }
+  },
+  "register.php": {
+    "priority": 90,
+    "status": "invalid",
+    "path": "legacy/register.php",
+    "dependencies": ["user.model.php"],
+    "metadata": {
+      "routeType": "auth",
+      "isCritical": true,
+      "hasDatabase": true,
+      "hasAuthentication": true
+    }
+  },
+  "profile.php": {
+    "priority": 85,
+    "status": "pending",
+    "path": "legacy/profile.php",
+    "dependencies": ["user.model.php"],
+    "metadata": {
+      "routeType": "auth",
+      "isCritical": true,
+      "hasDatabase": true,
+      "hasAuthentication": true
+    }
+  },
+  "products.php": {
+    "priority": 80,
+    "status": "pending",
+    "path": "legacy/products.php",
+    "dependencies": ["product.model.php"],
+    "metadata": {
+      "routeType": "listing",
+      "isCritical": true,
+      "hasDatabase": true,
+      "hasAuthentication": false
+    }
+  },
+  "product.php": {
+    "priority": 75,
+    "status": "pending",
+    "path": "legacy/product.php",
+    "dependencies": ["product.model.php", "cart.model.php"],
+    "metadata": {
+      "routeType": "detail",
+      "isCritical": true,
+      "hasDatabase": true,
+      "hasAuthentication": false
+    }
+  },
+  "cart.php": {
+    "priority": 70,
+    "status": "pending",
+    "path": "legacy/cart.php",
+    "dependencies": ["cart.model.php", "product.model.php", "user.model.php"],
+    "metadata": {
+      "routeType": "cart",
+      "isCritical": true,
+      "hasDatabase": true,
+      "hasAuthentication": true
+    }
+  },
+  "checkout.php": {
+    "priority": 65,
+    "status": "pending",
+    "path": "legacy/checkout.php",
+    "dependencies": ["cart.model.php", "user.model.php"],
+    "metadata": {
+      "routeType": "checkout",
+      "isCritical": true,
+      "hasDatabase": true,
+      "hasAuthentication": true
+    }
+  },
+  "order.php": {
+    "priority": 60,
+    "status": "pending",
+    "path": "legacy/order.php",
+    "dependencies": ["user.model.php"],
+    "metadata": {
+      "routeType": "order",
+      "isCritical": true,
+      "hasDatabase": true,
+      "hasAuthentication": true
+    }
+  },
+  "contact.php": {
+    "priority": 50,
+    "status": "pending",
+    "path": "legacy/contact.php",
+    "dependencies": [],
+    "metadata": {
+      "routeType": "form",
+      "isCritical": false,
+      "hasDatabase": true,
+      "hasAuthentication": false
+    }
+  },
+  "about.php": {
+    "priority": 40,
+    "status": "pending",
+    "path": "legacy/about.php",
+    "dependencies": [],
+    "metadata": {
+      "routeType": "static",
+      "isCritical": false,
+      "hasDatabase": false,
+      "hasAuthentication": false
+    }
+  },
+  "faq.php": {
+    "priority": 30,
+    "status": "pending",
+    "path": "legacy/faq.php",
+    "dependencies": [],
+    "metadata": {
+      "routeType": "static",
+      "isCritical": false,
+      "hasDatabase": false,
+      "hasAuthentication": false
+    }
+  }
+}

@@ -1,0 +1,307 @@
+{
+  "name": "Analyse .htaccess pour SEO et Migration",
+  "nodes": [
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "htaccessPath",
+              "value": "=/home/node/app/.htaccess"
+            },
+            {
+              "name": "outputDir",
+              "value": "=/home/node/app/reports"
+            },
+            {
+              "name": "includeCommonPhp",
+              "value": "=true"
+            },
+            {
+              "name": "generateSeoAudit",
+              "value": "=true"
+            },
+            {
+              "name": "notificationEmail",
+              "value": "=admin@example.com"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "6bd4a1de-2956-4b67-8f48-0c61b2f98ed6",
+      "name": "Paramètres d'analyse",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Vérifier si le fichier .htaccess existe\nconst fs = require('fs');\nconst path = require('path');\n\nconst htaccessPath = $input.item.json.htaccessPath;\nconst outputDir = $input.item.json.outputDir;\n\n// Vérifier le fichier .htaccess\nif (!fs.existsSync(htaccessPath)) {\n  return {\n    success: false,\n    error: `Le fichier .htaccess n'existe pas: ${htaccessPath}`\n  };\n}\n\n// Vérifier/créer le répertoire de sortie\nif (!fs.existsSync(outputDir)) {\n  try {\n    fs.mkdirSync(outputDir, { recursive: true });\n  } catch (error) {\n    return {\n      success: false,\n      error: `Impossible de créer le répertoire de sortie: ${error.message}`\n    };\n  }\n}\n\nreturn {\n  success: true,\n  htaccessPath,\n  outputDir,\n  includeCommonPhp: $input.item.json.includeCommonPhp,\n  generateSeoAudit: $input.item.json.generateSeoAudit,\n  notificationEmail: $input.item.json.notificationEmail,\n  timestamp: new Date().toISOString()\n};"
+      },
+      "id": "04ff83f2-1a9d-47e5-a7b9-cb75e91a63b3",
+      "name": "Valider les paramètres",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [660, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ $json.success }}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "id": "b48553ed-1c3d-473a-8fb3-a7d1ac8617f0",
+      "name": "Validation OK ?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [860, 300]
+    },
+    {
+      "parameters": {
+        "command": "node /workspaces/cahier-des-charge/agents/migration/php-to-remix/htaccess-parser.js --htaccess={{ $json.htaccessPath }} --output={{ $json.outputDir }} --include-php={{ $json.includeCommonPhp }} --seo={{ $json.generateSeoAudit }}"
+      },
+      "id": "1e5eae8d-18b0-41e7-b63c-6d8201ea1531",
+      "name": "Exécuter l'analyse .htaccess",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [1060, 240]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.exitCode }}",
+              "operation": "equal",
+              "value2": 0
+            }
+          ]
+        }
+      },
+      "id": "a4d6b5b9-68c8-403c-863e-5c1e32e1a991",
+      "name": "Analyse réussie ?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [1260, 240]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Analyser la sortie du processus pour extraire les statistiques\nconst stdout = $input.item.json.stdout;\n\ntry {\n  // Extraire le JSON de la sortie (supposons que le résultat est un JSON valide)\n  const resultMatch = stdout.match(/\\{[\\s\\S]*\\}/); // Trouver le premier objet JSON dans la sortie\n  \n  if (!resultMatch) {\n    return {\n      success: false,\n      error: \"Format de sortie incorrect\",\n      rawOutput: stdout\n    };\n  }\n  \n  const result = JSON.parse(resultMatch[0]);\n  \n  // Extraire les statistiques\n  return {\n    success: result.success,\n    stats: result.data?.stats || {},\n    files: result.data?.files || {},\n    reportUrl: `/dashboard/htaccess`, // URL relative au tableau de bord\n    timestamp: new Date().toISOString(),\n    rawOutput: stdout\n  };\n  \n} catch (error) {\n  return {\n    success: false,\n    error: `Erreur lors de l'analyse de la sortie: ${error.message}`,\n    rawOutput: stdout\n  };\n}"
+      },
+      "id": "8a3aff7f-6e53-478a-a1d1-8ecbc7b02624",
+      "name": "Analyser les résultats",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [1460, 140]
+    },
+    {
+      "parameters": {
+        "fromEmail": "=noreply@example.com",
+        "toEmail": "={{ $json.notificationEmail }}",
+        "subject": "=Analyse .htaccess - Rapport SEO et Migration",
+        "text": "=# Rapport d'analyse .htaccess\n\n**Date d'analyse :** {{ $json.timestamp }}\n\n## Résumé\n\nL'analyse des règles .htaccess a été réalisée avec succès.\n\n**Statistiques :**\n- Règles totales analysées : {{ $json.stats.totalRules || 0 }}\n- Redirections : {{ $json.stats.redirects || 0 }}\n- Pages supprimées : {{ $json.stats.gone || 0 }}\n- Mappings : {{ $json.stats.mapping || 0 }}\n- Routes SEO critiques : {{ $json.stats.seoRoutes || 0 }}\n\n## Fichiers générés\n\n{% if $json.files.htaccessMap %}- Carte complète : {{ $json.files.htaccessMap }}\n{% endif %}{% if $json.files.redirects %}- Redirections : {{ $json.files.redirects }}\n{% endif %}{% if $json.files.deletedRoutes %}- Pages supprimées : {{ $json.files.deletedRoutes }}\n{% endif %}{% if $json.files.routingPatch %}- Patch de routing : {{ $json.files.routingPatch }}\n{% endif %}{% if $json.files.seoAudit %}- Audit SEO : {{ $json.files.seoAudit }}\n{% endif %}\n\n## Accès au tableau de bord\n\nVous pouvez consulter les résultats complets et gérer les redirections sur le tableau de bord :\n{{ $json.reportUrl }}\n\n---\nCe message a été généré automatiquement par le pipeline d'analyse .htaccess.",
+        "options": {}
+      },
+      "id": "21c9935b-8b2a-4bad-8fd1-8e04f5a26e06",
+      "name": "Notification de succès",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2,
+      "position": [1640, 140]
+    },
+    {
+      "parameters": {
+        "fromEmail": "=noreply@example.com",
+        "toEmail": "={{ $json.notificationEmail }}",
+        "subject": "=⚠️ ERREUR - Analyse .htaccess",
+        "text": "=# Erreur d'analyse .htaccess\n\n**Date :** {{ $json.timestamp || new Date().toISOString() }}\n\n## Résumé\n\nUne erreur s'est produite lors de l'analyse des règles .htaccess.\n\n**Détails de l'erreur :**\n{{ $json.error || \"Erreur inconnue\" }}\n\n**Sortie brute :**\n```\n{{ $json.stderr || $json.rawOutput || \"Aucune sortie disponible\" }}\n```\n\n## Paramètres utilisés\n\n- Fichier .htaccess : {{ $json.htaccessPath }}\n- Répertoire de sortie : {{ $json.outputDir }}\n- Inclure routes PHP : {{ $json.includeCommonPhp }}\n- Générer audit SEO : {{ $json.generateSeoAudit }}\n\n---\nCe message a été généré automatiquement par le pipeline d'analyse .htaccess.",
+        "options": {}
+      },
+      "id": "3e5e2a0b-9f7c-4e76-a4a1-9bbce701e5ff",
+      "name": "Notification d'erreur",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2,
+      "position": [1460, 340]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=http://localhost:3000/api/webhooks/htaccess-analysis",
+        "authentication": "none",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "success",
+              "value": "={{ $json.success }}"
+            },
+            {
+              "name": "stats",
+              "value": "={{ $json.stats }}"
+            },
+            {
+              "name": "files",
+              "value": "={{ $json.files }}"
+            },
+            {
+              "name": "timestamp",
+              "value": "={{ $json.timestamp }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "a4b28e27-5f54-42f0-a62f-45dc38471dbc",
+      "name": "Notifier Remix WebHook",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [1820, 140]
+    },
+    {
+      "parameters": {},
+      "id": "9b6c0c9e-ce58-4c24-a06a-d31b10eaec2c",
+      "name": "Démarrer",
+      "type": "n8n-nodes-base.start",
+      "typeVersion": 1,
+      "position": [300, 300]
+    }
+  ],
+  "connections": {
+    "Paramètres d'analyse": {
+      "main": [
+        [
+          {
+            "node": "Valider les paramètres",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Valider les paramètres": {
+      "main": [
+        [
+          {
+            "node": "Validation OK ?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validation OK ?": {
+      "main": [
+        [
+          {
+            "node": "Exécuter l'analyse .htaccess",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Notification d'erreur",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Exécuter l'analyse .htaccess": {
+      "main": [
+        [
+          {
+            "node": "Analyse réussie ?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analyse réussie ?": {
+      "main": [
+        [
+          {
+            "node": "Analyser les résultats",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Notification d'erreur",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analyser les résultats": {
+      "main": [
+        [
+          {
+            "node": "Notification de succès",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Notification de succès": {
+      "main": [
+        [
+          {
+            "node": "Notifier Remix WebHook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Démarrer": {
+      "main": [
+        [
+          {
+            "node": "Paramètres d'analyse",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {},
+  "staticData": null,
+  "tags": [
+    {
+      "name": "migration",
+      "color": "#ff5555"
+    },
+    {
+      "name": "SEO",
+      "color": "#00bb88"
+    },
+    {
+      "name": "htaccess",
+      "color": "#ffbb44"
+    }
+  ],
+  "triggerCount": 0,
+  "updatedAt": "2025-04-12T20:42:17.358Z",
+  "versionId": "f5a6a1de-2b62-4b55-8a7d-c5b31ea1a531"
+}

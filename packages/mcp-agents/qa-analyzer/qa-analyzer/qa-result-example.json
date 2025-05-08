@@ -1,0 +1,157 @@
+{
+  "fiche.tsx": {
+    "matchedFields": [
+      "id",
+      "titre",
+      "description",
+      "prix",
+      "categorie",
+      "reference",
+      "stock",
+      "images",
+      "marque",
+      "dateCreation",
+      "estActif",
+      "caracteristiques",
+      "options"
+    ],
+    "missingFields": ["ref_oem", "img_url"],
+    "unexpectedFields": ["createdAt", "hiddenFlag"],
+    "score": 92,
+    "status": "partial",
+    "details": {
+      "php": {
+        "formFields": [
+          "id",
+          "titre",
+          "description",
+          "prix",
+          "categorie",
+          "reference",
+          "ref_oem",
+          "stock",
+          "marque",
+          "dateCreation"
+        ],
+        "displayFields": [
+          "titre",
+          "description",
+          "prix",
+          "categorie",
+          "reference",
+          "stock",
+          "images",
+          "marque",
+          "dateCreation",
+          "estActif",
+          "caracteristiques",
+          "options",
+          "img_url"
+        ],
+        "hiddenFields": ["id"]
+      },
+      "tsx": {
+        "formFields": [
+          "id",
+          "titre",
+          "description",
+          "prix",
+          "categorie",
+          "reference",
+          "stock",
+          "marque",
+          "dateCreation"
+        ],
+        "displayFields": [
+          "titre",
+          "description",
+          "prix",
+          "categorie",
+          "reference",
+          "stock",
+          "images",
+          "marque",
+          "dateCreation",
+          "estActif",
+          "caracteristiques",
+          "options",
+          "createdAt",
+          "hiddenFlag"
+        ],
+        "hiddenFields": ["id"]
+      },
+      "prisma": {
+        "modelFields": [
+          "id",
+          "titre",
+          "description",
+          "prix",
+          "categorie",
+          "reference",
+          "ref_oem",
+          "stock",
+          "images",
+          "marque",
+          "dateCreation",
+          "estActif",
+          "caracteristiques",
+          "options",
+          "createdAt",
+          "updatedAt",
+          "hiddenFlag"
+        ]
+      }
+    }
+  },
+  "panier.tsx": {
+    "matchedFields": ["id", "produits", "total", "quantite", "remise", "client", "dateCommande"],
+    "missingFields": [],
+    "unexpectedFields": [],
+    "score": 100,
+    "status": "success",
+    "details": {
+      "php": {
+        "formFields": ["id", "produits", "quantite", "remise", "client"],
+        "displayFields": ["produits", "total", "quantite", "remise", "client", "dateCommande"],
+        "hiddenFields": ["id"]
+      },
+      "tsx": {
+        "formFields": ["id", "produits", "quantite", "remise", "client"],
+        "displayFields": ["produits", "total", "quantite", "remise", "client", "dateCommande"],
+        "hiddenFields": ["id"]
+      },
+      "prisma": {
+        "modelFields": [
+          "id",
+          "produits",
+          "total",
+          "quantite",
+          "remise",
+          "client",
+          "dateCommande",
+          "createdAt",
+          "updatedAt"
+        ]
+      }
+    }
+  },
+  "contact.tsx": {
+    "matchedFields": ["nom", "email", "message"],
+    "missingFields": ["telephone", "objet"],
+    "unexpectedFields": [],
+    "score": 60,
+    "status": "partial",
+    "details": {
+      "php": {
+        "formFields": ["nom", "email", "telephone", "objet", "message"],
+        "displayFields": [],
+        "hiddenFields": []
+      },
+      "tsx": {
+        "formFields": ["nom", "email", "message"],
+        "displayFields": ["nom", "email", "message"],
+        "hiddenFields": []
+      }
+    }
+  }
+}

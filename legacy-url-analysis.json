@@ -1,0 +1,169 @@
+{
+  "totalUrls": 19,
+  "patternsByType": {
+    "product": {
+      "count": 4,
+      "patterns": {
+        "/produit.php": {
+          "count": 2,
+          "examples": [
+            "/produit.php?id=123&nom=montre-connectee",
+            "/produit.php?id=456&nom=smartphone-5g"
+          ]
+        },
+        "/fiche.php": {
+          "count": 1,
+          "examples": [
+            "/fiche.php?ref=ABC123&lang=fr"
+          ]
+        },
+        "/product.php": {
+          "count": 1,
+          "examples": [
+            "/product.php?id=789&category=16"
+          ]
+        }
+      }
+    },
+    "category": {
+      "count": 4,
+      "patterns": {
+        "/categorie.php": {
+          "count": 2,
+          "examples": [
+            "/categorie.php?id=10&page=1",
+            "/categorie.php?id=15&filter=nouveautes"
+          ]
+        },
+        "/category.php": {
+          "count": 2,
+          "examples": [
+            "/category.php?id=12&sort=price",
+            "/category.php?slug=ordinateurs-portables"
+          ]
+        }
+      }
+    },
+    "brand": {
+      "count": 2,
+      "patterns": {
+        "/marque.php": {
+          "count": 1,
+          "examples": [
+            "/marque.php?id=5"
+          ]
+        },
+        "/brand.php": {
+          "count": 1,
+          "examples": [
+            "/brand.php?id=8&name=samsung"
+          ]
+        }
+      }
+    },
+    "search": {
+      "count": 2,
+      "patterns": {
+        "/recherche.php": {
+          "count": 1,
+          "examples": [
+            "/recherche.php?q=ordinateur+portable"
+          ]
+        },
+        "/search.php": {
+          "count": 1,
+          "examples": [
+            "/search.php?q=smartphone&filter=promo"
+          ]
+        }
+      }
+    },
+    "article": {
+      "count": 3,
+      "patterns": {
+        "/article.php": {
+          "count": 1,
+          "examples": [
+            "/article.php?id=45&slug=guide-achat-smartphone"
+          ]
+        },
+        "/blog.php": {
+          "count": 1,
+          "examples": [
+            "/blog.php?id=67"
+          ]
+        },
+        "/news.php": {
+          "count": 1,
+          "examples": [
+            "/news.php?slug=nouveautes-2025"
+          ]
+        }
+      }
+    },
+    "page": {
+      "count": 1,
+      "patterns": {
+        "/contact.php": {
+          "count": 1,
+          "examples": [
+            "/contact.php"
+          ]
+        }
+      }
+    },
+    "generic": {
+      "count": 3,
+      "patterns": {
+        "/a-propos.php": {
+          "count": 1,
+          "examples": [
+            "/a-propos.php"
+          ]
+        },
+        "/mentions-legales.php": {
+          "count": 1,
+          "examples": [
+            "/mentions-legales.php"
+          ]
+        },
+        "/conditions-generales.php": {
+          "count": 1,
+          "examples": [
+            "/conditions-generales.php"
+          ]
+        }
+      }
+    }
+  },
+  "extensions": [
+    ".php"
+  ],
+  "paramCounts": {
+    "id": 10,
+    "nom": 2,
+    "ref": 1,
+    "lang": 1,
+    "category": 1,
+    "page": 1,
+    "sort": 1,
+    "filter": 2,
+    "slug": 3,
+    "name": 1,
+    "q": 2
+  },
+  "commonParams": [
+    "id",
+    "slug",
+    "nom",
+    "filter",
+    "q",
+    "ref",
+    "lang",
+    "category",
+    "page",
+    "sort",
+    "name"
+  ],
+  "examples": {}
+}

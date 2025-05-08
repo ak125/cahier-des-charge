@@ -1,0 +1,20 @@
+# Redirections PHP vers nouvelles pages
+/core/seo/blog.php
+/core/seo/article.php?id=123
+/modules/products/view.php
+/admin/dashboard.php
+/news/index.php?category=tech
+/download.php?file=whitepaper
+/legacy/contact.php
+/old-site/services.php
+/shop/catalog.php?cat=5&sort=price
+/profile.php?user=johndoe
+
+# Pages supprimées (doivent retourner 410 Gone)
+/outdated-content.php
+/temp/beta-features.php
+/deprecated-api.php
+
+# Pages avec conditions spéciales (doivent retourner 412 Precondition)
+/special-offer.php
+/beta/early-access.php

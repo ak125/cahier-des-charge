@@ -1,0 +1,96 @@
+{
+  "id": "php-analyzer",
+  "name": "PHP Analyzer",
+  "active": true,
+  "nodes": [
+    {
+      "parameters": {
+        "triggerTimes": {
+          "item": [
+            {
+              "mode": "everyX",
+              "value": 5,
+              "unit": "minutes"
+            }
+          ]
+        }
+      },
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "position": [100, 200]
+    },
+    {
+      "parameters": {
+        "path": "/workspaces/cahier-des-charge/app/legacy",
+        "fileExtensions": ["php"],
+        "options": {
+          "recursive": true
+        }
+      },
+      "name": "List PHP Files",
+      "type": "n8n-nodes-base.filesearch",
+      "position": [300, 200]
+    },
+    {
+      "parameters": {
+        "filePath": "={{ $json.path }}",
+        "agentUrl": "http://localhost:3001/api/analyze-php",
+        "outputPath": "/workspaces/cahier-des-charge/reports/analysis/{{$json.filename}}.json"
+      },
+      "name": "PHP Analysis",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [500, 200]
+    },
+    {
+      "parameters": {
+        "path": "=/workspaces/cahier-des-charge/reports/analysis/{{$json.filename}}.json",
+        "content": "={{ $json.analysis }}",
+        "options": {
+          "encoding": "utf8",
+          "createPath": true
+        }
+      },
+      "name": "Save Analysis",
+      "type": "n8n-nodes-base.writeBinaryFile",
+      "position": [700, 200]
+    }
+  ],
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "List PHP Files",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "List PHP Files": {
+      "main": [
+        [
+          {
+            "node": "PHP Analysis",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PHP Analysis": {
+      "main": [
+        [
+          {
+            "node": "Save Analysis",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "meta": {
+    "templateCredsSetupCompleted": true
+  }
+}

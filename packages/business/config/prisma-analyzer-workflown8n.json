@@ -1,0 +1,287 @@
+{
+  "name": "Prisma Analyzer Workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "triggerTimes": {
+          "item": [
+            {
+              "mode": "everyX",
+              "value": 24,
+              "unit": "hours"
+            }
+          ]
+        }
+      },
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "position": [100, 200],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "command": "cd /workspaces/cahier-des-charge && npx ts-node agents/discovery/database-discovery.ts",
+        "workingDirectory": "/workspaces/cahier-des-charge",
+        "executeTimeout": 300
+      },
+      "name": "Discover Database Schemas",
+      "type": "n8n-nodes-base.executeCommand",
+      "position": [300, 200],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "jsCode": "// Traiter les résultats de la découverte de base de données\nconst output = $input.item.json.stdout || '';\nconst outputDir = '/workspaces/cahier-des-charge/reports/analysis/prisma';\nconst timestamp = new Date().toISOString();\nconst fs = require('fs');\nconst path = require('path');\n\n// Garantir que le répertoire existe\nif (!fs.existsSync(outputDir)) {\n  fs.mkdirSync(outputDir, { recursive: true });\n}\n\ntry {\n  // Extraire les données JSON du résultat\n  const jsonMatch = output.match(/\\{[\\s\\S]*\\}/);\n  \n  if (!jsonMatch) {\n    throw new Error('Aucune donnée JSON trouvée dans la sortie');\n  }\n  \n  const dbData = JSON.parse(jsonMatch[0]);\n  \n  // Structure des données traitées\n  const processedData = {\n    timestamp,\n    connections: dbData.connections || [],\n    schemas: [],\n    tables: [],\n    relationships: [],\n    databaseType: dbData.databaseType || 'mysql',\n    summary: {\n      totalConnections: dbData.connections ? dbData.connections.length : 0,\n      totalTables: 0,\n      totalRelationships: 0,\n      totalSchemas: 0\n    }\n  };\n  \n  // Traiter toutes les tables et relations des différents schémas\n  if (dbData.schemas && Array.isArray(dbData.schemas)) {\n    processedData.summary.totalSchemas = dbData.schemas.length;\n    \n    dbData.schemas.forEach(schema => {\n      processedData.schemas.push({\n        name: schema.name,\n        tableCount: schema.tables ? schema.tables.length : 0\n      });\n      \n      // Traiter les tables de ce schéma\n      if (schema.tables && Array.isArray(schema.tables)) {\n        processedData.summary.totalTables += schema.tables.length;\n        \n        schema.tables.forEach(table => {\n          const processedTable = {\n            schema: schema.name,\n            name: table.name,\n            columns: table.columns || [],\n            primaryKey: table.primaryKey,\n            foreignKeys: table.foreignKeys || [],\n            indexes: table.indexes || [],\n            uniqueConstraints: table.uniqueConstraints || []\n          };\n          \n          processedData.tables.push(processedTable);\n          \n          // Extraire les relations\n          if (table.foreignKeys && Array.isArray(table.foreignKeys)) {\n            processedData.summary.totalRelationships += table.foreignKeys.length;\n            \n            table.foreignKeys.forEach(fk => {\n              processedData.relationships.push({\n                source: {\n                  schema: schema.name,\n                  table: table.name,\n                  column: fk.column\n                },\n                target: {\n                  schema: fk.targetSchema || schema.name,\n                  table: fk.targetTable,\n                  column: fk.targetColumn\n                },\n                name: fk.name || `fk_${table.name}_${fk.column}`\n              });\n            });\n          }\n        });\n      }\n    });\n  }\n  \n  // Sauvegarder les données traitées\n  const processedDataPath = path.join(outputDir, `db_analysis_${timestamp.replace(/:/g, '-')}.json`);\n  fs.writeFileSync(processedDataPath, JSON.stringify(processedData, null, 2));\n  \n  return {\n    json: {\n      ...processedData,\n      analysisPath: processedDataPath,\n      outputDir\n    }\n  };\n} catch (error) {\n  return {\n    json: {\n      error: error.message,\n      timestamp: new Date().toISOString()\n    }\n  };\n}"
+      },
+      "name": "Process Database Data",
+      "type": "n8n-nodes-base.code",
+      "position": [500, 200],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "command": "cd /workspaces/cahier-des-charge && npx ts-node agents/migration/generate-prisma-schema.ts --input-file={{ $json.analysisPath }} --output-dir={{ $json.outputDir }}/schema",
+        "workingDirectory": "/workspaces/cahier-des-charge",
+        "executeTimeout": 180
+      },
+      "name": "Generate Prisma Schema",
+      "type": "n8n-nodes-base.executeCommand",
+      "position": [700, 150],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "command": "cd /workspaces/cahier-des-charge && npx ts-node agents/migration/generate-nestjs-entities.ts --input-file={{ $json.analysisPath }} --output-dir={{ $json.outputDir }}/entities",
+        "workingDirectory": "/workspaces/cahier-des-charge",
+        "executeTimeout": 180
+      },
+      "name": "Generate NestJS Entities",
+      "type": "n8n-nodes-base.executeCommand",
+      "position": [700, 300],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "command": "cd /workspaces/cahier-des-charge && npx ts-node agents/migration/generate-remix-types.ts --input-file={{ $json.analysisPath }} --output-dir={{ $json.outputDir }}/types",
+        "workingDirectory": "/workspaces/cahier-des-charge",
+        "executeTimeout": 180
+      },
+      "name": "Generate Remix Types",
+      "type": "n8n-nodes-base.executeCommand",
+      "position": [700, 450],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "command": "cd /workspaces/cahier-des-charge && npx ts-node agents/analysis/validate-prisma-schema.ts --schema-file={{ $json.outputDir }}/schema/schema.prisma --validation-output={{ $json.outputDir }}/validation",
+        "workingDirectory": "/workspaces/cahier-des-charge",
+        "executeTimeout": 120
+      },
+      "name": "Validate Prisma Schema",
+      "type": "n8n-nodes-base.executeCommand",
+      "position": [900, 150],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "command": "cd /workspaces/cahier-des-charge && npx ts-node agents/analysis/test-prisma-relations.ts --schema-file={{ $json.outputDir }}/schema/schema.prisma --test-output={{ $json.outputDir }}/tests",
+        "workingDirectory": "/workspaces/cahier-des-charge",
+        "executeTimeout": 120
+      },
+      "name": "Test Prisma Relations",
+      "type": "n8n-nodes-base.executeCommand",
+      "position": [900, 300],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "functionCode": "// Consolider les résultats des différentes étapes\nconst analysis = $input.item.json;\nconst timestamp = new Date().toISOString();\n\n// Vérifier si les fichiers nécessaires existent\nconst fs = require('fs');\nlet validationResults = { valid: false, errors: [] };\nlet testResults = { success: false, failures: [] };\n\ntry {\n  // Lire les résultats de validation du schéma Prisma\n  const validationPath = `${analysis.outputDir}/validation/validation-results.json`;\n  if (fs.existsSync(validationPath)) {\n    validationResults = JSON.parse(fs.readFileSync(validationPath, 'utf8'));\n  }\n  \n  // Lire les résultats de test des relations\n  const testPath = `${analysis.outputDir}/tests/test-results.json`;\n  if (fs.existsSync(testPath)) {\n    testResults = JSON.parse(fs.readFileSync(testPath, 'utf8'));\n  }\n} catch (error) {\n  // Ignorer les erreurs de lecture\n}\n\n// Évaluer la migration\nconst prismaSuccess = validationResults.valid && testResults.success;\nconst prismaErrors = [\n  ...validationResults.errors,\n  ...testResults.failures.map(f => `Test: ${f}`)\n];\n\n// Calculer la complexité de migration en fonction du nombre de tables et relations\nlet migrationComplexity = 'faible';\nif (analysis.summary.totalTables > 30 || analysis.summary.totalRelationships > 50) {\n  migrationComplexity = 'élevée';\n} else if (analysis.summary.totalTables > 10 || analysis.summary.totalRelationships > 20) {\n  migrationComplexity = 'moyenne';\n}\n\n// Génération des recommandations\nconst migrationRecommendations = [];\n\nif (analysis.tables.some(t => !t.primaryKey)) {\n  migrationRecommendations.push({\n    type: 'Clés primaires manquantes',\n    description: 'Certaines tables n\\'ont pas de clé primaire définie. Prisma nécessite une clé primaire pour chaque modèle.',\n    action: 'Ajouter des clés primaires aux tables concernées ou utiliser des ID générés par Prisma.'\n  });\n}\n\nif (analysis.tables.some(t => t.columns.some(c => c.type === 'ENUM'))) {\n  migrationRecommendations.push({\n    type: 'Types ENUM',\n    description: 'Des types ENUM sont utilisés dans le schéma actuel.',\n    action: 'Définir les types ENUM dans le schéma Prisma en utilisant la syntaxe appropriée.'\n  });\n}\n\nif (analysis.tables.some(t => t.columns.some(c => c.defaultValue?.includes('CURRENT_TIMESTAMP')))) {\n  migrationRecommendations.push({\n    type: 'Valeurs temporelles par défaut',\n    description: 'Des colonnes avec des valeurs temporelles par défaut ont été détectées.',\n    action: 'Utiliser @default(now()) dans le schéma Prisma pour les champs de date/heure par défaut.'\n  });\n}\n\nreturn {\n  json: {\n    ...analysis,\n    validationResults,\n    testResults,\n    prismaSuccess,\n    prismaErrors,\n    migrationComplexity,\n    migrationRecommendations,\n    consolidatedTimestamp: timestamp\n  }\n};"
+      },
+      "name": "Consolidate Results",
+      "type": "n8n-nodes-base.function",
+      "position": [1100, 250],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "chatId": "{{ $env.NOTIFICATION_CHAT_ID }}",
+        "text": "🔍 *Analyse Prisma complétée*\n\n📊 *Statistiques:*\n- Schémas analysés: {{ $json.summary.totalSchemas }}\n- Tables analysées: {{ $json.summary.totalTables }}\n- Relations identifiées: {{ $json.summary.totalRelationships }}\n\n🔄 *Génération Prisma:*\n- Validation: {{ $json.validationResults.valid ? '✅ Succès' : '❌ Échec' }}\n- Tests des relations: {{ $json.testResults.success ? '✅ Succès' : '❌ Échec' }}\n{% if $json.prismaErrors.length > 0 %}\n- Erreurs: {{ $json.prismaErrors.join('\\n') }}\n{% endif %}\n\n🚀 *Complexité de migration:* {{ $json.migrationComplexity }}\n\n{% if $json.migrationRecommendations.length > 0 %}\n📋 *Recommandations:*\n{% for rec in $json.migrationRecommendations %}\n- **{{ rec.type }}**: {{ rec.description }}\n{% endfor %}\n{% endif %}\n\n✅ *Artefacts générés:*\n- Schéma Prisma\n- Entités NestJS\n- Types TypeScript pour Remix\n\n*Timestamp:* {{ $json.timestamp }}\n\n[Voir les fichiers générés](file://{{ $json.outputDir }})",
+        "additionalFields": {
+          "parseMode": "Markdown",
+          "disableNotification": false
+        }
+      },
+      "name": "Send Notification",
+      "type": "n8n-nodes-base.telegram",
+      "position": [1300, 250],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "# Rapport d'analyse et génération Prisma - {{ $json.consolidatedTimestamp }}\n\n## Résumé\n\n- **Schémas analysés**: {{ $json.summary.totalSchemas }}\n- **Tables analysées**: {{ $json.summary.totalTables }}\n- **Relations identifiées**: {{ $json.summary.totalRelationships }}\n- **Type de base de données**: {{ $json.databaseType }}\n- **Complexité de migration**: {{ $json.migrationComplexity }}\n\n## Résultats de la génération Prisma\n\n- **Validation du schéma**: {{ $json.validationResults.valid ? '✅ Succès' : '❌ Échec' }}\n- **Test des relations**: {{ $json.testResults.success ? '✅ Succès' : '❌ Échec' }}\n\n{% if $json.prismaErrors.length > 0 %}\n### Erreurs détectées\n\n{% for error in $json.prismaErrors %}\n- {{ error }}\n{% endfor %}\n{% endif %}\n\n## Artefacts générés\n\n- [Schéma Prisma](file://{{ $json.outputDir }}/schema/schema.prisma)\n- [Entités NestJS](file://{{ $json.outputDir }}/entities)\n- [Types TypeScript pour Remix](file://{{ $json.outputDir }}/types)\n\n## Recommandations de migration\n\n{% if $json.migrationRecommendations.length === 0 %}\nAucune recommandation spécifique pour la migration.\n{% else %}\n{% for rec in $json.migrationRecommendations %}\n### {{ rec.type }}\n\n{{ rec.description }}\n\n**Action recommandée**: {{ rec.action }}\n{% endfor %}\n{% endif %}\n\n## Relations identifiées\n\n{% if $json.relationships.length === 0 %}\nAucune relation n'a été identifiée dans le schéma.\n{% else %}\n{% for relation in $json.relationships %}\n- {{ relation.source.schema }}.{{ relation.source.table }}.{{ relation.source.column }} → {{ relation.target.schema }}.{{ relation.target.table }}.{{ relation.target.column }}\n{% endfor %}\n{% endif %}\n\n## Étapes suivantes\n\n1. Réviser le schéma Prisma généré pour s'assurer qu'il correspond aux attentes\n2. Corriger les éventuelles erreurs de validation\n3. Intégrer les entités NestJS dans l'application backend\n4. Utiliser les types TypeScript dans les composants Remix\n5. Implémenter les recommandations de migration si nécessaire\n\n> Ce rapport a été généré automatiquement par le pipeline d'analyse Prisma le {{ $json.consolidatedTimestamp }}.",
+        "destination": "={{ $json.outputDir }}/prisma_rapport_{{ $json.consolidatedTimestamp.replace(/:/g, '-') }}.md",
+        "options": {}
+      },
+      "name": "Generate Report",
+      "type": "n8n-nodes-base.writeTextFile",
+      "position": [1500, 250],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "operation": "insert",
+        "schema": "audit",
+        "table": "prisma_analyses",
+        "columns": "timestamp,db_type,schemas_count,tables_count,relationships_count,schema_valid,complexity,report_path",
+        "values": "={{ $json.consolidatedTimestamp }},={{ $json.databaseType }},={{ $json.summary.totalSchemas }},={{ $json.summary.totalTables }},={{ $json.summary.totalRelationships }},={{ $json.validationResults.valid }},={{ $json.migrationComplexity }},={{ $json.outputDir + '/prisma_rapport_' + $json.consolidatedTimestamp.replace(/:/g, '-') + '.md' }}",
+        "additionalFields": {}
+      },
+      "name": "Log to Database",
+      "type": "n8n-nodes-base.postgres",
+      "position": [1700, 250],
+      "typeVersion": 1,
+      "credentials": {
+        "postgres": {
+          "id": "1",
+          "name": "Postgres Account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Discover Database Schemas",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Discover Database Schemas": {
+      "main": [
+        [
+          {
+            "node": "Process Database Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Process Database Data": {
+      "main": [
+        [
+          {
+            "node": "Generate Prisma Schema",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Generate NestJS Entities",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Generate Remix Types",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Prisma Schema": {
+      "main": [
+        [
+          {
+            "node": "Validate Prisma Schema",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate NestJS Entities": {
+      "main": [
+        [
+          {
+            "node": "Test Prisma Relations",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate Prisma Schema": {
+      "main": [
+        [
+          {
+            "node": "Consolidate Results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Test Prisma Relations": {
+      "main": [
+        [
+          {
+            "node": "Consolidate Results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Remix Types": {
+      "main": [
+        [
+          {
+            "node": "Consolidate Results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Consolidate Results": {
+      "main": [
+        [
+          {
+            "node": "Send Notification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Notification": {
+      "main": [
+        [
+          {
+            "node": "Generate Report",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Report": {
+      "main": [
+        [
+          {
+            "node": "Log to Database",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {},
+  "tags": ["prisma", "database", "migration", "orm", "nestjs", "remix"]
+}

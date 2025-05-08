@@ -1,0 +1,276 @@
+{
+  "name": "Alertes Complexité PHP Avancées",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 12 * * 1-5"
+            }
+          ]
+        }
+      },
+      "id": "8e9e647f-14cf-4302-9527-180e7d1f7de2",
+      "name": "Trigger quotidien",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Configuration des seuils d'alerte avancés\nreturn {\n  // Seuils de complexité pour différentes catégories\n  complexityThresholds: {\n    critical: 25,    // Complexité critique nécessitant une action immédiate\n    high: 15,        // Complexité élevée\n    medium: 10       // Complexité moyenne\n  },\n  \n  // Configuration des alertes\n  alerts: {\n    // Activer/désactiver les canaux de notification\n    channels: {\n      email: true,\n      slack: true,\n      teams: false,\n      webhook: true\n    },\n    \n    // Destinataires des alertes par niveau\n    recipients: {\n      critical: [\"cto@example.com\", \"tech-lead@example.com\"],\n      high: [\"dev-team@example.com\", \"tech-lead@example.com\"],\n      all: [\"quality-dashboard@example.com\"]\n    },\n    \n    // Endpoints webhook\n    webhooks: {\n      jira: process.env.JIRA_WEBHOOK_URL || \"\",\n      slack: process.env.SLACK_WEBHOOK_PHP_QUALITY || \"\",\n      teams: process.env.TEAMS_WEBHOOK_URL || \"\"\n    },\n    \n    // Configuration des options de regroupement\n    grouping: {\n      byDirectory: true,     // Regrouper les fichiers par répertoire\n      byComplexity: true,    // Regrouper par niveau de complexité\n      maxFilesPerAlert: 20   // Nombre maximum de fichiers par alerte\n    }\n  },\n  \n  // Configuration de l'environnement\n  environment: {\n    dashboardUrl: \"https://dashboard.example.com/php-analysis\",\n    repoUrl: \"https://github.com/organization/project/blob/main/\",\n    jiraProject: \"PHP\",\n    supabaseConfig: {\n      url: process.env.SUPABASE_URL || \"\",\n      table: \"php_analysis.files\"\n    }\n  },\n  \n  // Options avancées\n  advanced: {\n    autoCreateTickets: true,           // Créer automatiquement des tickets Jira\n    intelligentGrouping: true,         // Utiliser le regroupement intelligent\n    ignoreGeneratedFiles: true,        // Ignorer les fichiers générés automatiquement\n    priorityCalculationAlgorithm: \"complexityAndDependencies\"  // Algorithme de calcul de priorité\n  }\n};"
+      },
+      "id": "f3c2b6fc-9912-4c87-a1e3-d29f2f8f85fa",
+      "name": "Configuration avancée",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [420, 300]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "-- Requête SQL pour récupérer les fichiers PHP par niveau de complexité\nWITH complexity_levels AS (\n  SELECT\n    id,\n    file_path,\n    last_analyzed,\n    complexity_score,\n    loc,\n    user_id,\n    CASE\n      WHEN complexity_score >= {{$node[\"Configuration avancée\"].json[\"complexityThresholds\"][\"critical\"]}} THEN 'critical'\n      WHEN complexity_score >= {{$node[\"Configuration avancée\"].json[\"complexityThresholds\"][\"high\"]}} THEN 'high'\n      WHEN complexity_score >= {{$node[\"Configuration avancée\"].json[\"complexityThresholds\"][\"medium\"]}} THEN 'medium'\n      ELSE 'low'\n    END AS complexity_level,\n    -- Extraction du répertoire (tout avant le dernier slash)\n    REGEXP_REPLACE(file_path, '/[^/]*$', '') AS directory\n  FROM\n    php_analysis.files\n  WHERE\n    last_analyzed > NOW() - INTERVAL '1 day'\n    AND complexity_score >= {{$node[\"Configuration avancée\"].json[\"complexityThresholds\"][\"medium\"]}}\n),\n-- Regroupement par répertoire pour les statistiques\ndirectory_stats AS (\n  SELECT\n    directory,\n    COUNT(*) AS file_count,\n    AVG(complexity_score) AS avg_complexity,\n    MAX(complexity_score) AS max_complexity,\n    COUNT(*) FILTER (WHERE complexity_level = 'critical') AS critical_files,\n    COUNT(*) FILTER (WHERE complexity_level = 'high') AS high_files,\n    COUNT(*) FILTER (WHERE complexity_level = 'medium') AS medium_files\n  FROM\n    complexity_levels\n  GROUP BY\n    directory\n),\n-- Récupération des alertes existantes pour ne pas dupliquer\nexisting_alerts AS (\n  SELECT\n    file_id,\n    severity,\n    message\n  FROM\n    php_analysis.alerts\n  WHERE\n    alert_type = 'complexity'\n    AND resolved = FALSE\n)\n-- Requête principale avec toutes les données nécessaires\nSELECT\n  cl.id,\n  cl.file_path,\n  SPLIT_PART(cl.file_path, '/', -1) AS filename,\n  cl.complexity_score,\n  cl.loc,\n  cl.last_analyzed,\n  cl.complexity_level,\n  cl.directory,\n  ds.file_count AS directory_file_count,\n  ds.avg_complexity AS directory_avg_complexity,\n  ds.max_complexity AS directory_max_complexity,\n  ds.critical_files AS directory_critical_files,\n  ds.high_files AS directory_high_files,\n  ds.medium_files AS directory_medium_files,\n  -- Vérifier si une alerte existe déjà pour ce fichier\n  EXISTS (SELECT 1 FROM existing_alerts WHERE file_id = cl.id) AS has_existing_alert\nFROM\n  complexity_levels cl\nJOIN\n  directory_stats ds ON cl.directory = ds.directory\nORDER BY\n  cl.complexity_score DESC, cl.complexity_level, cl.directory;",
+        "additionalFields": {}
+      },
+      "id": "738a0b21-2d4c-4b74-a9d9-eb5e92d22e39",
+      "name": "Récupération des fichiers complexes",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 1,
+      "position": [600, 300],
+      "credentials": {
+        "postgres": {
+          "id": "supabase-postgres",
+          "name": "Supabase Postgres"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Traitement et préparation des données pour les alertes\n\n// Récupération des données\nconst files = $input.all();\nconst config = $node[\"Configuration avancée\"].json;\n\n// Fonction pour calculer la priorité d'un fichier\nconst calculatePriority = (file) => {\n  let score = 0;\n  \n  // Facteur principal: niveau de complexité\n  switch(file.complexity_level) {\n    case 'critical': score += 100; break;\n    case 'high': score += 50; break;\n    case 'medium': score += 25; break;\n    default: score += 10;\n  }\n  \n  // Autres facteurs d'influence\n  // Nombre de lignes (les plus grands fichiers sont potentiellement plus problématiques)\n  score += Math.min(file.loc / 50, 20); // Maximum +20 points pour les fichiers très grands\n  \n  // Influence du répertoire\n  // Les répertoires avec beaucoup de fichiers complexes sont prioritaires\n  score += (file.directory_critical_files * 5) + (file.directory_high_files * 2);\n  \n  // Si le fichier a déjà une alerte active, légèrement moins prioritaire\n  if (file.has_existing_alert) {\n    score -= 10;\n  }\n  \n  return score;\n};\n\n// Fonction pour déterminer si un fichier doit être ignoré\nconst shouldIgnoreFile = (file) => {\n  // Ignorer les fichiers générés automatiquement selon la configuration\n  if (config.advanced.ignoreGeneratedFiles) {\n    // Patterns courants pour les fichiers générés\n    const generatedPatterns = [\n      /\\.generated\\.php$/i,\n      /\\.g\\.php$/i,\n      /\\.auto\\.php$/i,\n      /vendor\\//i,\n      /node_modules\\//i\n    ];\n    \n    // Vérifier si le fichier correspond à un pattern ignoré\n    return generatedPatterns.some(pattern => pattern.test(file.file_path));\n  }\n  \n  return false;\n};\n\n// Filtrer et trier les fichiers\nconst processedFiles = files\n  .filter(file => !shouldIgnoreFile(file))\n  .map(file => {\n    return {\n      ...file,\n      priority: calculatePriority(file)\n    };\n  })\n  .sort((a, b) => b.priority - a.priority);\n\n// Regrouper les fichiers\nconst groupFiles = () => {\n  const groups = {\n    critical: [],\n    high: [],\n    medium: []\n  };\n  \n  // Répartir par niveau de complexité\n  processedFiles.forEach(file => {\n    if (groups[file.complexity_level]) {\n      groups[file.complexity_level].push(file);\n    }\n  });\n  \n  // Limiter le nombre de fichiers par groupe\n  Object.keys(groups).forEach(level => {\n    if (groups[level].length > config.alerts.grouping.maxFilesPerAlert) {\n      groups[level] = groups[level].slice(0, config.alerts.grouping.maxFilesPerAlert);\n    }\n  });\n  \n  return groups;\n};\n\n// Créer les groupes\nconst fileGroups = groupFiles();\n\n// Préparer les données d'alerte\nconst alertData = {\n  hasComplexFiles: processedFiles.length > 0,\n  fileCount: processedFiles.length,\n  criticalCount: fileGroups.critical.length,\n  highCount: fileGroups.high.length,\n  mediumCount: fileGroups.medium.length,\n  fileGroups,\n  config,\n  // Générer les destinataires en fonction des niveaux de complexité détectés\n  recipients: [\n    ...new Set([\n      ...(fileGroups.critical.length > 0 ? config.alerts.recipients.critical : []),\n      ...(fileGroups.high.length > 0 ? config.alerts.recipients.high : []),\n      ...config.alerts.recipients.all\n    ])\n  ]\n};\n\nreturn alertData;"
+      },
+      "id": "34e1c4e1-c0b5-4c39-a8f6-1a90a2a7e5c9",
+      "name": "Préparation des alertes",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [780, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ $json.hasComplexFiles }}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "id": "8b5e22c5-89f9-4d8c-9f21-8e9daeeb1ddb",
+      "name": "Fichiers complexes détectés?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [960, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Génération des formats de notification\nconst data = $input.item.json;\nconst config = data.config;\n\n// 1. Générer le HTML pour l'email\nconst generateEmailHtml = () => {\n  let html = `\n  <div style=\"font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto;\">\n    <h2 style=\"color: #d9534f;\">${data.criticalCount > 0 ? '🚨 ALERTE CRITIQUE' : '⚠️ Alerte'} : Détection de fichiers PHP complexes</h2>\n    \n    <p>L'analyse de code a identifié <strong>${data.fileCount} fichiers PHP</strong> dépassant les seuils de complexité acceptables :</p>\n    \n    <ul>\n      ${data.criticalCount > 0 ? `<li><strong style=\"color:#d9534f;\">${data.criticalCount} fichiers critiques</strong> (complexité ≥ ${config.complexityThresholds.critical})</li>` : ''}\n      ${data.highCount > 0 ? `<li><strong style=\"color:#f0ad4e;\">${data.highCount} fichiers à complexité élevée</strong> (complexité ≥ ${config.complexityThresholds.high})</li>` : ''}\n      ${data.mediumCount > 0 ? `<li><strong style=\"color:#5bc0de;\">${data.mediumCount} fichiers à complexité moyenne</strong> (complexité ≥ ${config.complexityThresholds.medium})</li>` : ''}\n    </ul>\n  `;\n  \n  // Ajouter les tableaux pour chaque niveau de complexité\n  const complexityLevels = ['critical', 'high', 'medium'];\n  const levelColors = {\n    critical: '#d9534f',\n    high: '#f0ad4e',\n    medium: '#5bc0de'\n  };\n  const levelTitles = {\n    critical: 'Fichiers critiques nécessitant une action immédiate',\n    high: 'Fichiers à complexité élevée',\n    medium: 'Fichiers à complexité moyenne'\n  };\n  \n  complexityLevels.forEach(level => {\n    const files = data.fileGroups[level];\n    if (files && files.length > 0) {\n      html += `\n      <h3 style=\"margin-top: 25px; color: ${levelColors[level]}; border-bottom: 1px solid ${levelColors[level]};\">${levelTitles[level]}</h3>\n      \n      <table style=\"width: 100%; border-collapse: collapse; margin-top: 15px;\">\n        <thead>\n          <tr style=\"background-color: #f5f5f5;\">\n            <th style=\"padding: 8px; text-align: left; border: 1px solid #ddd;\">Fichier</th>\n            <th style=\"padding: 8px; text-align: center; border: 1px solid #ddd;\">Complexité</th>\n            <th style=\"padding: 8px; text-align: center; border: 1px solid #ddd;\">Lignes</th>\n            <th style=\"padding: 8px; text-align: center; border: 1px solid #ddd;\">Répertoire</th>\n          </tr>\n        </thead>\n        <tbody>\n      `;\n      \n      files.forEach(file => {\n        const filename = file.file_path.split('/').pop();\n        const repoUrl = config.environment.repoUrl + file.file_path;\n        \n        html += `\n          <tr>\n            <td style=\"padding: 8px; border: 1px solid #ddd;\">\n              <a href=\"${repoUrl}\" target=\"_blank\">${filename}</a>\n            </td>\n            <td style=\"padding: 8px; text-align: center; border: 1px solid #ddd; background-color: ${levelColors[level]}; color: white;\">\n              ${file.complexity_score}\n            </td>\n            <td style=\"padding: 8px; text-align: center; border: 1px solid #ddd;\">\n              ${file.loc}\n            </td>\n            <td style=\"padding: 8px; text-align: left; border: 1px solid #ddd;\">\n              ${file.directory}\n              ${file.directory_critical_files > 0 ? `<span style=\"color: #d9534f; margin-left: 5px;\">(${file.directory_critical_files} critiques)</span>` : ''}\n            </td>\n          </tr>\n        `;\n      });\n      \n      html += `\n        </tbody>\n      </table>\n      `;\n    }\n  });\n  \n  // Ajouter les recommandations et le footer\n  html += `\n    <div style=\"margin-top: 30px; background-color: #f8f9fa; padding: 15px; border-radius: 5px;\">\n      <h3 style=\"margin-top: 0; color: #333;\">Recommandations</h3>\n      <ul>\n        ${data.criticalCount > 0 ? '<li>Réduisez immédiatement la complexité des fichiers critiques</li>' : ''}\n        <li>Refactorisez les fonctions complexes en les divisant en fonctions plus petites</li>\n        <li>Mettez en place des tests automatisés avant de refactoriser</li>\n        <li>Consultez le <a href=\"${config.environment.dashboardUrl}\">tableau de bord d'analyse PHP</a> pour plus de détails</li>\n      </ul>\n    </div>\n    \n    <div style=\"margin-top: 30px; padding-top: 15px; border-top: 1px solid #eee; color: #777; font-size: 0.9em;\">\n      <p>Cette alerte a été générée automatiquement par le système d'analyse de complexité PHP.</p>\n    </div>\n  </div>\n  `;\n  \n  return html;\n};\n\n// 2. Générer les blocs Slack\nconst generateSlackBlocks = () => {\n  const blocks = [\n    {\n      \"type\": \"header\",\n      \"text\": {\n        \"type\": \"plain_text\",\n        \"text\": `${data.criticalCount > 0 ? '🚨 ALERTE CRITIQUE' : '⚠️ Alerte'} : Fichiers PHP complexes`,\n        \"emoji\": true\n      }\n    },\n    {\n      \"type\": \"section\",\n      \"text\": {\n        \"type\": \"mrkdwn\",\n        \"text\": `*${data.fileCount} fichiers PHP* dépassent les seuils de complexité acceptables :\n${data.criticalCount > 0 ? `• *${data.criticalCount} fichiers critiques* (complexité ≥ ${config.complexityThresholds.critical})\\n` : ''}\n${data.highCount > 0 ? `• *${data.highCount} fichiers à complexité élevée* (complexité ≥ ${config.complexityThresholds.high})\\n` : ''}\n${data.mediumCount > 0 ? `• *${data.mediumCount} fichiers à complexité moyenne* (complexité ≥ ${config.complexityThresholds.medium})\\n` : ''}`\n      }\n    },\n    {\n      \"type\": \"divider\"\n    }\n  ];\n  \n  // Ajouter les fichiers critiques en priorité\n  if (data.criticalCount > 0) {\n    blocks.push({\n      \"type\": \"section\",\n      \"text\": {\n        \"type\": \"mrkdwn\",\n        \"text\": \"*Fichiers critiques nécessitant une action immédiate :*\"\n      }\n    });\n    \n    data.fileGroups.critical.slice(0, 5).forEach(file => {\n      blocks.push({\n        \"type\": \"section\",\n        \"text\": {\n          \"type\": \"mrkdwn\",\n          \"text\": `• <${config.environment.repoUrl + file.file_path}|${file.file_path}>\\n   Complexité: *${file.complexity_score}* | Lignes: ${file.loc}`\n        }\n      });\n    });\n  }\n  \n  // Ajouter les fichiers à haute complexité\n  if (data.highCount > 0 && blocks.length < 15) {\n    blocks.push({\n      \"type\": \"section\",\n      \"text\": {\n        \"type\": \"mrkdwn\",\n        \"text\": \"*Fichiers à complexité élevée :*\"\n      }\n    });\n    \n    data.fileGroups.high.slice(0, 3).forEach(file => {\n      blocks.push({\n        \"type\": \"section\",\n        \"text\": {\n          \"type\": \"mrkdwn\",\n          \"text\": `• <${config.environment.repoUrl + file.file_path}|${file.file_path}>\\n   Complexité: *${file.complexity_score}* | Lignes: ${file.loc}`\n        }\n      });\n    });\n  }\n  \n  // Ajouter le lien vers le tableau de bord\n  blocks.push({\n    \"type\": \"context\",\n    \"elements\": [\n      {\n        \"type\": \"mrkdwn\",\n        \"text\": `<${config.environment.dashboardUrl}|Voir le tableau de bord complet d'analyse PHP>`\n      }\n    ]\n  });\n  \n  return blocks;\n};\n\n// 3. Générer la structure de ticket Jira\nconst generateJiraTicket = () => {\n  let summary = \"\";\n  if (data.criticalCount > 0) {\n    summary = `[URGENT] Refactoriser ${data.criticalCount} fichiers PHP critiques`;\n  } else if (data.highCount > 0) {\n    summary = `Refactoriser ${data.highCount} fichiers PHP à complexité élevée`;\n  } else {\n    summary = `Améliorer ${data.mediumCount} fichiers PHP à complexité moyenne`;\n  }\n  \n  // Construire la description\n  let description = `h2. Alerte de complexité de code PHP\\n\\n`;\n  description += `L'analyse de code a identifié *${data.fileCount} fichiers PHP* dépassant les seuils de complexité acceptables.\\n\\n`;\n  \n  if (data.criticalCount > 0) {\n    description += `h3. Fichiers critiques (${data.criticalCount})\\n`;\n    data.fileGroups.critical.forEach(file => {\n      description += `* [${file.file_path}|${config.environment.repoUrl + file.file_path}] - Complexité: *${file.complexity_score}* - Lignes: ${file.loc}\\n`;\n    });\n    description += \"\\n\";\n  }\n  \n  if (data.highCount > 0) {\n    description += `h3. Fichiers à complexité élevée (${data.highCount})\\n`;\n    data.fileGroups.high.forEach(file => {\n      description += `* [${file.file_path}|${config.environment.repoUrl + file.file_path}] - Complexité: *${file.complexity_score}* - Lignes: ${file.loc}\\n`;\n    });\n    description += \"\\n\";\n  }\n  \n  description += `h3. Recommandations\\n`;\n  description += `* Refactoriser les fichiers critiques en priorité\\n`;\n  description += `* Diviser les fonctions complexes en fonctions plus petites\\n`;\n  description += `* Ajouter des tests unitaires avant la refactorisation\\n`;\n  description += `* Consulter le [tableau de bord d'analyse|${config.environment.dashboardUrl}] pour plus de détails\\n`;\n  \n  // Structure du ticket\n  return {\n    fields: {\n      project: { key: config.environment.jiraProject },\n      summary: summary,\n      description: description,\n      issuetype: { name: data.criticalCount > 0 ? \"Bug\" : \"Task\" },\n      priority: { name: data.criticalCount > 0 ? \"Highest\" : data.highCount > 0 ? \"High\" : \"Medium\" },\n      labels: [\"refactoring\", \"php\", \"code-quality\", \"technical-debt\"]\n    }\n  };\n};\n\n// 4. Générer les données pour enregistrer les alertes dans Supabase\nconst generateAlertRecords = () => {\n  const alerts = [];\n  \n  // Pour chaque fichier dans chaque groupe\n  Object.keys(data.fileGroups).forEach(level => {\n    data.fileGroups[level].forEach(file => {\n      if (!file.has_existing_alert) {\n        alerts.push({\n          file_id: file.id,\n          alert_type: \"complexity\",\n          severity: level,\n          message: `Complexité cyclomatique élevée (${file.complexity_score})`,\n          line_number: null, // Pas de ligne spécifique pour la complexité globale\n          created_at: new Date().toISOString(),\n          resolved: false\n        });\n      }\n    });\n  });\n  \n  return alerts;\n};\n\n// Génération de tous les formats\nreturn {\n  hasComplexFiles: data.hasComplexFiles,\n  emailHtml: generateEmailHtml(),\n  slackBlocks: generateSlackBlocks(),\n  jiraTicket: generateJiraTicket(),\n  alertRecords: generateAlertRecords(),\n  recipients: data.recipients,\n  config: data.config,\n  fileCount: data.fileCount,\n  criticalCount: data.criticalCount,\n  highCount: data.highCount,\n  mediumCount: data.mediumCount\n};"
+      },
+      "id": "21c8e49f-5521-4e35-9f8b-0c1b2c3d4e5f",
+      "name": "Génération des notifications",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [1140, 240]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "-- Insérer les nouvelles alertes\nINSERT INTO php_analysis.alerts\n  (file_id, alert_type, severity, message, created_at, resolved)\nSELECT\n  (data->>'file_id')::uuid,\n  data->>'alert_type',\n  data->>'severity',\n  data->>'message',\n  (data->>'created_at')::timestamp with time zone,\n  (data->>'resolved')::boolean\nFROM json_array_elements({{ JSON.stringify($node[\"Génération des notifications\"].json[\"alertRecords\"]) }}::json) AS data\nRETURNING id;",
+        "additionalFields": {}
+      },
+      "id": "81a2b3c4-5d6e-7f8g-9h0i-1j2k3l4m5n6o",
+      "name": "Enregistrement des alertes",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 1,
+      "position": [1320, 140],
+      "credentials": {
+        "postgres": {
+          "id": "supabase-postgres",
+          "name": "Supabase Postgres"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "php-analyzer@example.com",
+        "toEmail": "={{ $node[\"Génération des notifications\"].json[\"recipients\"].join(\",\") }}",
+        "subject": "={{ $node[\"Génération des notifications\"].json[\"criticalCount\"] > 0 ? \"🚨 ALERTE CRITIQUE : \" : \"⚠️ Alerte : \" }} {{ $node[\"Génération des notifications\"].json[\"fileCount\"] }} fichiers PHP complexes détectés",
+        "html": "={{ $node[\"Génération des notifications\"].json[\"emailHtml\"] }}",
+        "options": {}
+      },
+      "id": "f0b7b95d-d30e-4f9e-8be3-d36fad21b538",
+      "name": "Envoi email",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 1,
+      "position": [1320, 240]
+    },
+    {
+      "parameters": {
+        "authentication": "genericCredentialType",
+        "httpMethod": "POST",
+        "url": "={{ $node[\"Génération des notifications\"].json[\"config\"][\"alerts\"][\"webhooks\"][\"slack\"] }}",
+        "jsonParameters": true,
+        "options": {},
+        "bodyParametersJson": "={\n  \"blocks\": {{$node[\"Génération des notifications\"].json[\"slackBlocks\"]}}\n}"
+      },
+      "id": "78a20fd5-2fa4-4e3c-896c-b91d9e1d8eb7",
+      "name": "Notification Slack",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [1320, 340]
+    },
+    {
+      "parameters": {
+        "authentication": "genericCredentialType",
+        "httpMethod": "POST",
+        "url": "={{ $node[\"Génération des notifications\"].json[\"config\"][\"alerts\"][\"webhooks\"][\"jira\"] }}",
+        "jsonParameters": true,
+        "options": {},
+        "bodyParametersJson": "={{ JSON.stringify($node[\"Génération des notifications\"].json[\"jiraTicket\"]) }}"
+      },
+      "id": "90a1b2c3-4d5e-6f7g-8h9i-0j1k2l3m4n5o",
+      "name": "Création ticket Jira",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [1320, 440]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Aucun fichier complexe détecté\nreturn {\n  message: \"Analyse terminée : aucun fichier PHP complexe détecté au-dessus des seuils configurés.\",\n  date: new Date().toISOString(),\n  thresholds: $node[\"Configuration avancée\"].json.complexityThresholds\n};"
+      },
+      "id": "8d91bb2c-ca92-4b1c-b07a-f5f15a3ee4ef",
+      "name": "Aucun fichier complexe",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [1140, 380]
+    }
+  ],
+  "connections": {
+    "Trigger quotidien": {
+      "main": [
+        [
+          {
+            "node": "Configuration avancée",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Configuration avancée": {
+      "main": [
+        [
+          {
+            "node": "Récupération des fichiers complexes",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Récupération des fichiers complexes": {
+      "main": [
+        [
+          {
+            "node": "Préparation des alertes",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Préparation des alertes": {
+      "main": [
+        [
+          {
+            "node": "Fichiers complexes détectés?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fichiers complexes détectés?": {
+      "main": [
+        [
+          {
+            "node": "Génération des notifications",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Aucun fichier complexe",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Génération des notifications": {
+      "main": [
+        [
+          {
+            "node": "Enregistrement des alertes",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Envoi email",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Notification Slack",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Création ticket Jira",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveExecutionProgress": true,
+    "saveManualExecutions": true,
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": ""
+  },
+  "staticData": null,
+  "tags": [
+    {
+      "id": 1,
+      "name": "php-analyzer"
+    },
+    {
+      "id": 2,
+      "name": "alertes-avancées"
+    },
+    {
+      "id": 3,
+      "name": "complexité"
+    }
+  ],
+  "pinData": {},
+  "versionId": "65ad0b85-60ec-4823-a30d-a0e4cc5e8d77",
+  "meta": {
+    "instanceId": "123456-7890-abc-def-123456789012"
+  }
+}

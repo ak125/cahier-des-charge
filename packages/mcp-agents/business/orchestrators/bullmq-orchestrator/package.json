@@ -1,0 +1,13 @@
+{
+  "name": "@mcp/bullmq-orchestrator",
+  "version": "1.0.0",
+  "description": "Agent MCP bullmq-orchestrator",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "jest"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}

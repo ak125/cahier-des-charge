@@ -1,0 +1,66 @@
+{
+  "cahierDesChargesPath": "/workspaces/cahier-des-charge/docs/cahier-des-charges",
+  "outputDir": "./reports",
+  "parallel": true,
+  "verbose": false,
+  "showMetrics": true,
+  "autoFix": true,
+  "generateMigrationPlan": true,
+  "validateWithCahierDesCharges": true,
+  "agents": {
+    "default": ["business", "structure", "data", "dependency", "quality", "strategy", "assembler"],
+    "quick": ["structure", "data", "strategy"],
+    "full": [
+      "business",
+      "structure",
+      "data",
+      "dependency",
+      "quality",
+      "strategy",
+      "security",
+      "assembler"
+    ]
+  },
+  "migrationSteps": [
+    {
+      "name": "Analyse initiale",
+      "description": "Analyse statique du code PHP legacy",
+      "agents": ["analysis/structure", "data", "dependency"]
+    },
+    {
+      "name": "Planification de la migration",
+      "description": "Génération du plan de migration détaillé",
+      "agents": ["migration/business", "strategy"]
+    },
+    {
+      "name": "Migration de la base de données",
+      "description": "Génération du schéma Prisma et migration des données",
+      "agents": ["analysis/data"]
+    },
+    {
+      "name": "Génération du code",
+      "description": "Création des controllers, services et composants",
+      "agents": ["analysis/structure", "business", "assembler"]
+    },
+    {
+      "name": "Tests et validation",
+      "description": "Vérification de la qualité et sécurité",
+      "agents": ["quality/quality", "security"]
+    }
+  ],
+  "backendTech": {
+    "framework": "NestJS",
+    "database": "PostgreSQL",
+    "orm": "Prisma",
+    "auth": "JWT",
+    "validation": "class-validator"
+  },
+  "frontendTech": {
+    "framework": "Remix",
+    "styling": "TailwindCSS",
+    "stateManagement": "useState/useContext",
+    "formHandling": "remix-validated-form"
+  },
+  "customAgents": {},
+  "excludePaths": ["node_modules", "vendor", ".git", "tests"]
+}

@@ -1,0 +1,324 @@
+[
+  {
+    "groupName": "Groupe 1 (74 fichiers)",
+    "strategy": "merge",
+    "keepFile": "tools/tests/tests/BaseAgent.json",
+    "filesToProcess": [
+      "tools/tests/tests/agent-audit.json",
+      "tools/tests/tests/agent-business.json",
+      "tools/tests/tests/agent-donnees.json",
+      "tools/tests/tests/agent-quality.json",
+      "tools/tests/tests/agent-structure.json",
+      "tools/tests/tests/agent-version-auditor.json",
+      "tools/tests/tests/agent8-optimizer.json",
+      "tools/tests/tests/agents.json",
+      "tools/tests/tests/analyze-security-risks.json",
+      "tools/tests/tests/audit-selector.json",
+      "tools/tests/tests/auto-pr-agent.json",
+      "tools/tests/tests/base-agent.json",
+      "tools/tests/tests/business-agent.json",
+      "tools/tests/tests/canonical-sync-agent.json",
+      "tools/tests/tests/ci-tester.json",
+      "tools/tests/tests/classifier.json",
+      "tools/tests/tests/consolidator.json",
+      "tools/tests/tests/data-agent.json",
+      "tools/tests/tests/data-verifier.json",
+      "tools/tests/tests/debt-detector.json",
+      "tools/tests/tests/dependency-agent.json",
+      "tools/tests/tests/dev-integrator.json",
+      "tools/tests/tests/dev-linter.json",
+      "tools/tests/tests/devops-preview.json",
+      "tools/tests/tests/diff-verifier.json",
+      "tools/tests/tests/discovery-agent.json",
+      "tools/tests/tests/dynamic-sql-extractor.json",
+      "tools/tests/tests/generate-migration-plan.json",
+      "tools/tests/tests/generate-prisma-model.json",
+      "tools/tests/tests/helpers.json",
+      "tools/tests/tests/index.json",
+      "tools/tests/tests/inject-to-supabase.json",
+      "tools/tests/tests/mcp-integrator.json",
+      "tools/tests/tests/mcp-manifest-manager.json",
+      "tools/tests/tests/mcp-verifier.json",
+      "tools/tests/tests/mcp-verifierworker.json",
+      "tools/tests/tests/metrics-service.json",
+      "tools/tests/tests/migration-strategist.json",
+      "tools/tests/tests/monitoring-check.json",
+      "tools/tests/tests/mysql-to-pg.json",
+      "tools/tests/tests/mysql-to-postgresql.json",
+      "tools/tests/tests/notification-service.json",
+      "packages/business/config/notifier.json",
+      "tools/tests/tests/php-discovery-engine.json",
+      "tools/tests/tests/php-router-audit.json",
+      "tools/tests/tests/php-sql-mapper.json",
+      "tools/tests/tests/php-sql-sync-mapper.json",
+      "tools/tests/tests/pipeline-strategy-auditor.json",
+      "tools/tests/tests/pr-creator.json",
+      "tools/tests/tests/progressive-migration-agent.json",
+      "tools/tests/tests/qa-confirmer.json",
+      "tools/tests/tests/quality-agent.json",
+      "tools/tests/tests/relational-normalizer.json",
+      "tools/tests/tests/remediator.json",
+      "tools/generators/migration-agent/schema.json",
+      "tools/tests/tests/selector-agent.json",
+      "tools/tests/tests/semantic-table-mapper.json",
+      "tools/tests/tests/seo-audit-runner.json",
+      "tools/tests/tests/seo-content-enhancer.json",
+      "tools/tests/tests/seo-mcp-controller.json",
+      "tools/tests/tests/seo-redirect-mapper.json",
+      "tools/tests/tests/sql-analysis-runner.json",
+      "tools/tests/tests/sql-debt-audit.json",
+      "tools/tests/tests/sql-prisma-migration-planner.json",
+      "tools/tests/tests/status-writer.json",
+      "tools/tests/tests/structure-agent.json",
+      "tools/tests/tests/supabase-optimization-tracker.json",
+      "tools/tests/tests/table-cartographer.json",
+      "tools/tests/tests/table-classifier.json",
+      "tools/tests/tests/type-audit-agent.json",
+      "tools/tests/tests/type-auditor.json",
+      "tools/tests/tests/type-converter.json",
+      "tools/tests/tests/type-mapper.json"
+    ],
+    "similarity": 0.7615068493150684,
+    "recommendations": [
+      "Les fichiers ont des parties communes et pourraient être fusionnés."
+    ]
+  },
+  {
+    "groupName": "Groupe 2 (7 fichiers)",
+    "strategy": "merge",
+    "keepFile": "tools/tests/tests/BaseAgent-interface.json",
+    "filesToProcess": [
+      "tools/tests/tests/auto-pr-agent-interface.json",
+      "tools/tests/tests/ci-tester-interface.json",
+      "tools/tests/tests/mcp-integrator-interface.json",
+      "tools/tests/tests/selector-agent-interface.json",
+      "tools/tests/tests/seo-audit-runner-interface.json",
+      "tools/tests/tests/seo-mcp-controller-interface.json"
+    ],
+    "similarity": 0.82,
+    "recommendations": [
+      "Les fichiers ont des parties communes et pourraient être fusionnés."
+    ]
+  },
+  {
+    "groupName": "Groupe 3 (39 fichiers)",
+    "strategy": "keep-one",
+    "keepFile": "apps/mcp-server-php/src/routes/php-analyzer.ts",
+    "filesToProcess": [
+      "apps/mcp-server-php/src/agents/php-analyzer-v2.ts",
+      "archives/legacy-agents/qa-analyzer.ts",
+      "packages/business/business/analyzers/qa-analyzer/qa-analyzer-87f574ad.ts",
+      "packages/business/business/analyzers/qa-analyzer/qa-analyzer-ca66804d.ts",
+      "packages/business/business/analyzers/qa-analyzer/qa-analyzer-fd74910c.ts",
+      "apps/frontend/src/lib/validation/index.ts",
+      "apps/mcp-server-postgres/src/services/prisma-generator.ts",
+      "archives/legacy-agents/core/BaseAgent.ts",
+      "archives/legacy-agents/integration/metrics-service.ts",
+      "apps/frontend/services/notification-service.ts",
+      "archives/legacy-agents/migration/business-agent.ts",
+      "archives/legacy-agents/migration/php-to-remix/canonical-sync-agent.ts",
+      "archives/legacy-agents/migration/mysql-analyzer/core/classifier.ts",
+      "archives/legacy-agents/monitoring/notifier.ts",
+      "archives/legacy-agents/monitoring/supabase-optimization-tracker.ts",
+      "archives/legacy-agents/migration/mysql-analyzer/core/table-classifier.ts",
+      "archives/legacy-agents/optimization/SupabaseOptimizationTracker.ts",
+      "archives/legacy-agents/quality/quality-agent.ts",
+      "packages/business/business/agents/agent/agents-45ba7fad.ts",
+      "packages/business/business/agents/agent/business-agent-4e464a47.ts",
+      "packages/business/business/agents/agent/canonical-sync-agent-3aea47f2-23307c49.ts",
+      "packages/business/business/agents/agent/classifier-agent-41640bcb.ts",
+      "packages/business/business/agents/agent/metrics-service-agent-417380c0.ts",
+      "packages/business/business/agents/agent/notification-service-agent-5e3f1714.ts",
+      "packages/business/business/agents/agent/notifier-agent-4aab3bb3.ts",
+      "packages/business/business/agents/agent/quality-agent-34810a86.ts",
+      "packages/business/business/agents/agent/table-classifier-agent-55ddb7bf-8284975b.ts",
+      "packages/mcp-agents/misc/notificationserviceagent/notification-service-agent.ts",
+      "packages/mcp-agents/analyzers/agents/agents.ts",
+      "archives/legacy-agents/core/base-agent.ts",
+      "packages/mcp-agents/analyzers/data-analyzer/data-analyzer-v2.ts",
+      "packages/mcp-agents/analyzers/dependency-analyzer/dependency-analyzer-v2.ts",
+      "packages/mcp-agents/analyzers/structure-analyzer/structure-analyzer-v2.ts",
+      "packages/mcp-agents/qa-analyzer/qa-analyzer-v2.ts",
+      "archives/legacy-agents/seo/index-10.ts",
+      "archives/legacy-agents/seo/index-11.ts",
+      "archives/legacy-agents/seo/index-14.ts",
+      "archives/legacy-agents/seo/index-7.ts"
+    ],
+    "similarity": 0.8699999999999998,
+    "recommendations": [
+      "Les fichiers sont très similaires (>85%), nous recommandons de garder un seul fichier."
+    ]
+  },
+  {
+    "groupName": "Groupe 4 (20 fichiers)",
+    "strategy": "merge",
+    "keepFile": "tools/tests/tests/debt-analyzer.json",
+    "filesToProcess": [
+      "tools/tests/tests/htaccess-route-analyzer.json",
+      "tools/tests/tests/htaccess-router-analyzer.json",
+      "tools/tests/tests/mysql-analyzer.json",
+      "tools/tests/tests/mysql-analyzeroptimizer.json",
+      "tools/tests/tests/nginx-config-analyzer.json",
+      "tools/tests/tests/php-analyzer-agent.json",
+      "tools/tests/tests/php-analyzer-v2.json",
+      "tools/tests/tests/php-analyzer-v3.json",
+      "tools/tests/tests/php-analyzer-v4.json",
+      "tools/tests/tests/php-analyzer.json",
+      "tools/tests/tests/php-analyzertest.json",
+      "tools/tests/tests/php-analyzerworker.json",
+      "tools/tests/tests/qa-analyzer.json",
+      "tools/tests/tests/redis-php-analyzer.json",
+      "tools/tests/tests/relation-analyzer.json",
+      "tools/tests/tests/schema-analyzer.json",
+      "tools/tests/tests/test-abstract-analyzer.json",
+      "tools/tests/tests/test-base-analyzer.json",
+      "tools/tests/tests/test-php-analyzer-v2.json"
+    ],
+    "similarity": 0.7626315789473684,
+    "recommendations": [
+      "Les fichiers ont des parties communes et pourraient être fusionnés."
+    ]
+  },
+  {
+    "groupName": "Groupe 5 (19 fichiers)",
+    "strategy": "keep-one",
+    "keepFile": "migrations/n8n-inventory/migrationpipelinen8n_20250506125602.json",
+    "filesToProcess": [
+      "migrations/n8n-inventory/migrationworkflown8n_20250506125602.json",
+      "migrations/n8n-inventory/n8nupdateauditnode_20250506125602.json",
+      "migrations/n8n-inventory/waverunnern8n_20250506125603.json",
+      "migrations/n8n-inventory/workflows/migrationworkflown8n_20250506130017.json",
+      "migrations/n8n-inventory/workflows/migrationworkflown8n_20250506130018.json",
+      "migrations/n8n-inventory/workflows/n8nupdateauditnode_20250506130017.json",
+      "migrations/n8n-inventory/workflows/n8nupdateauditnode_20250506130019.json",
+      "migrations/n8n-inventory/workflows/waverunnern8n_20250506130017.json",
+      "migrations/n8n-inventory/workflows/waverunnern8n_20250506130019.json",
+      "packages/business/config/migration-workflown8n.json",
+      "packages/business/config/mysql-type-converter.json",
+      "packages/business/config/n8n-update-audit-node.json",
+      "apps/mcp-server-php/tsconfig.json",
+      "packages/business/config/wave-runnern8n.json",
+      "packages/business/templates/filebacklogtemplate.json",
+      "packages/business/workflows/migration-pipeline.json",
+      "packages/business/workflows/migration-workflow.json",
+      "packages/business/workflows/wave-runner.json"
+    ],
+    "similarity": 0.8599999999999999,
+    "recommendations": [
+      "Les fichiers sont très similaires (>85%), nous recommandons de garder un seul fichier."
+    ]
+  },
+  {
+    "groupName": "Groupe 6 (3 fichiers)",
+    "strategy": "merge",
+    "keepFile": "tools/tests/tests/debt-analyzer-interface.json",
+    "filesToProcess": [
+      "tools/tests/tests/mysql-analyzer-interface.json",
+      "tools/tests/tests/schema-analyzer-interface.json"
+    ],
+    "similarity": 0.82,
+    "recommendations": [
+      "Les fichiers ont des parties communes et pourraient être fusionnés."
+    ]
+  },
+  {
+    "groupName": "Groupe 7 (12 fichiers)",
+    "strategy": "merge",
+    "keepFile": "tools/tests/tests/caddy-generator.json",
+    "filesToProcess": [
+      "tools/tests/tests/caddyfile-generator.json",
+      "tools/tests/tests/component-generator.json",
+      "tools/tests/tests/component-generatortest.json",
+      "tools/tests/tests/dev-generator.json",
+      "tools/tests/tests/meta-generator.json",
+      "tools/tests/tests/prisma-generator.json",
+      "tools/tests/tests/prisma-migration-generator.json",
+      "tools/tests/tests/prisma-smart-generator.json",
+      "tools/tests/tests/remix-route-generator.json",
+      "tools/tests/tests/seo-metagenerator.json",
+      "tools/tests/tests/sql-analyzerprisma-builder.json"
+    ],
+    "similarity": 0.75,
+    "recommendations": [
+      "Les fichiers ont des parties communes et pourraient être fusionnés."
+    ]
+  },
+  {
+    "groupName": "Groupe 8 (10 fichiers)",
+    "strategy": "merge",
+    "keepFile": "archives/legacy-agents/api/base-api-agent.ts",
+    "filesToProcess": [
+      "archives/legacy-agents/data/base-data-agent.ts",
+      "archives/legacy-agents/integration/base-integration-agent.ts",
+      "archives/legacy-agents/notification/base-notification-agent.ts",
+      "archives/legacy-agents/orchestration/base-orchestration-agent.ts",
+      "archives/legacy-agents/pipeline/base-pipeline-agent.ts",
+      "archives/legacy-agents/quality/base-quality-agent.ts",
+      "archives/legacy-agents/ui/base-ui-agent.ts",
+      "archives/legacy-agents/utils/base-utils-agent.ts",
+      "archives/legacy-agents/workers/base-workers-agent.ts"
+    ],
+    "similarity": 0.7266666666666666,
+    "recommendations": [
+      "Les fichiers ont des parties communes et pourraient être fusionnés."
+    ]
+  },
+  {
+    "groupName": "Groupe 9 (3 fichiers)",
+    "strategy": "merge",
+    "keepFile": "tools/tests/tests/agents-interface.json",
+    "filesToProcess": [
+      "tools/tests/tests/base-agent-interface.json",
+      "tools/tests/tests/supabase-optimization-tracker-interface.json"
+    ],
+    "similarity": 0.82,
+    "recommendations": [
+      "Les fichiers ont des parties communes et pourraient être fusionnés."
+    ]
+  },
+  {
+    "groupName": "Groupe 10 (3 fichiers)",
+    "strategy": "merge",
+    "keepFile": "packages/business/business/agents/agent/php-analyzer-agent-907ad6a3.ts",
+    "filesToProcess": [
+      "archives/legacy-agents/analysis/php-analyzerworker.ts",
+      "packages/business/business/agents/agent/php-analyzer-v3-agent-0869c227-713d8d73.ts"
+    ],
+    "similarity": 0.825,
+    "recommendations": [
+      "Les fichiers ont des parties communes et pourraient être fusionnés."
+    ]
+  },
+  {
+    "groupName": "Groupe 11 (6 fichiers)",
+    "strategy": "merge",
+    "keepFile": "packages/business/business/agents/agent/agent-audit-agent-06443f3d.ts",
+    "filesToProcess": [
+      "packages/business/business/agents/agent/agent-donnees-agent-52d4ec5c.ts",
+      "packages/business/business/agents/agent/agent-version-auditor-agent-45a4a89d.ts",
+      "packages/mcp-agents/misc/agent-audit-agent/agent-audit-agent.ts",
+      "packages/mcp-agents/misc/agent-donnees-agent/agent-donnees-agent.ts",
+      "packages/mcp-agents/misc/agent-version-auditor-agent/agent-version-auditor-agent.ts"
+    ],
+    "similarity": 0.766,
+    "recommendations": [
+      "Les fichiers ont des parties communes et pourraient être fusionnés."
+    ]
+  },
+  {
+    "groupName": "Groupe 12 (6 fichiers)",
+    "strategy": "merge",
+    "keepFile": "tools/tests/tests/agent-orchestrator.json",
+    "filesToProcess": [
+      "tools/tests/tests/bullmq-orchestrator.json",
+      "tools/tests/tests/coordinator-agent.json",
+      "tools/tests/tests/migration-orchestrator.json",
+      "tools/tests/tests/orchestrator-bridge.json",
+      "tools/tests/tests/orchestrator.json"
+    ],
+    "similarity": 0.798,
+    "recommendations": [
+      "Les fichiers ont des parties communes et pourraient être fusionnés."
+    ]
+  }
+]

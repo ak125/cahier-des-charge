@@ -1,0 +1,17 @@
+/workspaces/cahier-des-charge/packages/business/src/core/interfaces/orchestration/orchestrator
+/workspaces/cahier-des-charge/packages/business/src/orchestration/orchestrators
+/workspaces/cahier-des-charge/packages/business/src/orchestration/orchestrators/orchestrator-bridge
+/workspaces/cahier-des-charge/packages/mcp-agents/business/orchestrators
+/workspaces/cahier-des-charge/packages/mcp-agents/business/orchestrators/bullmq-orchestrator
+/workspaces/cahier-des-charge/packages/mcp-agents/business/orchestrators/bullmqorchestrator
+/workspaces/cahier-des-charge/packages/mcp-agents/interfaces/orchestrator
+/workspaces/cahier-des-charge/packages/mcp-agents/orchestration/orchestrators
+/workspaces/cahier-des-charge/packages/mcp-agents/orchestration/orchestrators/orchestrator-bridge
+/workspaces/cahier-des-charge/packages/mcp-agents/orchestrators
+/workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/agent-orchestrator-agent
+/workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/agentorchestratoragent
+/workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/bullmq-orchestrator-agent
+/workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/migration-orchestrator-agent
+/workspaces/cahier-des-charge/packages/mcp-agents/orchestrators/orchestrator-agent
+/workspaces/cahier-des-charge/packages/mcp-orchestrator
+/workspaces/cahier-des-charge/packages/orchestration/legacy-orchestrators

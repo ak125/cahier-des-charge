@@ -1,0 +1,537 @@
+{
+  "name": "Migration Data Validator",
+  "nodes": [
+    {
+      "parameters": {
+        "authentication": "genericCredentialType",
+        "httpMethod": "POST",
+        "path": "migration-validator",
+        "options": {}
+      },
+      "id": "webhook-trigger",
+      "name": "Webhook Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "position": [100, 200],
+      "webhookId": "migration-validator-webhook"
+    },
+    {
+      "parameters": {
+        "triggerTimes": {}
+      },
+      "id": "manual-trigger",
+      "name": "Déclenchement Manuel",
+      "type": "n8n-nodes-base.manualTrigger",
+      "position": [100, 360]
+    },
+    {
+      "parameters": {
+        "mode": "mergeByPosition"
+      },
+      "id": "merge-triggers",
+      "name": "Fusion des déclencheurs",
+      "type": "n8n-nodes-base.merge",
+      "position": [300, 280]
+    },
+    {
+      "parameters": {
+        "functionCode": "// Récupération du statut de la base de données\nconst { exec } = require('child_process');\n\nreturn new Promise((resolve, reject) => {\n  exec('docker-compose -f docker-compose.dev.yml exec -T postgres-intermediate psql -U postgres -d app_migration -c \"SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = \\'public\\';\"', (error, stdout, stderr) => {\n    if (error) {\n      return resolve({\n        json: {\n          success: false,\n          error: error.message,\n          stage: 'database-check',\n          timestamp: new Date().toISOString()\n        }\n      });\n    }\n    \n    // Extraction du nombre de tables\n    const match = stdout.match(/(\\d+)/);\n    const tableCount = match ? parseInt(match[1], 10) : 0;\n    \n    resolve({\n      json: {\n        success: true,\n        tableCount,\n        stage: 'database-check',\n        timestamp: new Date().toISOString(),\n        event: $input.item.json.event || 'manual',\n        source: $input.item.json.source || 'n8n'\n      }\n    });\n  });\n});"
+      },
+      "id": "check-database",
+      "name": "Vérification Base de Données",
+      "type": "n8n-nodes-base.function",
+      "position": [500, 280]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ $json.success }}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "id": "check-success",
+      "name": "Vérification Réussie?",
+      "type": "n8n-nodes-base.if",
+      "position": [700, 280]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $env.NOTIFICATION_CHAT_ID }}",
+        "text": "❌ *Échec de la vérification de la base de données*\n\nErreur: {{ $json.error }}\nÉtape: {{ $json.stage }}\nTimestamp: {{ $json.timestamp }}\n\nVeuillez vérifier l'état des containers et des bases de données.",
+        "additionalFields": {
+          "parseMode": "Markdown",
+          "disableNotification": false
+        }
+      },
+      "id": "send-error",
+      "name": "Envoyer Notification d'Erreur",
+      "type": "n8n-nodes-base.telegram",
+      "position": [900, 400]
+    },
+    {
+      "parameters": {
+        "command": "docker-compose -f docker-compose.dev.yml exec -T code-transformer node /app/bin/data-validator.js",
+        "workingDirectory": "/workspaces/cahier-des-charge",
+        "executeTimeout": 180
+      },
+      "id": "run-validator",
+      "name": "Exécuter Data Validator",
+      "type": "n8n-nodes-base.executeCommand",
+      "position": [900, 200]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Analyser la sortie du validateur\nconst stdout = $input.item.json.stdout || '';\nconst stderr = $input.item.json.stderr || '';\n\ntry {\n  // Extraction des résultats JSON si présents\n  const jsonMatch = stdout.match(/\\{[\\s\\S]*\\}/m);\n  let validationResults;\n  \n  if (jsonMatch) {\n    validationResults = JSON.parse(jsonMatch[0]);\n  } else {\n    throw new Error('Aucun résultat JSON trouvé dans la sortie');\n  }\n  \n  // Calculer des métriques supplémentaires\n  const totalTables = validationResults.tables.length;\n  const validTables = validationResults.tables.filter(t => t.status === 'valid').length;\n  const invalidTables = validationResults.tables.filter(t => t.status === 'invalid').length;\n  const notMigrated = validationResults.tables.filter(t => t.status === 'not_migrated').length;\n  \n  const successRate = totalTables > 0 ? Math.round((validTables / totalTables) * 100) : 0;\n  const issues = validationResults.tables\n    .filter(t => t.issues && t.issues.length > 0)\n    .map(t => ({\n      table: t.name,\n      issueCount: t.issues.length,\n      issues: t.issues.slice(0, 3) // Limiter à 3 issues par table pour éviter les messages trop longs\n    }));\n    \n  return {\n    json: {\n      success: validationResults.success,\n      timestamp: new Date().toISOString(),\n      totalTables,\n      validTables,\n      invalidTables,\n      notMigrated,\n      successRate,\n      issues,\n      event: $input.item.json.event,\n      source: $input.item.json.source,\n      rawResults: validationResults\n    }\n  };\n} catch (error) {\n  return {\n    json: {\n      success: false,\n      error: error.message,\n      stdout: stdout.slice(0, 500) + (stdout.length > 500 ? '...' : ''),\n      stderr: stderr.slice(0, 500) + (stderr.length > 500 ? '...' : ''),\n      timestamp: new Date().toISOString(),\n      event: $input.item.json.event,\n      source: $input.item.json.source\n    }\n  };\n}"
+      },
+      "id": "process-validation-results",
+      "name": "Traiter Résultats Validation",
+      "type": "n8n-nodes-base.code",
+      "position": [1100, 200]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ $json.success }}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "id": "validation-success",
+      "name": "Validation Réussie?",
+      "type": "n8n-nodes-base.if",
+      "position": [1300, 200]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $env.NOTIFICATION_CHAT_ID }}",
+        "text": "❌ *Échec de la validation des données*\n\n{% if $json.error %}\nErreur: {{ $json.error }}\n{% endif %}\n\n{% if $json.issues && $json.issues.length > 0 %}\n*Issues détectées ({{ $json.issues.length }} tables):*\n{% for issue in $json.issues %}\n- Table `{{ issue.table }}`: {{ issue.issueCount }} problème(s)\n  {% for i in issue.issues %}\n  • {{ i.message }}\n  {% endfor %}\n{% endfor %}\n{% endif %}\n\n*Statistiques:*\n- Taux de réussite: {{ $json.successRate }}%\n- Tables valides: {{ $json.validTables }} / {{ $json.totalTables }}\n- Tables invalides: {{ $json.invalidTables }}\n- Tables non migrées: {{ $json.notMigrated }}\n\nTimestamp: {{ $json.timestamp }}\n\n[Voir le tableau de bord](http://localhost:3000/migration-dashboard)",
+        "additionalFields": {
+          "parseMode": "Markdown",
+          "disableNotification": false
+        }
+      },
+      "id": "send-validation-error",
+      "name": "Notifier Échec Validation",
+      "type": "n8n-nodes-base.telegram",
+      "position": [1500, 300]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $env.NOTIFICATION_CHAT_ID }}",
+        "text": "✅ *Validation des données réussie*\n\n*Statistiques:*\n- Taux de réussite: {{ $json.successRate }}%\n- Tables valides: {{ $json.validTables }} / {{ $json.totalTables }}\n- Tables invalides: {{ $json.invalidTables }}\n- Tables non migrées: {{ $json.notMigrated }}\n\n{% if $json.issues && $json.issues.length > 0 %}\n*Avertissements ({{ $json.issues.length }} tables):*\n{% for issue in $json.issues %}\n- Table `{{ issue.table }}`: {{ issue.issueCount }} problème(s)\n{% endfor %}\n{% endif %}\n\nTimestamp: {{ $json.timestamp }}\n\n[Voir le tableau de bord](http://localhost:3000/migration-dashboard)",
+        "additionalFields": {
+          "parseMode": "Markdown",
+          "disableNotification": false
+        }
+      },
+      "id": "send-validation-success",
+      "name": "Notifier Validation Réussie",
+      "type": "n8n-nodes-base.telegram",
+      "position": [1500, 120]
+    },
+    {
+      "parameters": {
+        "keepOnlySet": true,
+        "values": {
+          "string": [
+            {
+              "name": "timestamp",
+              "value": "={{ $json.timestamp }}"
+            },
+            {
+              "name": "status",
+              "value": "={{ $json.success ? 'success' : 'failure' }}"
+            },
+            {
+              "name": "total_tables",
+              "value": "={{ $json.totalTables }}"
+            },
+            {
+              "name": "valid_tables",
+              "value": "={{ $json.validTables }}"
+            },
+            {
+              "name": "invalid_tables",
+              "value": "={{ $json.invalidTables }}"
+            },
+            {
+              "name": "not_migrated",
+              "value": "={{ $json.notMigrated }}"
+            },
+            {
+              "name": "success_rate",
+              "value": "={{ $json.successRate }}"
+            },
+            {
+              "name": "issues_count",
+              "value": "={{ $json.issues ? $json.issues.length : 0 }}"
+            }
+          ],
+          "object": [
+            {
+              "name": "issues",
+              "value": "={{ $json.issues || [] }}"
+            },
+            {
+              "name": "raw_results",
+              "value": "={{ $json.rawResults || {} }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "prepare-database-data",
+      "name": "Préparer Données pour DB",
+      "type": "n8n-nodes-base.set",
+      "position": [1700, 200]
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "schema": "public",
+        "table": "migration_validations",
+        "primaryKey": "id",
+        "columns": "timestamp,status,total_tables,valid_tables,invalid_tables,not_migrated,success_rate,issues_count,issues,raw_results",
+        "additionalFields": {}
+      },
+      "id": "save-to-database",
+      "name": "Enregistrer dans la Base de Données",
+      "type": "n8n-nodes-base.postgres",
+      "position": [1900, 200]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.success_rate }}",
+              "operation": "larger",
+              "value2": 95
+            }
+          ]
+        }
+      },
+      "id": "high-success-rate",
+      "name": "Taux de Réussite Élevé?",
+      "type": "n8n-nodes-base.if",
+      "position": [2100, 200]
+    },
+    {
+      "parameters": {
+        "functionCode": "// Générer le fichier de signature pour la migration validée\nconst fs = require('fs');\nconst path = require('path');\n\nconst validationStatus = {\n  timestamp: $input.item.json.timestamp,\n  success: true,\n  successRate: $input.item.json.success_rate,\n  validatedBy: 'n8n-workflow',\n  tables: {\n    total: $input.item.json.total_tables,\n    valid: $input.item.json.valid_tables,\n    invalid: $input.item.json.invalid_tables,\n    notMigrated: $input.item.json.not_migrated\n  },\n  signature: `migration-validated-${new Date().toISOString().replace(/[:.]/g, '-')}`,\n  metadata: {\n    event: $input.item.json.event,\n    source: $input.item.json.source,\n    issuesCount: $input.item.json.issues_count\n  }\n};\n\nconst signatureFilePath = '/workspaces/cahier-des-charge/reports/migration_signature.json';\n\ntry {\n  // Créer le dossier reports s'il n'existe pas\n  const dir = path.dirname(signatureFilePath);\n  if (!fs.existsSync(dir)) {\n    fs.mkdirSync(dir, { recursive: true });\n  }\n  \n  // Écrire le fichier de signature\n  fs.writeFileSync(signatureFilePath, JSON.stringify(validationStatus, null, 2));\n  \n  return {\n    json: {\n      ...validationStatus,\n      signatureFilePath,\n      signatureCreated: true\n    }\n  };\n} catch (error) {\n  return {\n    json: {\n      ...$input.item.json,\n      error: error.message,\n      signatureCreated: false\n    }\n  };\n}"
+      },
+      "id": "generate-migration-signature",
+      "name": "Générer Signature de Migration",
+      "type": "n8n-nodes-base.function",
+      "position": [2300, 100]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $env.NOTIFICATION_CHAT_ID }}",
+        "text": "🏆 *Migration validée et signée*\n\nLa migration a été validée avec un taux de réussite de {{ $json.successRate }}%.\n\nSignature: `{{ $json.signature }}`\nTimestamp: {{ $json.timestamp }}\n\nVous pouvez maintenant déclencher la génération de code avec cette signature.\n\n[Voir le tableau de bord](http://localhost:3000/migration-dashboard)",
+        "additionalFields": {
+          "parseMode": "Markdown",
+          "disableNotification": false
+        }
+      },
+      "id": "notify-signature-created",
+      "name": "Notifier Signature Créée",
+      "type": "n8n-nodes-base.telegram",
+      "position": [2500, 100]
+    },
+    {
+      "parameters": {
+        "command": "cd /workspaces/cahier-des-charge && npx ts-node agents/quality/generate-migration-report.ts --output=/workspaces/cahier-des-charge/reports/migration_report.md",
+        "workingDirectory": "/workspaces/cahier-des-charge",
+        "executeTimeout": 60
+      },
+      "id": "generate-report",
+      "name": "Générer Rapport de Migration",
+      "type": "n8n-nodes-base.executeCommand",
+      "position": [2300, 300]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $env.NOTIFICATION_CHAT_ID }}",
+        "text": "📊 *Rapport de migration généré*\n\nUn rapport détaillé de la migration a été généré.\n\n*Statistiques:*\n- Taux de réussite: {{ $json.success_rate }}%\n- Tables valides: {{ $json.valid_tables }} / {{ $json.total_tables }}\n- Tables invalides: {{ $json.invalid_tables }}\n- Tables non migrées: {{ $json.not_migrated }}\n\nVous pouvez consulter le rapport complet ici:\n[Voir le rapport](/workspaces/cahier-des-charge/reports/migration_report.md)\n\nTimestamp: {{ $json.timestamp }}",
+        "additionalFields": {
+          "parseMode": "Markdown",
+          "disableNotification": false
+        }
+      },
+      "id": "notify-report-generated",
+      "name": "Notifier Rapport Généré",
+      "type": "n8n-nodes-base.telegram",
+      "position": [2500, 300]
+    },
+    {
+      "parameters": {},
+      "id": "error-trigger",
+      "name": "Gestionnaire d'Erreur",
+      "type": "n8n-nodes-base.errorTrigger",
+      "position": [100, 600],
+      "webhookId": "error-handler-migration-validator"
+    },
+    {
+      "parameters": {
+        "functionCode": "// Formater l'erreur pour la notification et le log\nconst workflow = $workflow;\nconst error = $input.item.json.error;\nconst timestamp = new Date().toISOString();\nconst errorNodeId = $input.item.json.lastNodeExecuted;\n\nreturn {\n  json: {\n    workflow: {\n      id: workflow.id,\n      name: workflow.name\n    },\n    error: {\n      message: error.message || 'Erreur inconnue',\n      stack: error.stack,\n      timestamp,\n      lastNodeExecuted: errorNodeId\n    },\n    context: {\n      environment: process.env.NODE_ENV || 'development',\n      timestamp\n    }\n  }\n};"
+      },
+      "id": "format-error",
+      "name": "Formater Erreur",
+      "type": "n8n-nodes-base.function",
+      "position": [300, 600]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $env.NOTIFICATION_CHAT_ID }}",
+        "text": "🚨 *Erreur critique dans le workflow de migration*\n\n*Workflow:* {{ $json.workflow.name }}\n*Erreur:* {{ $json.error.message }}\n*Nœud:* {{ $json.error.lastNodeExecuted }}\n*Timestamp:* {{ $json.error.timestamp }}\n\nVeuillez vérifier les logs du système pour plus de détails.",
+        "additionalFields": {
+          "parseMode": "Markdown",
+          "disableNotification": false
+        }
+      },
+      "id": "error-notification",
+      "name": "Notification Erreur Critique",
+      "type": "n8n-nodes-base.telegram",
+      "position": [500, 600]
+    },
+    {
+      "parameters": {
+        "filePath": "/workspaces/cahier-des-charge/logs/migration_errors.log",
+        "fileContent": "={{ '[' + $json.context.timestamp + '] Workflow: ' + $json.workflow.name + ' | Error: ' + $json.error.message + ' | Node: ' + $json.error.lastNodeExecuted + '\\n' + ($json.error.stack || '') + '\\n\\n' }}",
+        "options": {
+          "append": true,
+          "encoding": "utf8"
+        }
+      },
+      "id": "log-error",
+      "name": "Enregistrer Erreur",
+      "type": "n8n-nodes-base.writeFile",
+      "position": [500, 750]
+    }
+  ],
+  "connections": {
+    "Webhook Trigger": {
+      "main": [
+        [
+          {
+            "node": "Fusion des déclencheurs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Déclenchement Manuel": {
+      "main": [
+        [
+          {
+            "node": "Fusion des déclencheurs",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Fusion des déclencheurs": {
+      "main": [
+        [
+          {
+            "node": "Vérification Base de Données",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Vérification Base de Données": {
+      "main": [
+        [
+          {
+            "node": "Vérification Réussie?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Vérification Réussie?": {
+      "main": [
+        [
+          {
+            "node": "Exécuter Data Validator",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Envoyer Notification d'Erreur",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Exécuter Data Validator": {
+      "main": [
+        [
+          {
+            "node": "Traiter Résultats Validation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Traiter Résultats Validation": {
+      "main": [
+        [
+          {
+            "node": "Validation Réussie?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validation Réussie?": {
+      "main": [
+        [
+          {
+            "node": "Notifier Validation Réussie",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Notifier Échec Validation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Notifier Validation Réussie": {
+      "main": [
+        [
+          {
+            "node": "Préparer Données pour DB",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Notifier Échec Validation": {
+      "main": [
+        [
+          {
+            "node": "Préparer Données pour DB",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Préparer Données pour DB": {
+      "main": [
+        [
+          {
+            "node": "Enregistrer dans la Base de Données",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Enregistrer dans la Base de Données": {
+      "main": [
+        [
+          {
+            "node": "Taux de Réussite Élevé?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Taux de Réussite Élevé?": {
+      "main": [
+        [
+          {
+            "node": "Générer Signature de Migration",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Générer Rapport de Migration",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Générer Signature de Migration": {
+      "main": [
+        [
+          {
+            "node": "Notifier Signature Créée",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Générer Rapport de Migration": {
+      "main": [
+        [
+          {
+            "node": "Notifier Rapport Généré",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gestionnaire d'Erreur": {
+      "main": [
+        [
+          {
+            "node": "Formater Erreur",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Formater Erreur": {
+      "main": [
+        [
+          {
+            "node": "Notification Erreur Critique",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Enregistrer Erreur",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {},
+  "id": "migration-data-validator"
+}

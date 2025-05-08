@@ -1,0 +1,13 @@
+{
+  "name": "@mcp/nestjs-generator",
+  "version": "1.0.0",
+  "description": "Agent MCP nestjs-generator",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "jest"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}

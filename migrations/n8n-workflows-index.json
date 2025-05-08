@@ -1,0 +1,211 @@
+{
+  "extractionDate": "2025-05-06T12:56:03+00:00",
+  "totalWorkflows": 41,
+  "workflowFiles": [
+    {
+      "name": "Alertes Complexité PHP Avancées",
+      "path": "n8n-inventory/Alertes_Complexit_PHP_Avances_20250506125601.json",
+      "lastModified": "2025-05-06T12:56:01+00:00"
+    },
+    {
+      "name": "Analyse .htaccess pour SEO et Migration",
+      "path": "n8n-inventory/Analyse_htaccess_pour_SEO_et_Migration_20250506125603.json",
+      "lastModified": "2025-05-06T12:56:03+00:00"
+    },
+    {
+      "name": "Auto-Remédiation des Divergences",
+      "path": "n8n-inventory/AutoRemdiation_des_Divergences_20250506125603.json",
+      "lastModified": "2025-05-06T12:56:03+00:00"
+    },
+    {
+      "name": "BullMQ Orchestrator Pipeline",
+      "path": "n8n-inventory/BullMQ_Orchestrator_Pipeline_20250506125602.json",
+      "lastModified": "2025-05-06T12:56:02+00:00"
+    },
+    {
+      "name": "CI/CD Pipeline Workflow",
+      "path": "n8n-inventory/CICD_Pipeline_Workflow_20250506125603.json",
+      "lastModified": "2025-05-06T12:56:03+00:00"
+    },
+    {
+      "name": "Docker Cleanup Workflow",
+      "path": "n8n-inventory/Docker_Cleanup_Workflow_20250506125602.json",
+      "lastModified": "2025-05-06T12:56:02+00:00"
+    },
+    {
+      "name": "Generate Migration Plans Workflow",
+      "path": "n8n-inventory/Generate_Migration_Plans_Workflow_20250506125603.json",
+      "lastModified": "2025-05-06T12:56:03+00:00"
+    },
+    {
+      "name": "Htaccess Analyzer Workflow",
+      "path": "n8n-inventory/Htaccess_Analyzer_Workflow_20250506125603.json",
+      "lastModified": "2025-05-06T12:56:03+00:00"
+    },
+    {
+      "name": "MCP Workflow Pipeline",
+      "path": "n8n-inventory/MCP_Workflow_Pipeline_20250506125603.json",
+      "lastModified": "2025-05-06T12:56:03+00:00"
+    },
+    {
+      "name": "Migration Data Validator",
+      "path": "n8n-inventory/Migration_Data_Validator_20250506125601.json",
+      "lastModified": "2025-05-06T12:56:01+00:00"
+    },
+    {
+      "name": "Migration Orchestrator Pipeline",
+      "path": "n8n-inventory/Migration_Orchestrator_Pipeline_20250506125601.json",
+      "lastModified": "2025-05-06T12:56:01+00:00"
+    },
+    {
+      "name": "Migration SQL complète - Pipeline",
+      "path": "n8n-inventory/Migration_SQL_complte__Pipeline_20250506125602.json",
+      "lastModified": "2025-05-06T12:56:02+00:00"
+    },
+    {
+      "name": "Monorepo Analyzer Pipeline",
+      "path": "n8n-inventory/Monorepo_Analyzer_Pipeline_20250506125601.json",
+      "lastModified": "2025-05-06T12:56:01+00:00"
+    },
+    {
+      "name": "MySQL Analyzer Workflow",
+      "path": "n8n-inventory/MySQL_Analyzer_Workflow_20250506125602.json",
+      "lastModified": "2025-05-06T12:56:02+00:00"
+    },
+    {
+      "name": "PHP Analyzer Pipeline",
+      "path": "n8n-inventory/PHP_Analyzer_Pipeline_20250506125601.json",
+      "lastModified": "2025-05-06T12:56:01+00:00"
+    },
+    {
+      "name": "PHP Analyzer - Alertes de complexité",
+      "path": "n8n-inventory/PHP_Analyzer__Alertes_de_complexit_20250506125601.json",
+      "lastModified": "2025-05-06T12:56:01+00:00"
+    },
+    {
+      "name": "PHP Audit Pipeline",
+      "path": "n8n-inventory/PHP_Audit_Pipeline_20250506125601.json",
+      "lastModified": "2025-05-06T12:56:01+00:00"
+    },
+    {
+      "name": "PHP Routes Migration Manager",
+      "path": "n8n-inventory/PHP_Routes_Migration_Manager_20250506125603.json",
+      "lastModified": "2025-05-06T12:56:03+00:00"
+    },
+    {
+      "name": "Pipeline Migration Routes PHP vers Remix",
+      "path": "n8n-inventory/Pipeline_Migration_Routes_PHP_vers_Remix_20250506125601.json",
+      "lastModified": "2025-05-06T12:56:01+00:00"
+    },
+    {
+      "name": "Pipeline de Migration Automatisée PHP → NestJS/Remix",
+      "path": "n8n-inventory/Pipeline_de_Migration_Automatise_PHP__NestJSRemix_20250506125603.json",
+      "lastModified": "2025-05-06T12:56:03+00:00"
+    },
+    {
+      "name": "Pipeline de Migration IA",
+      "path": "n8n-inventory/Pipeline_de_Migration_IA_20250506125602.json",
+      "lastModified": "2025-05-06T12:56:02+00:00"
+    },
+    {
+      "name": "Pipeline de Migration IA",
+      "path": "n8n-inventory/Pipeline_de_Migration_IA_20250506125603.json",
+      "lastModified": "2025-05-06T12:56:03+00:00"
+    },
+    {
+      "name": "PostgreSQL Analyzer Workflow",
+      "path": "n8n-inventory/PostgreSQL_Analyzer_Workflow_20250506125602.json",
+      "lastModified": "2025-05-06T12:56:02+00:00"
+    },
+    {
+      "name": "Prisma Analyzer Workflow",
+      "path": "n8n-inventory/Prisma_Analyzer_Workflow_20250506125602.json",
+      "lastModified": "2025-05-06T12:56:02+00:00"
+    },
+    {
+      "name": "QA Analyzer Workflow",
+      "path": "n8n-inventory/QA_Analyzer_Workflow_20250506125603.json",
+      "lastModified": "2025-05-06T12:56:03+00:00"
+    },
+    {
+      "name": "SEO Analyzer Workflow",
+      "path": "n8n-inventory/SEO_Analyzer_Workflow_20250506125603.json",
+      "lastModified": "2025-05-06T12:56:03+00:00"
+    },
+    {
+      "name": "SQL Analyzer IA Pipeline",
+      "path": "n8n-inventory/SQL_Analyzer_IA_Pipeline_20250506125602.json",
+      "lastModified": "2025-05-06T12:56:02+00:00"
+    },
+    {
+      "name": "SQL Analyzer - Analyse Relationnelle & Cohérence Référentielle",
+      "path": "n8n-inventory/SQL_Analyzer__Analyse_Relationnelle__Cohrence_Rfrentielle_20250506125603.json",
+      "lastModified": "2025-05-06T12:56:03+00:00"
+    },
+    {
+      "name": "SQL Analyzer - Cartographe Sémantique des Tables",
+      "path": "n8n-inventory/SQL_Analyzer__Cartographe_Smantique_des_Tables_20250506125602.json",
+      "lastModified": "2025-05-06T12:56:02+00:00"
+    },
+    {
+      "name": "SQL Analyzer & Prisma Builder Workflow",
+      "path": "n8n-inventory/SQL_Analyzer__Prisma_Builder_Workflow_20250506125603.json",
+      "lastModified": "2025-05-06T12:56:03+00:00"
+    },
+    {
+      "name": "Supabase Analyzer Workflow",
+      "path": "n8n-inventory/Supabase_Analyzer_Workflow_20250506125602.json",
+      "lastModified": "2025-05-06T12:56:02+00:00"
+    },
+    {
+      "name": "Vérification PHP → NestJS/Remix",
+      "path": "n8n-inventory/Vrification_PHP__NestJSRemix_20250506125602.json",
+      "lastModified": "2025-05-06T12:56:02+00:00"
+    },
+    {
+      "name": "migration-pipelinen8n",
+      "path": "n8n-inventory/migrationpipelinen8n_20250506125602.json",
+      "lastModified": "2025-05-06T12:56:02+00:00"
+    },
+    {
+      "name": "migration-pipelinen8n",
+      "path": "n8n-inventory/migrationpipelinen8n_20250506125603.json",
+      "lastModified": "2025-05-06T12:56:03+00:00"
+    },
+    {
+      "name": "migration-workflown8n",
+      "path": "n8n-inventory/migrationworkflown8n_20250506125602.json",
+      "lastModified": "2025-05-06T12:56:02+00:00"
+    },
+    {
+      "name": "",
+      "path": "n8n-inventory/n8n-files-inventory.json",
+      "lastModified": "2025-05-06T12:45:18+00:00"
+    },
+    {
+      "name": "n8n-audit-analyzer-workflow",
+      "path": "n8n-inventory/n8nauditanalyzerworkflow_20250506125601.json",
+      "lastModified": "2025-05-06T12:56:01+00:00"
+    },
+    {
+      "name": "n8n-mysql-analyzer",
+      "path": "n8n-inventory/n8nmysqlanalyzer_20250506125602.json",
+      "lastModified": "2025-05-06T12:56:02+00:00"
+    },
+    {
+      "name": "n8n-update-audit-node",
+      "path": "n8n-inventory/n8nupdateauditnode_20250506125602.json",
+      "lastModified": "2025-05-06T12:56:02+00:00"
+    },
+    {
+      "name": "unnamed-workflow",
+      "path": "n8n-inventory/unnamedworkflow_20250506125602.json",
+      "lastModified": "2025-05-06T12:56:02+00:00"
+    },
+    {
+      "name": "wave-runnern8n",
+      "path": "n8n-inventory/waverunnern8n_20250506125603.json",
+      "lastModified": "2025-05-06T12:56:03+00:00"
+    }
+  ]
+}

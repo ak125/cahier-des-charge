@@ -1,0 +1,28 @@
+# URLs de produits
+/produit.php?id=1234
+/produit.php?id=2345&ref=promo
+/fiche.php?id=3456
+/product.php?id=4567&lang=fr
+
+# URLs de catégories
+/categorie.php?id=10
+/categorie.php?id=20&page=2
+/category.php?id=30&sort=price
+
+# URLs de marques
+/marque.php?id=15
+/brand.php?id=25
+
+# URLs de recherche
+/recherche.php?q=chaussures
+/search.php?q=accessoires&filter=new
+
+# URLs de contenu
+/article.php?id=100
+/blog.php?slug=tendances-ete
+/news.php?id=50
+
+# Autres pages importantes
+/contact.php
+/magasins.php?region=paris
+/info.php?page=cgv

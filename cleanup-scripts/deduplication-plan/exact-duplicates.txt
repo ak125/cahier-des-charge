@@ -1,0 +1,33 @@
+# Plan de déduplication des doublons exacts
+# Format: chemin/vers/fichier/à/conserver:chemin/vers/doublon1,chemin/vers/doublon2
+
+# Groupe 1: Fichiers vides (hash: d41d8cd98f00b204e9800998ecf8427e)
+# Le fichier tools/generate-migration-patch.ts est conservé comme référence
+tools/generate-migration-patch.ts:tools/project-structure-analyzer.ts,tools/supabase-migration-plan-sync.ts,tools/update-mcp-imports.ts,agents/audit-selector-agent/index.ts,agents/classifier-agent/index.ts,apps/dashboard/server.ts,apps/dashboard/services/supabase.ts,apps/frontend/utils/supabaseserver.ts,packages/mcp-utils/src/types/index.ts
+
+# Groupe 2: Pipeline_de_Migration_IA (hash: a237247d126fd839e8e16530ada853ee)
+migrations/n8n-inventory/Pipeline_de_Migration_IA_20250506125602.json:migrations/n8n-inventory/Pipeline_de_Migration_IA_20250506125603.json,migrations/n8n-inventory/workflows/Pipeline_de_Migration_IA_20250506130018.json,migrations/n8n-inventory/workflows/Pipeline_de_Migration_IA_20250506130020.json,packages/business/workflows/migration/n8npipeline.json,packages/orchestration/orchestration/workflows/n8npipelineclean.json
+
+# Groupe 3: migrationpipelinen8n (hash: 629e6f29a90901a18ddf5d99d5244e65)
+migrations/n8n-inventory/migrationpipelinen8n_20250506125602.json:migrations/n8n-inventory/migrationpipelinen8n_20250506125603.json,migrations/n8n-inventory/workflows/migrationpipelinen8n_20250506130017.json,migrations/n8n-inventory/workflows/migrationpipelinen8n_20250506130019.json,packages/business/config/migration/migration-pipelinen8n.json,packages/business/config/migration-pipelinen8n.json
+
+# Groupe 4: php-analyzer-v2 (hash: 58355be82dbe9289be75fc3b79f46807)
+archives/migrations-legacy/consolidation-2025-04-17/packages/mcp-agents/analyzers/php-analyzer/php-analyzer-v2/php-analyzer-v2.ts:archives/migrations-legacy/consolidation-2025-04-17/packages/mcp-agents/analyzers/php-analyzer/phpanalyzerv2/php-analyzer-v2.ts,archives/migrations-legacy/consolidation-2025-04-17/packages/mcp-agents/analyzers/phpanalyzer/php-analyzer-v2/php-analyzer-v2.ts,archives/migrations-legacy/consolidation-2025-04-17/packages/mcp-agents/analyzers/phpanalyzer/phpanalyzerv2/php-analyzer-v2.ts
+
+# Groupe 5: qa-analyzer (hash: 5583b239c3d0ec8ab929a06b1e87b877)
+packages/mcp-agents/qa-analyzer/qa-analyzer.ts:packages/mcp-agents/qa-analyzer/qa-analyzer/qa-analyzer.ts,packages/business/src/business/analyzers/qa-analyzer/index.ts,packages/business/src/business/analyzers/qa-analyzer/qa-analyzer.ts
+
+# Groupe 6: tsconfig.json (hash: 9ba8099724ff63ac9f79c0609f551f6c)
+packages/mcp-domain/tsconfig.json:packages/mcp-services/tsconfig.json,packages/mcp-utils/tsconfig.json,packages/ui-remix/tsconfig.json
+
+# Groupe 7: package.json (hash: 5037f63c28a59f64ef8ded6e3983bcee)
+apps/frontend/package.json:apps/mcp-server-mysql/package.json,apps/projet-codespaces/package.json
+
+# Groupe 8: php-analyzer-v2 (hash: 6abd75cd0cd03ee8560ead6135a5073c)
+apps/mcp-server-php/src/agents/php-analyzer-v2.ts:packages/business/src/business/analyzers/php-analyzer-v2/index.ts,packages/business/src/business/analyzers/php-analyzer-v2/php-analyzer-v2.ts
+
+# Groupe 9: nginx-config-parser (hash: 275d23f536da03e5b612478220e83b33)
+archives/legacy-agents/analysis/config-parsers/nginx-config-parser.ts:archives/legacy-agents/analysis/nginx-config-parser.ts,archives/legacy-agents/utils/nginx-config-parser.ts
+
+# Groupe 10: abstract-analyzer-agentd (hash: fb580ac6e747873e75b8b77d013a18aa)
+packages/mcp-core/types/abstract-analyzer-agentd.ts:packages/business/business/analyzers/abstract-analyzer/abstract-analyzer-agentd-240d1f1c.ts,packages/business/business/analyzers/abstract-analyzer/abstract-analyzer-agentd-40b4b06a-c85fc576.ts,packages/business/business/analyzers/abstract-analyzer/abstract-analyzer-agentd-8c952bcb.ts

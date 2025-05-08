@@ -1,0 +1,53 @@
+import { proxyActivities } from '@temporalio/workflow';
+import type * as activities from '../activities/<%= fileName %>';
+
+// Configurer les activités avec les options appropriées
+const { <%= fileName %>Activity } = proxyActivities<typeof activities>({
+  startToCloseTimeout: '<%= timeout %>',
+  retry: {
+    maximumAttempts: 3,
+  },
+});
+
+export interface <%= className %>Input {
+  id: string;
+  // Ajoutez ici d'autres paramètres d'entrée
+}
+
+export interface <%= className %>Result {
+  success: boolean;
+  message: string;
+  data?: any;
+}
+
+/**
+ * Workflow <%= className %> - <%= category %>
+ * 
+ * Description: Ce workflow gère le processus de <%= category %> pour <%= name %>.
+ */
+export async function <%= className %>(input: <%= className %>Input): Promise<<%= className %>Result> {
+  // Journalisation du début du workflow
+  console.log(`[<%= className %>] Démarrage du workflow avec ID: ${input.id}`);
+  
+  try {
+    // Exécution de l'activité principale
+    const result = await <%= fileName %>Activity(input);
+    
+    // Journalisation du succès
+    console.log(`[<%= className %>] Workflow terminé avec succès: ${JSON.stringify(result)}`);
+    
+    return {
+      success: true,
+      message: `Le traitement de <%= name %> a été effectué avec succès`,
+      data: result
+    };
+  } catch (error) {
+    // Journalisation de l'échec
+    console.error(`[<%= className %>] Erreur lors de l'exécution du workflow:`, error);
+    
+    return {
+      success: false,
+      message: `Erreur lors du traitement de <%= name %>: ${error.message}`,
+    };
+  }
+}

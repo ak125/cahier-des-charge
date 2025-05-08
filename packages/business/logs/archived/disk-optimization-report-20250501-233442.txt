@@ -1,0 +1,13 @@
+Rapport d'optimisation d'espace disque - Thu May  1 23:34:42 UTC 2025
+=======================================================
+Taille initiale du projet: 352M
+
+Échec de l'optimisation Optimisation Git (code 1).
+
+Optimisation des packages exécuté avec succès, mais pas de rapport détaillé disponible.
+
+Nettoyage des fichiers temporaires exécuté avec succès, mais pas de rapport détaillé disponible.
+
+=======================================================
+Taille finale du projet: 352M
+Rapport généré le Thu May  1 23:34:42 UTC 2025

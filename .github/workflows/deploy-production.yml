@@ -1,0 +1,59 @@
+name: Deploy Production
+
+on:
+  workflow_run:
+    workflows: ["NX Cloud CI"]
+    branches: [main]
+    types: [completed]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: Deploy to Production
+    if: ${{ github.event.workflow_run.conclusion == 'success' || github.event_name == 'workflow_dispatch' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build affected apps for production
+        run: npx nx affected --target=build --parallel=3 --prod --configuration=production
+
+      - name: Deploy Frontend
+        run: npx nx deploy frontend --configuration=production
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID_FRONTEND }}
+
+      - name: Deploy Admin Dashboard
+        run: npx nx deploy admin-dashboard --configuration=production
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID_ADMIN }}
+
+      - name: Deploy Backend Services
+        run: |
+          echo "Déploiement des services backend via Docker"
+          npx nx run-many --target=docker-push --projects=backend,mcp-server,mcp-server-postgres --parallel=2
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+          
+      - name: Update Deployment Status
+        run: |
+          echo "Mise à jour du statut de déploiement"
+          curl -X POST -H "Content-Type: application/json" \
+            -H "Authorization: Bearer ${{ secrets.STATUS_API_TOKEN }}" \
+            -d '{"environment":"production","status":"success","version":"'"$(git rev-parse --short HEAD)"'"}' \
+            https://api.example.com/deployment-status
