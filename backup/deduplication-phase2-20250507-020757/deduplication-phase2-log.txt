@@ -1,9 +1,0 @@
-=== Journal de déduplication phase 2 - Wed May  7 02:07:57 UTC 2025 ===
-2025-05-07 02:07:57 - Script de fusion créé: /workspaces/cahier-des-charge/cleanup-scripts/merge-similar-files.js
-2025-05-07 02:07:57 - Traitement des fichiers similaires selon le plan de déduplication...
-2025-05-07 02:07:57 - \033[0;31mInformations manquantes pour ce groupe de fichiers similaires\033[0m
-2025-05-07 02:07:57 - Traitement des fichiers similaires terminé
-2025-05-07 02:07:57 - Total des groupes traités: 0
-2025-05-07 02:07:57 - Fichiers fusionnés: 0
-2025-05-07 02:07:57 - Fichiers dédupliqués: 0
-2025-05-07 02:07:58 - Rapport final généré: /workspaces/cahier-des-charge/cleanup-report/deduplication-phase2-report-20250507-020757.md

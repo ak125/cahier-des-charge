@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { SEOHistoryGraph } from '~/components/seo/SEOHistoryGraph';
 import { SEOIssuesList } from '~/components/seo/SEOIssuesList';
 import { SEOStatsOverview } from '~/components/seo/SEOStatsOverview';
-import { requireUserRole } from '~/utils/auth.server';
+import { requireUserRole } from ~@cahier-des-charge/coordination/src/utils/auth.server';
 
 export async function loader({ request }: LoaderFunctionArgs) {
   // Vérifier que l'utilisateur est authentifié et a les droits

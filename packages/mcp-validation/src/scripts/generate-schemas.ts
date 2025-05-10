@@ -4,7 +4,7 @@
 import * as path from 'path';
 import { SchemaGenerator } from '../generators/schema-generator';
 import { PrismaClient } from '@prisma/client';
-import { createZodSchemaFromPrisma } from '../utils/prisma-zod';
+import { createZodSchemaFromPrisma } from ..@cahier-des-charge/coordination/src/utils/prisma-zod';
 import { z } from 'zod';
 
 // Chemin où seront stockés les schémas générés

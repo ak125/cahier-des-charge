@@ -1,0 +1,9 @@
+# Ignorer les dossiers de sauvegarde et d'archive
+**/backup/**
+**/backup-*/**
+**/archive*/**
+**/*.backup/**
+**/*.backup.*
+**/*.bak
+**/dist/**
+**/.nx/**

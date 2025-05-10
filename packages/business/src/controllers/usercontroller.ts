@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { z } from 'zod';
 import { CreateUserSchema, UpdateUserSchema } from '../schemas/user.schema';
 import { userService } from '../services/user.service';
-import { validateBody, validateParams, validateQuery } from '../utils/validation-middleware';
+import { validateBody, validateParams, validateQuery } from ..@cahier-des-charge/coordination/src/utils/validation-middleware';
 
 // Schéma pour la validation des paramètres d'URL
 const UserParamsSchema = z.object({

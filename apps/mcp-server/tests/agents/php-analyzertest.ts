@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { jest } from '@jest/globals';
-import * as phpAnalyzer from '../../agents/php-analyzer-agent';
+import * as phpAnalyzer from ../..@cahier-des-charge/business/src/agents/php-analyzer-agent';
 
 // Mock de la fonction deepseek
 jest.mock('../../agents/php-analyzer-agent', () => {

@@ -1,0 +1,1346 @@
+{
+  "generated": "2025-05-09T00:59:18.907Z",
+  "totalDocuments": 64,
+  "moduleCount": 9,
+  "documents": [
+    {
+      "path": "0-core/README.md",
+      "title": "README",
+      "metadata": {
+        "title": "README",
+        "description": "Documentation fondamentale et conventions",
+        "slug": "readme",
+        "module": "0-core",
+        "status": "stable",
+        "lastReviewed": "2025-05-09"
+      },
+      "modifiedAt": "2025-05-09T00:50:28.291Z",
+      "createdAt": "2025-05-05T16:39:49.436Z",
+      "sizeBytes": 1615
+    },
+    {
+      "path": "0-core/contributing.md",
+      "title": "Contributing",
+      "metadata": {
+        "title": "Contributing",
+        "description": "Documentation fondamentale et conventions",
+        "slug": "contributing",
+        "module": "0-core",
+        "status": "stable",
+        "lastReviewed": "2025-05-09"
+      },
+      "modifiedAt": "2025-05-09T00:33:00.874Z",
+      "createdAt": "2025-05-01T21:43:08.552Z",
+      "sizeBytes": 1350
+    },
+    {
+      "path": "0-core/project/onboarding-presentation.md",
+      "title": "Onboarding Presentation",
+      "metadata": {
+        "title": "Onboarding Presentation",
+        "description": "Documentation fondamentale et conventions",
+        "slug": "onboarding-presentation",
+        "module": "0-core",
+        "category": "project",
+        "status": "stable",
+        "lastReviewed": "2025-05-09"
+      },
+      "modifiedAt": "2025-05-09T00:46:16.733Z",
+      "createdAt": "2025-04-28T14:34:45.932Z",
+      "sizeBytes": 6127
+    },
+    {
+      "path": "0-core/style-guide.md",
+      "title": "Style Guide",
+      "metadata": {
+        "title": "Style Guide",
+        "description": "Documentation fondamentale et conventions",
+        "slug": "style-guide",
+        "module": "0-core",
+        "status": "stable",
+        "lastReviewed": "2025-05-09"
+      },
+      "modifiedAt": "2025-05-09T00:33:00.877Z",
+      "createdAt": "2025-05-01T15:33:24.192Z",
+      "sizeBytes": 2160
+    },
+    {
+      "path": "0-core/typescript-conventions.md",
+      "title": "Typescript Conventions",
+      "metadata": {
+        "title": "Typescript Conventions",
+        "description": "Documentation fondamentale et conventions",
+        "slug": "typescript-conventions",
+        "module": "0-core",
+        "status": "stable",
+        "lastReviewed": "2025-05-09"
+      },
+      "modifiedAt": "2025-05-09T00:33:00.879Z",
+      "createdAt": "2025-04-28T14:34:45.932Z",
+      "sizeBytes": 1888
+    },
+    {
+      "path": "1-architecture/README.md",
+      "title": "Architecture à trois couches",
+      "metadata": {
+        "title": "Architecture à trois couches",
+        "slug": "1-architecture-readme",
+        "module": "1-architecture",
+        "description": "Architecture à trois couches, structures et bonnes pratiques",
+        "status": "stable",
+        "lastReviewed": "2025-05-09"
+      },
+      "modifiedAt": "2025-05-09T00:53:55.389Z",
+      "createdAt": "2025-05-09T00:53:55.389Z",
+      "sizeBytes": 1555
+    },
+    {
+      "path": "1-architecture/agents/overview.md",
+      "title": "Overview",
+      "metadata": {
+        "title": "Overview",
+        "description": "Architecture à trois couches et structure",
+        "slug": "overview",
+        "module": "1-architecture",
+        "category": "agents",
+        "status": "stable",
+        "lastReviewed": "2025-05-09"
+      },
+      "modifiedAt": "2025-05-09T00:46:16.734Z",
+      "createdAt": "2025-04-29T22:03:24.811Z",
+      "sizeBytes": 3902
+    },
+    {
+      "path": "1-architecture/agents/specific/data-migration-strategy.md",
+      "title": "Data Migration Strategy",
+      "metadata": {
+        "title": "Data Migration Strategy",
+        "description": "Architecture à trois couches et structure",
+        "slug": "data-migration-strategy",
+        "module": "1-architecture",
+        "category": "agents/specific",
+        "status": "stable",
+        "lastReviewed": "2025-05-09"
+      },
+      "modifiedAt": "2025-05-09T00:33:00.882Z",
+      "createdAt": "2025-05-01T21:43:08.576Z",
+      "sizeBytes": 11088
+    },
+    {
+      "path": "1-architecture/agents/specific/migration-plan.md",
+      "title": "Migration Plan",
+      "metadata": {
+        "title": "Migration Plan",
+        "description": "Architecture à trois couches et structure",
+        "slug": "migration-plan",
+        "module": "1-architecture",
+        "category": "agents/specific",
+        "status": "stable",
+        "lastReviewed": "2025-05-09"
+      },
+      "modifiedAt": "2025-05-09T00:33:00.884Z",
+      "createdAt": "2025-05-01T21:43:08.580Z",
+      "sizeBytes": 6510
+    },
+    {
+      "path": "1-architecture/agents/specific/readmeremediator.md",
+      "title": "Readmeremediator",
+      "metadata": {
+        "title": "Readmeremediator",
+        "description": "Architecture à trois couches et structure",
+        "slug": "readmeremediator",
+        "module": "1-architecture",
+        "category": "agents/specific",
+        "status": "stable",
+        "lastReviewed": "2025-05-09"
+      },
+      "modifiedAt": "2025-05-09T00:33:00.885Z",
+      "createdAt": "2025-05-01T21:43:08.558Z",
+      "sizeBytes": 3309
+    },
+    {
+      "path": "1-architecture/agents/specific/reliability-config.md",
+      "title": "Reliability Config",
+      "metadata": {
+        "title": "Reliability Config",
+        "description": "Architecture à trois couches et structure",
+        "slug": "reliability-config",
+        "module": "1-architecture",
+        "category": "agents/specific",
+        "status": "stable",
+        "lastReviewed": "2025-05-09"
+      },
+      "modifiedAt": "2025-05-09T00:33:00.885Z",
+      "createdAt": "2025-04-29T22:03:24.820Z",
+      "sizeBytes": 2538
+    },
+    {
+      "path": "1-architecture/agents/specific/sql-analysis.md",
+      "title": "Sql Analysis",
+      "metadata": {
+        "title": "Sql Analysis",
+        "description": "Architecture à trois couches et structure",
+        "slug": "sql-analysis",
+        "module": "1-architecture",
+        "category": "agents/specific",
+        "status": "stable",
+        "lastReviewed": "2025-05-09"
+      },
+      "modifiedAt": "2025-05-09T00:33:00.886Z",
+      "createdAt": "2025-05-01T21:43:08.580Z",
+      "sizeBytes": 3649
+    },
+    {
+      "path": "1-architecture/agents-documentation-20250420-023942.md",
+      "title": "Agents Documentation 20250420 023942",
+      "metadata": {
+        "title": "Agents Documentation 20250420 023942",
+        "description": "Architecture à trois couches et structure",
+        "slug": "agents-documentation-20250420-023942",
+        "module": "1-architecture",
+        "status": "stable",
+        "lastReviewed": "2025-05-09"
+      },
+      "modifiedAt": "2025-05-09T00:33:00.887Z",
+      "createdAt": "2025-04-28T14:34:45.932Z",
+      "sizeBytes": 13815
+    },
+    {
+      "path": "1-architecture/architecture-agents-coordination.md",
+      "title": "Architecture Agents Coordination",
+      "metadata": {
+        "title": "Architecture Agents Coordination",
+        "description": "Architecture à trois couches et structure",
+        "slug": "architecture-agents-coordination",
+        "module": "1-architecture",
+        "status": "stable",
+        "lastReviewed": "2025-05-09"
+      },
+      "modifiedAt": "2025-05-09T00:44:31.079Z",
+      "createdAt": "2025-05-08T08:31:10.004Z",
+      "sizeBytes": 12123
+    },
+    {
+      "path": "1-architecture/architecture-agents-mcp.md",
+      "title": "Architecture Agents Mcp",
+      "metadata": {
+        "title": "Architecture Agents Mcp",
+        "description": "Architecture à trois couches et structure",
+        "slug": "architecture-agents-mcp",
+        "module": "1-architecture",
+        "status": "stable",
+        "lastReviewed": "2025-05-09"
+      },
+      "modifiedAt": "2025-05-09T00:46:16.735Z",
+      "createdAt": "2025-04-28T14:34:45.931Z",
+      "sizeBytes": 8985
+    },
+    {
+      "path": "1-architecture/architecture-trois-couches.md",
+      "title": "Architecture Trois Couches",
+      "metadata": {
+        "title": "Architecture Trois Couches",
+        "description": "Architecture à trois couches et structure",
+        "slug": "architecture-trois-couches",
+        "module": "1-architecture",
+        "status": "stable",
+        "lastReviewed": "2025-05-09"
+      },
+      "modifiedAt": "2025-05-09T00:50:28.295Z",
+      "createdAt": "2025-05-01T21:43:08.550Z",
+      "sizeBytes": 11235
+    },
+    {
+      "path": "1-architecture/bonnes-pratiques-agents.md",
+      "title": "Bonnes Pratiques Agents",
+      "metadata": {
+        "title": "Bonnes Pratiques Agents",
+        "description": "Architecture à trois couches et structure",
+        "slug": "bonnes-pratiques-agents",
+        "module": "1-architecture",
+        "status": "stable",
+        "lastReviewed": "2025-05-09"
+      },
+      "modifiedAt": "2025-05-09T00:44:31.083Z",
+      "createdAt": "2025-05-08T08:36:12.847Z",
+      "sizeBytes": 10092
+    },
+    {
+      "path": "1-architecture/contrats-interfaces-couches.md",
+      "title": "Contrats Interfaces Couches",
+      "metadata": {
+        "title": "Contrats Interfaces Couches",
+        "description": "Architecture à trois couches et structure",
+        "slug": "contrats-interfaces-couches",
+        "module": "1-architecture",
+        "status": "stable",
+        "lastReviewed": "2025-05-09"
+      },
+      "modifiedAt": "2025-05-09T00:44:31.086Z",
+      "createdAt": "2025-05-07T11:01:08.918Z",
+      "sizeBytes": 14501
+    },
+    {
+      "path": "1-architecture/guide-migration-trois-couches.md",
+      "title": "Guide Migration Trois Couches",
+      "metadata": {
+        "title": "Guide Migration Trois Couches",
+        "description": "Architecture à trois couches et structure",
+        "slug": "guide-migration-trois-couches",
+        "module": "1-architecture",
+        "status": "stable",
+        "lastReviewed": "2025-05-09"
+      },
+      "modifiedAt": "2025-05-09T00:44:31.087Z",
+      "createdAt": "2025-05-08T22:52:30.435Z",
+      "sizeBytes": 6246
+    },
+    {
+      "path": "1-architecture/guide-restructuration-trois-couches.md",
+      "title": "Guide Restructuration Trois Couches",
+      "metadata": {
+        "title": "Guide Restructuration Trois Couches",
+        "description": "Architecture à trois couches et structure",
+        "slug": "guide-restructuration-trois-couches",
+        "module": "1-architecture",
+        "status": "stable",
+        "lastReviewed": "2025-05-09"
+      },
+      "modifiedAt": "2025-05-09T00:44:31.088Z",
+      "createdAt": "2025-05-08T15:38:48.810Z",
+      "sizeBytes": 9047
+    },
+    {
+      "path": "1-architecture/guide-tests-architecture-trois-couches.md",
+      "title": "Guide Tests Architecture Trois Couches",
+      "metadata": {
+        "title": "Guide Tests Architecture Trois Couches",
+        "description": "Architecture à trois couches et structure",
+        "slug": "guide-tests-architecture-trois-couches",
+        "module": "1-architecture",
+        "status": "stable",
+        "lastReviewed": "2025-05-09"
+      },
+      "modifiedAt": "2025-05-09T00:44:31.090Z",
+      "createdAt": "2025-05-08T22:51:29.484Z",
+      "sizeBytes": 7275
+    },
+    {
+      "path": "1-architecture/index-architecture-trois-couches.md",
+      "title": "Index Architecture Trois Couches",
+      "metadata": {
+        "title": "Index Architecture Trois Couches",
+        "description": "Architecture à trois couches et structure",
+        "slug": "index-architecture-trois-couches",
+        "module": "1-architecture",
+        "status": "stable",
+        "lastReviewed": "2025-05-09"
+      },
+      "modifiedAt": "2025-05-09T00:44:31.090Z",
+      "createdAt": "2025-05-08T22:53:06.146Z",
+      "sizeBytes": 2836
+    },
+    {
+      "path": "1-architecture/structure-dossiers.md",
+      "title": "Structure Dossiers",
+      "metadata": {
+        "title": "Structure Dossiers",
+        "description": "Architecture à trois couches et structure",
+        "slug": "structure-dossiers",
+        "module": "1-architecture",
+        "status": "stable",
+        "lastReviewed": "2025-05-09"
+      },
+      "modifiedAt": "2025-05-09T00:33:00.897Z",
+      "createdAt": "2025-05-03T13:47:34.443Z",
+      "sizeBytes": 6083
+    },
+    {
+      "path": "1-architecture/structure.md",
+      "title": "Structure",
+      "metadata": {
+        "title": "Structure",
+        "description": "Architecture à trois couches et structure",
+        "slug": "structure",
+        "module": "1-architecture",
+        "status": "stable",
+        "lastReviewed": "2025-05-09"
+      },
+      "modifiedAt": "2025-05-09T00:33:00.898Z",
+      "createdAt": "2025-05-01T21:43:08.582Z",
+      "sizeBytes": 4083
+    },
+    {
+      "path": "2-migration/README.md",
+      "title": "Guides de migration",
+      "metadata": {
+        "title": "Guides de migration",
+        "slug": "2-migration-readme",
+        "module": "2-migration",
+        "description": "Guides et rapports sur les processus de migration",
+        "status": "stable",
+        "lastReviewed": "2025-05-09"
+      },
+      "modifiedAt": "2025-05-09T00:53:55.391Z",
+      "createdAt": "2025-05-09T00:53:55.391Z",
+      "sizeBytes": 827
+    },
+    {
+      "path": "2-migration/consolidation-report.md",
+      "title": "Consolidation Report",
+      "metadata": {
+        "title": "Consolidation Report",
+        "description": "Guides et processus de migration",
+        "slug": "consolidation-report",
+        "module": "2-migration",
+        "status": "stable",
+        "lastReviewed": "2025-05-09"
+      },
+      "modifiedAt": "2025-05-09T00:33:00.909Z",
+      "createdAt": "2025-04-30T00:57:40.230Z",
+      "sizeBytes": 276811
+    },
+    {
+      "path": "2-migration/guide-correction-duplications-agents.md",
+      "title": "Guide Correction Duplications Agents",
+      "metadata": {
+        "title": "Guide Correction Duplications Agents",
+        "description": "Guides et processus de migration",
+        "slug": "guide-correction-duplications-agents",
+        "module": "2-migration",
+        "status": "stable",
+        "lastReviewed": "2025-05-09"
+      },
+      "modifiedAt": "2025-05-09T00:33:00.910Z",
+      "createdAt": "2025-04-30T00:57:40.234Z",
+      "sizeBytes": 5572
+    },
+    {
+      "path": "2-migration/guide-migration-agents.md",
+      "title": "Guide Migration Agents",
+      "metadata": {
+        "title": "Guide Migration Agents",
+        "description": "Guides et processus de migration",
+        "slug": "guide-migration-agents",
+        "module": "2-migration",
+        "status": "stable",
+        "lastReviewed": "2025-05-09"
+      },
+      "modifiedAt": "2025-05-09T00:44:31.098Z",
+      "createdAt": "2025-05-07T11:54:35.868Z",
+      "sizeBytes": 12276
+    },
+    {
+      "path": "2-migration/guide-migration-structure.md",
+      "title": "Guide Migration Structure",
+      "metadata": {
+        "title": "Guide Migration Structure",
+        "description": "Guides et processus de migration",
+        "slug": "guide-migration-structure",
+        "module": "2-migration",
+        "status": "stable",
+        "lastReviewed": "2025-05-09"
+      },
+      "modifiedAt": "2025-05-09T00:33:00.911Z",
+      "createdAt": "2025-05-03T13:12:57.973Z",
+      "sizeBytes": 9515
+    },
+    {
+      "path": "2-migration/package-rename-report.md",
+      "title": "Package Rename Report",
+      "metadata": {
+        "title": "Package Rename Report",
+        "description": "Guides et processus de migration",
+        "slug": "package-rename-report",
+        "module": "2-migration",
+        "status": "stable",
+        "lastReviewed": "2025-05-09"
+      },
+      "modifiedAt": "2025-05-09T00:33:00.911Z",
+      "createdAt": "2025-04-30T00:57:40.245Z",
+      "sizeBytes": 521
+    },
+    {
+      "path": "3-orchestration/README.md",
+      "title": "Orchestration",
+      "metadata": {
+        "title": "Orchestration",
+        "slug": "3-orchestration-readme",
+        "module": "3-orchestration",
+        "description": "Documentation sur l'orchestrateur standardisé et les systèmes de coordination",
+        "status": "stable",
+        "lastReviewed": "2025-05-09"
+      },
+      "modifiedAt": "2025-05-09T00:53:55.393Z",
+      "createdAt": "2025-05-09T00:53:55.393Z",
+      "sizeBytes": 938
+    },
+    {
+      "path": "3-orchestration/communication-equipe-migration.md",
+      "title": "Communication Equipe Migration",
+      "metadata": {
+        "title": "Communication Equipe Migration",
+        "description": "Orchestrateur standardisé et coordination",
+        "slug": "communication-equipe-migration",
+        "module": "3-orchestration",
+        "status": "stable",
+        "lastReviewed": "2025-05-09"
+      },
+      "modifiedAt": "2025-05-09T00:50:28.304Z",
+      "createdAt": "2025-04-28T21:11:24.908Z",
+      "sizeBytes": 3820
+    },
+    {
+      "path": "3-orchestration/orchestrateur-standardise-guide.md",
+      "title": "Orchestrateur Standardise Guide",
+      "metadata": {
+        "title": "Orchestrateur Standardise Guide",
+        "description": "Orchestrateur standardisé et coordination",
+        "slug": "orchestrateur-standardise-guide",
+        "module": "3-orchestration",
+        "status": "stable",
+        "lastReviewed": "2025-05-09"
+      },
+      "modifiedAt": "2025-05-09T00:33:00.912Z",
+      "createdAt": "2025-04-28T21:36:03.122Z",
+      "sizeBytes": 20976
+    },
+    {
+      "path": "3-orchestration/orchestration-migration-report.md",
+      "title": "Orchestration Migration Report",
+      "metadata": {
+        "title": "Orchestration Migration Report",
+        "description": "Orchestrateur standardisé et coordination",
+        "slug": "orchestration-migration-report",
+        "module": "3-orchestration",
+        "status": "stable",
+        "lastReviewed": "2025-05-09"
+      },
+      "modifiedAt": "2025-05-09T00:33:00.914Z",
+      "createdAt": "2025-04-30T00:57:40.235Z",
+      "sizeBytes": 59923
+    },
+    {
+      "path": "3-orchestration/orchestrator-audit-report.md",
+      "title": "Orchestrator Audit Report",
+      "metadata": {
+        "title": "Orchestrator Audit Report",
+        "description": "Orchestrateur standardisé et coordination",
+        "slug": "orchestrator-audit-report",
+        "module": "3-orchestration",
+        "status": "stable",
+        "lastReviewed": "2025-05-09"
+      },
+      "modifiedAt": "2025-05-09T00:46:16.742Z",
+      "createdAt": "2025-04-30T00:57:40.237Z",
+      "sizeBytes": 122043
+    },
+    {
+      "path": "3-orchestration/taskfile-migration-report.md",
+      "title": "Taskfile Migration Report",
+      "metadata": {
+        "title": "Taskfile Migration Report",
+        "description": "Orchestrateur standardisé et coordination",
+        "slug": "taskfile-migration-report",
+        "module": "3-orchestration",
+        "status": "stable",
+        "lastReviewed": "2025-05-09"
+      },
+      "modifiedAt": "2025-05-09T00:46:16.742Z",
+      "createdAt": "2025-04-30T00:57:40.247Z",
+      "sizeBytes": 6259
+    },
+    {
+      "path": "3-orchestration/technical/86-synchronisation-metier-technique.md",
+      "title": "Synchronisation Métier-Technique",
+      "metadata": {
+        "title": "Synchronisation Métier-Technique",
+        "description": "Orchestrateur standardisé et coordination",
+        "slug": "synchronisation-metier-technique",
+        "module": "3-orchestration",
+        "category": "technical",
+        "status": "stable",
+        "lastReviewed": "2025-05-09",
+        "mergedFrom": "[\\\"44-synchronisation-metier-technique.md\\\", \\\"86-synchronisation-metier-technique.md\\\"]"
+      },
+      "modifiedAt": "2025-05-09T00:33:00.919Z",
+      "createdAt": "2025-05-09T00:21:45.764Z",
+      "sizeBytes": 6656
+    },
+    {
+      "path": "3-orchestration/technical/readme-orchestrateur.md",
+      "title": "Readme Orchestrateur",
+      "metadata": {
+        "title": "Readme Orchestrateur",
+        "description": "Orchestrateur standardisé et coordination",
+        "slug": "readme-orchestrateur",
+        "module": "3-orchestration",
+        "category": "technical",
+        "status": "stable",
+        "lastReviewed": "2025-05-09"
+      },
+      "modifiedAt": "2025-05-09T00:46:16.743Z",
+      "createdAt": "2025-05-01T21:43:08.587Z",
+      "sizeBytes": 7394
+    },
+    {
+      "path": "3-orchestration/technical/synchronisation-metier-technique.md",
+      "title": "Synchronisation Métier-Technique",
+      "metadata": {
+        "title": "Synchronisation Métier-Technique",
+        "description": "Orchestrateur standardisé et coordination",
+        "slug": "synchronisation-metier-technique",
+        "module": "3-orchestration",
+        "category": "technical",
+        "status": "stable",
+        "lastReviewed": "2025-05-09",
+        "mergedFrom": "[\\\"44-synchronisation-metier-technique.md\\\", \\\"86-synchronisation-metier-technique.md\\\"]"
+      },
+      "modifiedAt": "2025-05-09T00:33:00.920Z",
+      "createdAt": "2025-04-28T14:34:45.932Z",
+      "sizeBytes": 6656
+    },
+    {
+      "path": "4-nx-ci/README.md",
+      "title": "NX & CI/CD",
+      "metadata": {
+        "title": "NX & CI/CD",
+        "slug": "4-nx-ci-readme",
+        "module": "4-nx-ci",
+        "description": "Configuration NX, pipelines CI/CD et automatisation",
+        "status": "stable",
+        "lastReviewed": "2025-05-09"
+      },
+      "modifiedAt": "2025-05-09T00:53:55.394Z",
+      "createdAt": "2025-05-09T00:53:55.394Z",
+      "sizeBytes": 557
+    },
+    {
+      "path": "4-nx-ci/nx-pipeline-ci-cd.md",
+      "title": "Nx Pipeline Ci Cd",
+      "metadata": {
+        "title": "Nx Pipeline Ci Cd",
+        "description": "Configuration NX et CI/CD",
+        "slug": "nx-pipeline-ci-cd",
+        "module": "4-nx-ci",
+        "status": "stable",
+        "lastReviewed": "2025-05-09"
+      },
+      "modifiedAt": "2025-05-09T00:50:28.310Z",
+      "createdAt": "2025-04-28T21:21:00.316Z",
+      "sizeBytes": 7258
+    },
+    {
+      "path": "4-nx-ci/nx-standardized-config.md",
+      "title": "Nx Standardized Config",
+      "metadata": {
+        "title": "Nx Standardized Config",
+        "description": "Configuration NX et CI/CD",
+        "slug": "nx-standardized-config",
+        "module": "4-nx-ci",
+        "status": "stable",
+        "lastReviewed": "2025-05-09"
+      },
+      "modifiedAt": "2025-05-09T00:33:00.921Z",
+      "createdAt": "2025-05-05T23:43:53.192Z",
+      "sizeBytes": 5287
+    },
+    {
+      "path": "4-nx-ci/nx-usage-guide.md",
+      "title": "Nx Usage Guide",
+      "metadata": {
+        "title": "Nx Usage Guide",
+        "description": "Configuration NX et CI/CD",
+        "slug": "nx-usage-guide",
+        "module": "4-nx-ci",
+        "status": "stable",
+        "lastReviewed": "2025-05-09"
+      },
+      "modifiedAt": "2025-05-09T00:46:16.744Z",
+      "createdAt": "2025-04-28T21:09:03.728Z",
+      "sizeBytes": 5631
+    },
+    {
+      "path": "5-integration/README.md",
+      "title": "Intégration",
+      "metadata": {
+        "title": "Intégration",
+        "slug": "5-integration-readme",
+        "module": "5-integration",
+        "description": "Standards d'intégration, migrations N8N, ORM et autres outils",
+        "status": "stable",
+        "lastReviewed": "2025-05-09"
+      },
+      "modifiedAt": "2025-05-09T00:53:55.396Z",
+      "createdAt": "2025-05-09T00:53:55.396Z",
+      "sizeBytes": 1386
+    },
+    {
+      "path": "5-integration/fiche-technique.md",
+      "title": "Fiche Technique",
+      "metadata": {
+        "title": "Fiche Technique",
+        "description": "Intégration et standards technologiques",
+        "slug": "fiche-technique",
+        "module": "5-integration",
+        "status": "stable",
+        "lastReviewed": "2025-05-09"
+      },
+      "modifiedAt": "2025-05-09T00:46:16.745Z",
+      "createdAt": "2025-04-30T00:57:40.234Z",
+      "sizeBytes": 35405
+    },
+    {
+      "path": "5-integration/n8n-migration-plan.md",
+      "title": "N8n Migration Plan",
+      "metadata": {
+        "title": "N8n Migration Plan",
+        "description": "Intégration et standards technologiques",
+        "slug": "n8n-migration-plan",
+        "module": "5-integration",
+        "status": "stable",
+        "lastReviewed": "2025-05-09"
+      },
+      "modifiedAt": "2025-05-09T00:50:28.312Z",
+      "createdAt": "2025-05-04T20:33:43.642Z",
+      "sizeBytes": 24584
+    },
+    {
+      "path": "5-integration/n8n-to-temporal-migration-patterns.md",
+      "title": "N8n To Temporal Migration Patterns",
+      "metadata": {
+        "title": "N8n To Temporal Migration Patterns",
+        "description": "Intégration et standards technologiques",
+        "slug": "n8n-to-temporal-migration-patterns",
+        "module": "5-integration",
+        "status": "stable",
+        "lastReviewed": "2025-05-09"
+      },
+      "modifiedAt": "2025-05-09T00:46:16.746Z",
+      "createdAt": "2025-05-05T00:18:31.213Z",
+      "sizeBytes": 5563
+    },
+    {
+      "path": "5-integration/presentations/standards-workflows-temporal.md",
+      "title": "Standards Workflows Temporal",
+      "metadata": {
+        "title": "Standards Workflows Temporal",
+        "description": "Intégration et standards technologiques",
+        "slug": "standards-workflows-temporal",
+        "module": "5-integration",
+        "category": "presentations",
+        "status": "stable",
+        "lastReviewed": "2025-05-09"
+      },
+      "modifiedAt": "2025-05-09T00:50:28.313Z",
+      "createdAt": "2025-05-05T16:10:12.482Z",
+      "sizeBytes": 5271
+    },
+    {
+      "path": "5-integration/preservation-urls-sans-redirection.md",
+      "title": "Preservation Urls Sans Redirection",
+      "metadata": {
+        "title": "Preservation Urls Sans Redirection",
+        "description": "Intégration et standards technologiques",
+        "slug": "preservation-urls-sans-redirection",
+        "module": "5-integration",
+        "status": "stable",
+        "lastReviewed": "2025-05-09"
+      },
+      "modifiedAt": "2025-05-09T00:33:00.925Z",
+      "createdAt": "2025-05-02T10:00:17.425Z",
+      "sizeBytes": 6568
+    },
+    {
+      "path": "5-integration/prisma-zod-integration.md",
+      "title": "Prisma Zod Integration",
+      "metadata": {
+        "title": "Prisma Zod Integration",
+        "description": "Intégration et standards technologiques",
+        "slug": "prisma-zod-integration",
+        "module": "5-integration",
+        "status": "stable",
+        "lastReviewed": "2025-05-09"
+      },
+      "modifiedAt": "2025-05-09T00:33:00.926Z",
+      "createdAt": "2025-04-28T23:52:04.389Z",
+      "sizeBytes": 4292
+    },
+    {
+      "path": "5-integration/seo-redirects-validation.md",
+      "title": "Seo Redirects Validation",
+      "metadata": {
+        "title": "Seo Redirects Validation",
+        "description": "Intégration et standards technologiques",
+        "slug": "seo-redirects-validation",
+        "module": "5-integration",
+        "status": "stable",
+        "lastReviewed": "2025-05-09"
+      },
+      "modifiedAt": "2025-05-09T00:33:00.927Z",
+      "createdAt": "2025-05-02T09:50:08.229Z",
+      "sizeBytes": 6260
+    },
+    {
+      "path": "5-integration/standards/temporal-workflow-standards.md",
+      "title": "Temporal Workflow Standards",
+      "metadata": {
+        "title": "Temporal Workflow Standards",
+        "description": "Intégration et standards technologiques",
+        "slug": "temporal-workflow-standards",
+        "module": "5-integration",
+        "category": "standards",
+        "status": "stable",
+        "lastReviewed": "2025-05-09"
+      },
+      "modifiedAt": "2025-05-09T00:50:28.314Z",
+      "createdAt": "2025-05-05T14:55:32.881Z",
+      "sizeBytes": 8023
+    },
+    {
+      "path": "5-integration/standards-bases-donnees-orm.md",
+      "title": "Standards Bases Donnees Orm",
+      "metadata": {
+        "title": "Standards Bases Donnees Orm",
+        "description": "Intégration et standards technologiques",
+        "slug": "standards-bases-donnees-orm",
+        "module": "5-integration",
+        "status": "stable",
+        "lastReviewed": "2025-05-09"
+      },
+      "modifiedAt": "2025-05-09T00:33:00.929Z",
+      "createdAt": "2025-05-05T16:30:56.639Z",
+      "sizeBytes": 3419
+    },
+    {
+      "path": "5-integration/technologies-standards.md",
+      "title": "Technologies Standards",
+      "metadata": {
+        "title": "Technologies Standards",
+        "description": "Intégration et standards technologiques",
+        "slug": "technologies-standards",
+        "module": "5-integration",
+        "status": "stable",
+        "lastReviewed": "2025-05-09"
+      },
+      "modifiedAt": "2025-05-09T00:50:28.320Z",
+      "createdAt": "2025-05-03T23:03:04.464Z",
+      "sizeBytes": 158085
+    },
+    {
+      "path": "5-integration/typebox-standards.md",
+      "title": "Typebox Standards",
+      "metadata": {
+        "title": "Typebox Standards",
+        "description": "Intégration et standards technologiques",
+        "slug": "typebox-standards",
+        "module": "5-integration",
+        "status": "stable",
+        "lastReviewed": "2025-05-09"
+      },
+      "modifiedAt": "2025-05-09T00:33:00.945Z",
+      "createdAt": "2025-05-05T23:19:39.523Z",
+      "sizeBytes": 4901
+    },
+    {
+      "path": "5-integration/workflow-consolidation-guide.md",
+      "title": "Workflow Consolidation Guide",
+      "metadata": {
+        "title": "Workflow Consolidation Guide",
+        "description": "Intégration et standards technologiques",
+        "slug": "workflow-consolidation-guide",
+        "module": "5-integration",
+        "status": "stable",
+        "lastReviewed": "2025-05-09"
+      },
+      "modifiedAt": "2025-05-09T00:33:00.945Z",
+      "createdAt": "2025-05-05T14:49:01.237Z",
+      "sizeBytes": 4139
+    },
+    {
+      "path": "5-integration/workflow-consolidation-report.md",
+      "title": "Workflow Consolidation Report",
+      "metadata": {
+        "title": "Workflow Consolidation Report",
+        "description": "Intégration et standards technologiques",
+        "slug": "workflow-consolidation-report",
+        "module": "5-integration",
+        "status": "stable",
+        "lastReviewed": "2025-05-09"
+      },
+      "modifiedAt": "2025-05-09T00:46:16.750Z",
+      "createdAt": "2025-05-05T07:00:05.113Z",
+      "sizeBytes": 5796
+    },
+    {
+      "path": "6-planning/README.md",
+      "title": "Planning",
+      "metadata": {
+        "title": "Planning",
+        "slug": "6-planning-readme",
+        "module": "6-planning",
+        "description": "Planification, stratégie et suivi des tâches",
+        "status": "stable",
+        "lastReviewed": "2025-05-09"
+      },
+      "modifiedAt": "2025-05-09T00:53:55.398Z",
+      "createdAt": "2025-05-09T00:53:55.398Z",
+      "sizeBytes": 595
+    },
+    {
+      "path": "6-planning/changelog.md",
+      "title": "Changelog",
+      "metadata": {
+        "title": "Changelog",
+        "description": "Planification et suivi des tâches",
+        "slug": "changelog",
+        "module": "6-planning",
+        "status": "stable",
+        "lastReviewed": "2025-05-09"
+      },
+      "modifiedAt": "2025-05-09T00:33:00.947Z",
+      "createdAt": "2025-05-01T21:43:08.585Z",
+      "sizeBytes": 3523
+    },
+    {
+      "path": "6-planning/migration-plan.md",
+      "title": "Migration Plan",
+      "metadata": {
+        "title": "Migration Plan",
+        "description": "Planification et suivi des tâches",
+        "slug": "migration-plan",
+        "module": "6-planning",
+        "status": "stable",
+        "lastReviewed": "2025-05-09"
+      },
+      "modifiedAt": "2025-05-09T00:33:00.947Z",
+      "createdAt": "2025-04-28T14:34:45.932Z",
+      "sizeBytes": 2019
+    },
+    {
+      "path": "6-planning/migration-strategy.md",
+      "title": "Migration Strategy",
+      "metadata": {
+        "title": "Migration Strategy",
+        "description": "Planification et suivi des tâches",
+        "slug": "migration-strategy",
+        "module": "6-planning",
+        "status": "stable",
+        "lastReviewed": "2025-05-09"
+      },
+      "modifiedAt": "2025-05-09T00:33:00.947Z",
+      "createdAt": "2025-04-28T14:34:45.932Z",
+      "sizeBytes": 1815
+    },
+    {
+      "path": "6-planning/todomcp.md",
+      "title": "Todomcp",
+      "metadata": {
+        "title": "Todomcp",
+        "description": "Planification et suivi des tâches",
+        "slug": "todomcp",
+        "module": "6-planning",
+        "status": "stable",
+        "lastReviewed": "2025-05-09"
+      },
+      "modifiedAt": "2025-05-09T00:33:00.949Z",
+      "createdAt": "2025-05-01T21:43:08.586Z",
+      "sizeBytes": 3900
+    },
+    {
+      "path": "README.md",
+      "title": "README",
+      "metadata": {
+        "title": "README",
+        "slug": "readme",
+        "module": "README.md",
+        "status": "stable",
+        "lastReviewed": "2025-05-09"
+      },
+      "modifiedAt": "2025-05-09T00:50:28.326Z",
+      "createdAt": "2025-05-08T23:48:24.911Z",
+      "sizeBytes": 3562
+    },
+    {
+      "path": "documentation-report.md",
+      "title": "Documentation Report",
+      "metadata": {
+        "title": "Documentation Report",
+        "slug": "documentation-report",
+        "module": "documentation-report.md",
+        "status": "stable",
+        "lastReviewed": "2025-05-09"
+      },
+      "modifiedAt": "2025-05-09T00:46:16.751Z",
+      "createdAt": "2025-05-09T00:14:27.992Z",
+      "sizeBytes": 5900
+    }
+  ],
+  "navigation": [
+    {
+      "module": "0-core",
+      "items": [
+        {
+          "title": "Contributing",
+          "path": "0-core/contributing.md",
+          "status": "stable"
+        },
+        {
+          "title": "Onboarding Presentation",
+          "path": "0-core/project/onboarding-presentation.md",
+          "status": "stable"
+        },
+        {
+          "title": "README",
+          "path": "0-core/README.md",
+          "status": "stable"
+        },
+        {
+          "title": "Style Guide",
+          "path": "0-core/style-guide.md",
+          "status": "stable"
+        },
+        {
+          "title": "Typescript Conventions",
+          "path": "0-core/typescript-conventions.md",
+          "status": "stable"
+        }
+      ]
+    },
+    {
+      "module": "1-architecture",
+      "items": [
+        {
+          "title": "Agents Documentation 20250420 023942",
+          "path": "1-architecture/agents-documentation-20250420-023942.md",
+          "status": "stable"
+        },
+        {
+          "title": "Architecture à trois couches",
+          "path": "1-architecture/README.md",
+          "status": "stable"
+        },
+        {
+          "title": "Architecture Agents Coordination",
+          "path": "1-architecture/architecture-agents-coordination.md",
+          "status": "stable"
+        },
+        {
+          "title": "Architecture Agents Mcp",
+          "path": "1-architecture/architecture-agents-mcp.md",
+          "status": "stable"
+        },
+        {
+          "title": "Architecture Trois Couches",
+          "path": "1-architecture/architecture-trois-couches.md",
+          "status": "stable"
+        },
+        {
+          "title": "Bonnes Pratiques Agents",
+          "path": "1-architecture/bonnes-pratiques-agents.md",
+          "status": "stable"
+        },
+        {
+          "title": "Contrats Interfaces Couches",
+          "path": "1-architecture/contrats-interfaces-couches.md",
+          "status": "stable"
+        },
+        {
+          "title": "Data Migration Strategy",
+          "path": "1-architecture/agents/specific/data-migration-strategy.md",
+          "status": "stable"
+        },
+        {
+          "title": "Guide Migration Trois Couches",
+          "path": "1-architecture/guide-migration-trois-couches.md",
+          "status": "stable"
+        },
+        {
+          "title": "Guide Restructuration Trois Couches",
+          "path": "1-architecture/guide-restructuration-trois-couches.md",
+          "status": "stable"
+        },
+        {
+          "title": "Guide Tests Architecture Trois Couches",
+          "path": "1-architecture/guide-tests-architecture-trois-couches.md",
+          "status": "stable"
+        },
+        {
+          "title": "Index Architecture Trois Couches",
+          "path": "1-architecture/index-architecture-trois-couches.md",
+          "status": "stable"
+        },
+        {
+          "title": "Migration Plan",
+          "path": "1-architecture/agents/specific/migration-plan.md",
+          "status": "stable"
+        },
+        {
+          "title": "Overview",
+          "path": "1-architecture/agents/overview.md",
+          "status": "stable"
+        },
+        {
+          "title": "Readmeremediator",
+          "path": "1-architecture/agents/specific/readmeremediator.md",
+          "status": "stable"
+        },
+        {
+          "title": "Reliability Config",
+          "path": "1-architecture/agents/specific/reliability-config.md",
+          "status": "stable"
+        },
+        {
+          "title": "Sql Analysis",
+          "path": "1-architecture/agents/specific/sql-analysis.md",
+          "status": "stable"
+        },
+        {
+          "title": "Structure",
+          "path": "1-architecture/structure.md",
+          "status": "stable"
+        },
+        {
+          "title": "Structure Dossiers",
+          "path": "1-architecture/structure-dossiers.md",
+          "status": "stable"
+        }
+      ]
+    },
+    {
+      "module": "2-migration",
+      "items": [
+        {
+          "title": "Consolidation Report",
+          "path": "2-migration/consolidation-report.md",
+          "status": "stable"
+        },
+        {
+          "title": "Guide Correction Duplications Agents",
+          "path": "2-migration/guide-correction-duplications-agents.md",
+          "status": "stable"
+        },
+        {
+          "title": "Guide Migration Agents",
+          "path": "2-migration/guide-migration-agents.md",
+          "status": "stable"
+        },
+        {
+          "title": "Guide Migration Structure",
+          "path": "2-migration/guide-migration-structure.md",
+          "status": "stable"
+        },
+        {
+          "title": "Guides de migration",
+          "path": "2-migration/README.md",
+          "status": "stable"
+        },
+        {
+          "title": "Package Rename Report",
+          "path": "2-migration/package-rename-report.md",
+          "status": "stable"
+        }
+      ]
+    },
+    {
+      "module": "3-orchestration",
+      "items": [
+        {
+          "title": "Communication Equipe Migration",
+          "path": "3-orchestration/communication-equipe-migration.md",
+          "status": "stable"
+        },
+        {
+          "title": "Orchestrateur Standardise Guide",
+          "path": "3-orchestration/orchestrateur-standardise-guide.md",
+          "status": "stable"
+        },
+        {
+          "title": "Orchestration",
+          "path": "3-orchestration/README.md",
+          "status": "stable"
+        },
+        {
+          "title": "Orchestration Migration Report",
+          "path": "3-orchestration/orchestration-migration-report.md",
+          "status": "stable"
+        },
+        {
+          "title": "Orchestrator Audit Report",
+          "path": "3-orchestration/orchestrator-audit-report.md",
+          "status": "stable"
+        },
+        {
+          "title": "Readme Orchestrateur",
+          "path": "3-orchestration/technical/readme-orchestrateur.md",
+          "status": "stable"
+        },
+        {
+          "title": "Synchronisation Métier-Technique",
+          "path": "3-orchestration/technical/86-synchronisation-metier-technique.md",
+          "status": "stable"
+        },
+        {
+          "title": "Synchronisation Métier-Technique",
+          "path": "3-orchestration/technical/synchronisation-metier-technique.md",
+          "status": "stable"
+        },
+        {
+          "title": "Taskfile Migration Report",
+          "path": "3-orchestration/taskfile-migration-report.md",
+          "status": "stable"
+        }
+      ]
+    },
+    {
+      "module": "4-nx-ci",
+      "items": [
+        {
+          "title": "NX & CI/CD",
+          "path": "4-nx-ci/README.md",
+          "status": "stable"
+        },
+        {
+          "title": "Nx Pipeline Ci Cd",
+          "path": "4-nx-ci/nx-pipeline-ci-cd.md",
+          "status": "stable"
+        },
+        {
+          "title": "Nx Standardized Config",
+          "path": "4-nx-ci/nx-standardized-config.md",
+          "status": "stable"
+        },
+        {
+          "title": "Nx Usage Guide",
+          "path": "4-nx-ci/nx-usage-guide.md",
+          "status": "stable"
+        }
+      ]
+    },
+    {
+      "module": "5-integration",
+      "items": [
+        {
+          "title": "Fiche Technique",
+          "path": "5-integration/fiche-technique.md",
+          "status": "stable"
+        },
+        {
+          "title": "Intégration",
+          "path": "5-integration/README.md",
+          "status": "stable"
+        },
+        {
+          "title": "N8n Migration Plan",
+          "path": "5-integration/n8n-migration-plan.md",
+          "status": "stable"
+        },
+        {
+          "title": "N8n To Temporal Migration Patterns",
+          "path": "5-integration/n8n-to-temporal-migration-patterns.md",
+          "status": "stable"
+        },
+        {
+          "title": "Preservation Urls Sans Redirection",
+          "path": "5-integration/preservation-urls-sans-redirection.md",
+          "status": "stable"
+        },
+        {
+          "title": "Prisma Zod Integration",
+          "path": "5-integration/prisma-zod-integration.md",
+          "status": "stable"
+        },
+        {
+          "title": "Seo Redirects Validation",
+          "path": "5-integration/seo-redirects-validation.md",
+          "status": "stable"
+        },
+        {
+          "title": "Standards Bases Donnees Orm",
+          "path": "5-integration/standards-bases-donnees-orm.md",
+          "status": "stable"
+        },
+        {
+          "title": "Standards Workflows Temporal",
+          "path": "5-integration/presentations/standards-workflows-temporal.md",
+          "status": "stable"
+        },
+        {
+          "title": "Technologies Standards",
+          "path": "5-integration/technologies-standards.md",
+          "status": "stable"
+        },
+        {
+          "title": "Temporal Workflow Standards",
+          "path": "5-integration/standards/temporal-workflow-standards.md",
+          "status": "stable"
+        },
+        {
+          "title": "Typebox Standards",
+          "path": "5-integration/typebox-standards.md",
+          "status": "stable"
+        },
+        {
+          "title": "Workflow Consolidation Guide",
+          "path": "5-integration/workflow-consolidation-guide.md",
+          "status": "stable"
+        },
+        {
+          "title": "Workflow Consolidation Report",
+          "path": "5-integration/workflow-consolidation-report.md",
+          "status": "stable"
+        }
+      ]
+    },
+    {
+      "module": "6-planning",
+      "items": [
+        {
+          "title": "Changelog",
+          "path": "6-planning/changelog.md",
+          "status": "stable"
+        },
+        {
+          "title": "Migration Plan",
+          "path": "6-planning/migration-plan.md",
+          "status": "stable"
+        },
+        {
+          "title": "Migration Strategy",
+          "path": "6-planning/migration-strategy.md",
+          "status": "stable"
+        },
+        {
+          "title": "Planning",
+          "path": "6-planning/README.md",
+          "status": "stable"
+        },
+        {
+          "title": "Todomcp",
+          "path": "6-planning/todomcp.md",
+          "status": "stable"
+        }
+      ]
+    },
+    {
+      "module": "README.md",
+      "items": [
+        {
+          "title": "README",
+          "path": "README.md",
+          "status": "stable"
+        }
+      ]
+    },
+    {
+      "module": "documentation-report.md",
+      "items": [
+        {
+          "title": "Documentation Report",
+          "path": "documentation-report.md",
+          "status": "stable"
+        }
+      ]
+    }
+  ]
+}

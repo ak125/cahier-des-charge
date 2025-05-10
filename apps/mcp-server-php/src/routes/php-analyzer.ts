@@ -1,9 +1,9 @@
 import fs from 'fs';
 import path from 'path';
 import { FastifyPluginAsync, FastifyRequest, FastifyReply } from 'fastify';
-import { saveAuditLocally, saveAuditResult } from '../utils/audit-saver';
-import { createLogger } from '../utils/logger';
-import { parsePhpCode } from '../utils/php-parser';
+import { saveAuditLocally, saveAuditResult } from ..@cahier-des-charge/coordination/src/utils/audit-saver';
+import { createLogger } from ..@cahier-des-charge/coordination/src/utils/logger';
+import { parsePhpCode } from ..@cahier-des-charge/coordination/src/utils/php-parser';
 
 const logger = createLogger('PhpAnalyzer-route');
 

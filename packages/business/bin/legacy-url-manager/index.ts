@@ -13,7 +13,7 @@ import { Command } from 'commander';
 import * as fs from 'fs';
 import * as path from 'path';
 import chalk from 'chalk';
-import { SeoRedirectMapper } from '../../agents/seo-redirect-mapper';
+import { SeoRedirectMapper } from ../..@cahier-des-charge/business/src/agents/seo-redirect-mapper';
 
 // Création du programme CLI
 const program = new Command();

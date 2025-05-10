@@ -3,7 +3,7 @@
  * Outil en ligne de commande pour valider et signer du code généré par IA
  */
 import { safeMigrationValidator } from '../core/SafeMigrationValidator';
-import { validateAndSignFile, validateAndSignCode } from '../utils/validate-and-sign';
+import { validateAndSignFile, validateAndSignCode } from ..@cahier-des-charge/coordination/src/utils/validate-and-sign';
 import * as fs from 'fs';
 import * as path from 'path';
 import { program } from 'commander';

@@ -41,6 +41,12 @@ jobs:
       - name: Type checking
         run: earthly +typecheck
 
+      - name: Validate 3-layer structure
+        run: earthly +validate-3layer
+
+      - name: Validate architecture dependencies
+        run: earthly +validate-architecture
+
       - name: Run tests
         run: earthly +test
 

@@ -1,6 +1,6 @@
 import type { LoaderFunctionArgs, MetaFunction } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
-import { createCanonicalMeta } from '~/utils/use-canonical';
+import { createCanonicalMeta } from ~@cahier-des-charge/coordination/src/utils/use-canonical';
 
 /**
  * Configuration pour le générateur SEO

@@ -68,7 +68,8 @@ jobs:
             TARGET_OPTION="--target $TARGET_ROUTES"
           fi
           
-          npx ts-node agents/monitoring-check.ts --env $ENV_TARGET $TARGET_OPTION
+          # Utiliser le nouveau chemin dans la structure à 3 couches
+          npx ts-node packages/orchestration/src/monitoring/monitoring-check.ts --env $ENV_TARGET $TARGET_OPTION
         env:
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
           N8N_WEBHOOK: ${{ secrets.N8N_WEBHOOK }}

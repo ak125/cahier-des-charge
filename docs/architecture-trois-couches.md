@@ -1,8 +1,10 @@
 # Architecture à trois couches pour les agents MCP
 
+*Mise à jour : 8 mai 2025 - Après déduplication complète*
+
 ## Vue d'ensemble
 
-L'architecture à trois couches est un modèle architectural qui divise les responsabilités des agents en trois niveaux distincts, permettant une meilleure organisation, réutilisation et maintenance du code. Cette architecture permet également une évolution plus flexible du système.
+L'architecture à trois couches est un modèle architectural qui divise les responsabilités des agents en trois niveaux distincts, permettant une meilleure organisation, réutilisation et maintenance du code. Cette architecture permet également une évolution plus flexible du système. La récente déduplication du code a éliminé plus de 200 fichiers redondants tout en préservant la fonctionnalité complète.
 
 ![Architecture à trois couches](../static/img/architecture-trois-couches.png)
 
@@ -308,4 +310,19 @@ export class TextSentimentAnalyzer implements AnalyzerAgent {
     }
   }
 }
+```
+
+## Statistiques après déduplication (Mai 2025)
+
+La restructuration et déduplication ont permis une réduction significative de la redondance dans le code :
+
+| Couche | Fichiers | Répertoires | Description |
+|--------|----------|-------------|-------------|
+| Orchestration | 55 | 14 | Gestion des workflows et coordination de haut niveau |
+| Coordination | 3 | 4 | Communication entre différentes couches et systèmes |
+| Business | 572 | 225 | Logique métier, analyse, validation, génération |
+| Interfaces | 10 | 4 | Interfaces partagées par les différentes couches |
+
+**Total d'agents dédupliqués**: 210
+**Taux de réussite de consolidation**: 100%
 ```

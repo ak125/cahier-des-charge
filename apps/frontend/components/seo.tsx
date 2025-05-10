@@ -1,7 +1,7 @@
 import { useLocation, useMatches } from '@remix-run/react';
 import type { MetaDescriptor } from '@remix-run/react';
 import { config } from '~/config/seo-config';
-import { ensureCanonical } from '~/utils/canonical';
+import { ensureCanonical } from ~@cahier-des-charge/coordination/src/utils/canonical';
 
 interface SEOProps {
   /** Métadonnées spécifiques à cette page, remplace les valeurs par défaut */

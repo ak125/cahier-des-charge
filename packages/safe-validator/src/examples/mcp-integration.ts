@@ -7,7 +7,7 @@
  */
 
 import { safeMigrationValidator } from '../core/SafeMigrationValidator';
-import { validateAndSignCode, validateAndSignFile } from '../utils/validate-and-sign';
+import { validateAndSignCode, validateAndSignFile } from ..@cahier-des-charge/coordination/src/utils/validate-and-sign';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as crypto from 'crypto';

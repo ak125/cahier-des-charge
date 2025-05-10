@@ -1,16 +1,22 @@
-name: Validate MCP Agents
+name: Validate 3-Layer Agents
 
 on:
   push:
     paths:
-      - 'packages/mcp-agents/**/*.ts'
-      - 'agents/**/*.ts'
-      - 'apps/mcp-server*/**/*.ts'
+      - 'packages/business/**/*-agent.ts'
+      - 'packages/coordination/**/*-agent.ts'
+      - 'packages/orchestration/**/*-agent.ts'
+      - 'packages/business/**/agent/*.ts'
+      - 'packages/coordination/**/agent/*.ts'
+      - 'packages/orchestration/**/agent/*.ts'
   pull_request:
     paths:
-      - 'packages/mcp-agents/**/*.ts'
-      - 'agents/**/*.ts'
-      - 'apps/mcp-server*/**/*.ts'
+      - 'packages/business/**/*-agent.ts'
+      - 'packages/coordination/**/*-agent.ts'
+      - 'packages/orchestration/**/*-agent.ts'
+      - 'packages/business/**/agent/*.ts'
+      - 'packages/coordination/**/agent/*.ts'
+      - 'packages/orchestration/**/agent/*.ts'
 
 jobs:
   validate:
@@ -28,12 +34,12 @@ jobs:
         run: npm ci
       
       - name: Validate agents implementation
-        run: bash ./fix-agent-errors.sh
+        run: node ./tools/ci/validate-3layer-agents.js
         
       - name: Commit changes if needed
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
-          commit_message: "fix: correction automatique des erreurs TypeScript des agents MCP"
-          commit_user_name: "MCP Auto-Fix Bot"
-          commit_user_email: "mcp-bot@example.com"
-          file_pattern: 'packages/mcp-agents/**/*.ts agents/**/*.ts apps/mcp-server*/**/*.ts'
+          commit_message: "fix: correction automatique des erreurs TypeScript des agents (3-layer)"
+          commit_user_name: "3-Layer Auto-Fix Bot"
+          commit_user_email: "autofix-bot@example.com"
+          file_pattern: 'packages/business/**/*-agent.ts packages/coordination/**/*-agent.ts packages/orchestration/**/*-agent.ts packages/business/**/agent/*.ts packages/coordination/**/agent/*.ts packages/orchestration/**/agent/*.ts'

@@ -135,6 +135,9 @@ function filterProjectsWithTests(projects) {
 function prioritizeTests(projects) {
     // Projets critiques qui doivent être testés en premier
     const criticalProjects = [
+        'business',           // Couche business (la plus fondamentale)
+        'coordination',       // Couche coordination (intermédiaire)
+        'orchestration',      // Couche orchestration
         'core-api',
         'shared-auth',
         'dashboard',

@@ -2,7 +2,7 @@ import path from 'path';
 import { McpServer } from '@model-context-protocol/server';
 import dotenv from 'dotenv';
 import { phpAnalyzerRoute } from './routes/php-analyzer';
-import { createLogger } from './utils/logger';
+import { createLogger } from .@cahier-des-charge/coordination/src/utils/logger';
 
 // Chargement des variables d'environnement
 dotenv.config();

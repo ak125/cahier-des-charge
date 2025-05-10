@@ -5,7 +5,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { verify } from '@sigstore/verify';
 import { SigstoreConfig, VerificationResult, SignatureInfo } from '../types';
-import { hashContent, hashFile } from '../utils/hash';
+import { hashContent, hashFile } from ..@cahier-des-charge/coordination/src/utils/hash';
 
 /**
  * Vérificateur de signatures SIGSTORE pour les résultats d'agents

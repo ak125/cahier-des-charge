@@ -6,7 +6,7 @@ import * as path from 'path';
 import * as crypto from 'crypto';
 import { SigstoreConfig, SignatureInfo } from '../types';
 import { sign } from '@sigstore/sign';
-import { hashContent } from '../utils/hash';
+import { hashContent } from ..@cahier-des-charge/coordination/src/utils/hash';
 
 /**
  * Signataire pour les résultats d'agents utilisant SIGSTORE

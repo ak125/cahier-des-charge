@@ -11,7 +11,7 @@ import {
   SchemaMap,
   TableInfo,
 } from '../types';
-import { maskConnectionString, parseConnectionString } from '../utils/connection-string';
+import { maskConnectionString, parseConnectionString } from ..@cahier-des-charge/coordination/src/utils/connection-string';
 
 export class PostgresConnectionService {
   private pool: Pool | null = null;

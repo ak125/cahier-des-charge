@@ -44,7 +44,7 @@ export type PrismaZodOptions = {
  * // Dans prisma.service.ts
  * import { PrismaClient } from '@prisma/client';
  * import { Injectable, OnModuleInit } from '@nestjs/common';
- * import { extendPrismaWithZod } from '../utils/prisma-zod';
+ * import { extendPrismaWithZod } from ..@cahier-des-charge/coordination/src/utils/prisma-zod';
  * 
  * @Injectable()
  * export class PrismaService extends PrismaClient implements OnModuleInit {

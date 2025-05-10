@@ -570,6 +570,10 @@
       "nx.json",
       "nx/target-defaults"
     ],
+    "targets.test.outputs": [
+      "nx.json",
+      "nx/target-defaults"
+    ],
     "targets.test.parallelism": [
       "nx.json",
       "nx/target-defaults"
@@ -583,6 +587,10 @@
       "nx/target-defaults"
     ],
     "targets.build.cache": [
+      "nx.json",
+      "nx/target-defaults"
+    ],
+    "targets.build.outputs": [
       "nx.json",
       "nx/target-defaults"
     ],
@@ -999,6 +1007,10 @@
       "nx/target-defaults"
     ],
     "targets.build.cache": [
+      "nx.json",
+      "nx/target-defaults"
+    ],
+    "targets.build.outputs": [
       "nx.json",
       "nx/target-defaults"
     ],
@@ -3489,1488 +3501,6 @@
       "nx/target-defaults"
     ]
   },
-  "apps/mcp-server-mysql": {
-    "root": [
-      "apps/mcp-server-mysql/project.json",
-      "nx/core/project-json"
-    ],
-    "name": [
-      "apps/mcp-server-mysql/project.json",
-      "nx/core/project-json"
-    ],
-    "projectType": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "tags": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "tags.npm:public": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "metadata.targetGroups": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "metadata.targetGroups.NPM Scripts": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "metadata.targetGroups.NPM Scripts.0": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "metadata.targetGroups.NPM Scripts.1": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "metadata.targetGroups.NPM Scripts.2": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "metadata.targetGroups.NPM Scripts.3": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "metadata.targetGroups.NPM Scripts.4": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "metadata.targetGroups.NPM Scripts.5": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "metadata.targetGroups.NPM Scripts.6": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "metadata.targetGroups.NPM Scripts.7": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "metadata.targetGroups.NPM Scripts.8": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "metadata.targetGroups.NPM Scripts.9": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "metadata.targetGroups.NPM Scripts.10": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "metadata.targetGroups.NPM Scripts.11": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "metadata.targetGroups.NPM Scripts.12": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "metadata.targetGroups.NPM Scripts.13": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "metadata.targetGroups.NPM Scripts.14": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "metadata.targetGroups.NPM Scripts.15": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "metadata.targetGroups.NPM Scripts.16": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "metadata.targetGroups.NPM Scripts.17": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "metadata.targetGroups.NPM Scripts.18": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "metadata.targetGroups.NPM Scripts.19": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "metadata.targetGroups.NPM Scripts.20": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "metadata.targetGroups.NPM Scripts.21": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "metadata.targetGroups.NPM Scripts.22": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "metadata.targetGroups.NPM Scripts.23": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "metadata.targetGroups.NPM Scripts.24": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "metadata.targetGroups.NPM Scripts.25": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "metadata.targetGroups.NPM Scripts.26": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "metadata.targetGroups.NPM Scripts.27": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "metadata.targetGroups.NPM Scripts.28": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "metadata.targetGroups.NPM Scripts.29": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "metadata.targetGroups.NPM Scripts.30": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "metadata.targetGroups.NPM Scripts.31": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "metadata.targetGroups.NPM Scripts.32": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "metadata.targetGroups.NPM Scripts.33": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "metadata.targetGroups.NPM Scripts.34": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "metadata.targetGroups.NPM Scripts.35": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "metadata.targetGroups.NPM Scripts.36": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "metadata.targetGroups.NPM Scripts.37": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "metadata.targetGroups.NPM Scripts.38": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "metadata.targetGroups.NPM Scripts.39": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "metadata.targetGroups.NPM Scripts.40": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "metadata.targetGroups.NPM Scripts.41": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "metadata.targetGroups.NPM Scripts.42": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "metadata.targetGroups.NPM Scripts.43": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "metadata.description": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "metadata.js": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "metadata.js.packageName": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "metadata.js.packageMain": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "metadata.js.isInPackageManagerWorkspaces": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.setup": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.setup.executor": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.setup.options": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.setup.metadata": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.setup.options.script": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.setup.metadata.scriptContent": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.setup.metadata.runCommand": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.generate-agent-configs": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.generate-agent-configs.executor": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.generate-agent-configs.options": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.generate-agent-configs.metadata": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.generate-agent-configs.options.script": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.generate-agent-configs.metadata.scriptContent": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.generate-agent-configs.metadata.runCommand": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.test-agents": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.test-agents.executor": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.test-agents.options": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.test-agents.metadata": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.test-agents.options.script": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.test-agents.metadata.scriptContent": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.test-agents.metadata.runCommand": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.agent-status": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.agent-status.executor": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.agent-status.options": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.agent-status.metadata": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.agent-status.options.script": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.agent-status.metadata.scriptContent": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.agent-status.metadata.runCommand": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.setup-n8n": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.setup-n8n.executor": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.setup-n8n.options": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.setup-n8n.metadata": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.setup-n8n.options.script": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.setup-n8n.metadata.scriptContent": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.setup-n8n.metadata.runCommand": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.export-workflows": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.export-workflows.executor": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.export-workflows.options": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.export-workflows.metadata": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.export-workflows.options.script": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.export-workflows.metadata.scriptContent": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.export-workflows.metadata.runCommand": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.test-workflows": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.test-workflows.executor": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.test-workflows.options": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.test-workflows.metadata": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.test-workflows.options.script": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.test-workflows.metadata.scriptContent": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.test-workflows.metadata.runCommand": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.setup-github-hooks": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.setup-github-hooks.executor": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.setup-github-hooks.options": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.setup-github-hooks.metadata": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.setup-github-hooks.options.script": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.setup-github-hooks.metadata.scriptContent": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.setup-github-hooks.metadata.runCommand": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.setup-github-actions": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.setup-github-actions.executor": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.setup-github-actions.options": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.setup-github-actions.metadata": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.setup-github-actions.options.script": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.setup-github-actions.metadata.scriptContent": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.setup-github-actions.metadata.runCommand": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.verify-installation": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.verify-installation.executor": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.verify-installation.options": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.verify-installation.metadata": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.verify-installation.options.script": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.verify-installation.metadata.scriptContent": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.verify-installation.metadata.runCommand": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.diagnostic": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.diagnostic.executor": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.diagnostic.options": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.diagnostic.metadata": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.diagnostic.options.script": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.diagnostic.metadata.scriptContent": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.diagnostic.metadata.runCommand": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.migration-test": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.migration-test.executor": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.migration-test.options": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.migration-test.metadata": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.migration-test.options.script": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.migration-test.metadata.scriptContent": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.migration-test.metadata.runCommand": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.check-migration-results": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.check-migration-results.executor": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.check-migration-results.options": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.check-migration-results.metadata": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.check-migration-results.options.script": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.check-migration-results.metadata.scriptContent": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.check-migration-results.metadata.runCommand": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.version": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.version.executor": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.version.options": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.version.metadata": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.version.options.script": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.version.metadata.scriptContent": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.version.metadata.runCommand": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.update-to-version": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.update-to-version.executor": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.update-to-version.options": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.update-to-version.metadata": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.update-to-version.options.script": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.update-to-version.metadata.scriptContent": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.update-to-version.metadata.runCommand": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.generate-docs": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.generate-docs.executor": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.generate-docs.options": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.generate-docs.metadata": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.generate-docs.options.script": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.generate-docs.metadata.scriptContent": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.generate-docs.metadata.runCommand": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.generate-procedure-pdf": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.generate-procedure-pdf.executor": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.generate-procedure-pdf.options": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.generate-procedure-pdf.metadata": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.generate-procedure-pdf.options.script": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.generate-procedure-pdf.metadata.scriptContent": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.generate-procedure-pdf.metadata.runCommand": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.export-config-template": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.export-config-template.executor": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.export-config-template.options": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.export-config-template.metadata": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.export-config-template.options.script": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.export-config-template.metadata.scriptContent": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.export-config-template.metadata.runCommand": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.logs": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.logs.executor": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.logs.options": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.logs.metadata": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.logs.options.script": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.logs.metadata.scriptContent": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.logs.metadata.runCommand": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.advanced-diagnostic": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.advanced-diagnostic.executor": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.advanced-diagnostic.options": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.advanced-diagnostic.metadata": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.advanced-diagnostic.options.script": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.advanced-diagnostic.metadata.scriptContent": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.advanced-diagnostic.metadata.runCommand": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.health-check": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.health-check.executor": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.health-check.options": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.health-check.metadata": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.health-check.options.script": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.health-check.metadata.scriptContent": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.health-check.metadata.runCommand": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.check-tech": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.check-tech.executor": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.check-tech.options": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.check-tech.metadata": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.check-tech.options.script": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.check-tech.metadata.scriptContent": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.check-tech.metadata.runCommand": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.update-tech": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.update-tech.executor": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.update-tech.options": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.update-tech.metadata": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.update-tech.options.script": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.update-tech.metadata.scriptContent": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.update-tech.metadata.runCommand": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.generate-audit": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.generate-audit.executor": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.generate-audit.options": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.generate-audit.metadata": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.generate-audit.options.script": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.generate-audit.metadata.scriptContent": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.generate-audit.metadata.runCommand": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.watch-migrations": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.watch-migrations.executor": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.watch-migrations.options": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.watch-migrations.metadata": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.watch-migrations.options.script": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.watch-migrations.metadata.scriptContent": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.watch-migrations.metadata.runCommand": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.version-cdc": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.version-cdc.executor": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.version-cdc.options": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.version-cdc.metadata": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.version-cdc.options.script": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.version-cdc.metadata.scriptContent": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.version-cdc.metadata.runCommand": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.archive-version": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.archive-version.executor": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.archive-version.options": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.archive-version.metadata": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.archive-version.options.script": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.archive-version.metadata.scriptContent": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.archive-version.metadata.runCommand": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.scheduled-version": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.scheduled-version.executor": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.scheduled-version.options": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.scheduled-version.metadata": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.scheduled-version.options.script": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.scheduled-version.metadata.scriptContent": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.scheduled-version.metadata.runCommand": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.add-journal-entry": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.add-journal-entry.executor": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.add-journal-entry.options": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.add-journal-entry.metadata": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.add-journal-entry.options.script": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.add-journal-entry.metadata.scriptContent": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.add-journal-entry.metadata.runCommand": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.install-hooks": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.install-hooks.executor": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.install-hooks.options": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.install-hooks.metadata": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.install-hooks.options.script": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.install-hooks.metadata.scriptContent": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.install-hooks.metadata.runCommand": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.generate-view": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.generate-view.executor": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.generate-view.options": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.generate-view.metadata": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.generate-view.options.script": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.generate-view.metadata.scriptContent": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.generate-view.metadata.runCommand": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.orchestrate": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.orchestrate.executor": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.orchestrate.options": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.orchestrate.metadata": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.orchestrate.options.script": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.orchestrate.metadata.scriptContent": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.orchestrate.metadata.runCommand": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.audit": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.audit.executor": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.audit.options": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.audit.metadata": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.audit.options.script": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.audit.metadata.scriptContent": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.audit.metadata.runCommand": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.audit-dir": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.audit-dir.executor": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.audit-dir.options": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.audit-dir.metadata": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.audit-dir.options.script": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.audit-dir.metadata.scriptContent": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.audit-dir.metadata.runCommand": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.cahier": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.cahier.executor": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.cahier.options": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.cahier.metadata": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.cahier.options.script": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.cahier.metadata.scriptContent": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.cahier.metadata.runCommand": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.migration-status": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.migration-status.executor": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.migration-status.options": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.migration-status.metadata": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.migration-status.options.script": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.migration-status.metadata.scriptContent": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.migration-status.metadata.runCommand": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.migration-dashboard": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.migration-dashboard.executor": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.migration-dashboard.options": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.migration-dashboard.metadata": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.migration-dashboard.options.script": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.migration-dashboard.metadata.scriptContent": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.migration-dashboard.metadata.runCommand": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.unified-audit": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.unified-audit.executor": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.unified-audit.options": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.unified-audit.metadata": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.unified-audit.options.script": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.unified-audit.metadata.scriptContent": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.unified-audit.metadata.runCommand": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.validate-config": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.validate-config.executor": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.validate-config.options": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.validate-config.metadata": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.validate-config.options.script": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.validate-config.metadata.scriptContent": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.validate-config.metadata.runCommand": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.n8n:setup": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.n8n:setup.executor": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.n8n:setup.options": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.n8n:setup.metadata": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.n8n:setup.options.script": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.n8n:setup.metadata.scriptContent": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.n8n:setup.metadata.runCommand": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.n8n:start": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.n8n:start.executor": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.n8n:start.options": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.n8n:start.metadata": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.n8n:start.options.script": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.n8n:start.metadata.scriptContent": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.n8n:start.metadata.runCommand": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.n8n:stop": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.n8n:stop.executor": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.n8n:stop.options": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.n8n:stop.metadata": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.n8n:stop.options.script": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.n8n:stop.metadata.scriptContent": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.n8n:stop.metadata.runCommand": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.n8n:migrate": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.n8n:migrate.executor": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.n8n:migrate.options": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.n8n:migrate.metadata": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.n8n:migrate.options.script": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.n8n:migrate.metadata.scriptContent": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.n8n:migrate.metadata.runCommand": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.n8n:logs": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.n8n:logs.executor": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.n8n:logs.options": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.n8n:logs.metadata": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.n8n:logs.options.script": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.n8n:logs.metadata.scriptContent": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.n8n:logs.metadata.runCommand": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.nx-release-publish": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.nx-release-publish.executor": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.nx-release-publish.dependsOn": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.nx-release-publish.options": [
-      "apps/mcp-server-mysql/package.json",
-      "nx/core/package-json"
-    ],
-    "$schema": [
-      "apps/mcp-server-mysql/project.json",
-      "nx/core/project-json"
-    ]
-  },
   "apps/mcp-server-php": {
     "root": [
       "apps/mcp-server-php/project.json",
@@ -5248,6 +3778,10 @@
       "nx.json",
       "nx/target-defaults"
     ],
+    "targets.build.outputs": [
+      "nx.json",
+      "nx/target-defaults"
+    ],
     "targets.build.parallelism": [
       "nx.json",
       "nx/target-defaults"
@@ -5269,6 +3803,10 @@
       "nx/target-defaults"
     ],
     "targets.test.cache": [
+      "nx.json",
+      "nx/target-defaults"
+    ],
+    "targets.test.outputs": [
       "nx.json",
       "nx/target-defaults"
     ],
@@ -5677,1488 +4215,6 @@
     "targets.test.parallelism": [
       "nx.json",
       "nx/target-defaults"
-    ]
-  },
-  "apps/projet-codespaces": {
-    "root": [
-      "apps/projet-codespaces/project.json",
-      "nx/core/project-json"
-    ],
-    "name": [
-      "apps/projet-codespaces/project.json",
-      "nx/core/project-json"
-    ],
-    "projectType": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "tags": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "tags.npm:public": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "metadata.targetGroups": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "metadata.targetGroups.NPM Scripts": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "metadata.targetGroups.NPM Scripts.0": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "metadata.targetGroups.NPM Scripts.1": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "metadata.targetGroups.NPM Scripts.2": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "metadata.targetGroups.NPM Scripts.3": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "metadata.targetGroups.NPM Scripts.4": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "metadata.targetGroups.NPM Scripts.5": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "metadata.targetGroups.NPM Scripts.6": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "metadata.targetGroups.NPM Scripts.7": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "metadata.targetGroups.NPM Scripts.8": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "metadata.targetGroups.NPM Scripts.9": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "metadata.targetGroups.NPM Scripts.10": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "metadata.targetGroups.NPM Scripts.11": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "metadata.targetGroups.NPM Scripts.12": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "metadata.targetGroups.NPM Scripts.13": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "metadata.targetGroups.NPM Scripts.14": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "metadata.targetGroups.NPM Scripts.15": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "metadata.targetGroups.NPM Scripts.16": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "metadata.targetGroups.NPM Scripts.17": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "metadata.targetGroups.NPM Scripts.18": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "metadata.targetGroups.NPM Scripts.19": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "metadata.targetGroups.NPM Scripts.20": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "metadata.targetGroups.NPM Scripts.21": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "metadata.targetGroups.NPM Scripts.22": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "metadata.targetGroups.NPM Scripts.23": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "metadata.targetGroups.NPM Scripts.24": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "metadata.targetGroups.NPM Scripts.25": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "metadata.targetGroups.NPM Scripts.26": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "metadata.targetGroups.NPM Scripts.27": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "metadata.targetGroups.NPM Scripts.28": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "metadata.targetGroups.NPM Scripts.29": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "metadata.targetGroups.NPM Scripts.30": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "metadata.targetGroups.NPM Scripts.31": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "metadata.targetGroups.NPM Scripts.32": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "metadata.targetGroups.NPM Scripts.33": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "metadata.targetGroups.NPM Scripts.34": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "metadata.targetGroups.NPM Scripts.35": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "metadata.targetGroups.NPM Scripts.36": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "metadata.targetGroups.NPM Scripts.37": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "metadata.targetGroups.NPM Scripts.38": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "metadata.targetGroups.NPM Scripts.39": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "metadata.targetGroups.NPM Scripts.40": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "metadata.targetGroups.NPM Scripts.41": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "metadata.targetGroups.NPM Scripts.42": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "metadata.targetGroups.NPM Scripts.43": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "metadata.description": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "metadata.js": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "metadata.js.packageName": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "metadata.js.packageMain": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "metadata.js.isInPackageManagerWorkspaces": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.setup": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.setup.executor": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.setup.options": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.setup.metadata": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.setup.options.script": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.setup.metadata.scriptContent": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.setup.metadata.runCommand": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.generate-agent-configs": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.generate-agent-configs.executor": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.generate-agent-configs.options": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.generate-agent-configs.metadata": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.generate-agent-configs.options.script": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.generate-agent-configs.metadata.scriptContent": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.generate-agent-configs.metadata.runCommand": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.test-agents": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.test-agents.executor": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.test-agents.options": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.test-agents.metadata": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.test-agents.options.script": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.test-agents.metadata.scriptContent": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.test-agents.metadata.runCommand": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.agent-status": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.agent-status.executor": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.agent-status.options": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.agent-status.metadata": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.agent-status.options.script": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.agent-status.metadata.scriptContent": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.agent-status.metadata.runCommand": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.setup-n8n": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.setup-n8n.executor": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.setup-n8n.options": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.setup-n8n.metadata": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.setup-n8n.options.script": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.setup-n8n.metadata.scriptContent": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.setup-n8n.metadata.runCommand": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.export-workflows": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.export-workflows.executor": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.export-workflows.options": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.export-workflows.metadata": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.export-workflows.options.script": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.export-workflows.metadata.scriptContent": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.export-workflows.metadata.runCommand": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.test-workflows": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.test-workflows.executor": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.test-workflows.options": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.test-workflows.metadata": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.test-workflows.options.script": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.test-workflows.metadata.scriptContent": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.test-workflows.metadata.runCommand": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.setup-github-hooks": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.setup-github-hooks.executor": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.setup-github-hooks.options": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.setup-github-hooks.metadata": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.setup-github-hooks.options.script": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.setup-github-hooks.metadata.scriptContent": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.setup-github-hooks.metadata.runCommand": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.setup-github-actions": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.setup-github-actions.executor": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.setup-github-actions.options": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.setup-github-actions.metadata": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.setup-github-actions.options.script": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.setup-github-actions.metadata.scriptContent": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.setup-github-actions.metadata.runCommand": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.verify-installation": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.verify-installation.executor": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.verify-installation.options": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.verify-installation.metadata": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.verify-installation.options.script": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.verify-installation.metadata.scriptContent": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.verify-installation.metadata.runCommand": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.diagnostic": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.diagnostic.executor": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.diagnostic.options": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.diagnostic.metadata": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.diagnostic.options.script": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.diagnostic.metadata.scriptContent": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.diagnostic.metadata.runCommand": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.migration-test": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.migration-test.executor": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.migration-test.options": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.migration-test.metadata": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.migration-test.options.script": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.migration-test.metadata.scriptContent": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.migration-test.metadata.runCommand": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.check-migration-results": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.check-migration-results.executor": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.check-migration-results.options": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.check-migration-results.metadata": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.check-migration-results.options.script": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.check-migration-results.metadata.scriptContent": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.check-migration-results.metadata.runCommand": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.version": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.version.executor": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.version.options": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.version.metadata": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.version.options.script": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.version.metadata.scriptContent": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.version.metadata.runCommand": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.update-to-version": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.update-to-version.executor": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.update-to-version.options": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.update-to-version.metadata": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.update-to-version.options.script": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.update-to-version.metadata.scriptContent": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.update-to-version.metadata.runCommand": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.generate-docs": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.generate-docs.executor": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.generate-docs.options": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.generate-docs.metadata": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.generate-docs.options.script": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.generate-docs.metadata.scriptContent": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.generate-docs.metadata.runCommand": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.generate-procedure-pdf": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.generate-procedure-pdf.executor": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.generate-procedure-pdf.options": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.generate-procedure-pdf.metadata": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.generate-procedure-pdf.options.script": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.generate-procedure-pdf.metadata.scriptContent": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.generate-procedure-pdf.metadata.runCommand": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.export-config-template": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.export-config-template.executor": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.export-config-template.options": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.export-config-template.metadata": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.export-config-template.options.script": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.export-config-template.metadata.scriptContent": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.export-config-template.metadata.runCommand": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.logs": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.logs.executor": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.logs.options": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.logs.metadata": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.logs.options.script": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.logs.metadata.scriptContent": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.logs.metadata.runCommand": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.advanced-diagnostic": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.advanced-diagnostic.executor": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.advanced-diagnostic.options": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.advanced-diagnostic.metadata": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.advanced-diagnostic.options.script": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.advanced-diagnostic.metadata.scriptContent": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.advanced-diagnostic.metadata.runCommand": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.health-check": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.health-check.executor": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.health-check.options": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.health-check.metadata": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.health-check.options.script": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.health-check.metadata.scriptContent": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.health-check.metadata.runCommand": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.check-tech": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.check-tech.executor": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.check-tech.options": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.check-tech.metadata": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.check-tech.options.script": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.check-tech.metadata.scriptContent": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.check-tech.metadata.runCommand": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.update-tech": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.update-tech.executor": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.update-tech.options": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.update-tech.metadata": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.update-tech.options.script": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.update-tech.metadata.scriptContent": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.update-tech.metadata.runCommand": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.generate-audit": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.generate-audit.executor": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.generate-audit.options": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.generate-audit.metadata": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.generate-audit.options.script": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.generate-audit.metadata.scriptContent": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.generate-audit.metadata.runCommand": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.watch-migrations": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.watch-migrations.executor": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.watch-migrations.options": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.watch-migrations.metadata": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.watch-migrations.options.script": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.watch-migrations.metadata.scriptContent": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.watch-migrations.metadata.runCommand": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.version-cdc": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.version-cdc.executor": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.version-cdc.options": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.version-cdc.metadata": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.version-cdc.options.script": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.version-cdc.metadata.scriptContent": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.version-cdc.metadata.runCommand": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.archive-version": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.archive-version.executor": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.archive-version.options": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.archive-version.metadata": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.archive-version.options.script": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.archive-version.metadata.scriptContent": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.archive-version.metadata.runCommand": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.scheduled-version": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.scheduled-version.executor": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.scheduled-version.options": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.scheduled-version.metadata": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.scheduled-version.options.script": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.scheduled-version.metadata.scriptContent": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.scheduled-version.metadata.runCommand": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.add-journal-entry": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.add-journal-entry.executor": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.add-journal-entry.options": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.add-journal-entry.metadata": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.add-journal-entry.options.script": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.add-journal-entry.metadata.scriptContent": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.add-journal-entry.metadata.runCommand": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.install-hooks": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.install-hooks.executor": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.install-hooks.options": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.install-hooks.metadata": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.install-hooks.options.script": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.install-hooks.metadata.scriptContent": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.install-hooks.metadata.runCommand": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.generate-view": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.generate-view.executor": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.generate-view.options": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.generate-view.metadata": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.generate-view.options.script": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.generate-view.metadata.scriptContent": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.generate-view.metadata.runCommand": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.orchestrate": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.orchestrate.executor": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.orchestrate.options": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.orchestrate.metadata": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.orchestrate.options.script": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.orchestrate.metadata.scriptContent": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.orchestrate.metadata.runCommand": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.audit": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.audit.executor": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.audit.options": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.audit.metadata": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.audit.options.script": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.audit.metadata.scriptContent": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.audit.metadata.runCommand": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.audit-dir": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.audit-dir.executor": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.audit-dir.options": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.audit-dir.metadata": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.audit-dir.options.script": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.audit-dir.metadata.scriptContent": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.audit-dir.metadata.runCommand": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.cahier": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.cahier.executor": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.cahier.options": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.cahier.metadata": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.cahier.options.script": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.cahier.metadata.scriptContent": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.cahier.metadata.runCommand": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.migration-status": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.migration-status.executor": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.migration-status.options": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.migration-status.metadata": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.migration-status.options.script": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.migration-status.metadata.scriptContent": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.migration-status.metadata.runCommand": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.migration-dashboard": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.migration-dashboard.executor": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.migration-dashboard.options": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.migration-dashboard.metadata": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.migration-dashboard.options.script": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.migration-dashboard.metadata.scriptContent": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.migration-dashboard.metadata.runCommand": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.unified-audit": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.unified-audit.executor": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.unified-audit.options": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.unified-audit.metadata": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.unified-audit.options.script": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.unified-audit.metadata.scriptContent": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.unified-audit.metadata.runCommand": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.validate-config": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.validate-config.executor": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.validate-config.options": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.validate-config.metadata": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.validate-config.options.script": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.validate-config.metadata.scriptContent": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.validate-config.metadata.runCommand": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.n8n:setup": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.n8n:setup.executor": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.n8n:setup.options": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.n8n:setup.metadata": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.n8n:setup.options.script": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.n8n:setup.metadata.scriptContent": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.n8n:setup.metadata.runCommand": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.n8n:start": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.n8n:start.executor": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.n8n:start.options": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.n8n:start.metadata": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.n8n:start.options.script": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.n8n:start.metadata.scriptContent": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.n8n:start.metadata.runCommand": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.n8n:stop": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.n8n:stop.executor": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.n8n:stop.options": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.n8n:stop.metadata": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.n8n:stop.options.script": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.n8n:stop.metadata.scriptContent": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.n8n:stop.metadata.runCommand": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.n8n:migrate": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.n8n:migrate.executor": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.n8n:migrate.options": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.n8n:migrate.metadata": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.n8n:migrate.options.script": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.n8n:migrate.metadata.scriptContent": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.n8n:migrate.metadata.runCommand": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.n8n:logs": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.n8n:logs.executor": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.n8n:logs.options": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.n8n:logs.metadata": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.n8n:logs.options.script": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.n8n:logs.metadata.scriptContent": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.n8n:logs.metadata.runCommand": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.nx-release-publish": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.nx-release-publish.executor": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.nx-release-publish.dependsOn": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.nx-release-publish.options": [
-      "apps/projet-codespaces/package.json",
-      "nx/core/package-json"
-    ],
-    "$schema": [
-      "apps/projet-codespaces/project.json",
-      "nx/core/project-json"
     ]
   },
   ".": {
@@ -8454,6 +5510,10 @@
       "nx.json",
       "nx/target-defaults"
     ],
+    "targets.test.outputs": [
+      "nx.json",
+      "nx/target-defaults"
+    ],
     "targets.test.parallelism": [
       "nx.json",
       "nx/target-defaults"
@@ -8470,6 +5530,10 @@
       "nx.json",
       "nx/target-defaults"
     ],
+    "targets.build.outputs": [
+      "nx.json",
+      "nx/target-defaults"
+    ],
     "targets.build.parallelism": [
       "nx.json",
       "nx/target-defaults"
@@ -8483,6 +5547,160 @@
       "nx/target-defaults"
     ],
     "targets.lint.parallelism": [
+      "nx.json",
+      "nx/target-defaults"
+    ]
+  },
+  "packages/fastify-plugins": {
+    "root": [
+      "packages/fastify-plugins/package.json",
+      "nx/core/package-json"
+    ],
+    "name": [
+      "packages/fastify-plugins/package.json",
+      "nx/core/package-json"
+    ],
+    "projectType": [
+      "packages/fastify-plugins/package.json",
+      "nx/core/package-json"
+    ],
+    "tags": [
+      "packages/fastify-plugins/package.json",
+      "nx/core/package-json"
+    ],
+    "tags.npm:public": [
+      "packages/fastify-plugins/package.json",
+      "nx/core/package-json"
+    ],
+    "metadata.targetGroups": [
+      "packages/fastify-plugins/package.json",
+      "nx/core/package-json"
+    ],
+    "metadata.targetGroups.NPM Scripts": [
+      "packages/fastify-plugins/package.json",
+      "nx/core/package-json"
+    ],
+    "metadata.targetGroups.NPM Scripts.0": [
+      "packages/fastify-plugins/package.json",
+      "nx/core/package-json"
+    ],
+    "metadata.targetGroups.NPM Scripts.1": [
+      "packages/fastify-plugins/package.json",
+      "nx/core/package-json"
+    ],
+    "metadata.description": [
+      "packages/fastify-plugins/package.json",
+      "nx/core/package-json"
+    ],
+    "metadata.js": [
+      "packages/fastify-plugins/package.json",
+      "nx/core/package-json"
+    ],
+    "metadata.js.packageName": [
+      "packages/fastify-plugins/package.json",
+      "nx/core/package-json"
+    ],
+    "metadata.js.packageMain": [
+      "packages/fastify-plugins/package.json",
+      "nx/core/package-json"
+    ],
+    "metadata.js.isInPackageManagerWorkspaces": [
+      "packages/fastify-plugins/package.json",
+      "nx/core/package-json"
+    ],
+    "targets": [
+      "packages/fastify-plugins/package.json",
+      "nx/core/package-json"
+    ],
+    "targets.build": [
+      "packages/fastify-plugins/package.json",
+      "nx/core/package-json"
+    ],
+    "targets.build.executor": [
+      "packages/fastify-plugins/package.json",
+      "nx/core/package-json"
+    ],
+    "targets.build.options": [
+      "packages/fastify-plugins/package.json",
+      "nx/core/package-json"
+    ],
+    "targets.build.metadata": [
+      "packages/fastify-plugins/package.json",
+      "nx/core/package-json"
+    ],
+    "targets.build.options.script": [
+      "packages/fastify-plugins/package.json",
+      "nx/core/package-json"
+    ],
+    "targets.build.metadata.scriptContent": [
+      "packages/fastify-plugins/package.json",
+      "nx/core/package-json"
+    ],
+    "targets.build.metadata.runCommand": [
+      "packages/fastify-plugins/package.json",
+      "nx/core/package-json"
+    ],
+    "targets.clean": [
+      "packages/fastify-plugins/package.json",
+      "nx/core/package-json"
+    ],
+    "targets.clean.executor": [
+      "packages/fastify-plugins/package.json",
+      "nx/core/package-json"
+    ],
+    "targets.clean.options": [
+      "packages/fastify-plugins/package.json",
+      "nx/core/package-json"
+    ],
+    "targets.clean.metadata": [
+      "packages/fastify-plugins/package.json",
+      "nx/core/package-json"
+    ],
+    "targets.clean.options.script": [
+      "packages/fastify-plugins/package.json",
+      "nx/core/package-json"
+    ],
+    "targets.clean.metadata.scriptContent": [
+      "packages/fastify-plugins/package.json",
+      "nx/core/package-json"
+    ],
+    "targets.clean.metadata.runCommand": [
+      "packages/fastify-plugins/package.json",
+      "nx/core/package-json"
+    ],
+    "targets.nx-release-publish": [
+      "packages/fastify-plugins/package.json",
+      "nx/core/package-json"
+    ],
+    "targets.nx-release-publish.executor": [
+      "packages/fastify-plugins/package.json",
+      "nx/core/package-json"
+    ],
+    "targets.nx-release-publish.dependsOn": [
+      "packages/fastify-plugins/package.json",
+      "nx/core/package-json"
+    ],
+    "targets.nx-release-publish.options": [
+      "packages/fastify-plugins/package.json",
+      "nx/core/package-json"
+    ],
+    "targets.build.dependsOn": [
+      "nx.json",
+      "nx/target-defaults"
+    ],
+    "targets.build.inputs": [
+      "nx.json",
+      "nx/target-defaults"
+    ],
+    "targets.build.cache": [
+      "nx.json",
+      "nx/target-defaults"
+    ],
+    "targets.build.outputs": [
+      "nx.json",
+      "nx/target-defaults"
+    ],
+    "targets.build.parallelism": [
       "nx.json",
       "nx/target-defaults"
     ]
@@ -8724,6 +5942,10 @@
       "nx.json",
       "nx/target-defaults"
     ],
+    "targets.build.outputs": [
+      "nx.json",
+      "nx/target-defaults"
+    ],
     "targets.build.parallelism": [
       "nx.json",
       "nx/target-defaults"
@@ -8733,6 +5955,10 @@
       "nx/target-defaults"
     ],
     "targets.test.cache": [
+      "nx.json",
+      "nx/target-defaults"
+    ],
+    "targets.test.outputs": [
       "nx.json",
       "nx/target-defaults"
     ],
@@ -8930,6 +6156,10 @@
       "nx.json",
       "nx/target-defaults"
     ],
+    "targets.build.outputs": [
+      "nx.json",
+      "nx/target-defaults"
+    ],
     "targets.build.parallelism": [
       "nx.json",
       "nx/target-defaults"
@@ -8939,6 +6169,10 @@
       "nx/target-defaults"
     ],
     "targets.test.cache": [
+      "nx.json",
+      "nx/target-defaults"
+    ],
+    "targets.test.outputs": [
       "nx.json",
       "nx/target-defaults"
     ],
@@ -9136,6 +6370,10 @@
       "nx.json",
       "nx/target-defaults"
     ],
+    "targets.build.outputs": [
+      "nx.json",
+      "nx/target-defaults"
+    ],
     "targets.build.parallelism": [
       "nx.json",
       "nx/target-defaults"
@@ -9318,6 +6556,10 @@
       "nx.json",
       "nx/target-defaults"
     ],
+    "targets.build.outputs": [
+      "nx.json",
+      "nx/target-defaults"
+    ],
     "targets.build.parallelism": [
       "nx.json",
       "nx/target-defaults"
@@ -9327,6 +6569,10 @@
       "nx/target-defaults"
     ],
     "targets.test.cache": [
+      "nx.json",
+      "nx/target-defaults"
+    ],
+    "targets.test.outputs": [
       "nx.json",
       "nx/target-defaults"
     ],
@@ -9492,6 +6738,10 @@
       "nx.json",
       "nx/target-defaults"
     ],
+    "targets.build.outputs": [
+      "nx.json",
+      "nx/target-defaults"
+    ],
     "targets.build.parallelism": [
       "nx.json",
       "nx/target-defaults"
@@ -9639,6 +6889,10 @@
       "nx/target-defaults"
     ],
     "targets.build.cache": [
+      "nx.json",
+      "nx/target-defaults"
+    ],
+    "targets.build.outputs": [
       "nx.json",
       "nx/target-defaults"
     ],
@@ -9824,6 +7078,10 @@
       "nx.json",
       "nx/target-defaults"
     ],
+    "targets.build.outputs": [
+      "nx.json",
+      "nx/target-defaults"
+    ],
     "targets.build.parallelism": [
       "nx.json",
       "nx/target-defaults"
@@ -9833,6 +7091,10 @@
       "nx/target-defaults"
     ],
     "targets.test.cache": [
+      "nx.json",
+      "nx/target-defaults"
+    ],
+    "targets.test.outputs": [
       "nx.json",
       "nx/target-defaults"
     ],
@@ -10018,6 +7280,10 @@
       "nx.json",
       "nx/target-defaults"
     ],
+    "targets.build.outputs": [
+      "nx.json",
+      "nx/target-defaults"
+    ],
     "targets.build.parallelism": [
       "nx.json",
       "nx/target-defaults"
@@ -10027,6 +7293,10 @@
       "nx/target-defaults"
     ],
     "targets.test.cache": [
+      "nx.json",
+      "nx/target-defaults"
+    ],
+    "targets.test.outputs": [
       "nx.json",
       "nx/target-defaults"
     ],
@@ -10224,6 +7494,10 @@
       "nx.json",
       "nx/target-defaults"
     ],
+    "targets.build.outputs": [
+      "nx.json",
+      "nx/target-defaults"
+    ],
     "targets.build.parallelism": [
       "nx.json",
       "nx/target-defaults"
@@ -10233,6 +7507,10 @@
       "nx/target-defaults"
     ],
     "targets.test.cache": [
+      "nx.json",
+      "nx/target-defaults"
+    ],
+    "targets.test.outputs": [
       "nx.json",
       "nx/target-defaults"
     ],
@@ -10430,6 +7708,10 @@
       "nx.json",
       "nx/target-defaults"
     ],
+    "targets.build.outputs": [
+      "nx.json",
+      "nx/target-defaults"
+    ],
     "targets.build.parallelism": [
       "nx.json",
       "nx/target-defaults"
@@ -10442,237 +7724,7 @@
       "nx.json",
       "nx/target-defaults"
     ],
-    "targets.test.parallelism": [
-      "nx.json",
-      "nx/target-defaults"
-    ]
-  },
-  "packages/mcp-wasm-agents": {
-    "root": [
-      "packages/mcp-wasm-agents/package.json",
-      "nx/core/package-json"
-    ],
-    "name": [
-      "packages/mcp-wasm-agents/package.json",
-      "nx/core/package-json"
-    ],
-    "projectType": [
-      "packages/mcp-wasm-agents/package.json",
-      "nx/core/package-json"
-    ],
-    "tags": [
-      "packages/mcp-wasm-agents/package.json",
-      "nx/core/package-json"
-    ],
-    "tags.npm:public": [
-      "packages/mcp-wasm-agents/package.json",
-      "nx/core/package-json"
-    ],
-    "metadata.targetGroups": [
-      "packages/mcp-wasm-agents/package.json",
-      "nx/core/package-json"
-    ],
-    "metadata.targetGroups.NPM Scripts": [
-      "packages/mcp-wasm-agents/package.json",
-      "nx/core/package-json"
-    ],
-    "metadata.targetGroups.NPM Scripts.0": [
-      "packages/mcp-wasm-agents/package.json",
-      "nx/core/package-json"
-    ],
-    "metadata.targetGroups.NPM Scripts.1": [
-      "packages/mcp-wasm-agents/package.json",
-      "nx/core/package-json"
-    ],
-    "metadata.targetGroups.NPM Scripts.2": [
-      "packages/mcp-wasm-agents/package.json",
-      "nx/core/package-json"
-    ],
-    "metadata.targetGroups.NPM Scripts.3": [
-      "packages/mcp-wasm-agents/package.json",
-      "nx/core/package-json"
-    ],
-    "metadata.targetGroups.NPM Scripts.4": [
-      "packages/mcp-wasm-agents/package.json",
-      "nx/core/package-json"
-    ],
-    "metadata.js": [
-      "packages/mcp-wasm-agents/package.json",
-      "nx/core/package-json"
-    ],
-    "metadata.js.packageExports": [
-      "packages/mcp-wasm-agents/package.json",
-      "nx/core/package-json"
-    ],
-    "metadata.js.isInPackageManagerWorkspaces": [
-      "packages/mcp-wasm-agents/package.json",
-      "nx/core/package-json"
-    ],
-    "targets": [
-      "packages/mcp-wasm-agents/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.asbuild:debug": [
-      "packages/mcp-wasm-agents/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.asbuild:debug.executor": [
-      "packages/mcp-wasm-agents/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.asbuild:debug.options": [
-      "packages/mcp-wasm-agents/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.asbuild:debug.metadata": [
-      "packages/mcp-wasm-agents/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.asbuild:debug.options.script": [
-      "packages/mcp-wasm-agents/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.asbuild:debug.metadata.scriptContent": [
-      "packages/mcp-wasm-agents/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.asbuild:debug.metadata.runCommand": [
-      "packages/mcp-wasm-agents/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.asbuild:release": [
-      "packages/mcp-wasm-agents/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.asbuild:release.executor": [
-      "packages/mcp-wasm-agents/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.asbuild:release.options": [
-      "packages/mcp-wasm-agents/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.asbuild:release.metadata": [
-      "packages/mcp-wasm-agents/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.asbuild:release.options.script": [
-      "packages/mcp-wasm-agents/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.asbuild:release.metadata.scriptContent": [
-      "packages/mcp-wasm-agents/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.asbuild:release.metadata.runCommand": [
-      "packages/mcp-wasm-agents/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.asbuild": [
-      "packages/mcp-wasm-agents/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.asbuild.executor": [
-      "packages/mcp-wasm-agents/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.asbuild.options": [
-      "packages/mcp-wasm-agents/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.asbuild.metadata": [
-      "packages/mcp-wasm-agents/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.asbuild.options.script": [
-      "packages/mcp-wasm-agents/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.asbuild.metadata.scriptContent": [
-      "packages/mcp-wasm-agents/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.asbuild.metadata.runCommand": [
-      "packages/mcp-wasm-agents/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.test": [
-      "packages/mcp-wasm-agents/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.test.executor": [
-      "packages/mcp-wasm-agents/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.test.options": [
-      "packages/mcp-wasm-agents/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.test.metadata": [
-      "packages/mcp-wasm-agents/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.test.options.script": [
-      "packages/mcp-wasm-agents/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.test.metadata.scriptContent": [
-      "packages/mcp-wasm-agents/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.test.metadata.runCommand": [
-      "packages/mcp-wasm-agents/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.start": [
-      "packages/mcp-wasm-agents/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.start.executor": [
-      "packages/mcp-wasm-agents/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.start.options": [
-      "packages/mcp-wasm-agents/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.start.metadata": [
-      "packages/mcp-wasm-agents/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.start.options.script": [
-      "packages/mcp-wasm-agents/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.start.metadata.scriptContent": [
-      "packages/mcp-wasm-agents/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.start.metadata.runCommand": [
-      "packages/mcp-wasm-agents/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.nx-release-publish": [
-      "packages/mcp-wasm-agents/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.nx-release-publish.executor": [
-      "packages/mcp-wasm-agents/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.nx-release-publish.dependsOn": [
-      "packages/mcp-wasm-agents/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.nx-release-publish.options": [
-      "packages/mcp-wasm-agents/package.json",
-      "nx/core/package-json"
-    ],
-    "targets.test.inputs": [
-      "nx.json",
-      "nx/target-defaults"
-    ],
-    "targets.test.cache": [
+    "targets.test.outputs": [
       "nx.json",
       "nx/target-defaults"
     ],
@@ -10826,6 +7878,10 @@
       "nx.json",
       "nx/target-defaults"
     ],
+    "targets.build.outputs": [
+      "nx.json",
+      "nx/target-defaults"
+    ],
     "targets.build.parallelism": [
       "nx.json",
       "nx/target-defaults"
@@ -10835,6 +7891,10 @@
       "nx/target-defaults"
     ],
     "targets.test.cache": [
+      "nx.json",
+      "nx/target-defaults"
+    ],
+    "targets.test.outputs": [
       "nx.json",
       "nx/target-defaults"
     ],
@@ -11020,6 +8080,10 @@
       "nx.json",
       "nx/target-defaults"
     ],
+    "targets.build.outputs": [
+      "nx.json",
+      "nx/target-defaults"
+    ],
     "targets.build.parallelism": [
       "nx.json",
       "nx/target-defaults"
@@ -11029,6 +8093,10 @@
       "nx/target-defaults"
     ],
     "targets.test.cache": [
+      "nx.json",
+      "nx/target-defaults"
+    ],
+    "targets.test.outputs": [
       "nx.json",
       "nx/target-defaults"
     ],
@@ -11258,6 +8326,10 @@
       "nx.json",
       "nx/target-defaults"
     ],
+    "targets.build.outputs": [
+      "nx.json",
+      "nx/target-defaults"
+    ],
     "targets.build.parallelism": [
       "nx.json",
       "nx/target-defaults"
@@ -11267,6 +8339,10 @@
       "nx/target-defaults"
     ],
     "targets.test.cache": [
+      "nx.json",
+      "nx/target-defaults"
+    ],
+    "targets.test.outputs": [
       "nx.json",
       "nx/target-defaults"
     ],
@@ -11432,9 +8508,41 @@
       "nx.json",
       "nx/target-defaults"
     ],
+    "targets.build.outputs": [
+      "nx.json",
+      "nx/target-defaults"
+    ],
     "targets.build.parallelism": [
       "nx.json",
       "nx/target-defaults"
+    ]
+  },
+  "apps/mcp-server-mysql": {
+    "root": [
+      "apps/mcp-server-mysql/project.json",
+      "nx/core/project-json"
+    ],
+    "name": [
+      "apps/mcp-server-mysql/project.json",
+      "nx/core/project-json"
+    ],
+    "$schema": [
+      "apps/mcp-server-mysql/project.json",
+      "nx/core/project-json"
+    ]
+  },
+  "apps/projet-codespaces": {
+    "root": [
+      "apps/projet-codespaces/project.json",
+      "nx/core/project-json"
+    ],
+    "name": [
+      "apps/projet-codespaces/project.json",
+      "nx/core/project-json"
+    ],
+    "$schema": [
+      "apps/projet-codespaces/project.json",
+      "nx/core/project-json"
     ]
   }
 }

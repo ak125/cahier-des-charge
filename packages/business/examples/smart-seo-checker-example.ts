@@ -5,7 +5,7 @@
  * avec ses capacités de mémoire pour l'analyse SEO et l'apprentissage.
  */
 
-import { SmartSeoCheckerAgent } from '../agents/seo/smart-seo-checker-agent';
+import { SmartSeoCheckerAgent } from ..@cahier-des-charge/business/src/agents/seo/smart-seo-checker-agent';
 
 /**
  * Fonction principale d'exemple

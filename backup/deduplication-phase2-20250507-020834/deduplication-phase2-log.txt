@@ -1,8 +1,0 @@
-=== Journal de déduplication phase 2 - Wed May  7 02:08:34 UTC 2025 ===
-2025-05-07 02:08:34 - Traitement des fichiers similaires selon le plan de déduplication...
-2025-05-07 02:08:34 - \033[0;31mInformations manquantes pour ce groupe de fichiers similaires\033[0m
-2025-05-07 02:08:34 - Traitement des fichiers similaires terminé
-2025-05-07 02:08:34 - Total des groupes traités: 0
-2025-05-07 02:08:34 - Fichiers fusionnés: 0
-2025-05-07 02:08:34 - Fichiers dédupliqués: 0
-2025-05-07 02:08:34 - Rapport final généré: /workspaces/cahier-des-charge/cleanup-report/deduplication-phase2-report-20250507-020834.md

@@ -1,10 +1,10 @@
 import fs from 'fs';
 import path from 'path';
-import { AgentContext } from '../../../agents/core/interfaces';
-import { MCPAgent } from '../../../agents/core/interfaces';
+import { AgentContext } from ../../..@cahier-des-charge/business/src/agents/core/interfaces';
+import { MCPAgent } from ../../..@cahier-des-charge/business/src/agents/core/interfaces';
 import { NginxConfigParser } from '../../parsers/nginx-parser';
 import { HtaccessParser } from '../../parsers/htaccess-parser';
-import { CaddyGenerator } from '../../utils/caddy-generator';
+import { CaddyGenerator } from ../..@cahier-des-charge/coordination/src/utils/caddy-generator';
 import yaml from 'js-yaml';
 
 /**

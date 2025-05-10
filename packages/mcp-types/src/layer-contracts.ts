@@ -1,6 +1,13 @@
 /**
  * layer-contracts.ts
  * 
+ * @deprecated Ces interfaces sont désormais dupliquées. Utilisez plutôt les interfaces définies dans
+ * `packages/core/interfaces/` qui sont maintenant les versions canoniques dans le cadre de
+ * l'architecture en trois couches. Ce fichier sera supprimé après la migration de tous les imports.
+ * 
+ * Date de dépréciation : 8 mai 2025
+ * Date de suppression prévue : 8 juin 2025
+ * 
  * Ce fichier définit les contrats d'interfaces entre les trois couches de l'architecture MCP OS:
  * - Couche d'Orchestration: Gestion des workflows et coordination de haut niveau
  * - Couche de Coordination: Communication entre agents et gestion des intégrations

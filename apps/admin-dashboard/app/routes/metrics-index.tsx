@@ -36,7 +36,7 @@ import {
   type PipelineAuditData,
   type TraceSummary,
   loadPipelineAuditData,
-} from '../utils/audit-data-service';
+} from ..@cahier-des-charge/coordination/src/utils/audit-data-service';
 
 // Types déjà existants (laissés inchangés)
 interface AgentMetric {

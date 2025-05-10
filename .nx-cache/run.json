@@ -1,9 +1,0 @@
-{
-  "run": {
-    "command": "nx build schema-validation --skip-nx-cache",
-    "startTime": "2025-05-05T23:24:10.300Z",
-    "endTime": "2025-05-05T23:24:10.308Z",
-    "inner": false
-  },
-  "tasks": []
-}

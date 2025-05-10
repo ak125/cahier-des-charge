@@ -5,7 +5,7 @@ import { SigstoreSigner } from '../src/core/sigstore-signer';
 import * as fs from 'fs';
 import * as path from 'path';
 import { sign } from '@sigstore/sign';
-import { hashContent } from '../src/utils/hash';
+import { hashContent } from ../src@cahier-des-charge/coordination/src/utils/hash';
 
 // Mock pour fs
 jest.mock('fs', () => ({

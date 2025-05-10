@@ -1,6 +1,6 @@
 import React from 'react';
 import { Agent } from '~/types';
-import { formatDateRelative } from '~/utils/date';
+import { formatDateRelative } from ~@cahier-des-charge/coordination/src/utils/date';
 
 interface AgentStatusListProps {
   agents: Array<Agent>;

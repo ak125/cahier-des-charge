@@ -7,8 +7,11 @@ on:
       - 'monitoring/**'
       - 'docker-compose.monitoring.yml'
       - 'agents/monitoring/**'
+      - 'packages/business/src/monitoring/**'
+      - 'packages/coordination/monitoring/**'
+      - 'packages/orchestration/src/monitoring/**'
   schedule:
-    - cron: '0 0 * * 0'  # Exécution hebdomadaire (chaque dimanche à minuit)
+    - cron: '0 0 * * 0'  # Exécution hebdomadaire (chaque samedi à minuit)
   workflow_dispatch:
     inputs:
       environment:

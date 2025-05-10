@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { jest } from '@jest/globals';
-import * as componentGenerator from '../../agents/component-generator';
+import * as componentGenerator from ../..@cahier-des-charge/business/src/agents/component-generator';
 
 describe('Component Generator Agent', () => {
   const fixturePath = path.join(__dirname, '../fixtures/User.php');

@@ -7,7 +7,7 @@ import {
   UserSchema,
   UserType,
 } from '../schemas/user.schema';
-import { PrismaService } from '../utils/prisma-service';
+import { PrismaService } from ..@cahier-des-charge/coordination/src/utils/prisma-service';
 
 // Instance Prisma partagée
 const prisma = new PrismaClient();

@@ -1,4 +1,4 @@
-import { CanonicalConfig } from '~/utils/canonical';
+import { CanonicalConfig } from ~@cahier-des-charge/coordination/src/utils/canonical';
 
 /**
  * Configuration SEO globale pour l'application

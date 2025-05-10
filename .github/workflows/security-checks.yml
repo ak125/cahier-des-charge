@@ -4,6 +4,9 @@ on:
   pull_request:
     branches: [ main, develop ]
     paths:
+      - 'packages/business/**'
+      - 'packages/coordination/**'
+      - 'packages/orchestration/**'
       - 'cahier-des-charges/**'
       - '**/*.php'
       - '**/*.audit.md'
@@ -34,7 +37,7 @@ jobs:
           # Analyser tous les fichiers PHP
           for file in $(find . -name "*.php" -not -path "*/node_modules/*" -not -path "*/vendor/*"); do
             echo "Analyzing $file..."
-            node agents/analyze-security-risks.ts "$file"
+            node packages/business/src/security/analyze-security-risks.ts "$file"
             
             # Extraire le score du fichier généré
             SCORE_FILE="${file%.php}.risk_score.json"

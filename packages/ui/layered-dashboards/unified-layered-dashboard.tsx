@@ -49,8 +49,8 @@ import {
   DecisionSeverity,
   DecisionType,
   governanceMesh,
-} from '../utils/governance/governance-mesh';
-import { TraceabilityService } from '../utils/traceability/traceability-service';
+} from ..@cahier-des-charge/coordination/src/utils/governance/governance-mesh';
+import { TraceabilityService } from ..@cahier-des-charge/coordination/src/utils/traceability/traceability-service';
 import AgentsDashboard from './agents-dashboard';
 import BusinessDashboard from './business-dashboard';
 // Importer les tableaux de bord spécifiques à chaque couche

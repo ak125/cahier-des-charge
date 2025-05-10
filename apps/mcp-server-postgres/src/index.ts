@@ -33,7 +33,7 @@ import { suggestIndexes } from './services/index-suggester';
 import { compareSchemas } from './services/schema-comparator';
 import { createSchemaMap } from './services/schema-mapper';
 // Configuration et services
-import { parseConnectionString } from './utils/connection';
+import { parseConnectionString } from .@cahier-des-charge/coordination/src/utils/connection';
 
 // Charger la configuration depuis .env si disponible
 dotenv.config();

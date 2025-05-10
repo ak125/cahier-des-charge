@@ -1,4 +1,5 @@
-module.exports = {
+/* eslint-disable */
+export default {
     displayName: 'schema-validation',
     preset: '../../jest.preset.js',
     testEnvironment: 'node',

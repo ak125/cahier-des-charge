@@ -7,6 +7,9 @@ on:
       - 'agents/**'
       - 'apps/mcp-server/**'
       - 'config/**'
+      - 'packages/business/src/migration/**'
+      - 'packages/coordination/migration/**'
+      - 'packages/orchestration/src/migration/**'
       - 'run-pipeline.js'
   pull_request:
     branches: [ main, master ]
@@ -14,6 +17,9 @@ on:
       - 'agents/**'
       - 'apps/mcp-server/**'
       - 'config/**'
+      - 'packages/business/src/migration/**'
+      - 'packages/coordination/migration/**'
+      - 'packages/orchestration/src/migration/**'
   workflow_dispatch:
     inputs:
       source_dir:

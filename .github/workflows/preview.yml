@@ -7,6 +7,9 @@ on:
       - 'app/**'
       - 'apps/**'
       - 'src/**'
+      - 'packages/business/**'
+      - 'packages/coordination/**'
+      - 'packages/orchestration/**'
       - 'packages/**'
       - 'remix-nestjs-monorepo/**'
       - 'prisma/**'
@@ -46,7 +49,7 @@ jobs:
           DEPLOYMENT_PROVIDER: ${{ secrets.DEPLOYMENT_PROVIDER || 'docker' }}
           COOLIFY_API_KEY: ${{ secrets.COOLIFY_API_KEY }}
           FORCE_PREVIEW: 'true'
-        run: npx ts-node agents/devops-preview.ts ${{ github.event.pull_request.number }} ${{ github.head_ref }}
+        run: npx ts-node packages/orchestration/src/devops/devops-preview.ts ${{ github.event.pull_request.number }} ${{ github.head_ref }}
       
       - name: Télécharger les captures d'écran et rapports
         uses: actions/upload-artifact@v3

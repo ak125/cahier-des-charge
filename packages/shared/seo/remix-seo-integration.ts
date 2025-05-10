@@ -9,8 +9,8 @@
  * - Des utilitaires pour la validation et la transformation des métadonnées
  */
 
-import { SEOMCPController } from '../../../agents/seo-mcp-controller';
-import { Metadata, PageType } from '../../../agents/seo/seo-meta-generator';
+import { SEOMCPController } from ../../..@cahier-des-charge/business/src/agents/seo-mcp-controller';
+import { Metadata, PageType } from ../../..@cahier-des-charge/business/src/agents/seo/seo-meta-generator';
 
 /**
  * Options pour l'intégrateur SEO Remix

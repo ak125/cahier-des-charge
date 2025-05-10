@@ -1,4 +1,4 @@
-import { createActivityLogger } from '../utils/logger';
+import { createActivityLogger } from ..@cahier-des-charge/coordination/src/utils/logger';
 import * as fs from 'fs/promises';
 import * as path from 'path';
 import axios from 'axios';

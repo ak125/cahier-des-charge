@@ -1,8 +1,8 @@
 import { LoaderFunctionArgs, json } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 import type { LinksFunction, MetaFunction } from '@remix-run/react';
-import { createSEOLoader, createSEOMeta } from '~/utils/seo';
-import { createCanonicalLink } from '~/utils/use-canonical';
+import { createSEOLoader, createSEOMeta } from ~@cahier-des-charge/coordination/src/utils/seo';
+import { createCanonicalLink } from ~@cahier-des-charge/coordination/src/utils/use-canonical';
 
 // Combiner notre loader original avec l'utilitaire SEO
 const originalLoader = async ({ params, request }: LoaderFunctionArgs) => {

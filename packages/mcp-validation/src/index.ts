@@ -13,7 +13,7 @@ export {
     createZodSchemaFromPrisma,
     createZodSchemaFromPrismaFunction,
     validateForPrisma
-} from './utils/prisma-zod';
+} from .@cahier-des-charge/coordination/src/utils/prisma-zod';
 
 // Exporter les générateurs
 export { SchemaGenerator } from './generators/schema-generator';

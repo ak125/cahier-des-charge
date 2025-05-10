@@ -24,8 +24,8 @@ import { MetricsCollector } from '../../monitoring/metrics/metrics-collector';
 import { ConfigService } from '../../config/config-service';
 
 // Interfaces pour l'orchestration
-import { BaseAgent } from '../../agents/core/interfaces/base-agent';
-import { OrchestrationAgent } from '../../agents/core/interfaces/orchestration-agent';
+import { BaseAgent } from ../..@cahier-des-charge/business/src/agents/core/interfaces/base-agent';
+import { OrchestrationAgent } from ../..@cahier-des-charge/business/src/agents/core/interfaces/orchestration-agent';
 
 /**
  * Configuration du bridge d'orchestration

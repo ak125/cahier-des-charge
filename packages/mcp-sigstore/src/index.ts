@@ -10,7 +10,7 @@ export { SigstoreSigner } from './core/sigstore-signer';
 export { SigstoreVerifier } from './verification/sigstore-verifier';
 
 // Exporter les utilitaires
-export { hashContent, hashFile, hashObject } from './utils/hash';
+export { hashContent, hashFile, hashObject } from .@cahier-des-charge/coordination/src/utils/hash';
 
 // Créer une instance par défaut du signataire et du vérificateur
 import { SigstoreSigner } from './core/sigstore-signer';

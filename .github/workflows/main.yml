@@ -3,6 +3,17 @@ name: CI/CD Monorepo Principal
 on:
   push:
     branches: [ main, develop ]
+    paths:
+      - 'apps/**'
+      - 'packages/**'
+      - 'packages/business/**'
+      - 'packages/coordination/**'
+      - 'packages/orchestration/**'
+      - 'tools/**'
+      - '.github/workflows/main.yml'
+      - 'Earthfile'
+      - 'nx.json'
+      - 'package.json'
   pull_request:
     branches: [ main, develop ]
   workflow_dispatch:
@@ -63,7 +74,7 @@ jobs:
         id: set-matrix
         run: |
           echo "Génération de la matrice de tests basée sur les projets affectés"
-          node ./tools/scripts/ci/generate-test-matrix.js
+          node ./tools/ci/generate-test-matrix.js
           TEST_MATRIX=$(cat .github/workflows/generated/test-matrix.json)
           echo "test_matrix=$TEST_MATRIX" >> $GITHUB_OUTPUT
 
@@ -77,7 +88,7 @@ jobs:
         id: check-seo
         run: |
           # Vérifier les fichiers contenant des éléments SEO (meta tags, routes, etc.)
-          if git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -q -E 'packages/agents/seo|packages/ui/components/meta|apps/frontend/src/routes|sitemap|robots.txt|canonical|redirect'; then
+          if git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -q -E 'packages/business/src/seo|packages/orchestration/src/seo|packages/coordination/seo|packages/ui/components/meta|apps/frontend/src/routes|sitemap|robots.txt|canonical|redirect'; then
             echo "has_seo_changes=true" >> $GITHUB_OUTPUT
             echo "Des changements affectant le SEO ont été détectés"
           else

@@ -1,7 +1,7 @@
 import { defineWorkflow } from '@temporalio/workflow';
 import { z } from 'zod';
 import type * as activities from '../activities/migration-plans';
-import { executeActivity } from '../../utils/consolidated-helpers';
+import { executeActivity } from ../..@cahier-des-charge/coordination/src/utils/consolidated-helpers';
 
 // Schéma de validation pour les options de configuration
 const ConfigSchema = z.object({

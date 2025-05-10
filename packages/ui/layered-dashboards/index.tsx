@@ -4,7 +4,7 @@ import { Box, Center, ChakraProvider, Spinner, Text, extendTheme } from '@chakra
  */
 import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom/client';
-import { TraceabilityService } from '../utils/traceability/traceability-service';
+import { TraceabilityService } from ..@cahier-des-charge/coordination/src/utils/traceability/traceability-service';
 import UnifiedLayeredDashboard from './unified-layered-dashboard';
 
 // Configuration du thème Chakra UI avec des couleurs personnalisées pour les tableaux de bord

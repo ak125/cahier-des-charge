@@ -7,7 +7,7 @@ import { ColumnInfo, ForeignKeyInfo, IndexInfo, SchemaMap, TableInfo } from '../
 import {
   PostgresConnectionOptions,
   parseConnectionString,
-} from '../utils/connection-string-parser';
+} from ..@cahier-des-charge/coordination/src/utils/connection-string-parser';
 
 export class PostgresService {
   private pool: Pool | null = null;

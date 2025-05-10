@@ -1,6 +1,6 @@
 import * as path from 'path';
 import * as activities from '../activities/consolidated-activities';
-import { WorkflowTester } from '../utils/workflow-tester';
+import { WorkflowTester } from ..@cahier-des-charge/coordination/src/utils/workflow-tester';
 
 /**
  * Script de test pour les workflows Temporal

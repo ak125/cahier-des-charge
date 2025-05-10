@@ -7,7 +7,7 @@ import { Button } from './ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Progress } from './ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
-import { parseMd } from './utils/md-parser';
+import { parseMd } from .@cahier-des-charge/coordination/src/utils/md-parser';
 
 /**
  * Composant pour afficher l'architecture et la progression de migration

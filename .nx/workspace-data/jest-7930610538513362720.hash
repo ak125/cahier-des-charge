@@ -1,5 +1,5 @@
 {
-  "14743151810615929992": {
+  "17880394758589544742": {
     "targets": {
       "test": {
         "command": "jest",
@@ -40,7 +40,7 @@
       }
     }
   },
-  "3968882540415938217": {
+  "11961476334841009222": {
     "targets": {
       "test": {
         "command": "jest",
@@ -78,48 +78,7 @@
       }
     }
   },
-  "5652351301370981130": {
-    "targets": {
-      "test": {
-        "command": "jest",
-        "options": {
-          "cwd": "apps/mcp-server",
-          "env": {
-            "TS_NODE_COMPILER_OPTIONS": "{\"moduleResolution\":\"node10\",\"module\":\"commonjs\",\"customConditions\":null}"
-          }
-        },
-        "metadata": {
-          "technologies": [
-            "jest"
-          ],
-          "description": "Run Jest Tests",
-          "help": {
-            "command": "npx jest --help",
-            "example": {
-              "options": {
-                "coverage": true
-              }
-            }
-          }
-        },
-        "cache": true,
-        "inputs": [
-          "default",
-          "^production",
-          {
-            "externalDependencies": [
-              "jest",
-              "ts-jest"
-            ]
-          }
-        ],
-        "outputs": [
-          "{projectRoot}/coverage"
-        ]
-      }
-    }
-  },
-  "1195781037253486950": {
+  "7932091243649741443": {
     "targets": {
       "test": {
         "command": "jest",

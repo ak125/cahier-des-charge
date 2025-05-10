@@ -9,8 +9,8 @@ import chalk from 'chalk';
 import dotenv from 'dotenv';
 import fastify, { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
 import fastifyCors from '@fastify/cors';
-import { supabase } from '../../utils/supabase-client';
-import { FileProcessingOptions, processFilesInParallel } from './utils/file-processor';
+import { supabase } from ../..@cahier-des-charge/coordination/src/utils/supabase-client';
+import { FileProcessingOptions, processFilesInParallel } from .@cahier-des-charge/coordination/src/utils/file-processor';
 
 // Convertir exec en version Promise
 const _execAsync = promisify(exec);

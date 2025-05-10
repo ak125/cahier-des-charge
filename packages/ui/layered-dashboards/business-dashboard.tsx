@@ -4,8 +4,8 @@ import { Box } from '@chakra-ui/react';
  * Affiche les KPIs business, l'état des domaines et l'utilisation du modèle
  */
 import React, { useEffect, useState } from 'react';
-import { CircuitState } from '../utils/circuit-breaker/base-circuit-breaker';
-import { TraceEvent } from '../utils/traceability/traceability-service';
+import { CircuitState } from ..@cahier-des-charge/coordination/src/utils/circuit-breaker/base-circuit-breaker';
+import { TraceEvent } from ..@cahier-des-charge/coordination/src/utils/traceability/traceability-service';
 import BaseDashboard, { DashboardConfig } from './base-dashboard';
 
 // Configuration du tableau de bord pour la couche métier

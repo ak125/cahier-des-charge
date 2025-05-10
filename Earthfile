@@ -21,7 +21,8 @@ RUN npx nx affected --target=typecheck --all
 test:
 FROM +deps
 COPY . .
-RUN npx nx affected --target=test --all
+# Exécution des tests par couche architecturale
+RUN npx nx affected --target=test --all --nx-bail
 SAVE ARTIFACT coverage /coverage AS LOCAL coverage
 
 build-all:
@@ -85,9 +86,22 @@ CMD ["node", "main.js"]
 # Construction de l'image Docker
 SAVE IMAGE mcp-server:${DOCKER_TAG}
 
+validate-3layer:
+FROM +deps
+COPY . .
+RUN node ./tools/ci/validate-3layer-structure.js
+
+validate-architecture:
+FROM +deps
+COPY . .
+RUN node ./tools/ci/validate-architecture.js
+
 ci:
 BUILD +deps
 BUILD +lint
 BUILD +typecheck
+BUILD +validate-3layer
+BUILD +validate-architecture
+BUILD +validate-layer-imports
 BUILD +test
 BUILD +build-all

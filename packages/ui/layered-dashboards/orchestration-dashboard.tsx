@@ -3,8 +3,8 @@
  * Affiche les métriques et l'état de santé de l'infrastructure d'orchestration
  */
 import React, { useEffect, useState } from 'react';
-import { CircuitState } from '../utils/circuit-breaker/base-circuit-breaker';
-import { TraceEvent } from '../utils/traceability/traceability-service';
+import { CircuitState } from ..@cahier-des-charge/coordination/src/utils/circuit-breaker/base-circuit-breaker';
+import { TraceEvent } from ..@cahier-des-charge/coordination/src/utils/traceability/traceability-service';
 import BaseDashboard, { DashboardConfig } from './base-dashboard';
 
 // Configuration du tableau de bord d'orchestration

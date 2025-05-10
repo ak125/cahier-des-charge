@@ -1,7 +1,7 @@
 import * as path from 'path';
 import { Body, Controller, HttpException, HttpStatus, Logger, Post } from '@nestjs/common';
 import * as fs from 'fs-extra';
-import { runPRCreator } from '../../agents/pr-creator';
+import { runPRCreator } from ../..@cahier-des-charge/business/src/agents/pr-creator';
 import { RedisService } from '../redis/redis.service';
 
 interface WebhookPayload {

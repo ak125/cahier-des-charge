@@ -8,9 +8,9 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { BaseAgent, BusinessAgent } from '../core/interfaces/base-agent';
 import { AgentContext, FileContent, MCPAgent } from '../coreDoDotmcp-agent';
-import { CaddyGenerator } from '../utils/caddy-generator';
-import { HtaccessParser } from '../utils/htaccess-parser';
-import { NginxConfigParser } from '../utils/nginx-config-parser';
+import { CaddyGenerator } from ..@cahier-des-charge/coordination/src/utils/caddy-generator';
+import { HtaccessParser } from ..@cahier-des-charge/coordination/src/utils/htaccess-parser';
+import { NginxConfigParser } from ..@cahier-des-charge/coordination/src/utils/nginx-config-parser';
 
 export interface ServerConfig {
   domain: string;

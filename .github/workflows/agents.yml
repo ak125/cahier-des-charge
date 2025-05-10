@@ -4,16 +4,18 @@ on:
   push:
     branches: [ main, develop ]
     paths:
-      - 'packages/agents/**'
-      - 'packages/mcp-agents/**'
+      - 'packages/business/src/**/agent*.ts'
+      - 'packages/coordination/**/agent*.ts'
+      - 'packages/orchestration/src/**/agent*.ts'
   pull_request:
     paths:
-      - 'packages/agents/**'
-      - 'packages/mcp-agents/**'
+      - 'packages/business/src/**/agent*.ts'
+      - 'packages/coordination/**/agent*.ts'
+      - 'packages/orchestration/src/**/agent*.ts'
   workflow_dispatch:
     inputs:
       agent_name:
-        description: 'Nom de l'agent à déployer (laisser vide pour tous)'
+        description: "Nom de l'agent à déployer (laisser vide pour tous)"
         required: false
         type: string
 

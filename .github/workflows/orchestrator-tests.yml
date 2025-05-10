@@ -5,14 +5,14 @@ on:
     branches: [ main, develop ]
     paths:
       - 'packages/business/**'
+      - 'packages/coordination/**'
       - 'packages/orchestration/**'
-      - 'orchestrators/**'
   pull_request:
     branches: [ main, develop ]
     paths:
       - 'packages/business/**'
+      - 'packages/coordination/**'
       - 'packages/orchestration/**'
-      - 'orchestrators/**'
   workflow_dispatch:
     inputs:
       environment:

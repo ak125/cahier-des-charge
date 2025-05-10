@@ -4,7 +4,7 @@ import { BullModule } from '@nestjs/bull';
 import { BullBoardModule } from './bullmq/bull-board.module';
 import { TemporalModule } from './temporal/temporal.module';
 import { ModelsModule } from './models/models.module';
-import { AgentsModule } from './agents/agents.module';
+import { AgentsModule } from .@cahier-des-charge/business/src/agents/agents.module';
 import { AuthModule } from './auth/auth.module';
 import { HealthModule } from './health/health.module';
 
