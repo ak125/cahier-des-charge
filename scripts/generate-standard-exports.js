@@ -1,0 +1,1 @@
+/workspaces/cahier-des-charge/tools/scripts/scripts/generate-standard-exports.js

@@ -6,9 +6,10 @@
  * détecté dans plus de 200 fichiers du projet.
  */
 
-const fs = require('fs');
-const path = require('path');
-const util = require('util');
+import fs from 'fs';
+import path from 'path';
+import util from 'util';
+import { fileURLToPath } from 'url';
 
 const readdir = util.promisify(fs.readdir);
 const stat = util.promisify(fs.stat);
@@ -18,6 +19,10 @@ const writeFile = util.promisify(fs.writeFile);
 // Configuration
 const DRY_RUN = process.argv.includes('--dry-run');
 const VERBOSE = process.argv.includes('--verbose');
+
+// Obtenir l'équivalent de __dirname en ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 const ROOT_DIR = path.join(__dirname, '..');
 const DIRS_TO_PROCESS = [
     'agents',
@@ -252,14 +257,16 @@ async function main() {
 }
 
 // Exécution du script
-if (require.main === module) {
+// En ES modules, on vérifie si le fichier est exécuté directement
+if (import.meta.url === `file://${process.argv[1]}`) {
     main().catch(err => {
         console.error('Erreur globale:', err);
         process.exit(1);
     });
 }
 
-module.exports = {
+// Export pour ES modules
+export {
     hasStandardExportPattern,
     generateStandardExport,
     getComponentNameFromFileName
