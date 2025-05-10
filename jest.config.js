@@ -1,5 +1,5 @@
 /** @type {import('jest').Config} */
-module.exports = {
+export default {
     // Racine du projet pour les chemins relatifs
     rootDir: '.',
 
